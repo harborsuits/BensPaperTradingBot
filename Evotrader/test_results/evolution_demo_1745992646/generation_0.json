@@ -1,0 +1,29 @@
+{
+  "generation": 0,
+  "avg_fitness": 0.5482396813954196,
+  "max_fitness": 0.8546028051260882,
+  "strategy_distribution": {
+    "BollingerBands": 6,
+    "RSIStrategy": 4,
+    "IronCondor": 1,
+    "MovingAverageCrossover": 4,
+    "VerticalSpread": 5
+  },
+  "best_strategy": {
+    "generation": 0,
+    "id": "RSIStrategy_43665",
+    "type": "RSIStrategy",
+    "fitness": 0.8546028051260882,
+    "parameters": {
+      "rsi_period": 13,
+      "overbought": 67,
+      "oversold": 29
+    },
+    "metrics": {
+      "fitness": 0.8546028051260882,
+      "profit": 85.46028051260882,
+      "win_rate": 0.7273014025630441,
+      "drawdown": 4.361915846217354
+    }
+  }
+}

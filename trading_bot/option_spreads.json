@@ -1,0 +1,843 @@
+{
+  "vertical_spreads": {
+    "bull_put_spread": {
+      "description": "Sell a put with higher strike, buy a lower strike put for a net credit",
+      "mechanics": {
+        "max_profit": "Net credit received",
+        "max_loss": "Width between strikes minus credit received",
+        "breakeven": "Short strike minus credit received"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "underlying_in_mild_uptrend", "weight": 3},
+          {"condition": "iv_rank > 50%", "weight": 3},
+          {"condition": "no_earnings_within_10_days", "weight": 2}
+        ],
+        "secondary": [
+          {"condition": "support_level_near_short_strike", "weight": 2},
+          {"condition": "positive_rsi_divergence", "weight": 1},
+          {"condition": "ema_20_above_ema_50", "weight": 1},
+          {"condition": "sector_showing_relative_strength", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "downtrending_market",
+        "pending_binary_events",
+        "low_iv_environment (IV rank < 30%)",
+        "bearish_news_expected"
+      ],
+      "strike_selection": {
+        "short": {
+          "delta_range": "0.30-0.35",
+          "technical_placement": "above nearest support level",
+          "probability_itm": "~30%"
+        },
+        "long": {
+          "placement": "1-2 strikes below short strike",
+          "typical_width": "$3-5 for large caps, $1-2 for mid caps",
+          "risk_management": "narrower width = less risk/reward"
+        }
+      },
+      "expiration_guidelines": {
+        "optimal_range": "20-45 DTE",
+        "sweet_spot": "30-35 DTE",
+        "avoid": "< 14 DTE (accelerated gamma risk)",
+        "rationale": "Captures sufficient theta decay while providing time for directional thesis to play out"
+      },
+      "greeks_profile": {
+        "theta": "positive (benefits from time decay)",
+        "delta": "positive (benefits from price increase)",
+        "vega": "negative (benefits from volatility decrease)",
+        "gamma": "minimal at entry, increases as expiration approaches"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1-2% of account",
+        "margin_requirement": "width of spread - credit received",
+        "buying_power_efficiency": "high due to defined risk"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "50% of max profit",
+          "aggressive": "75% of max profit if achieved quickly (< 7 days)",
+          "time_based": "close at 21 DTE regardless of profit to avoid gamma risk"
+        },
+        "loss_management": {
+          "stop_loss": "80-100% of max profit or if short strike breached on weekly close",
+          "rolling": "consider rolling down and out for credit if tested early (>14 DTE remaining)"
+        },
+        "adjustments": {
+          "defensive": "buy debit spread above short strike if tested",
+          "convert_to_iron_condor": "add bear call spread for additional premium if underlying rises"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "high liquidity stocks",
+          "ETFs with defined support levels",
+          "stocks with positive but not extreme momentum"
+        ],
+        "specific_examples": ["SPY", "QQQ", "AAPL", "MSFT"]
+      },
+      "historical_performance": {
+        "win_rate": "75-80% when properly managed",
+        "average_return": "8-12% on risk capital per month",
+        "risk_reward": "typically 1:2 to 1:3 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "selling too close to earnings",
+        "ignoring technical support levels",
+        "using too wide strikes relative to account size",
+        "not adjusting for changes in market condition"
+      ]
+    },
+    "bear_call_spread": {
+      "description": "Sell a call with lower strike, buy a higher strike call for a net credit",
+      "mechanics": {
+        "max_profit": "Net credit received",
+        "max_loss": "Width between strikes minus credit received",
+        "breakeven": "Short strike plus credit received"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "underlying_in_mild_downtrend", "weight": 3},
+          {"condition": "iv_rank > 50%", "weight": 3},
+          {"condition": "strong_resistance_overhead", "weight": 3}
+        ],
+        "secondary": [
+          {"condition": "bearish_macd_crossover", "weight": 1},
+          {"condition": "overbought_rsi (>70)", "weight": 2},
+          {"condition": "negative_volume_divergence", "weight": 1},
+          {"condition": "ema_20_below_ema_50", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "uptrending_market",
+        "upcoming_positive_catalysts",
+        "low_iv_environment (IV rank < 30%)",
+        "stock_near_all-time_highs_with_momentum"
+      ],
+      "strike_selection": {
+        "short": {
+          "delta_range": "0.30-0.35",
+          "technical_placement": "below nearest resistance level",
+          "probability_itm": "~30%"
+        },
+        "long": {
+          "placement": "1-2 strikes above short strike",
+          "typical_width": "$3-5 for large caps, $1-2 for mid caps",
+          "risk_management": "wider width = more premium but higher risk"
+        }
+      },
+      "expiration_guidelines": {
+        "optimal_range": "20-45 DTE",
+        "sweet_spot": "30-35 DTE",
+        "avoid": "< 14 DTE (accelerated gamma risk)",
+        "rationale": "Balances premium collection with time for thesis to develop"
+      },
+      "greeks_profile": {
+        "theta": "positive (benefits from time decay)",
+        "delta": "negative (benefits from price decrease)",
+        "vega": "negative (benefits from volatility decrease)",
+        "gamma": "minimal at entry, increases as expiration approaches"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1-2% of account",
+        "margin_requirement": "width of spread - credit received",
+        "buying_power_efficiency": "high due to defined risk"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "50% of max profit",
+          "aggressive": "75% of max profit if achieved quickly (< 7 days)",
+          "time_based": "close at 21 DTE regardless of profit to avoid gamma risk"
+        },
+        "loss_management": {
+          "stop_loss": "80-100% of max profit or if short strike breached on weekly close",
+          "rolling": "consider rolling up and out for credit if tested early (>14 DTE remaining)"
+        },
+        "adjustments": {
+          "defensive": "buy debit spread below short strike if tested",
+          "convert_to_iron_condor": "add bull put spread for additional premium if underlying falls"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "stocks showing weakness against sector or market",
+          "ETFs near resistance levels",
+          "overbought conditions in individual stocks"
+        ],
+        "specific_examples": ["SPY", "QQQ", "NFLX", "TSLA"]
+      },
+      "historical_performance": {
+        "win_rate": "70-75% when properly managed",
+        "average_return": "7-10% on risk capital per month",
+        "risk_reward": "typically 1:2 to 1:3 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "ignoring strong market momentum",
+        "setting strikes too close to price in low-IV environments",
+        "overtrading in bull markets",
+        "not respecting technical resistance levels"
+      ]
+    },
+    "bull_call_spread": {
+      "description": "Buy a call at lower strike, sell a higher strike call for a net debit",
+      "mechanics": {
+        "max_profit": "Width between strikes minus net debit paid",
+        "max_loss": "Net debit paid",
+        "breakeven": "Long strike plus net debit paid"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "underlying_in_strong_uptrend", "weight": 3},
+          {"condition": "iv_rank < 40%", "weight": 2},
+          {"condition": "breakthrough_of_resistance", "weight": 3}
+        ],
+        "secondary": [
+          {"condition": "bullish_macd_crossover", "weight": 2},
+          {"condition": "rising_volume_pattern", "weight": 1},
+          {"condition": "support_building_at_higher_lows", "weight": 2},
+          {"condition": "sector_rotation_into_stock's_industry", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "extremely_high_iv_environments",
+        "overbought_conditions_with_negative_divergence",
+        "upcoming_binary_events",
+        "market_showing_distribution_patterns"
+      ],
+      "strike_selection": {
+        "long": {
+          "delta_range": "0.60-0.70",
+          "technical_placement": "slightly OTM but within expected move",
+          "probability_itm": "~60-70%"
+        },
+        "short": {
+          "placement": "2-3 strikes above long strike",
+          "typical_width": "$5-10 for large caps, $2-5 for mid caps",
+          "target_area": "area of expected profit-taking"
+        }
+      },
+      "expiration_guidelines": {
+        "optimal_range": "30-60 DTE",
+        "sweet_spot": "45 DTE",
+        "avoid": "< 14 DTE unless momentum is very strong",
+        "rationale": "Provides adequate time for directional move while limiting theta decay"
+      },
+      "greeks_profile": {
+        "theta": "negative (hurts from time decay)",
+        "delta": "positive (benefits from price increase)",
+        "vega": "slightly positive (benefits from volatility increase)",
+        "gamma": "increases as stock approaches long strike"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1% of account",
+        "capital_efficiency": "high leverage compared to stock ownership",
+        "risk_controlled": "defined maximum loss"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "50-70% of max profit",
+          "aggressive": "Consider holding through target if momentum remains strong",
+          "time_based": "re-evaluate at 14 DTE if not profitable"
+        },
+        "loss_management": {
+          "stop_loss": "50% of debit paid",
+          "time_stop": "close if no movement in expected direction after 7-10 days"
+        },
+        "adjustments": {
+          "roll_up": "if breakthrough occurs early, roll to higher strikes",
+          "partial_close": "take profits on 1/2 position if 40% target reached quickly"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "momentum stocks in uptrends",
+          "stocks breaking out of bases",
+          "industry leaders"
+        ],
+        "specific_examples": ["AAPL", "NVDA", "META", "AMZN"]
+      },
+      "historical_performance": {
+        "win_rate": "55-60% when properly managed",
+        "average_return": "20-30% on risk capital per trade",
+        "risk_reward": "typically 1:1.5 to 1:2 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "chasing stocks already extended",
+        "using too short expirations",
+        "not having clear technical targets",
+        "overleveraging due to lower cost compared to stock"
+      ]
+    },
+    "bear_put_spread": {
+      "description": "Buy a put at higher strike, sell a lower strike put for a net debit",
+      "mechanics": {
+        "max_profit": "Width between strikes minus net debit paid",
+        "max_loss": "Net debit paid",
+        "breakeven": "Long strike minus net debit paid"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "underlying_in_strong_downtrend", "weight": 3},
+          {"condition": "iv_rank < 40%", "weight": 2},
+          {"condition": "breakdown_below_support", "weight": 3}
+        ],
+        "secondary": [
+          {"condition": "bearish_macd_crossover", "weight": 2},
+          {"condition": "increasing_volume_on_downmoves", "weight": 1},
+          {"condition": "formation_of_lower_highs", "weight": 2},
+          {"condition": "negative_earnings_reaction", "weight": 2}
+        ]
+      },
+      "avoid_when": [
+        "strong_bull_markets",
+        "oversold_conditions_with_positive_divergence",
+        "stocks_near_major_support_levels",
+        "excessive_put_buying_activity_by_retail"
+      ],
+      "strike_selection": {
+        "long": {
+          "delta_range": "0.60-0.70",
+          "technical_placement": "slightly ITM or ATM",
+          "probability_itm": "~60-70%"
+        },
+        "short": {
+          "placement": "2-3 strikes below long strike",
+          "typical_width": "$5-10 for large caps, $2-5 for mid caps",
+          "target_area": "price target or support level"
+        }
+      },
+      "expiration_guidelines": {
+        "optimal_range": "21-45 DTE",
+        "sweet_spot": "30 DTE",
+        "avoid": "< 14 DTE unless momentum is very strong",
+        "rationale": "Balances time for move with cost of premium"
+      },
+      "greeks_profile": {
+        "theta": "negative (hurts from time decay)",
+        "delta": "negative (benefits from price decrease)",
+        "vega": "slightly positive (benefits from volatility increase)",
+        "gamma": "increases as stock approaches long strike"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1% of account",
+        "capital_efficiency": "high leverage compared to shorting stock",
+        "risk_controlled": "defined maximum loss"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "50-70% of max profit",
+          "aggressive": "Hold through target if downward momentum remains strong",
+          "time_based": "re-evaluate at 14 DTE if not profitable"
+        },
+        "loss_management": {
+          "stop_loss": "50% of debit paid",
+          "time_stop": "close if no downward movement after 7-10 days"
+        },
+        "adjustments": {
+          "roll_down": "if breakdown occurs early, roll to lower strikes",
+          "partial_close": "take profits on 1/2 position if 40% target reached quickly"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "weak stocks in downtrends",
+          "stocks breaking down from distribution patterns",
+          "sector laggards"
+        ],
+        "specific_examples": ["Weakest stocks in each sector", "Recent earnings disappointments"]
+      },
+      "historical_performance": {
+        "win_rate": "50-55% when properly managed",
+        "average_return": "25-35% on risk capital per trade",
+        "risk_reward": "typically 1:1.5 to 1:2 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "fighting strong bull markets",
+        "targeting strong companies in weak sectors",
+        "not respecting support levels",
+        "holding too long when momentum stalls"
+      ]
+    }
+  },
+  "neutral_spreads": {
+    "iron_condor": {
+      "description": "Combination of bull put spread and bear call spread; selling OTM put spread and OTM call spread simultaneously",
+      "mechanics": {
+        "max_profit": "Total net credit received",
+        "max_loss": "Widest spread width minus total credit received",
+        "upper_breakeven": "Short call strike plus credit received",
+        "lower_breakeven": "Short put strike minus credit received"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "sideways_market_expected", "weight": 3},
+          {"condition": "no_major_events_pending", "weight": 3},
+          {"condition": "high_iv_rank > 60%", "weight": 3}
+        ],
+        "secondary": [
+          {"condition": "price_trading_in_established_range", "weight": 2},
+          {"condition": "technical_resistance_above", "weight": 2},
+          {"condition": "technical_support_below", "weight": 2},
+          {"condition": "decreasing_volume_pattern", "weight": 1},
+          {"condition": "bollinger_band_width_contracting", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "trending_markets_with_momentum",
+        "pending_earnings_announcements",
+        "low_iv_environments (IV rank < 40%)",
+        "expected_binary_events",
+        "stocks_with_acquisition_rumors"
+      ],
+      "strike_selection": {
+        "short_calls": {
+          "delta_range": "0.15-0.20",
+          "technical_placement": "just below significant resistance",
+          "probability_itm": "~15-20%"
+        },
+        "long_calls": {
+          "placement": "2-3 strikes above short call",
+          "typical_width": "$3-5 for large caps, $1-2 for mid caps"
+        },
+        "short_puts": {
+          "delta_range": "0.15-0.20",
+          "technical_placement": "just above significant support",
+          "probability_itm": "~15-20%"
+        },
+        "long_puts": {
+          "placement": "2-3 strikes below short put",
+          "typical_width": "same as call side for symmetry"
+        },
+        "width_considerations": {
+          "symmetric": "equal width on both sides (most common)",
+          "asymmetric": "wider on direction of potential skew"
+        }
+      },
+      "expiration_guidelines": {
+        "optimal_range": "30-45 DTE",
+        "sweet_spot": "35-40 DTE",
+        "avoid": "< 21 DTE (accelerated gamma risk)",
+        "rationale": "Maximizes theta decay while limiting gamma risk"
+      },
+      "greeks_profile": {
+        "theta": "positive (significant benefit from time decay)",
+        "delta": "near neutral at inception (slight directional bias acceptable)",
+        "vega": "negative (benefits from volatility decrease)",
+        "gamma": "minimal at entry, increases as expiration approaches"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1-2% of account",
+        "margin_requirement": "widest spread minus credit received",
+        "buying_power_efficiency": "moderate to high"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "50% of max profit",
+          "early_close": "consider 25-30% profit if achieved in first week",
+          "time_based": "close at 21 DTE regardless of profit to avoid gamma risk"
+        },
+        "loss_management": {
+          "adjustment_trigger": "when short strike breached or delta exceeds 0.25",
+          "stop_loss": "2x credit received or 50% of max loss",
+          "roll_if_breached": "roll untested side closer for more credit"
+        },
+        "adjustments": {
+          "convert_to_butterfly": "if one side breached",
+          "add_debit_spread": "on threatened side for protection",
+          "convert_to_broken_wing_butterfly": "for repair strategy"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "high liquidity ETFs",
+          "rangebound stocks",
+          "broad market indices"
+        ],
+        "specific_examples": ["SPY", "QQQ", "IWM", "XLF", "XLE"]
+      },
+      "historical_performance": {
+        "win_rate": "65-75% when properly managed",
+        "average_return": "5-8% on risk capital per month",
+        "risk_reward": "typically 1:3 to 1:5 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "setting strikes too close to current price",
+        "ignoring upcoming events or earnings",
+        "not adjusting when threatened",
+        "using in low IV environments",
+        "overtrading during trending markets"
+      ]
+    },
+    "calendar_spread": {
+      "description": "Sell near-term option, buy longer-term option at same strike, capitalizing on different time decay rates",
+      "mechanics": {
+        "max_profit": "Theoretical maximum at expiration of short option with underlying at strike",
+        "max_loss": "Limited to net debit paid",
+        "breakeven": "Varies based on volatility and time remaining"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "low_iv_in_front_month", "weight": 3},
+          {"condition": "expect_iv_expansion_in_back_month", "weight": 3},
+          {"condition": "neutral_to_slight_directional_bias", "weight": 2}
+        ],
+        "secondary": [
+          {"condition": "underlying_near_major_support/resistance", "weight": 2},
+          {"condition": "low_historical_volatility", "weight": 1},
+          {"condition": "expected_increase_in_volatility", "weight": 2},
+          {"condition": "low_realized_volatility_vs_implied", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "strongly_trending_markets",
+        "expected_gap_events",
+        "backwardation_in_volatility_term_structure",
+        "illiquid_options_chains"
+      ],
+      "strike_selection": {
+        "strategy_variations": {
+          "neutral_calendar": "ATM strike (delta ~0.50)",
+          "bullish_calendar": "slightly OTM call (delta ~0.40)",
+          "bearish_calendar": "slightly OTM put (delta ~0.40)",
+          "double_calendar": "OTM put and OTM call calendars simultaneously"
+        },
+        "technical_considerations": "Select strikes near expected consolidation points"
+      },
+      "expiration_guidelines": {
+        "short": {
+          "optimal": "7-14 DTE",
+          "rationale": "Accelerated theta decay"
+        },
+        "long": {
+          "optimal": "30-60 DTE",
+          "typical_gap": "30-45 days between expirations",
+          "rationale": "Provides positive vega exposure"
+        }
+      },
+      "greeks_profile": {
+        "theta": "positive (benefits from faster time decay of short option)",
+        "delta": "near neutral at ATM, directional away from ATM",
+        "vega": "positive (benefits from volatility increase)",
+        "gamma": "varying based on proximity to expiration and strike"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "0.5-1% of account",
+        "debit_control": "keep net debit under 25% of width between strikes",
+        "buying_power_efficiency": "moderate"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "primary": "25-40% return on risk",
+          "optimal_exit_window": "3-5 days before short expiration",
+          "roll_opportunity": "roll short leg when 3-5 DTE for additional credit"
+        },
+        "loss_management": {
+          "stop_loss": "25% of debit paid",
+          "assignment_risk": "close or roll when short option goes ITM",
+          "directional_move": "adjust to diagonal spread if direction becomes clear"
+        },
+        "adjustments": {
+          "convert_to_diagonal": "if directional bias emerges",
+          "add_protection": "wing spreads if underlying moves away from strike",
+          "add_contracts": "at new strikes if position moves against you"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "stocks with predictable trading ranges",
+          "ETFs with consistent volatility patterns",
+          "higher-priced underlyings ($100+)"
+        ],
+        "specific_examples": ["SPY", "AAPL", "AMZN", "GLD"]
+      },
+      "historical_performance": {
+        "win_rate": "55-65% when properly managed",
+        "average_return": "12-18% on risk capital per trade",
+        "risk_reward": "typically 1:1 to 1:1.5 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "placing too close to earnings or events",
+        "not monitoring volatility skew",
+        "holding through short expiration",
+        "ignoring pin risk",
+        "using inappropriate strikes for market conditions"
+      ]
+    },
+    "double_diagonal": {
+      "description": "Combination of put diagonal and call diagonal spreads; sell near-term OTM options, buy longer-term further OTM options",
+      "mechanics": {
+        "max_profit": "Theoretical maximum near short strikes at short expiration",
+        "max_loss": "Limited to net debit paid",
+        "breakeven": "Complex, depends on time and volatility changes"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "range_bound_expectations", "weight": 3},
+          {"condition": "moderate_volatility_environment", "weight": 2},
+          {"condition": "expected_volatility_increase", "weight": 2}
+        ],
+        "secondary": [
+          {"condition": "clear_technical_boundaries", "weight": 2},
+          {"condition": "low_correlation_with_broad_market", "weight": 1},
+          {"condition": "balanced_options_skew", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "strong_directional_moves_expected",
+        "extreme_volatility_environments",
+        "stocks_prone_to_gaps",
+        "earnings_or_binary_events_during_short_expiration"
+      ],
+      "strike_selection": {
+        "short_call": {
+          "delta_range": "0.20-0.30",
+          "technical_placement": "above resistance level"
+        },
+        "long_call": {
+          "placement": "same or higher strike than short call",
+          "spread_width": "consider 1-2 strikes wider"
+        },
+        "short_put": {
+          "delta_range": "0.20-0.30",
+          "technical_placement": "below support level"
+        },
+        "long_put": {
+          "placement": "same or lower strike than short put",
+          "spread_width": "consider 1-2 strikes wider"
+        }
+      },
+      "expiration_guidelines": {
+        "short_options": "10-20 DTE",
+        "long_options": "45-60 DTE",
+        "ideal_gap": "30-45 days between expirations"
+      },
+      "greeks_profile": {
+        "theta": "positive (benefits from time decay of short options)",
+        "delta": "near neutral when balanced",
+        "vega": "generally positive (benefits from volatility increase)",
+        "gamma": "complex, varies by strike proximity"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "1% of account",
+        "capital_requirement": "net debit paid plus margin requirements",
+        "buying_power_efficiency": "moderate"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "target": "20-30% of max theoretical value",
+          "timing": "5-7 days before short expiration optimal"
+        },
+        "loss_management": {
+          "stop_loss": "25% of debit paid",
+          "roll_short_options": "when 5 DTE or when threatened"
+        },
+        "adjustments": {
+          "unbalanced_deltas": "adjust strikes on next roll to rebalance",
+          "tested_sides": "roll short option out in time for additional credit"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "highly liquid ETFs and stocks",
+          "underlyings with predictable volatility patterns",
+          "stocks with clear technical ranges"
+        ],
+        "specific_examples": ["SPY", "QQQ", "IWM", "AAPL"]
+      },
+      "historical_performance": {
+        "win_rate": "60-65% when properly managed",
+        "average_return": "12-15% on risk capital per trade",
+        "risk_reward": "typically 1:1 to 1:1.5 (risk:reward)",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "complex position management",
+        "ignoring skew changes",
+        "poor strike selection relative to technicals",
+        "holding into expiration week"
+      ]
+    }
+  },
+  "explosive_move_spreads": {
+    "long_straddle": {
+      "description": "Buy call and put at same ATM strike, same expiry; profits from large moves in either direction",
+      "mechanics": {
+        "max_profit": "Unlimited (theoretically)",
+        "max_loss": "Total premium paid",
+        "upper_breakeven": "Strike plus total premium paid",
+        "lower_breakeven": "Strike minus total premium paid"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "expecting_large_move", "weight": 3},
+          {"condition": "unclear_direction", "weight": 3},
+          {"condition": "low_iv_percentile < 25%", "weight": 3}
+        ],
+        "secondary": [
+          {"condition": "historical_volatility > implied_volatility", "weight": 2},
+          {"condition": "upcoming_catalyst_not_fully_priced_in", "weight": 2},
+          {"condition": "price_coiling_pattern", "weight": 2},
+          {"condition": "bollinger_band_squeeze", "weight": 1},
+          {"condition": "decreasing_volume_preceding_expected_move", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "high_implied_volatility_environments",
+        "no_catalysts_expected",
+        "strongly_trending_markets",
+        "extremely_wide_bid-ask_spreads"
+      ],
+      "strike_selection": {
+        "primary": "ATM (delta ~0.50 for both call and put)",
+        "alternative": "Slight OTM if directional bias exists",
+        "rationale": "Maximizes exposure to movement while minimizing extrinsic value"
+      },
+      "expiration_guidelines": {
+        "optimal_range": "30-45 DTE",
+        "catalyst_specific": "Just beyond expected event/announcement",
+        "avoid": "Very short expirations unless catalyst is imminent",
+        "rationale": "Balances time for move with premium cost"
+      },
+      "greeks_profile": {
+        "theta": "negative (hurts from time decay)",
+        "delta": "neutral at inception, increases with price movement",
+        "vega": "positive (benefits from volatility increase)",
+        "gamma": "high (benefits from rapid price movement)"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "0.5-1% of account due to high cost",
+        "contract_sizing": "fewer contracts than directional plays",
+        "scaling": "consider scaling into position before catalyst"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "target": "25-40% of max theoretical value",
+          "asymmetric_exit": "if directional move occurs, consider legging out of profitable side",
+          "time_based": "re-evaluate if no movement after 1/3 of time to expiration"
+        },
+        "loss_management": {
+          "stop_loss": "25-30% of debit paid",
+          "time_stop": "exit if no movement after 10-14 days",
+          "salvage": "consider converting to directional spread if bias emerges"
+        },
+        "adjustments": {
+          "convert_to_strangle": "roll to OTM options if directional bias emerges",
+          "roll_to_calendar": "if time decay hurting but thesis intact",
+          "leg_out": "of profitable side if directional move occurs"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "stocks approaching news events",
+          "earnings announcements with uncertain outcome",
+          "stocks with historical post-catalyst movement",
+          "indices before economic reports"
+        ],
+        "specific_examples": ["NFLX/TSLA before earnings", "SPY before FOMC"]
+      },
+      "historical_performance": {
+        "win_rate": "40-45% when properly managed",
+        "average_return": "30-50% on risk capital when winning",
+        "risk_reward": "typically 1:2 to 1:3 (risk:reward) on winners",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "placing in high IV environment",
+        "holding too long through time decay",
+        "not sizing properly (too large)",
+        "failing to leg out when directional move occurs"
+      ]
+    },
+    "long_strangle": {
+      "description": "Buy OTM call and OTM put at different strikes, same expiry; cheaper alternative to straddle",
+      "mechanics": {
+        "max_profit": "Unlimited (theoretically)",
+        "max_loss": "Total premium paid",
+        "upper_breakeven": "Call strike plus total premium paid",
+        "lower_breakeven": "Put strike minus total premium paid"
+      },
+      "ideal_conditions": {
+        "primary": [
+          {"condition": "expecting_large_move_beyond_current_range", "weight": 3},
+          {"condition": "low_iv_percentile < 30%", "weight": 3},
+          {"condition": "unclear_direction", "weight": 2}
+        ],
+        "secondary": [
+          {"condition": "trading_range_contraction", "weight": 2},
+          {"condition": "upcoming_binary_event", "weight": 2},
+          {"condition": "keltner_channel_squeeze", "weight": 1}
+        ]
+      },
+      "avoid_when": [
+        "high_implied_volatility_environments",
+        "no_expected_catalysts",
+        "range-bound_markets_expected_to_continue"
+      ],
+      "strike_selection": {
+        "call_strike": {
+          "delta_range": "0.25-0.35",
+          "technical_placement": "above resistance level"
+        },
+        "put_strike": {
+          "delta_range": "0.25-0.35",
+          "technical_placement": "below support level"
+        },
+        "width_consideration": "wider strikes = lower cost but requires larger move"
+      },
+      "expiration_guidelines": {
+        "optimal_range": "30-60 DTE",
+        "event_specific": "7-14 days beyond catalyst date",
+        "rationale": "Balances cost with time for thesis to develop"
+      },
+      "greeks_profile": {
+        "theta": "negative but less than straddle (hurts from time decay)",
+        "delta": "near neutral at inception",
+        "vega": "positive (benefits from volatility increase)",
+        "gamma": "increases as price approaches either strike"
+      },
+      "position_sizing": {
+        "max_risk_per_trade": "0.5-1% of account",
+        "contract_equivalency": "can often buy more contracts than straddle for same capital"
+      },
+      "management_rules": {
+        "profit_taking": {
+          "target": "50-100% of premium paid",
+          "partial_exits": "scale out after reaching first profit target",
+          "leg_management": "consider removing profitable leg if strongly directional"
+        },
+        "loss_management": {
+          "stop_loss": "30-40% of debit paid",
+          "time_stop": "exit if no movement after 14 days or if catalyst passes"
+        }
+      },
+      "optimal_underlyings": {
+        "best_for": [
+          "historically volatile stocks",
+          "pre-earnings setups",
+          "pending FDA decisions or product releases"
+        ],
+        "specific_examples": ["AMZN", "TSLA", "Biotech stocks with pending FDA decisions"]
+      },
+      "historical_performance": {
+        "win_rate": "35-45% when properly managed",
+        "average_return": "100%+ on winners due to asymmetric payoff",
+        "risk_reward": "better than straddles in strong directional moves",
+        "backtest_period": "Jan 2022 - Oct 2024"
+      },
+      "common_mistakes": [
+        "strikes too wide apart",
+        "holding too long without catalyst",
+        "buying when IV is already elevated",
+        "poor strike selection relative to technical levels"
+      ]
+    }
+  }
+} 

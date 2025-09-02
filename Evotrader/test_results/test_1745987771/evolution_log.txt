@@ -1,0 +1,9 @@
+
+
+ERRORS:
+Traceback (most recent call last):
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 20, in <module>
+    from strategy_adapter import BensBotStrategyAdapter
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/strategy_adapter.py", line 17, in <module>
+    from evotrader.core.strategy import Strategy as EvoStrategy
+ModuleNotFoundError: No module named 'evotrader'

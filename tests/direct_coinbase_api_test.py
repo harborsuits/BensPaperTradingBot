@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Direct Coinbase API Test
+
+This script tests the Coinbase API directly without requiring the full
+trading bot infrastructure. It implements the minimal required code to
+authenticate with the Coinbase Cloud API and make requests.
+"""
+
+import os
+import sys
+import logging
+import json
+import time
+import base64
+import requests
+from datetime import datetime, timedelta
+from typing import Dict, Any, List, Optional, Tuple
+
+# Import required libraries for JWT signing
+import jwt
+from cryptography.hazmat.primitives import serialization
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("DirectCoinbaseTest")
+
+class DirectCoinbaseClient:
+    """Direct client for Coinbase Cloud API"""
+    
+    # Base URLs for Coinbase APIs
+    CLOUD_API_URL = "https://api.coinbase.com"
+    
+    def __init__(self, api_key_name: str, private_key: str, sandbox: bool = False):
+        """
+        Initialize Coinbase Cloud API client
+        
+        Args:
+            api_key_name: Coinbase Cloud API key name
+            private_key: EC private key as a string
+            sandbox: Whether to use sandbox environment
+        """
+        self.api_key_name = api_key_name
+        self.private_key = private_key
+        self.sandbox = sandbox
+        
+        # Log initialization
+        logger.info(f"Initialized DirectCoinbaseClient with API key: {api_key_name}")
+        logger.info(f"Using sandbox: {sandbox}")
+    
+    def create_jwt_token(self) -> Optional[str]:
+        """
+        Create a JWT token for authenticating with Coinbase Cloud API
+        
+        Returns:
+            JWT token string or None if there was an error
+        """
+        try:
+            # Parse the private key
+            private_key_bytes = self.private_key.encode()
+            private_key_obj = serialization.load_pem_private_key(
+                private_key_bytes,
+                password=None
+            )
+            
+            # Define token payload
+            now = int(time.time())
+            payload = {
+                "sub": self.api_key_name,
+                "iss": "coinbase-cloud",
+                "nbf": now - 60,  # Not before (1 minute ago)
+                "exp": now + 600,  # Expiration (10 minutes from now)
+                "aud": ["coinbase-cloud"]
+            }
+            
+            # Create the JWT token
+            token = jwt.encode(
+                payload=payload,
+                key=private_key_obj,
+                algorithm="ES256"
+            )
+            
+            return token
+        
+        except Exception as e:
+            logger.error(f"Error creating JWT token: {str(e)}")
+            return None
+    
+    def make_cloud_api_request(self, method: str, endpoint: str, body: Optional[Dict] = None) -> Tuple[bool, Dict]:
+        """
+        Make an authenticated request to the Coinbase Cloud API
+        
+        Args:
+            method: HTTP method (GET, POST, etc.)
+            endpoint: API endpoint (e.g., "/api/v3/brokerage/products")
+            body: Request body (optional)
+            
+        Returns:
+            Tuple of (success, response)
+        """
+        try:
+            # Create JWT token
+            token = self.create_jwt_token()
+            if not token:
+                return False, {"error": "Failed to create JWT token"}
+            
+            # Set up headers
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+            
+            # Build URL
+            url = f"{self.CLOUD_API_URL}{endpoint}"
+            
+            # Make request
+            response = requests.request(
+                method=method,
+                url=url,
+                headers=headers,
+                json=body
+            )
+            
+            # Handle response
+            if response.status_code == 200:
+                return True, response.json()
+            else:
+                logger.error(f"API request failed: {response.status_code} - {response.text}")
+                return False, {
+                    "status_code": response.status_code,
+                    "error": response.text
+                }
+        
+        except Exception as e:
+            logger.error(f"Error making API request: {str(e)}")
+            return False, {"error": str(e)}
+    
+    def get_available_products(self) -> Tuple[bool, List[Dict]]:
+        """
+        Get available trading products from Coinbase
+        
+        Returns:
+            Tuple of (success, products list)
+        """
+        return self.make_cloud_api_request("GET", "/api/v3/brokerage/products")
+    
+    def get_ticker(self, product_id: str) -> Tuple[bool, Dict]:
+        """
+        Get ticker data for a specific product
+        
+        Args:
+            product_id: Product ID (e.g., "BTC-USD")
+            
+        Returns:
+            Tuple of (success, ticker data)
+        """
+        return self.make_cloud_api_request("GET", f"/api/v3/brokerage/products/{product_id}")
+    
+    def get_product_stats(self, product_id: str) -> Tuple[bool, Dict]:
+        """
+        Get 24h stats for a specific product
+        
+        Args:
+            product_id: Product ID (e.g., "BTC-USD")
+            
+        Returns:
+            Tuple of (success, stats data)
+        """
+        return self.make_cloud_api_request("GET", f"/api/v3/brokerage/products/{product_id}/stats")
+    
+    def get_historical_candles(self, product_id: str, granularity: int, start: datetime, end: datetime) -> List[Dict]:
+        """
+        Get historical candles for a product
+        
+        Args:
+            product_id: Product ID (e.g., "BTC-USD")
+            granularity: Candle granularity in seconds (60, 300, 900, 3600, 21600, 86400)
+            start: Start datetime
+            end: End datetime
+            
+        Returns:
+            List of candle data or empty list on error
+        """
+        # Convert times to ISO format
+        start_iso = start.isoformat()
+        end_iso = end.isoformat()
+        
+        success, response = self.make_cloud_api_request(
+            "GET", 
+            f"/api/v3/brokerage/products/{product_id}/candles",
+            {
+                "start": start_iso,
+                "end": end_iso,
+                "granularity": str(granularity)
+            }
+        )
+        
+        if success and "candles" in response:
+            return response["candles"]
+        else:
+            logger.error(f"Failed to get candles: {response}")
+            return []
+    
+    def get_order_book(self, product_id: str, level: int = 2) -> Tuple[bool, Dict]:
+        """
+        Get order book for a product
+        
+        Args:
+            product_id: Product ID (e.g., "BTC-USD")
+            level: Order book detail level (1, 2, 3)
+            
+        Returns:
+            Tuple of (success, order book data)
+        """
+        return self.make_cloud_api_request(
+            "GET", 
+            f"/api/v3/brokerage/products/{product_id}/book?limit={level}"
+        )
+
+def run_test():
+    """Run the Coinbase API test"""
+    logger.info("Starting Direct Coinbase API Test")
+    
+    # BenbotReal credentials
+    api_key_name = "organizations/1781cc1d-57ec-4e92-aa78-7a403caa11c5/apiKeys/8ef865bf-2217-47ec-9fa9-237c0637d335"
+    private_key = """-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIMs6tEqZbbC6ziEaK/MxCl/YBLJ1/uL0AybaAdvWJfr4oAoGCCqGSM49
+AwEHoUQDQgAEdZJ/L8mrFCNNKLQRo3r52YRm4oAWlKc341TYsymeyXiG6DGPdFEX
+WHezb1iJMTCwBBpsJCxwYnfKieCZrbiJig==
+-----END EC PRIVATE KEY-----"""
+    
+    # Create client
+    client = DirectCoinbaseClient(api_key_name=api_key_name, private_key=private_key, sandbox=False)
+    
+    # Test JWT token creation
+    logger.info("Testing JWT token creation")
+    jwt_token = client.create_jwt_token()
+    logger.info(f"JWT token created: {jwt_token is not None}")
+    if jwt_token:
+        logger.info(f"Token: {jwt_token[:20]}...")
+    
+    # Test getting available products
+    logger.info("Testing available products")
+    success, products = client.get_available_products()
+    if success:
+        logger.info(f"Got {len(products)} available products")
+        # Display first 5 products
+        for p in products[:5]:
+            logger.info(f"Product: {p.get('id', 'unknown')}")
+    else:
+        logger.error(f"Failed to get products: {products}")
+    
+    # Test getting ticker for BTC-USD
+    logger.info("Testing ticker for BTC-USD")
+    success, ticker = client.get_ticker("BTC-USD")
+    if success:
+        logger.info(f"BTC-USD ticker: {json.dumps(ticker, indent=2)}")
+    else:
+        logger.error(f"Failed to get ticker: {ticker}")
+    
+    # Test getting product stats for BTC-USD
+    logger.info("Testing product stats for BTC-USD")
+    success, stats = client.get_product_stats("BTC-USD")
+    if success:
+        logger.info(f"BTC-USD stats: {json.dumps(stats, indent=2)}")
+    else:
+        logger.error(f"Failed to get stats: {stats}")
+    
+    # Test getting candles for BTC-USD
+    logger.info("Testing candles for BTC-USD")
+    end = datetime.now()
+    start = end - timedelta(hours=24)
+    candles = client.get_historical_candles("BTC-USD", 3600, start, end)
+    if candles:
+        logger.info(f"Got {len(candles)} candles for BTC-USD")
+        # Display first candle
+        if len(candles) > 0:
+            logger.info(f"First candle: {json.dumps(candles[0], indent=2)}")
+    else:
+        logger.error("Failed to get candles or empty result")
+    
+    # Test getting order book for BTC-USD
+    logger.info("Testing order book for BTC-USD")
+    success, orderbook = client.get_order_book("BTC-USD", level=2)
+    if success:
+        logger.info(f"BTC-USD order book: {len(orderbook.get('bids', []))} bids, {len(orderbook.get('asks', []))} asks")
+    else:
+        logger.error(f"Failed to get order book: {orderbook}")
+    
+    logger.info("Direct Coinbase API test completed")
+
+if __name__ == "__main__":
+    run_test()

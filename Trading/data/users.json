@@ -1,0 +1,11 @@
+{
+  "7257cb34-eb48-40a1-8b14-34aaa3565b2b": {
+    "id": "7257cb34-eb48-40a1-8b14-34aaa3565b2b",
+    "username": "admin",
+    "email": "admin@example.com",
+    "hashed_password": "$2b$12$OX14cOAfGFUo.n54VIGfiuMELSbTe5sQSYA5h1fzL9Bu6Ch5ng2GW",
+    "is_active": true,
+    "is_admin": true,
+    "created_at": "2025-04-25 14:45:29.595450"
+  }
+}

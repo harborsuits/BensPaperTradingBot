@@ -1,0 +1,76 @@
+name: Validate Typed Settings
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'trading_bot/config/typed_settings.py'
+      - 'trading_bot/config/*.yaml'
+      - 'trading_bot/config/*.yml'
+      - 'tests/integration/test_settings_roundtrip.py'
+      - 'tests/integration/test_tradier_broker_integration.py'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'trading_bot/config/typed_settings.py'
+      - 'trading_bot/config/*.yaml'
+      - 'trading_bot/config/*.yml'
+      - 'tests/integration/test_settings_roundtrip.py'
+      - 'tests/integration/test_tradier_broker_integration.py'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest pytest-cov pytest-vcr pydantic pyyaml
+    
+    - name: Run typed settings validation
+      run: |
+        # Run typed settings core tests
+        pytest trading_bot/tests/test_typed_settings_core.py -v
+        
+        # Run typed settings integration tests
+        pytest tests/integration/test_settings_roundtrip.py -v
+      
+    - name: Run VCR integration tests
+      env:
+        # Use GitHub secrets for any required credentials in CI
+        TRADIER_API_KEY: ${{ secrets.TRADIER_API_KEY }}
+        TRADIER_ACCOUNT_ID: ${{ secrets.TRADIER_ACCOUNT_ID }}
+      run: |
+        # Run with existing cassettes - no real API calls
+        pytest tests/integration/test_tradier_broker_integration.py -v
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          ./.pytest_cache
+          ./tests/integration/.pytest_cache
+          ./tests/integration/cassettes
+        
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: Typed Settings Tests
+        path: "*.xml"
+        reporter: java-junit

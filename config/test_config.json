@@ -1,0 +1,18 @@
+{
+    "initial_capital": 100000.0,
+    "position_size": 0.2,
+    "commission": 0.001,
+    "stop_loss_pct": 0.05,
+    "take_profit_pct": 0.1,
+    "symbols": ["AAPL"],
+    "start_date": "2023-01-01",
+    "end_date": "2023-03-01",
+    "strategy": "sma_crossover",
+    "strategy_params": {
+        "sma_crossover": {
+            "short_window": 20,
+            "long_window": 50
+        }
+    },
+    "alpha_vantage_api_key": "SXZ4FVOWJPKU4ZPK"
+} 

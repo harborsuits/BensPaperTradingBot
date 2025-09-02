@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/markets/options/expirations?includeAllRoots=false&symbol=AAPL
+  response:
+    body:
+      string: '{"expirations":{"date":["2025-04-25","2025-05-02","2025-05-09","2025-05-16","2025-05-23","2025-05-30","2025-06-20","2025-07-18","2025-08-15","2025-09-19","2025-10-17","2025-12-19","2026-01-16","2026-03-20","2026-06-18","2026-12-18","2027-01-15","2027-06-17","2027-12-17"]}}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:22 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Ratelimit-Allowed:
+      - '200'
+      X-Ratelimit-Available:
+      - '199'
+      X-Ratelimit-Expiry:
+      - '1745447760000'
+      X-Ratelimit-Used:
+      - '1'
+    status:
+      code: 200
+      message: ''
+version: 1

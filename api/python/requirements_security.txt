@@ -1,0 +1,10 @@
+flask>=2.0.1
+flask-talisman>=0.8.1
+flask-limiter>=2.8.0
+flask-jwt-extended>=4.4.4
+marshmallow>=3.17.0
+python-dotenv>=0.20.0
+pyOpenSSL>=22.0.0
+cryptography>=37.0.4
+redis>=4.3.4
+secrets>=1.0.2 

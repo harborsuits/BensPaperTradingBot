@@ -1,0 +1,29 @@
+{
+  "strategy_id": "strategy_d576da70",
+  "parameters": {
+    "fast_period": 14,
+    "slow_period": 17,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 2,
+    "parent_ids": [
+      "strategy_bbdae608"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_a8172f8c",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_bbdae608",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "MovingAverageCrossover"
+}

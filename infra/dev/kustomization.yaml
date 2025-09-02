@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../base
+
+namespace: trading-bot-dev
+
+resources:
+- namespace.yaml
+- persistent-volume-claim.yaml
+- secrets.yaml
+
+patchesStrategicMerge:
+- trading-system-patch.yaml
+- data-collector-patch.yaml
+- api-server-patch.yaml
+- monitoring-service-patch.yaml
+
+configMapGenerator:
+- name: trading-bot-config
+  files:
+  - config.yaml 

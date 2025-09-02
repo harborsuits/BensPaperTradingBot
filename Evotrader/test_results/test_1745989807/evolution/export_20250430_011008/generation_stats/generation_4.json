@@ -1,0 +1,19 @@
+{
+  "generation": 4,
+  "start_time": 1745989807.987936,
+  "end_time": 1745989807.987937,
+  "duration_seconds": 9.5367431640625e-07,
+  "strategy_count": 0,
+  "surviving_strategies": 0,
+  "extinct_strategies": 0,
+  "avg_performance": 0.0,
+  "max_performance": 0.0,
+  "min_performance": Infinity,
+  "best_strategy_id": null,
+  "worst_strategy_id": null,
+  "avg_trades_per_strategy": 0.0,
+  "total_trades": 0,
+  "win_rate": 0.0,
+  "avg_fitness": 0.0,
+  "strategy_distribution": {}
+}

@@ -1,0 +1,1194 @@
+Added /Users/bendickinson/Desktop/Evotrader to Python path
+Successfully imported evotrader module from /Users/bendickinson/Desktop/Evotrader/evotrader/__init__.py
+Setting up test environment with 20 strategies...
+Initial population: 20 strategies
+  Strategy 1: strategy_3fb4bd64 (Type: BollingerBands)
+  Strategy 2: strategy_4cc7cfcf (Type: RSIStrategy)
+  Strategy 3: strategy_8bd3db4c (Type: MovingAverageCrossover)
+  Strategy 4: strategy_96c70399 (Type: IronCondor)
+  Strategy 5: strategy_a8172f8c (Type: MovingAverageCrossover)
+  Strategy 6: strategy_3bb722f7 (Type: VerticalSpread)
+  Strategy 7: strategy_e6c0c990 (Type: MovingAverageCrossover)
+  Strategy 8: strategy_fff43ba7 (Type: IronCondor)
+  Strategy 9: strategy_1daed7ab (Type: BollingerBands)
+  Strategy 10: strategy_0eb98655 (Type: RSIStrategy)
+  Strategy 11: strategy_a6bfa224 (Type: BollingerBands)
+  Strategy 12: strategy_131e53f0 (Type: MovingAverageCrossover)
+  Strategy 13: strategy_c05cec88 (Type: BollingerBands)
+  Strategy 14: strategy_63d56cd5 (Type: BollingerBands)
+  Strategy 15: strategy_2cc1f873 (Type: RSIStrategy)
+  Strategy 16: strategy_b1223539 (Type: IronCondor)
+  Strategy 17: strategy_913051ba (Type: VerticalSpread)
+  Strategy 18: strategy_7caca798 (Type: MovingAverageCrossover)
+  Strategy 19: strategy_ad821647 (Type: IronCondor)
+  Strategy 20: strategy_d5c5f999 (Type: MovingAverageCrossover)
+
+Evaluating initial population...
+Starting evolution process for 5 generations...
+
+Evolving generation 1/5...
+Evaluating generation 1 strategies...
+Generation 1 complete in 0.09 seconds
+Average fitness: 0.0000
+Max fitness: 0.0000
+
+Evolving generation 2/5...
+Evaluating generation 2 strategies...
+Generation 2 complete in 0.10 seconds
+Average fitness: 0.0000
+Max fitness: 0.0000
+
+Evolving generation 3/5...
+Evaluating generation 3 strategies...
+Generation 3 complete in 0.10 seconds
+Average fitness: 0.0000
+Max fitness: 0.0000
+
+Evolving generation 4/5...
+Evaluating generation 4 strategies...
+Generation 4 complete in 0.09 seconds
+Average fitness: 0.0000
+Max fitness: 0.0000
+
+Evolving generation 5/5...
+Evaluating generation 5 strategies...
+Generation 5 complete in 0.09 seconds
+Average fitness: 0.0000
+Max fitness: 0.0000
+
+Evolution complete!
+Total generations: 5
+
+Top 3 evolved strategies:
+  1. strategy_0103f6d8 (Type: IronCondor)
+  2. strategy_1a3d9988 (Type: IronCondor)
+  3. strategy_a042943c (Type: IronCondor)
+
+Test completed successfully!
+
+
+ERRORS:
+2025-04-30 01:10:07,581 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989807/performance.db
+2025-04-30 01:10:07,582 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989807/simulations/performance.db
+2025-04-30 01:10:07,582 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989807/simulations/performance.db
+2025-04-30 01:10:07,582 - evotrader_bridge - INFO - EvoTraderBridge initialized successfully
+2025-04-30 01:10:07,583 - evotrader_bridge - INFO - Adapting BensBot strategy: BollingerBands
+2025-04-30 01:10:07,583 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3fb4bd64 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,583 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3fb4bd64 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,583 - evotrader_bridge - INFO - Registered strategy strategy_3fb4bd64 for evolution
+2025-04-30 01:10:07,583 - evotrader_bridge - INFO - Adapting BensBot strategy: RSIStrategy
+2025-04-30 01:10:07,584 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cc7cfcf (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,584 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cc7cfcf (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,584 - evotrader_bridge - INFO - Registered strategy strategy_4cc7cfcf for evolution
+2025-04-30 01:10:07,584 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,584 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8bd3db4c (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,584 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8bd3db4c (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,584 - evotrader_bridge - INFO - Registered strategy strategy_8bd3db4c for evolution
+2025-04-30 01:10:07,585 - evotrader_bridge - INFO - Adapting BensBot strategy: IronCondor
+2025-04-30 01:10:07,585 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_96c70399 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,585 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_96c70399 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,585 - evotrader_bridge - INFO - Registered strategy strategy_96c70399 for evolution
+2025-04-30 01:10:07,585 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,586 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8172f8c (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,586 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8172f8c (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,586 - evotrader_bridge - INFO - Registered strategy strategy_a8172f8c for evolution
+2025-04-30 01:10:07,586 - evotrader_bridge - INFO - Adapting BensBot strategy: VerticalSpread
+2025-04-30 01:10:07,587 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3bb722f7 (type: VerticalSpread, gen: 0)
+2025-04-30 01:10:07,587 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3bb722f7 (type: VerticalSpread, gen: 0)
+2025-04-30 01:10:07,587 - evotrader_bridge - INFO - Registered strategy strategy_3bb722f7 for evolution
+2025-04-30 01:10:07,587 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,587 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e6c0c990 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,587 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e6c0c990 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,587 - evotrader_bridge - INFO - Registered strategy strategy_e6c0c990 for evolution
+2025-04-30 01:10:07,587 - evotrader_bridge - INFO - Adapting BensBot strategy: IronCondor
+2025-04-30 01:10:07,588 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fff43ba7 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,588 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fff43ba7 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,588 - evotrader_bridge - INFO - Registered strategy strategy_fff43ba7 for evolution
+2025-04-30 01:10:07,588 - evotrader_bridge - INFO - Adapting BensBot strategy: BollingerBands
+2025-04-30 01:10:07,588 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1daed7ab (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,588 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1daed7ab (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,588 - evotrader_bridge - INFO - Registered strategy strategy_1daed7ab for evolution
+2025-04-30 01:10:07,588 - evotrader_bridge - INFO - Adapting BensBot strategy: RSIStrategy
+2025-04-30 01:10:07,589 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0eb98655 (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,589 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0eb98655 (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,589 - evotrader_bridge - INFO - Registered strategy strategy_0eb98655 for evolution
+2025-04-30 01:10:07,589 - evotrader_bridge - INFO - Adapting BensBot strategy: BollingerBands
+2025-04-30 01:10:07,589 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a6bfa224 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,589 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a6bfa224 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,589 - evotrader_bridge - INFO - Registered strategy strategy_a6bfa224 for evolution
+2025-04-30 01:10:07,589 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,590 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_131e53f0 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,590 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_131e53f0 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,590 - evotrader_bridge - INFO - Registered strategy strategy_131e53f0 for evolution
+2025-04-30 01:10:07,590 - evotrader_bridge - INFO - Adapting BensBot strategy: BollingerBands
+2025-04-30 01:10:07,590 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c05cec88 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,590 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c05cec88 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,590 - evotrader_bridge - INFO - Registered strategy strategy_c05cec88 for evolution
+2025-04-30 01:10:07,590 - evotrader_bridge - INFO - Adapting BensBot strategy: BollingerBands
+2025-04-30 01:10:07,591 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_63d56cd5 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,591 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_63d56cd5 (type: BollingerBands, gen: 0)
+2025-04-30 01:10:07,591 - evotrader_bridge - INFO - Registered strategy strategy_63d56cd5 for evolution
+2025-04-30 01:10:07,591 - evotrader_bridge - INFO - Adapting BensBot strategy: RSIStrategy
+2025-04-30 01:10:07,593 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2cc1f873 (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,593 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2cc1f873 (type: RSIStrategy, gen: 0)
+2025-04-30 01:10:07,593 - evotrader_bridge - INFO - Registered strategy strategy_2cc1f873 for evolution
+2025-04-30 01:10:07,593 - evotrader_bridge - INFO - Adapting BensBot strategy: IronCondor
+2025-04-30 01:10:07,593 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1223539 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,593 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1223539 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,593 - evotrader_bridge - INFO - Registered strategy strategy_b1223539 for evolution
+2025-04-30 01:10:07,593 - evotrader_bridge - INFO - Adapting BensBot strategy: VerticalSpread
+2025-04-30 01:10:07,594 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_913051ba (type: VerticalSpread, gen: 0)
+2025-04-30 01:10:07,594 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_913051ba (type: VerticalSpread, gen: 0)
+2025-04-30 01:10:07,594 - evotrader_bridge - INFO - Registered strategy strategy_913051ba for evolution
+2025-04-30 01:10:07,594 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,594 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7caca798 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,594 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7caca798 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,594 - evotrader_bridge - INFO - Registered strategy strategy_7caca798 for evolution
+2025-04-30 01:10:07,594 - evotrader_bridge - INFO - Adapting BensBot strategy: IronCondor
+2025-04-30 01:10:07,595 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ad821647 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,595 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ad821647 (type: IronCondor, gen: 0)
+2025-04-30 01:10:07,595 - evotrader_bridge - INFO - Registered strategy strategy_ad821647 for evolution
+2025-04-30 01:10:07,595 - evotrader_bridge - INFO - Adapting BensBot strategy: MovingAverageCrossover
+2025-04-30 01:10:07,596 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d5c5f999 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,596 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d5c5f999 (type: MovingAverageCrossover, gen: 0)
+2025-04-30 01:10:07,596 - evotrader_bridge - INFO - Registered strategy strategy_d5c5f999 for evolution
+2025-04-30 01:10:07,596 - evotrader_bridge - INFO - Evaluating strategy strategy_3fb4bd64
+2025-04-30 01:10:07,611 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3fb4bd64 (type: unknown, gen: 0)
+2025-04-30 01:10:07,611 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3fb4bd64 (type: unknown, gen: 0)
+2025-04-30 01:10:07,611 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3fb4bd64 with fitness 0.0000
+2025-04-30 01:10:07,611 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3fb4bd64 with fitness 0.0000
+2025-04-30 01:10:07,612 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3fb4bd64 with fitness 0.0000
+2025-04-30 01:10:07,612 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3fb4bd64 with fitness 0.0000
+2025-04-30 01:10:07,612 - evotrader_bridge - INFO - Evaluating strategy strategy_4cc7cfcf
+2025-04-30 01:10:07,614 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cc7cfcf (type: unknown, gen: 0)
+2025-04-30 01:10:07,614 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cc7cfcf (type: unknown, gen: 0)
+2025-04-30 01:10:07,615 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cc7cfcf with fitness 0.0000
+2025-04-30 01:10:07,615 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cc7cfcf with fitness 0.0000
+2025-04-30 01:10:07,615 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cc7cfcf with fitness 0.0000
+2025-04-30 01:10:07,615 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cc7cfcf with fitness 0.0000
+2025-04-30 01:10:07,615 - evotrader_bridge - INFO - Evaluating strategy strategy_8bd3db4c
+2025-04-30 01:10:07,618 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8bd3db4c (type: unknown, gen: 0)
+2025-04-30 01:10:07,618 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8bd3db4c (type: unknown, gen: 0)
+2025-04-30 01:10:07,618 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8bd3db4c with fitness 0.0000
+2025-04-30 01:10:07,618 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8bd3db4c with fitness 0.0000
+2025-04-30 01:10:07,619 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8bd3db4c with fitness 0.0000
+2025-04-30 01:10:07,619 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8bd3db4c with fitness 0.0000
+2025-04-30 01:10:07,619 - evotrader_bridge - INFO - Evaluating strategy strategy_96c70399
+2025-04-30 01:10:07,622 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_96c70399 (type: unknown, gen: 0)
+2025-04-30 01:10:07,622 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_96c70399 (type: unknown, gen: 0)
+2025-04-30 01:10:07,624 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_96c70399 with fitness 0.0000
+2025-04-30 01:10:07,624 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_96c70399 with fitness 0.0000
+2025-04-30 01:10:07,625 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_96c70399 with fitness 0.0000
+2025-04-30 01:10:07,625 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_96c70399 with fitness 0.0000
+2025-04-30 01:10:07,625 - evotrader_bridge - INFO - Evaluating strategy strategy_a8172f8c
+2025-04-30 01:10:07,628 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8172f8c (type: unknown, gen: 0)
+2025-04-30 01:10:07,628 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8172f8c (type: unknown, gen: 0)
+2025-04-30 01:10:07,628 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8172f8c with fitness 0.0000
+2025-04-30 01:10:07,628 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8172f8c with fitness 0.0000
+2025-04-30 01:10:07,629 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8172f8c with fitness 0.0000
+2025-04-30 01:10:07,629 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8172f8c with fitness 0.0000
+2025-04-30 01:10:07,629 - evotrader_bridge - INFO - Evaluating strategy strategy_3bb722f7
+2025-04-30 01:10:07,632 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3bb722f7 (type: unknown, gen: 0)
+2025-04-30 01:10:07,632 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3bb722f7 (type: unknown, gen: 0)
+2025-04-30 01:10:07,632 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3bb722f7 with fitness 0.0000
+2025-04-30 01:10:07,632 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3bb722f7 with fitness 0.0000
+2025-04-30 01:10:07,633 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3bb722f7 with fitness 0.0000
+2025-04-30 01:10:07,633 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3bb722f7 with fitness 0.0000
+2025-04-30 01:10:07,633 - evotrader_bridge - INFO - Evaluating strategy strategy_e6c0c990
+2025-04-30 01:10:07,635 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e6c0c990 (type: unknown, gen: 0)
+2025-04-30 01:10:07,635 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e6c0c990 (type: unknown, gen: 0)
+2025-04-30 01:10:07,636 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e6c0c990 with fitness 0.0000
+2025-04-30 01:10:07,636 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e6c0c990 with fitness 0.0000
+2025-04-30 01:10:07,636 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e6c0c990 with fitness 0.0000
+2025-04-30 01:10:07,636 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e6c0c990 with fitness 0.0000
+2025-04-30 01:10:07,636 - evotrader_bridge - INFO - Evaluating strategy strategy_fff43ba7
+2025-04-30 01:10:07,639 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fff43ba7 (type: unknown, gen: 0)
+2025-04-30 01:10:07,639 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fff43ba7 (type: unknown, gen: 0)
+2025-04-30 01:10:07,640 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fff43ba7 with fitness 0.0000
+2025-04-30 01:10:07,640 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fff43ba7 with fitness 0.0000
+2025-04-30 01:10:07,640 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fff43ba7 with fitness 0.0000
+2025-04-30 01:10:07,640 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fff43ba7 with fitness 0.0000
+2025-04-30 01:10:07,640 - evotrader_bridge - INFO - Evaluating strategy strategy_1daed7ab
+2025-04-30 01:10:07,643 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1daed7ab (type: unknown, gen: 0)
+2025-04-30 01:10:07,643 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1daed7ab (type: unknown, gen: 0)
+2025-04-30 01:10:07,643 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1daed7ab with fitness 0.0000
+2025-04-30 01:10:07,643 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1daed7ab with fitness 0.0000
+2025-04-30 01:10:07,644 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1daed7ab with fitness 0.0000
+2025-04-30 01:10:07,644 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1daed7ab with fitness 0.0000
+2025-04-30 01:10:07,644 - evotrader_bridge - INFO - Evaluating strategy strategy_0eb98655
+2025-04-30 01:10:07,647 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0eb98655 (type: unknown, gen: 0)
+2025-04-30 01:10:07,647 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0eb98655 (type: unknown, gen: 0)
+2025-04-30 01:10:07,647 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0eb98655 with fitness 0.0000
+2025-04-30 01:10:07,647 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0eb98655 with fitness 0.0000
+2025-04-30 01:10:07,648 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0eb98655 with fitness 0.0000
+2025-04-30 01:10:07,648 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0eb98655 with fitness 0.0000
+2025-04-30 01:10:07,648 - evotrader_bridge - INFO - Evaluating strategy strategy_a6bfa224
+2025-04-30 01:10:07,650 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a6bfa224 (type: unknown, gen: 0)
+2025-04-30 01:10:07,650 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a6bfa224 (type: unknown, gen: 0)
+2025-04-30 01:10:07,650 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a6bfa224 with fitness 0.0000
+2025-04-30 01:10:07,650 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a6bfa224 with fitness 0.0000
+2025-04-30 01:10:07,651 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a6bfa224 with fitness 0.0000
+2025-04-30 01:10:07,651 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a6bfa224 with fitness 0.0000
+2025-04-30 01:10:07,651 - evotrader_bridge - INFO - Evaluating strategy strategy_131e53f0
+2025-04-30 01:10:07,653 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_131e53f0 (type: unknown, gen: 0)
+2025-04-30 01:10:07,653 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_131e53f0 (type: unknown, gen: 0)
+2025-04-30 01:10:07,654 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_131e53f0 with fitness 0.0000
+2025-04-30 01:10:07,654 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_131e53f0 with fitness 0.0000
+2025-04-30 01:10:07,654 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_131e53f0 with fitness 0.0000
+2025-04-30 01:10:07,654 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_131e53f0 with fitness 0.0000
+2025-04-30 01:10:07,654 - evotrader_bridge - INFO - Evaluating strategy strategy_c05cec88
+2025-04-30 01:10:07,657 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c05cec88 (type: unknown, gen: 0)
+2025-04-30 01:10:07,657 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c05cec88 (type: unknown, gen: 0)
+2025-04-30 01:10:07,657 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c05cec88 with fitness 0.0000
+2025-04-30 01:10:07,657 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c05cec88 with fitness 0.0000
+2025-04-30 01:10:07,658 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c05cec88 with fitness 0.0000
+2025-04-30 01:10:07,658 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c05cec88 with fitness 0.0000
+2025-04-30 01:10:07,658 - evotrader_bridge - INFO - Evaluating strategy strategy_63d56cd5
+2025-04-30 01:10:07,660 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_63d56cd5 (type: unknown, gen: 0)
+2025-04-30 01:10:07,660 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_63d56cd5 (type: unknown, gen: 0)
+2025-04-30 01:10:07,662 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_63d56cd5 with fitness 0.0000
+2025-04-30 01:10:07,662 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_63d56cd5 with fitness 0.0000
+2025-04-30 01:10:07,663 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_63d56cd5 with fitness 0.0000
+2025-04-30 01:10:07,663 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_63d56cd5 with fitness 0.0000
+2025-04-30 01:10:07,663 - evotrader_bridge - INFO - Evaluating strategy strategy_2cc1f873
+2025-04-30 01:10:07,665 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2cc1f873 (type: unknown, gen: 0)
+2025-04-30 01:10:07,665 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2cc1f873 (type: unknown, gen: 0)
+2025-04-30 01:10:07,666 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2cc1f873 with fitness 0.0000
+2025-04-30 01:10:07,666 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2cc1f873 with fitness 0.0000
+2025-04-30 01:10:07,666 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2cc1f873 with fitness 0.0000
+2025-04-30 01:10:07,666 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2cc1f873 with fitness 0.0000
+2025-04-30 01:10:07,666 - evotrader_bridge - INFO - Evaluating strategy strategy_b1223539
+2025-04-30 01:10:07,669 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1223539 (type: unknown, gen: 0)
+2025-04-30 01:10:07,669 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1223539 (type: unknown, gen: 0)
+2025-04-30 01:10:07,670 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1223539 with fitness 0.0000
+2025-04-30 01:10:07,670 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1223539 with fitness 0.0000
+2025-04-30 01:10:07,670 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1223539 with fitness 0.0000
+2025-04-30 01:10:07,670 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1223539 with fitness 0.0000
+2025-04-30 01:10:07,671 - evotrader_bridge - INFO - Evaluating strategy strategy_913051ba
+2025-04-30 01:10:07,673 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_913051ba (type: unknown, gen: 0)
+2025-04-30 01:10:07,673 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_913051ba (type: unknown, gen: 0)
+2025-04-30 01:10:07,675 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_913051ba with fitness 0.0000
+2025-04-30 01:10:07,675 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_913051ba with fitness 0.0000
+2025-04-30 01:10:07,676 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_913051ba with fitness 0.0000
+2025-04-30 01:10:07,676 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_913051ba with fitness 0.0000
+2025-04-30 01:10:07,676 - evotrader_bridge - INFO - Evaluating strategy strategy_7caca798
+2025-04-30 01:10:07,678 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7caca798 (type: unknown, gen: 0)
+2025-04-30 01:10:07,678 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7caca798 (type: unknown, gen: 0)
+2025-04-30 01:10:07,679 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7caca798 with fitness 0.0000
+2025-04-30 01:10:07,679 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7caca798 with fitness 0.0000
+2025-04-30 01:10:07,679 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7caca798 with fitness 0.0000
+2025-04-30 01:10:07,679 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7caca798 with fitness 0.0000
+2025-04-30 01:10:07,679 - evotrader_bridge - INFO - Evaluating strategy strategy_ad821647
+2025-04-30 01:10:07,682 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ad821647 (type: unknown, gen: 0)
+2025-04-30 01:10:07,682 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ad821647 (type: unknown, gen: 0)
+2025-04-30 01:10:07,684 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ad821647 with fitness 0.0000
+2025-04-30 01:10:07,684 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ad821647 with fitness 0.0000
+2025-04-30 01:10:07,685 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ad821647 with fitness 0.0000
+2025-04-30 01:10:07,685 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ad821647 with fitness 0.0000
+2025-04-30 01:10:07,685 - evotrader_bridge - INFO - Evaluating strategy strategy_d5c5f999
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d5c5f999 (type: unknown, gen: 0)
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d5c5f999 (type: unknown, gen: 0)
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d5c5f999 with fitness 0.0000
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d5c5f999 with fitness 0.0000
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d5c5f999 with fitness 0.0000
+2025-04-30 01:10:07,688 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d5c5f999 with fitness 0.0000
+2025-04-30 01:10:07,697 - evotrader_bridge - INFO - Evaluating strategy strategy_ce3110d8
+2025-04-30 01:10:07,702 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ce3110d8 (type: unknown, gen: 1)
+2025-04-30 01:10:07,702 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ce3110d8 (type: unknown, gen: 1)
+2025-04-30 01:10:07,702 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ce3110d8 with fitness 0.0000
+2025-04-30 01:10:07,702 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ce3110d8 with fitness 0.0000
+2025-04-30 01:10:07,703 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ce3110d8 (type: unknown, gen: 1)
+2025-04-30 01:10:07,703 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ce3110d8 (type: unknown, gen: 1)
+2025-04-30 01:10:07,703 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ce3110d8 with fitness 0.0000
+2025-04-30 01:10:07,703 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ce3110d8 with fitness 0.0000
+2025-04-30 01:10:07,703 - evotrader_bridge - INFO - Evaluating strategy strategy_f2cec11a
+2025-04-30 01:10:07,706 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f2cec11a (type: unknown, gen: 1)
+2025-04-30 01:10:07,706 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f2cec11a (type: unknown, gen: 1)
+2025-04-30 01:10:07,706 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f2cec11a with fitness 0.0000
+2025-04-30 01:10:07,706 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f2cec11a with fitness 0.0000
+2025-04-30 01:10:07,707 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f2cec11a (type: unknown, gen: 1)
+2025-04-30 01:10:07,707 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f2cec11a (type: unknown, gen: 1)
+2025-04-30 01:10:07,707 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f2cec11a with fitness 0.0000
+2025-04-30 01:10:07,707 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f2cec11a with fitness 0.0000
+2025-04-30 01:10:07,707 - evotrader_bridge - INFO - Evaluating strategy strategy_c1d056b7
+2025-04-30 01:10:07,710 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c1d056b7 (type: unknown, gen: 1)
+2025-04-30 01:10:07,710 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c1d056b7 (type: unknown, gen: 1)
+2025-04-30 01:10:07,710 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c1d056b7 with fitness 0.0000
+2025-04-30 01:10:07,710 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c1d056b7 with fitness 0.0000
+2025-04-30 01:10:07,711 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c1d056b7 (type: unknown, gen: 1)
+2025-04-30 01:10:07,711 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c1d056b7 (type: unknown, gen: 1)
+2025-04-30 01:10:07,711 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c1d056b7 with fitness 0.0000
+2025-04-30 01:10:07,711 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c1d056b7 with fitness 0.0000
+2025-04-30 01:10:07,711 - evotrader_bridge - INFO - Evaluating strategy strategy_b6608b80
+2025-04-30 01:10:07,714 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6608b80 (type: unknown, gen: 1)
+2025-04-30 01:10:07,714 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6608b80 (type: unknown, gen: 1)
+2025-04-30 01:10:07,714 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6608b80 with fitness 0.0000
+2025-04-30 01:10:07,714 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6608b80 with fitness 0.0000
+2025-04-30 01:10:07,715 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6608b80 (type: unknown, gen: 1)
+2025-04-30 01:10:07,715 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6608b80 (type: unknown, gen: 1)
+2025-04-30 01:10:07,715 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6608b80 with fitness 0.0000
+2025-04-30 01:10:07,715 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6608b80 with fitness 0.0000
+2025-04-30 01:10:07,715 - evotrader_bridge - INFO - Evaluating strategy strategy_45551786
+2025-04-30 01:10:07,718 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_45551786 (type: unknown, gen: 1)
+2025-04-30 01:10:07,718 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_45551786 (type: unknown, gen: 1)
+2025-04-30 01:10:07,718 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_45551786 with fitness 0.0000
+2025-04-30 01:10:07,718 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_45551786 with fitness 0.0000
+2025-04-30 01:10:07,719 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_45551786 (type: unknown, gen: 1)
+2025-04-30 01:10:07,719 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_45551786 (type: unknown, gen: 1)
+2025-04-30 01:10:07,720 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_45551786 with fitness 0.0000
+2025-04-30 01:10:07,720 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_45551786 with fitness 0.0000
+2025-04-30 01:10:07,720 - evotrader_bridge - INFO - Evaluating strategy strategy_4a338217
+2025-04-30 01:10:07,722 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4a338217 (type: unknown, gen: 1)
+2025-04-30 01:10:07,722 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4a338217 (type: unknown, gen: 1)
+2025-04-30 01:10:07,722 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4a338217 with fitness 0.0000
+2025-04-30 01:10:07,722 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4a338217 with fitness 0.0000
+2025-04-30 01:10:07,723 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4a338217 (type: unknown, gen: 1)
+2025-04-30 01:10:07,723 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4a338217 (type: unknown, gen: 1)
+2025-04-30 01:10:07,724 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4a338217 with fitness 0.0000
+2025-04-30 01:10:07,724 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4a338217 with fitness 0.0000
+2025-04-30 01:10:07,724 - evotrader_bridge - INFO - Evaluating strategy strategy_bbdae608
+2025-04-30 01:10:07,727 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bbdae608 (type: unknown, gen: 1)
+2025-04-30 01:10:07,727 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bbdae608 (type: unknown, gen: 1)
+2025-04-30 01:10:07,729 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bbdae608 with fitness 0.0000
+2025-04-30 01:10:07,729 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bbdae608 with fitness 0.0000
+2025-04-30 01:10:07,729 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bbdae608 (type: unknown, gen: 1)
+2025-04-30 01:10:07,729 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bbdae608 (type: unknown, gen: 1)
+2025-04-30 01:10:07,730 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bbdae608 with fitness 0.0000
+2025-04-30 01:10:07,730 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bbdae608 with fitness 0.0000
+2025-04-30 01:10:07,730 - evotrader_bridge - INFO - Evaluating strategy strategy_5ef1fd0e
+2025-04-30 01:10:07,732 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5ef1fd0e (type: unknown, gen: 1)
+2025-04-30 01:10:07,732 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5ef1fd0e (type: unknown, gen: 1)
+2025-04-30 01:10:07,733 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5ef1fd0e with fitness 0.0000
+2025-04-30 01:10:07,733 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5ef1fd0e with fitness 0.0000
+2025-04-30 01:10:07,733 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5ef1fd0e (type: unknown, gen: 1)
+2025-04-30 01:10:07,733 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5ef1fd0e (type: unknown, gen: 1)
+2025-04-30 01:10:07,734 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5ef1fd0e with fitness 0.0000
+2025-04-30 01:10:07,734 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5ef1fd0e with fitness 0.0000
+2025-04-30 01:10:07,734 - evotrader_bridge - INFO - Evaluating strategy strategy_5f4dee4f
+2025-04-30 01:10:07,736 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5f4dee4f (type: unknown, gen: 1)
+2025-04-30 01:10:07,736 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5f4dee4f (type: unknown, gen: 1)
+2025-04-30 01:10:07,737 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5f4dee4f with fitness 0.0000
+2025-04-30 01:10:07,737 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5f4dee4f with fitness 0.0000
+2025-04-30 01:10:07,737 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5f4dee4f (type: unknown, gen: 1)
+2025-04-30 01:10:07,737 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5f4dee4f (type: unknown, gen: 1)
+2025-04-30 01:10:07,738 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5f4dee4f with fitness 0.0000
+2025-04-30 01:10:07,738 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5f4dee4f with fitness 0.0000
+2025-04-30 01:10:07,738 - evotrader_bridge - INFO - Evaluating strategy strategy_5eb06ba6
+2025-04-30 01:10:07,740 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5eb06ba6 (type: unknown, gen: 1)
+2025-04-30 01:10:07,740 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5eb06ba6 (type: unknown, gen: 1)
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5eb06ba6 with fitness 0.0000
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5eb06ba6 with fitness 0.0000
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5eb06ba6 (type: unknown, gen: 1)
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5eb06ba6 (type: unknown, gen: 1)
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5eb06ba6 with fitness 0.0000
+2025-04-30 01:10:07,741 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5eb06ba6 with fitness 0.0000
+2025-04-30 01:10:07,741 - evotrader_bridge - INFO - Evaluating strategy strategy_a9c8c597
+2025-04-30 01:10:07,744 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a9c8c597 (type: unknown, gen: 1)
+2025-04-30 01:10:07,744 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a9c8c597 (type: unknown, gen: 1)
+2025-04-30 01:10:07,744 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a9c8c597 with fitness 0.0000
+2025-04-30 01:10:07,744 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a9c8c597 with fitness 0.0000
+2025-04-30 01:10:07,745 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a9c8c597 (type: unknown, gen: 1)
+2025-04-30 01:10:07,745 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a9c8c597 (type: unknown, gen: 1)
+2025-04-30 01:10:07,745 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a9c8c597 with fitness 0.0000
+2025-04-30 01:10:07,745 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a9c8c597 with fitness 0.0000
+2025-04-30 01:10:07,745 - evotrader_bridge - INFO - Evaluating strategy strategy_c12fa66e
+2025-04-30 01:10:07,748 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c12fa66e (type: unknown, gen: 1)
+2025-04-30 01:10:07,748 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c12fa66e (type: unknown, gen: 1)
+2025-04-30 01:10:07,748 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c12fa66e with fitness 0.0000
+2025-04-30 01:10:07,748 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c12fa66e with fitness 0.0000
+2025-04-30 01:10:07,749 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c12fa66e (type: unknown, gen: 1)
+2025-04-30 01:10:07,749 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c12fa66e (type: unknown, gen: 1)
+2025-04-30 01:10:07,749 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c12fa66e with fitness 0.0000
+2025-04-30 01:10:07,749 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c12fa66e with fitness 0.0000
+2025-04-30 01:10:07,749 - evotrader_bridge - INFO - Evaluating strategy strategy_630d6aa9
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_630d6aa9 (type: unknown, gen: 1)
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_630d6aa9 (type: unknown, gen: 1)
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_630d6aa9 with fitness 0.0000
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_630d6aa9 with fitness 0.0000
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_630d6aa9 (type: unknown, gen: 1)
+2025-04-30 01:10:07,752 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_630d6aa9 (type: unknown, gen: 1)
+2025-04-30 01:10:07,753 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_630d6aa9 with fitness 0.0000
+2025-04-30 01:10:07,753 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_630d6aa9 with fitness 0.0000
+2025-04-30 01:10:07,753 - evotrader_bridge - INFO - Evaluating strategy strategy_d14c603f
+2025-04-30 01:10:07,755 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d14c603f (type: unknown, gen: 1)
+2025-04-30 01:10:07,755 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d14c603f (type: unknown, gen: 1)
+2025-04-30 01:10:07,755 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d14c603f with fitness 0.0000
+2025-04-30 01:10:07,755 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d14c603f with fitness 0.0000
+2025-04-30 01:10:07,756 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d14c603f (type: unknown, gen: 1)
+2025-04-30 01:10:07,756 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d14c603f (type: unknown, gen: 1)
+2025-04-30 01:10:07,756 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d14c603f with fitness 0.0000
+2025-04-30 01:10:07,756 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d14c603f with fitness 0.0000
+2025-04-30 01:10:07,756 - evotrader_bridge - INFO - Evaluating strategy strategy_4cab3c97
+2025-04-30 01:10:07,759 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cab3c97 (type: unknown, gen: 1)
+2025-04-30 01:10:07,759 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cab3c97 (type: unknown, gen: 1)
+2025-04-30 01:10:07,759 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cab3c97 with fitness 0.0000
+2025-04-30 01:10:07,759 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cab3c97 with fitness 0.0000
+2025-04-30 01:10:07,760 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cab3c97 (type: unknown, gen: 1)
+2025-04-30 01:10:07,760 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4cab3c97 (type: unknown, gen: 1)
+2025-04-30 01:10:07,760 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cab3c97 with fitness 0.0000
+2025-04-30 01:10:07,760 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4cab3c97 with fitness 0.0000
+2025-04-30 01:10:07,760 - evotrader_bridge - INFO - Evaluating strategy strategy_a8f113b1
+2025-04-30 01:10:07,763 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8f113b1 (type: unknown, gen: 1)
+2025-04-30 01:10:07,763 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8f113b1 (type: unknown, gen: 1)
+2025-04-30 01:10:07,763 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8f113b1 with fitness 0.0000
+2025-04-30 01:10:07,763 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8f113b1 with fitness 0.0000
+2025-04-30 01:10:07,764 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8f113b1 (type: unknown, gen: 1)
+2025-04-30 01:10:07,764 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a8f113b1 (type: unknown, gen: 1)
+2025-04-30 01:10:07,764 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8f113b1 with fitness 0.0000
+2025-04-30 01:10:07,764 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a8f113b1 with fitness 0.0000
+2025-04-30 01:10:07,764 - evotrader_bridge - INFO - Evaluating strategy strategy_f60dea3c
+2025-04-30 01:10:07,766 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f60dea3c (type: unknown, gen: 1)
+2025-04-30 01:10:07,766 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f60dea3c (type: unknown, gen: 1)
+2025-04-30 01:10:07,767 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f60dea3c with fitness 0.0000
+2025-04-30 01:10:07,767 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f60dea3c with fitness 0.0000
+2025-04-30 01:10:07,767 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f60dea3c (type: unknown, gen: 1)
+2025-04-30 01:10:07,767 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f60dea3c (type: unknown, gen: 1)
+2025-04-30 01:10:07,768 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f60dea3c with fitness 0.0000
+2025-04-30 01:10:07,768 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f60dea3c with fitness 0.0000
+2025-04-30 01:10:07,768 - evotrader_bridge - INFO - Evaluating strategy strategy_ee29b698
+2025-04-30 01:10:07,770 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee29b698 (type: unknown, gen: 1)
+2025-04-30 01:10:07,770 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee29b698 (type: unknown, gen: 1)
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee29b698 with fitness 0.0000
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee29b698 with fitness 0.0000
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee29b698 (type: unknown, gen: 1)
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee29b698 (type: unknown, gen: 1)
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee29b698 with fitness 0.0000
+2025-04-30 01:10:07,771 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee29b698 with fitness 0.0000
+2025-04-30 01:10:07,772 - evotrader_bridge - INFO - Evaluating strategy strategy_8af8a76c
+2025-04-30 01:10:07,774 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8af8a76c (type: unknown, gen: 1)
+2025-04-30 01:10:07,774 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8af8a76c (type: unknown, gen: 1)
+2025-04-30 01:10:07,776 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8af8a76c with fitness 0.0000
+2025-04-30 01:10:07,776 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8af8a76c with fitness 0.0000
+2025-04-30 01:10:07,776 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8af8a76c (type: unknown, gen: 1)
+2025-04-30 01:10:07,776 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8af8a76c (type: unknown, gen: 1)
+2025-04-30 01:10:07,777 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8af8a76c with fitness 0.0000
+2025-04-30 01:10:07,777 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8af8a76c with fitness 0.0000
+2025-04-30 01:10:07,777 - evotrader_bridge - INFO - Evaluating strategy strategy_00072fd5
+2025-04-30 01:10:07,779 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_00072fd5 (type: unknown, gen: 1)
+2025-04-30 01:10:07,779 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_00072fd5 (type: unknown, gen: 1)
+2025-04-30 01:10:07,780 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_00072fd5 with fitness 0.0000
+2025-04-30 01:10:07,780 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_00072fd5 with fitness 0.0000
+2025-04-30 01:10:07,780 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_00072fd5 (type: unknown, gen: 1)
+2025-04-30 01:10:07,780 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_00072fd5 (type: unknown, gen: 1)
+2025-04-30 01:10:07,781 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_00072fd5 with fitness 0.0000
+2025-04-30 01:10:07,781 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_00072fd5 with fitness 0.0000
+2025-04-30 01:10:07,785 - evotrader_bridge - INFO - Evaluating strategy strategy_d576da70
+2025-04-30 01:10:07,788 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d576da70 (type: unknown, gen: 2)
+2025-04-30 01:10:07,788 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d576da70 (type: unknown, gen: 2)
+2025-04-30 01:10:07,788 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d576da70 with fitness 0.0000
+2025-04-30 01:10:07,788 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d576da70 with fitness 0.0000
+2025-04-30 01:10:07,789 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d576da70 (type: unknown, gen: 2)
+2025-04-30 01:10:07,789 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d576da70 (type: unknown, gen: 2)
+2025-04-30 01:10:07,790 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d576da70 with fitness 0.0000
+2025-04-30 01:10:07,790 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d576da70 with fitness 0.0000
+2025-04-30 01:10:07,790 - evotrader_bridge - INFO - Evaluating strategy strategy_39d65389
+2025-04-30 01:10:07,792 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_39d65389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,792 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_39d65389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,793 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_39d65389 with fitness 0.0000
+2025-04-30 01:10:07,793 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_39d65389 with fitness 0.0000
+2025-04-30 01:10:07,794 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_39d65389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,794 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_39d65389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,796 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_39d65389 with fitness 0.0000
+2025-04-30 01:10:07,796 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_39d65389 with fitness 0.0000
+2025-04-30 01:10:07,796 - evotrader_bridge - INFO - Evaluating strategy strategy_eee6ccfc
+2025-04-30 01:10:07,799 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eee6ccfc (type: unknown, gen: 2)
+2025-04-30 01:10:07,799 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eee6ccfc (type: unknown, gen: 2)
+2025-04-30 01:10:07,799 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eee6ccfc with fitness 0.0000
+2025-04-30 01:10:07,799 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eee6ccfc with fitness 0.0000
+2025-04-30 01:10:07,800 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eee6ccfc (type: unknown, gen: 2)
+2025-04-30 01:10:07,800 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eee6ccfc (type: unknown, gen: 2)
+2025-04-30 01:10:07,801 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eee6ccfc with fitness 0.0000
+2025-04-30 01:10:07,801 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eee6ccfc with fitness 0.0000
+2025-04-30 01:10:07,801 - evotrader_bridge - INFO - Evaluating strategy strategy_66355d54
+2025-04-30 01:10:07,804 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_66355d54 (type: unknown, gen: 2)
+2025-04-30 01:10:07,804 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_66355d54 (type: unknown, gen: 2)
+2025-04-30 01:10:07,805 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_66355d54 with fitness 0.0000
+2025-04-30 01:10:07,805 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_66355d54 with fitness 0.0000
+2025-04-30 01:10:07,805 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_66355d54 (type: unknown, gen: 2)
+2025-04-30 01:10:07,805 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_66355d54 (type: unknown, gen: 2)
+2025-04-30 01:10:07,807 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_66355d54 with fitness 0.0000
+2025-04-30 01:10:07,807 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_66355d54 with fitness 0.0000
+2025-04-30 01:10:07,807 - evotrader_bridge - INFO - Evaluating strategy strategy_9e84281f
+2025-04-30 01:10:07,809 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e84281f (type: unknown, gen: 2)
+2025-04-30 01:10:07,809 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e84281f (type: unknown, gen: 2)
+2025-04-30 01:10:07,810 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e84281f with fitness 0.0000
+2025-04-30 01:10:07,810 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e84281f with fitness 0.0000
+2025-04-30 01:10:07,810 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e84281f (type: unknown, gen: 2)
+2025-04-30 01:10:07,810 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e84281f (type: unknown, gen: 2)
+2025-04-30 01:10:07,811 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e84281f with fitness 0.0000
+2025-04-30 01:10:07,811 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e84281f with fitness 0.0000
+2025-04-30 01:10:07,811 - evotrader_bridge - INFO - Evaluating strategy strategy_1d400b8a
+2025-04-30 01:10:07,815 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1d400b8a (type: unknown, gen: 2)
+2025-04-30 01:10:07,815 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1d400b8a (type: unknown, gen: 2)
+2025-04-30 01:10:07,815 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1d400b8a with fitness 0.0000
+2025-04-30 01:10:07,815 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1d400b8a with fitness 0.0000
+2025-04-30 01:10:07,816 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1d400b8a (type: unknown, gen: 2)
+2025-04-30 01:10:07,816 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1d400b8a (type: unknown, gen: 2)
+2025-04-30 01:10:07,816 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1d400b8a with fitness 0.0000
+2025-04-30 01:10:07,816 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1d400b8a with fitness 0.0000
+2025-04-30 01:10:07,816 - evotrader_bridge - INFO - Evaluating strategy strategy_9446011d
+2025-04-30 01:10:07,818 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9446011d (type: unknown, gen: 2)
+2025-04-30 01:10:07,818 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9446011d (type: unknown, gen: 2)
+2025-04-30 01:10:07,819 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9446011d with fitness 0.0000
+2025-04-30 01:10:07,819 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9446011d with fitness 0.0000
+2025-04-30 01:10:07,819 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9446011d (type: unknown, gen: 2)
+2025-04-30 01:10:07,819 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9446011d (type: unknown, gen: 2)
+2025-04-30 01:10:07,820 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9446011d with fitness 0.0000
+2025-04-30 01:10:07,820 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9446011d with fitness 0.0000
+2025-04-30 01:10:07,820 - evotrader_bridge - INFO - Evaluating strategy strategy_4183dc1c
+2025-04-30 01:10:07,822 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4183dc1c (type: unknown, gen: 2)
+2025-04-30 01:10:07,822 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4183dc1c (type: unknown, gen: 2)
+2025-04-30 01:10:07,824 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4183dc1c with fitness 0.0000
+2025-04-30 01:10:07,824 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4183dc1c with fitness 0.0000
+2025-04-30 01:10:07,825 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4183dc1c (type: unknown, gen: 2)
+2025-04-30 01:10:07,825 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4183dc1c (type: unknown, gen: 2)
+2025-04-30 01:10:07,825 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4183dc1c with fitness 0.0000
+2025-04-30 01:10:07,825 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4183dc1c with fitness 0.0000
+2025-04-30 01:10:07,825 - evotrader_bridge - INFO - Evaluating strategy strategy_8989bc96
+2025-04-30 01:10:07,828 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8989bc96 (type: unknown, gen: 2)
+2025-04-30 01:10:07,828 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8989bc96 (type: unknown, gen: 2)
+2025-04-30 01:10:07,828 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8989bc96 with fitness 0.0000
+2025-04-30 01:10:07,828 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8989bc96 with fitness 0.0000
+2025-04-30 01:10:07,829 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8989bc96 (type: unknown, gen: 2)
+2025-04-30 01:10:07,829 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_8989bc96 (type: unknown, gen: 2)
+2025-04-30 01:10:07,829 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8989bc96 with fitness 0.0000
+2025-04-30 01:10:07,829 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_8989bc96 with fitness 0.0000
+2025-04-30 01:10:07,829 - evotrader_bridge - INFO - Evaluating strategy strategy_ccd60b59
+2025-04-30 01:10:07,832 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ccd60b59 (type: unknown, gen: 2)
+2025-04-30 01:10:07,832 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ccd60b59 (type: unknown, gen: 2)
+2025-04-30 01:10:07,832 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ccd60b59 with fitness 0.0000
+2025-04-30 01:10:07,832 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ccd60b59 with fitness 0.0000
+2025-04-30 01:10:07,834 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ccd60b59 (type: unknown, gen: 2)
+2025-04-30 01:10:07,834 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ccd60b59 (type: unknown, gen: 2)
+2025-04-30 01:10:07,834 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ccd60b59 with fitness 0.0000
+2025-04-30 01:10:07,834 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ccd60b59 with fitness 0.0000
+2025-04-30 01:10:07,834 - evotrader_bridge - INFO - Evaluating strategy strategy_7a5a9326
+2025-04-30 01:10:07,837 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7a5a9326 (type: unknown, gen: 2)
+2025-04-30 01:10:07,837 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7a5a9326 (type: unknown, gen: 2)
+2025-04-30 01:10:07,837 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7a5a9326 with fitness 0.0000
+2025-04-30 01:10:07,837 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7a5a9326 with fitness 0.0000
+2025-04-30 01:10:07,838 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7a5a9326 (type: unknown, gen: 2)
+2025-04-30 01:10:07,838 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7a5a9326 (type: unknown, gen: 2)
+2025-04-30 01:10:07,838 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7a5a9326 with fitness 0.0000
+2025-04-30 01:10:07,838 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7a5a9326 with fitness 0.0000
+2025-04-30 01:10:07,838 - evotrader_bridge - INFO - Evaluating strategy strategy_b40b1389
+2025-04-30 01:10:07,841 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b40b1389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,841 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b40b1389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,841 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b40b1389 with fitness 0.0000
+2025-04-30 01:10:07,841 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b40b1389 with fitness 0.0000
+2025-04-30 01:10:07,842 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b40b1389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,842 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b40b1389 (type: unknown, gen: 2)
+2025-04-30 01:10:07,842 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b40b1389 with fitness 0.0000
+2025-04-30 01:10:07,842 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b40b1389 with fitness 0.0000
+2025-04-30 01:10:07,842 - evotrader_bridge - INFO - Evaluating strategy strategy_461258e4
+2025-04-30 01:10:07,845 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_461258e4 (type: unknown, gen: 2)
+2025-04-30 01:10:07,845 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_461258e4 (type: unknown, gen: 2)
+2025-04-30 01:10:07,845 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_461258e4 with fitness 0.0000
+2025-04-30 01:10:07,845 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_461258e4 with fitness 0.0000
+2025-04-30 01:10:07,846 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_461258e4 (type: unknown, gen: 2)
+2025-04-30 01:10:07,846 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_461258e4 (type: unknown, gen: 2)
+2025-04-30 01:10:07,847 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_461258e4 with fitness 0.0000
+2025-04-30 01:10:07,847 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_461258e4 with fitness 0.0000
+2025-04-30 01:10:07,847 - evotrader_bridge - INFO - Evaluating strategy strategy_e95d55bb
+2025-04-30 01:10:07,849 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e95d55bb (type: unknown, gen: 2)
+2025-04-30 01:10:07,849 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e95d55bb (type: unknown, gen: 2)
+2025-04-30 01:10:07,849 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e95d55bb with fitness 0.0000
+2025-04-30 01:10:07,849 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e95d55bb with fitness 0.0000
+2025-04-30 01:10:07,850 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e95d55bb (type: unknown, gen: 2)
+2025-04-30 01:10:07,850 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_e95d55bb (type: unknown, gen: 2)
+2025-04-30 01:10:07,850 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e95d55bb with fitness 0.0000
+2025-04-30 01:10:07,850 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_e95d55bb with fitness 0.0000
+2025-04-30 01:10:07,850 - evotrader_bridge - INFO - Evaluating strategy strategy_078f42ca
+2025-04-30 01:10:07,853 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_078f42ca (type: unknown, gen: 2)
+2025-04-30 01:10:07,853 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_078f42ca (type: unknown, gen: 2)
+2025-04-30 01:10:07,855 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_078f42ca with fitness 0.0000
+2025-04-30 01:10:07,855 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_078f42ca with fitness 0.0000
+2025-04-30 01:10:07,856 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_078f42ca (type: unknown, gen: 2)
+2025-04-30 01:10:07,856 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_078f42ca (type: unknown, gen: 2)
+2025-04-30 01:10:07,856 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_078f42ca with fitness 0.0000
+2025-04-30 01:10:07,856 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_078f42ca with fitness 0.0000
+2025-04-30 01:10:07,856 - evotrader_bridge - INFO - Evaluating strategy strategy_cf125c28
+2025-04-30 01:10:07,859 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_cf125c28 (type: unknown, gen: 2)
+2025-04-30 01:10:07,859 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_cf125c28 (type: unknown, gen: 2)
+2025-04-30 01:10:07,859 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_cf125c28 with fitness 0.0000
+2025-04-30 01:10:07,859 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_cf125c28 with fitness 0.0000
+2025-04-30 01:10:07,865 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_cf125c28 (type: unknown, gen: 2)
+2025-04-30 01:10:07,865 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_cf125c28 (type: unknown, gen: 2)
+2025-04-30 01:10:07,866 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_cf125c28 with fitness 0.0000
+2025-04-30 01:10:07,866 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_cf125c28 with fitness 0.0000
+2025-04-30 01:10:07,866 - evotrader_bridge - INFO - Evaluating strategy strategy_189c169f
+2025-04-30 01:10:07,869 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_189c169f (type: unknown, gen: 2)
+2025-04-30 01:10:07,869 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_189c169f (type: unknown, gen: 2)
+2025-04-30 01:10:07,869 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_189c169f with fitness 0.0000
+2025-04-30 01:10:07,869 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_189c169f with fitness 0.0000
+2025-04-30 01:10:07,870 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_189c169f (type: unknown, gen: 2)
+2025-04-30 01:10:07,870 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_189c169f (type: unknown, gen: 2)
+2025-04-30 01:10:07,870 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_189c169f with fitness 0.0000
+2025-04-30 01:10:07,870 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_189c169f with fitness 0.0000
+2025-04-30 01:10:07,871 - evotrader_bridge - INFO - Evaluating strategy strategy_7af10ab3
+2025-04-30 01:10:07,873 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7af10ab3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,873 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7af10ab3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,874 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7af10ab3 with fitness 0.0000
+2025-04-30 01:10:07,874 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7af10ab3 with fitness 0.0000
+2025-04-30 01:10:07,875 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7af10ab3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,875 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7af10ab3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,875 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7af10ab3 with fitness 0.0000
+2025-04-30 01:10:07,875 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7af10ab3 with fitness 0.0000
+2025-04-30 01:10:07,875 - evotrader_bridge - INFO - Evaluating strategy strategy_9bb38e4b
+2025-04-30 01:10:07,877 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9bb38e4b (type: unknown, gen: 2)
+2025-04-30 01:10:07,877 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9bb38e4b (type: unknown, gen: 2)
+2025-04-30 01:10:07,878 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9bb38e4b with fitness 0.0000
+2025-04-30 01:10:07,878 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9bb38e4b with fitness 0.0000
+2025-04-30 01:10:07,879 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9bb38e4b (type: unknown, gen: 2)
+2025-04-30 01:10:07,879 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9bb38e4b (type: unknown, gen: 2)
+2025-04-30 01:10:07,879 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9bb38e4b with fitness 0.0000
+2025-04-30 01:10:07,879 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9bb38e4b with fitness 0.0000
+2025-04-30 01:10:07,879 - evotrader_bridge - INFO - Evaluating strategy strategy_bfa397a3
+2025-04-30 01:10:07,882 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfa397a3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,882 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfa397a3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,882 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfa397a3 with fitness 0.0000
+2025-04-30 01:10:07,882 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfa397a3 with fitness 0.0000
+2025-04-30 01:10:07,883 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfa397a3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,883 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfa397a3 (type: unknown, gen: 2)
+2025-04-30 01:10:07,883 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfa397a3 with fitness 0.0000
+2025-04-30 01:10:07,883 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfa397a3 with fitness 0.0000
+2025-04-30 01:10:07,889 - evotrader_bridge - INFO - Evaluating strategy strategy_d79d5b9a
+2025-04-30 01:10:07,892 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d79d5b9a (type: unknown, gen: 3)
+2025-04-30 01:10:07,892 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d79d5b9a (type: unknown, gen: 3)
+2025-04-30 01:10:07,893 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d79d5b9a with fitness 0.0000
+2025-04-30 01:10:07,893 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d79d5b9a with fitness 0.0000
+2025-04-30 01:10:07,893 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d79d5b9a (type: unknown, gen: 3)
+2025-04-30 01:10:07,893 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d79d5b9a (type: unknown, gen: 3)
+2025-04-30 01:10:07,894 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d79d5b9a with fitness 0.0000
+2025-04-30 01:10:07,894 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d79d5b9a with fitness 0.0000
+2025-04-30 01:10:07,894 - evotrader_bridge - INFO - Evaluating strategy strategy_61710b8f
+2025-04-30 01:10:07,896 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_61710b8f (type: unknown, gen: 3)
+2025-04-30 01:10:07,896 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_61710b8f (type: unknown, gen: 3)
+2025-04-30 01:10:07,897 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_61710b8f with fitness 0.0000
+2025-04-30 01:10:07,897 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_61710b8f with fitness 0.0000
+2025-04-30 01:10:07,898 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_61710b8f (type: unknown, gen: 3)
+2025-04-30 01:10:07,898 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_61710b8f (type: unknown, gen: 3)
+2025-04-30 01:10:07,898 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_61710b8f with fitness 0.0000
+2025-04-30 01:10:07,898 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_61710b8f with fitness 0.0000
+2025-04-30 01:10:07,898 - evotrader_bridge - INFO - Evaluating strategy strategy_305a1b8d
+2025-04-30 01:10:07,902 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_305a1b8d (type: unknown, gen: 3)
+2025-04-30 01:10:07,902 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_305a1b8d (type: unknown, gen: 3)
+2025-04-30 01:10:07,902 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_305a1b8d with fitness 0.0000
+2025-04-30 01:10:07,902 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_305a1b8d with fitness 0.0000
+2025-04-30 01:10:07,903 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_305a1b8d (type: unknown, gen: 3)
+2025-04-30 01:10:07,903 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_305a1b8d (type: unknown, gen: 3)
+2025-04-30 01:10:07,904 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_305a1b8d with fitness 0.0000
+2025-04-30 01:10:07,904 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_305a1b8d with fitness 0.0000
+2025-04-30 01:10:07,904 - evotrader_bridge - INFO - Evaluating strategy strategy_78c9533b
+2025-04-30 01:10:07,906 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_78c9533b (type: unknown, gen: 3)
+2025-04-30 01:10:07,906 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_78c9533b (type: unknown, gen: 3)
+2025-04-30 01:10:07,907 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_78c9533b with fitness 0.0000
+2025-04-30 01:10:07,907 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_78c9533b with fitness 0.0000
+2025-04-30 01:10:07,908 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_78c9533b (type: unknown, gen: 3)
+2025-04-30 01:10:07,908 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_78c9533b (type: unknown, gen: 3)
+2025-04-30 01:10:07,908 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_78c9533b with fitness 0.0000
+2025-04-30 01:10:07,908 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_78c9533b with fitness 0.0000
+2025-04-30 01:10:07,908 - evotrader_bridge - INFO - Evaluating strategy strategy_d3d667f1
+2025-04-30 01:10:07,913 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d3d667f1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,913 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d3d667f1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,913 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d3d667f1 with fitness 0.0000
+2025-04-30 01:10:07,913 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d3d667f1 with fitness 0.0000
+2025-04-30 01:10:07,914 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d3d667f1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,914 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d3d667f1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,915 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d3d667f1 with fitness 0.0000
+2025-04-30 01:10:07,915 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d3d667f1 with fitness 0.0000
+2025-04-30 01:10:07,915 - evotrader_bridge - INFO - Evaluating strategy strategy_f1f441b6
+2025-04-30 01:10:07,917 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f1f441b6 (type: unknown, gen: 3)
+2025-04-30 01:10:07,917 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f1f441b6 (type: unknown, gen: 3)
+2025-04-30 01:10:07,918 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f1f441b6 with fitness 0.0000
+2025-04-30 01:10:07,918 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f1f441b6 with fitness 0.0000
+2025-04-30 01:10:07,919 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f1f441b6 (type: unknown, gen: 3)
+2025-04-30 01:10:07,919 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f1f441b6 (type: unknown, gen: 3)
+2025-04-30 01:10:07,919 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f1f441b6 with fitness 0.0000
+2025-04-30 01:10:07,919 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f1f441b6 with fitness 0.0000
+2025-04-30 01:10:07,919 - evotrader_bridge - INFO - Evaluating strategy strategy_eccded78
+2025-04-30 01:10:07,924 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eccded78 (type: unknown, gen: 3)
+2025-04-30 01:10:07,924 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eccded78 (type: unknown, gen: 3)
+2025-04-30 01:10:07,924 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eccded78 with fitness 0.0000
+2025-04-30 01:10:07,924 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eccded78 with fitness 0.0000
+2025-04-30 01:10:07,925 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eccded78 (type: unknown, gen: 3)
+2025-04-30 01:10:07,925 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eccded78 (type: unknown, gen: 3)
+2025-04-30 01:10:07,926 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eccded78 with fitness 0.0000
+2025-04-30 01:10:07,926 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eccded78 with fitness 0.0000
+2025-04-30 01:10:07,926 - evotrader_bridge - INFO - Evaluating strategy strategy_a2e13d98
+2025-04-30 01:10:07,929 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a2e13d98 (type: unknown, gen: 3)
+2025-04-30 01:10:07,929 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a2e13d98 (type: unknown, gen: 3)
+2025-04-30 01:10:07,930 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a2e13d98 with fitness 0.0000
+2025-04-30 01:10:07,930 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a2e13d98 with fitness 0.0000
+2025-04-30 01:10:07,936 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a2e13d98 (type: unknown, gen: 3)
+2025-04-30 01:10:07,936 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a2e13d98 (type: unknown, gen: 3)
+2025-04-30 01:10:07,936 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a2e13d98 with fitness 0.0000
+2025-04-30 01:10:07,936 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a2e13d98 with fitness 0.0000
+2025-04-30 01:10:07,936 - evotrader_bridge - INFO - Evaluating strategy strategy_70416091
+2025-04-30 01:10:07,939 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_70416091 (type: unknown, gen: 3)
+2025-04-30 01:10:07,939 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_70416091 (type: unknown, gen: 3)
+2025-04-30 01:10:07,939 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_70416091 with fitness 0.0000
+2025-04-30 01:10:07,939 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_70416091 with fitness 0.0000
+2025-04-30 01:10:07,940 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_70416091 (type: unknown, gen: 3)
+2025-04-30 01:10:07,940 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_70416091 (type: unknown, gen: 3)
+2025-04-30 01:10:07,940 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_70416091 with fitness 0.0000
+2025-04-30 01:10:07,940 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_70416091 with fitness 0.0000
+2025-04-30 01:10:07,940 - evotrader_bridge - INFO - Evaluating strategy strategy_2a0c1423
+2025-04-30 01:10:07,943 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2a0c1423 (type: unknown, gen: 3)
+2025-04-30 01:10:07,943 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2a0c1423 (type: unknown, gen: 3)
+2025-04-30 01:10:07,944 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2a0c1423 with fitness 0.0000
+2025-04-30 01:10:07,944 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2a0c1423 with fitness 0.0000
+2025-04-30 01:10:07,945 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2a0c1423 (type: unknown, gen: 3)
+2025-04-30 01:10:07,945 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2a0c1423 (type: unknown, gen: 3)
+2025-04-30 01:10:07,947 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2a0c1423 with fitness 0.0000
+2025-04-30 01:10:07,947 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2a0c1423 with fitness 0.0000
+2025-04-30 01:10:07,947 - evotrader_bridge - INFO - Evaluating strategy strategy_2dddf3d8
+2025-04-30 01:10:07,949 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2dddf3d8 (type: unknown, gen: 3)
+2025-04-30 01:10:07,949 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2dddf3d8 (type: unknown, gen: 3)
+2025-04-30 01:10:07,949 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2dddf3d8 with fitness 0.0000
+2025-04-30 01:10:07,949 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2dddf3d8 with fitness 0.0000
+2025-04-30 01:10:07,950 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2dddf3d8 (type: unknown, gen: 3)
+2025-04-30 01:10:07,950 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2dddf3d8 (type: unknown, gen: 3)
+2025-04-30 01:10:07,950 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2dddf3d8 with fitness 0.0000
+2025-04-30 01:10:07,950 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2dddf3d8 with fitness 0.0000
+2025-04-30 01:10:07,950 - evotrader_bridge - INFO - Evaluating strategy strategy_7f6dc044
+2025-04-30 01:10:07,953 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7f6dc044 (type: unknown, gen: 3)
+2025-04-30 01:10:07,953 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7f6dc044 (type: unknown, gen: 3)
+2025-04-30 01:10:07,953 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7f6dc044 with fitness 0.0000
+2025-04-30 01:10:07,953 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7f6dc044 with fitness 0.0000
+2025-04-30 01:10:07,954 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7f6dc044 (type: unknown, gen: 3)
+2025-04-30 01:10:07,954 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_7f6dc044 (type: unknown, gen: 3)
+2025-04-30 01:10:07,954 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7f6dc044 with fitness 0.0000
+2025-04-30 01:10:07,954 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_7f6dc044 with fitness 0.0000
+2025-04-30 01:10:07,954 - evotrader_bridge - INFO - Evaluating strategy strategy_1af7bdee
+2025-04-30 01:10:07,957 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1af7bdee (type: unknown, gen: 3)
+2025-04-30 01:10:07,957 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1af7bdee (type: unknown, gen: 3)
+2025-04-30 01:10:07,957 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1af7bdee with fitness 0.0000
+2025-04-30 01:10:07,957 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1af7bdee with fitness 0.0000
+2025-04-30 01:10:07,958 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1af7bdee (type: unknown, gen: 3)
+2025-04-30 01:10:07,958 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1af7bdee (type: unknown, gen: 3)
+2025-04-30 01:10:07,958 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1af7bdee with fitness 0.0000
+2025-04-30 01:10:07,958 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1af7bdee with fitness 0.0000
+2025-04-30 01:10:07,958 - evotrader_bridge - INFO - Evaluating strategy strategy_29bc6bce
+2025-04-30 01:10:07,961 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_29bc6bce (type: unknown, gen: 3)
+2025-04-30 01:10:07,961 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_29bc6bce (type: unknown, gen: 3)
+2025-04-30 01:10:07,961 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_29bc6bce with fitness 0.0000
+2025-04-30 01:10:07,961 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_29bc6bce with fitness 0.0000
+2025-04-30 01:10:07,962 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_29bc6bce (type: unknown, gen: 3)
+2025-04-30 01:10:07,962 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_29bc6bce (type: unknown, gen: 3)
+2025-04-30 01:10:07,962 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_29bc6bce with fitness 0.0000
+2025-04-30 01:10:07,962 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_29bc6bce with fitness 0.0000
+2025-04-30 01:10:07,962 - evotrader_bridge - INFO - Evaluating strategy strategy_201cb855
+2025-04-30 01:10:07,965 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_201cb855 (type: unknown, gen: 3)
+2025-04-30 01:10:07,965 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_201cb855 (type: unknown, gen: 3)
+2025-04-30 01:10:07,965 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_201cb855 with fitness 0.0000
+2025-04-30 01:10:07,965 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_201cb855 with fitness 0.0000
+2025-04-30 01:10:07,966 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_201cb855 (type: unknown, gen: 3)
+2025-04-30 01:10:07,966 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_201cb855 (type: unknown, gen: 3)
+2025-04-30 01:10:07,968 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_201cb855 with fitness 0.0000
+2025-04-30 01:10:07,968 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_201cb855 with fitness 0.0000
+2025-04-30 01:10:07,968 - evotrader_bridge - INFO - Evaluating strategy strategy_623724b1
+2025-04-30 01:10:07,970 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_623724b1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,970 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_623724b1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,971 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_623724b1 with fitness 0.0000
+2025-04-30 01:10:07,971 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_623724b1 with fitness 0.0000
+2025-04-30 01:10:07,971 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_623724b1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,971 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_623724b1 (type: unknown, gen: 3)
+2025-04-30 01:10:07,972 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_623724b1 with fitness 0.0000
+2025-04-30 01:10:07,972 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_623724b1 with fitness 0.0000
+2025-04-30 01:10:07,972 - evotrader_bridge - INFO - Evaluating strategy strategy_a21b52b2
+2025-04-30 01:10:07,974 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a21b52b2 (type: unknown, gen: 3)
+2025-04-30 01:10:07,974 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a21b52b2 (type: unknown, gen: 3)
+2025-04-30 01:10:07,974 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a21b52b2 with fitness 0.0000
+2025-04-30 01:10:07,974 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a21b52b2 with fitness 0.0000
+2025-04-30 01:10:07,975 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a21b52b2 (type: unknown, gen: 3)
+2025-04-30 01:10:07,975 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a21b52b2 (type: unknown, gen: 3)
+2025-04-30 01:10:07,975 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a21b52b2 with fitness 0.0000
+2025-04-30 01:10:07,975 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a21b52b2 with fitness 0.0000
+2025-04-30 01:10:07,975 - evotrader_bridge - INFO - Evaluating strategy strategy_db49642e
+2025-04-30 01:10:07,977 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_db49642e (type: unknown, gen: 3)
+2025-04-30 01:10:07,977 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_db49642e (type: unknown, gen: 3)
+2025-04-30 01:10:07,978 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_db49642e with fitness 0.0000
+2025-04-30 01:10:07,978 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_db49642e with fitness 0.0000
+2025-04-30 01:10:07,978 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_db49642e (type: unknown, gen: 3)
+2025-04-30 01:10:07,978 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_db49642e (type: unknown, gen: 3)
+2025-04-30 01:10:07,979 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_db49642e with fitness 0.0000
+2025-04-30 01:10:07,979 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_db49642e with fitness 0.0000
+2025-04-30 01:10:07,979 - evotrader_bridge - INFO - Evaluating strategy strategy_a79f5790
+2025-04-30 01:10:07,981 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a79f5790 (type: unknown, gen: 3)
+2025-04-30 01:10:07,981 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a79f5790 (type: unknown, gen: 3)
+2025-04-30 01:10:07,982 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a79f5790 with fitness 0.0000
+2025-04-30 01:10:07,982 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a79f5790 with fitness 0.0000
+2025-04-30 01:10:07,982 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a79f5790 (type: unknown, gen: 3)
+2025-04-30 01:10:07,982 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a79f5790 (type: unknown, gen: 3)
+2025-04-30 01:10:07,983 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a79f5790 with fitness 0.0000
+2025-04-30 01:10:07,983 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a79f5790 with fitness 0.0000
+2025-04-30 01:10:07,983 - evotrader_bridge - INFO - Evaluating strategy strategy_aaecc631
+2025-04-30 01:10:07,985 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_aaecc631 (type: unknown, gen: 3)
+2025-04-30 01:10:07,985 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_aaecc631 (type: unknown, gen: 3)
+2025-04-30 01:10:07,985 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_aaecc631 with fitness 0.0000
+2025-04-30 01:10:07,985 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_aaecc631 with fitness 0.0000
+2025-04-30 01:10:07,986 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_aaecc631 (type: unknown, gen: 3)
+2025-04-30 01:10:07,986 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_aaecc631 (type: unknown, gen: 3)
+2025-04-30 01:10:07,987 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_aaecc631 with fitness 0.0000
+2025-04-30 01:10:07,987 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_aaecc631 with fitness 0.0000
+2025-04-30 01:10:07,990 - evotrader_bridge - INFO - Evaluating strategy strategy_b9ed39bf
+2025-04-30 01:10:07,993 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b9ed39bf (type: unknown, gen: 4)
+2025-04-30 01:10:07,993 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b9ed39bf (type: unknown, gen: 4)
+2025-04-30 01:10:07,993 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b9ed39bf with fitness 0.0000
+2025-04-30 01:10:07,993 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b9ed39bf with fitness 0.0000
+2025-04-30 01:10:07,994 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b9ed39bf (type: unknown, gen: 4)
+2025-04-30 01:10:07,994 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b9ed39bf (type: unknown, gen: 4)
+2025-04-30 01:10:07,995 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b9ed39bf with fitness 0.0000
+2025-04-30 01:10:07,995 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b9ed39bf with fitness 0.0000
+2025-04-30 01:10:07,995 - evotrader_bridge - INFO - Evaluating strategy strategy_0d5520e5
+2025-04-30 01:10:07,998 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0d5520e5 (type: unknown, gen: 4)
+2025-04-30 01:10:07,998 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0d5520e5 (type: unknown, gen: 4)
+2025-04-30 01:10:07,999 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0d5520e5 with fitness 0.0000
+2025-04-30 01:10:07,999 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0d5520e5 with fitness 0.0000
+2025-04-30 01:10:08,000 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0d5520e5 (type: unknown, gen: 4)
+2025-04-30 01:10:08,000 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0d5520e5 (type: unknown, gen: 4)
+2025-04-30 01:10:08,000 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0d5520e5 with fitness 0.0000
+2025-04-30 01:10:08,000 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0d5520e5 with fitness 0.0000
+2025-04-30 01:10:08,000 - evotrader_bridge - INFO - Evaluating strategy strategy_5c19d704
+2025-04-30 01:10:08,003 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5c19d704 (type: unknown, gen: 4)
+2025-04-30 01:10:08,003 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5c19d704 (type: unknown, gen: 4)
+2025-04-30 01:10:08,003 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5c19d704 with fitness 0.0000
+2025-04-30 01:10:08,003 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5c19d704 with fitness 0.0000
+2025-04-30 01:10:08,004 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5c19d704 (type: unknown, gen: 4)
+2025-04-30 01:10:08,004 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_5c19d704 (type: unknown, gen: 4)
+2025-04-30 01:10:08,004 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5c19d704 with fitness 0.0000
+2025-04-30 01:10:08,004 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_5c19d704 with fitness 0.0000
+2025-04-30 01:10:08,004 - evotrader_bridge - INFO - Evaluating strategy strategy_052f6257
+2025-04-30 01:10:08,007 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_052f6257 (type: unknown, gen: 4)
+2025-04-30 01:10:08,007 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_052f6257 (type: unknown, gen: 4)
+2025-04-30 01:10:08,007 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_052f6257 with fitness 0.0000
+2025-04-30 01:10:08,007 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_052f6257 with fitness 0.0000
+2025-04-30 01:10:08,008 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_052f6257 (type: unknown, gen: 4)
+2025-04-30 01:10:08,008 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_052f6257 (type: unknown, gen: 4)
+2025-04-30 01:10:08,009 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_052f6257 with fitness 0.0000
+2025-04-30 01:10:08,009 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_052f6257 with fitness 0.0000
+2025-04-30 01:10:08,009 - evotrader_bridge - INFO - Evaluating strategy strategy_c08733a6
+2025-04-30 01:10:08,012 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c08733a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,012 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c08733a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,012 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c08733a6 with fitness 0.0000
+2025-04-30 01:10:08,012 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c08733a6 with fitness 0.0000
+2025-04-30 01:10:08,013 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c08733a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,013 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c08733a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,013 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c08733a6 with fitness 0.0000
+2025-04-30 01:10:08,013 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c08733a6 with fitness 0.0000
+2025-04-30 01:10:08,013 - evotrader_bridge - INFO - Evaluating strategy strategy_44d410b9
+2025-04-30 01:10:08,015 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_44d410b9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,015 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_44d410b9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,016 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_44d410b9 with fitness 0.0000
+2025-04-30 01:10:08,016 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_44d410b9 with fitness 0.0000
+2025-04-30 01:10:08,016 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_44d410b9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,016 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_44d410b9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,017 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_44d410b9 with fitness 0.0000
+2025-04-30 01:10:08,017 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_44d410b9 with fitness 0.0000
+2025-04-30 01:10:08,017 - evotrader_bridge - INFO - Evaluating strategy strategy_a19f77dc
+2025-04-30 01:10:08,019 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a19f77dc (type: unknown, gen: 4)
+2025-04-30 01:10:08,019 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a19f77dc (type: unknown, gen: 4)
+2025-04-30 01:10:08,020 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a19f77dc with fitness 0.0000
+2025-04-30 01:10:08,020 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a19f77dc with fitness 0.0000
+2025-04-30 01:10:08,021 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a19f77dc (type: unknown, gen: 4)
+2025-04-30 01:10:08,021 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a19f77dc (type: unknown, gen: 4)
+2025-04-30 01:10:08,021 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a19f77dc with fitness 0.0000
+2025-04-30 01:10:08,021 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a19f77dc with fitness 0.0000
+2025-04-30 01:10:08,021 - evotrader_bridge - INFO - Evaluating strategy strategy_d46aab51
+2025-04-30 01:10:08,023 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d46aab51 (type: unknown, gen: 4)
+2025-04-30 01:10:08,023 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d46aab51 (type: unknown, gen: 4)
+2025-04-30 01:10:08,024 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d46aab51 with fitness 0.0000
+2025-04-30 01:10:08,024 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d46aab51 with fitness 0.0000
+2025-04-30 01:10:08,024 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d46aab51 (type: unknown, gen: 4)
+2025-04-30 01:10:08,024 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d46aab51 (type: unknown, gen: 4)
+2025-04-30 01:10:08,025 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d46aab51 with fitness 0.0000
+2025-04-30 01:10:08,025 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d46aab51 with fitness 0.0000
+2025-04-30 01:10:08,025 - evotrader_bridge - INFO - Evaluating strategy strategy_d8a1fce3
+2025-04-30 01:10:08,027 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d8a1fce3 (type: unknown, gen: 4)
+2025-04-30 01:10:08,027 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d8a1fce3 (type: unknown, gen: 4)
+2025-04-30 01:10:08,028 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d8a1fce3 with fitness 0.0000
+2025-04-30 01:10:08,028 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d8a1fce3 with fitness 0.0000
+2025-04-30 01:10:08,028 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d8a1fce3 (type: unknown, gen: 4)
+2025-04-30 01:10:08,028 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d8a1fce3 (type: unknown, gen: 4)
+2025-04-30 01:10:08,029 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d8a1fce3 with fitness 0.0000
+2025-04-30 01:10:08,029 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d8a1fce3 with fitness 0.0000
+2025-04-30 01:10:08,029 - evotrader_bridge - INFO - Evaluating strategy strategy_23fc275e
+2025-04-30 01:10:08,031 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_23fc275e (type: unknown, gen: 4)
+2025-04-30 01:10:08,031 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_23fc275e (type: unknown, gen: 4)
+2025-04-30 01:10:08,032 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_23fc275e with fitness 0.0000
+2025-04-30 01:10:08,032 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_23fc275e with fitness 0.0000
+2025-04-30 01:10:08,032 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_23fc275e (type: unknown, gen: 4)
+2025-04-30 01:10:08,032 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_23fc275e (type: unknown, gen: 4)
+2025-04-30 01:10:08,033 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_23fc275e with fitness 0.0000
+2025-04-30 01:10:08,033 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_23fc275e with fitness 0.0000
+2025-04-30 01:10:08,033 - evotrader_bridge - INFO - Evaluating strategy strategy_1283a2eb
+2025-04-30 01:10:08,036 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1283a2eb (type: unknown, gen: 4)
+2025-04-30 01:10:08,036 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1283a2eb (type: unknown, gen: 4)
+2025-04-30 01:10:08,036 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1283a2eb with fitness 0.0000
+2025-04-30 01:10:08,036 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1283a2eb with fitness 0.0000
+2025-04-30 01:10:08,037 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1283a2eb (type: unknown, gen: 4)
+2025-04-30 01:10:08,037 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1283a2eb (type: unknown, gen: 4)
+2025-04-30 01:10:08,037 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1283a2eb with fitness 0.0000
+2025-04-30 01:10:08,037 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1283a2eb with fitness 0.0000
+2025-04-30 01:10:08,037 - evotrader_bridge - INFO - Evaluating strategy strategy_9e1ea01f
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e1ea01f (type: unknown, gen: 4)
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e1ea01f (type: unknown, gen: 4)
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e1ea01f with fitness 0.0000
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e1ea01f with fitness 0.0000
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e1ea01f (type: unknown, gen: 4)
+2025-04-30 01:10:08,040 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_9e1ea01f (type: unknown, gen: 4)
+2025-04-30 01:10:08,041 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e1ea01f with fitness 0.0000
+2025-04-30 01:10:08,041 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_9e1ea01f with fitness 0.0000
+2025-04-30 01:10:08,041 - evotrader_bridge - INFO - Evaluating strategy strategy_b6b0fec9
+2025-04-30 01:10:08,043 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6b0fec9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,043 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6b0fec9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,044 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6b0fec9 with fitness 0.0000
+2025-04-30 01:10:08,044 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6b0fec9 with fitness 0.0000
+2025-04-30 01:10:08,044 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6b0fec9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,044 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b6b0fec9 (type: unknown, gen: 4)
+2025-04-30 01:10:08,045 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6b0fec9 with fitness 0.0000
+2025-04-30 01:10:08,045 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b6b0fec9 with fitness 0.0000
+2025-04-30 01:10:08,045 - evotrader_bridge - INFO - Evaluating strategy strategy_3b0c6098
+2025-04-30 01:10:08,047 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3b0c6098 (type: unknown, gen: 4)
+2025-04-30 01:10:08,047 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3b0c6098 (type: unknown, gen: 4)
+2025-04-30 01:10:08,048 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3b0c6098 with fitness 0.0000
+2025-04-30 01:10:08,048 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3b0c6098 with fitness 0.0000
+2025-04-30 01:10:08,048 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3b0c6098 (type: unknown, gen: 4)
+2025-04-30 01:10:08,048 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_3b0c6098 (type: unknown, gen: 4)
+2025-04-30 01:10:08,049 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3b0c6098 with fitness 0.0000
+2025-04-30 01:10:08,049 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_3b0c6098 with fitness 0.0000
+2025-04-30 01:10:08,049 - evotrader_bridge - INFO - Evaluating strategy strategy_566c06a6
+2025-04-30 01:10:08,051 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_566c06a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,051 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_566c06a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,052 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_566c06a6 with fitness 0.0000
+2025-04-30 01:10:08,052 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_566c06a6 with fitness 0.0000
+2025-04-30 01:10:08,053 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_566c06a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,053 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_566c06a6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,053 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_566c06a6 with fitness 0.0000
+2025-04-30 01:10:08,053 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_566c06a6 with fitness 0.0000
+2025-04-30 01:10:08,053 - evotrader_bridge - INFO - Evaluating strategy strategy_c6869eb6
+2025-04-30 01:10:08,056 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c6869eb6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,056 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c6869eb6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,056 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c6869eb6 with fitness 0.0000
+2025-04-30 01:10:08,056 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c6869eb6 with fitness 0.0000
+2025-04-30 01:10:08,057 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c6869eb6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,057 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_c6869eb6 (type: unknown, gen: 4)
+2025-04-30 01:10:08,058 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c6869eb6 with fitness 0.0000
+2025-04-30 01:10:08,058 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_c6869eb6 with fitness 0.0000
+2025-04-30 01:10:08,058 - evotrader_bridge - INFO - Evaluating strategy strategy_bdca8ea7
+2025-04-30 01:10:08,060 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bdca8ea7 (type: unknown, gen: 4)
+2025-04-30 01:10:08,060 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bdca8ea7 (type: unknown, gen: 4)
+2025-04-30 01:10:08,061 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bdca8ea7 with fitness 0.0000
+2025-04-30 01:10:08,061 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bdca8ea7 with fitness 0.0000
+2025-04-30 01:10:08,062 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bdca8ea7 (type: unknown, gen: 4)
+2025-04-30 01:10:08,062 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bdca8ea7 (type: unknown, gen: 4)
+2025-04-30 01:10:08,062 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bdca8ea7 with fitness 0.0000
+2025-04-30 01:10:08,062 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bdca8ea7 with fitness 0.0000
+2025-04-30 01:10:08,062 - evotrader_bridge - INFO - Evaluating strategy strategy_ae72b949
+2025-04-30 01:10:08,065 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ae72b949 (type: unknown, gen: 4)
+2025-04-30 01:10:08,065 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ae72b949 (type: unknown, gen: 4)
+2025-04-30 01:10:08,065 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ae72b949 with fitness 0.0000
+2025-04-30 01:10:08,065 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ae72b949 with fitness 0.0000
+2025-04-30 01:10:08,066 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ae72b949 (type: unknown, gen: 4)
+2025-04-30 01:10:08,066 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ae72b949 (type: unknown, gen: 4)
+2025-04-30 01:10:08,066 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ae72b949 with fitness 0.0000
+2025-04-30 01:10:08,066 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ae72b949 with fitness 0.0000
+2025-04-30 01:10:08,066 - evotrader_bridge - INFO - Evaluating strategy strategy_6bee9625
+2025-04-30 01:10:08,069 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_6bee9625 (type: unknown, gen: 4)
+2025-04-30 01:10:08,069 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_6bee9625 (type: unknown, gen: 4)
+2025-04-30 01:10:08,069 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_6bee9625 with fitness 0.0000
+2025-04-30 01:10:08,069 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_6bee9625 with fitness 0.0000
+2025-04-30 01:10:08,070 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_6bee9625 (type: unknown, gen: 4)
+2025-04-30 01:10:08,070 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_6bee9625 (type: unknown, gen: 4)
+2025-04-30 01:10:08,071 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_6bee9625 with fitness 0.0000
+2025-04-30 01:10:08,071 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_6bee9625 with fitness 0.0000
+2025-04-30 01:10:08,071 - evotrader_bridge - INFO - Evaluating strategy strategy_1e857489
+2025-04-30 01:10:08,073 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e857489 (type: unknown, gen: 4)
+2025-04-30 01:10:08,073 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e857489 (type: unknown, gen: 4)
+2025-04-30 01:10:08,073 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e857489 with fitness 0.0000
+2025-04-30 01:10:08,073 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e857489 with fitness 0.0000
+2025-04-30 01:10:08,074 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e857489 (type: unknown, gen: 4)
+2025-04-30 01:10:08,074 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e857489 (type: unknown, gen: 4)
+2025-04-30 01:10:08,075 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e857489 with fitness 0.0000
+2025-04-30 01:10:08,075 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e857489 with fitness 0.0000
+2025-04-30 01:10:08,079 - evotrader_bridge - INFO - Evaluating strategy strategy_588050f0
+2025-04-30 01:10:08,081 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_588050f0 (type: unknown, gen: 5)
+2025-04-30 01:10:08,081 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_588050f0 (type: unknown, gen: 5)
+2025-04-30 01:10:08,082 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_588050f0 with fitness 0.0000
+2025-04-30 01:10:08,082 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_588050f0 with fitness 0.0000
+2025-04-30 01:10:08,083 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_588050f0 (type: unknown, gen: 5)
+2025-04-30 01:10:08,083 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_588050f0 (type: unknown, gen: 5)
+2025-04-30 01:10:08,083 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_588050f0 with fitness 0.0000
+2025-04-30 01:10:08,083 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_588050f0 with fitness 0.0000
+2025-04-30 01:10:08,083 - evotrader_bridge - INFO - Evaluating strategy strategy_1a3d9988
+2025-04-30 01:10:08,086 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1a3d9988 (type: unknown, gen: 5)
+2025-04-30 01:10:08,086 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1a3d9988 (type: unknown, gen: 5)
+2025-04-30 01:10:08,086 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1a3d9988 with fitness 0.0000
+2025-04-30 01:10:08,086 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1a3d9988 with fitness 0.0000
+2025-04-30 01:10:08,087 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1a3d9988 (type: unknown, gen: 5)
+2025-04-30 01:10:08,087 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1a3d9988 (type: unknown, gen: 5)
+2025-04-30 01:10:08,087 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1a3d9988 with fitness 0.0000
+2025-04-30 01:10:08,087 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1a3d9988 with fitness 0.0000
+2025-04-30 01:10:08,087 - evotrader_bridge - INFO - Evaluating strategy strategy_158a8959
+2025-04-30 01:10:08,090 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_158a8959 (type: unknown, gen: 5)
+2025-04-30 01:10:08,090 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_158a8959 (type: unknown, gen: 5)
+2025-04-30 01:10:08,090 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_158a8959 with fitness 0.0000
+2025-04-30 01:10:08,090 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_158a8959 with fitness 0.0000
+2025-04-30 01:10:08,091 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_158a8959 (type: unknown, gen: 5)
+2025-04-30 01:10:08,091 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_158a8959 (type: unknown, gen: 5)
+2025-04-30 01:10:08,091 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_158a8959 with fitness 0.0000
+2025-04-30 01:10:08,091 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_158a8959 with fitness 0.0000
+2025-04-30 01:10:08,091 - evotrader_bridge - INFO - Evaluating strategy strategy_ee329069
+2025-04-30 01:10:08,093 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee329069 (type: unknown, gen: 5)
+2025-04-30 01:10:08,093 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee329069 (type: unknown, gen: 5)
+2025-04-30 01:10:08,094 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee329069 with fitness 0.0000
+2025-04-30 01:10:08,094 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee329069 with fitness 0.0000
+2025-04-30 01:10:08,096 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee329069 (type: unknown, gen: 5)
+2025-04-30 01:10:08,096 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_ee329069 (type: unknown, gen: 5)
+2025-04-30 01:10:08,097 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee329069 with fitness 0.0000
+2025-04-30 01:10:08,097 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_ee329069 with fitness 0.0000
+2025-04-30 01:10:08,097 - evotrader_bridge - INFO - Evaluating strategy strategy_eb022775
+2025-04-30 01:10:08,099 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eb022775 (type: unknown, gen: 5)
+2025-04-30 01:10:08,099 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eb022775 (type: unknown, gen: 5)
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eb022775 with fitness 0.0000
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eb022775 with fitness 0.0000
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eb022775 (type: unknown, gen: 5)
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_eb022775 (type: unknown, gen: 5)
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eb022775 with fitness 0.0000
+2025-04-30 01:10:08,100 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_eb022775 with fitness 0.0000
+2025-04-30 01:10:08,100 - evotrader_bridge - INFO - Evaluating strategy strategy_4284cf1c
+2025-04-30 01:10:08,103 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4284cf1c (type: unknown, gen: 5)
+2025-04-30 01:10:08,103 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4284cf1c (type: unknown, gen: 5)
+2025-04-30 01:10:08,103 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4284cf1c with fitness 0.0000
+2025-04-30 01:10:08,103 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4284cf1c with fitness 0.0000
+2025-04-30 01:10:08,104 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4284cf1c (type: unknown, gen: 5)
+2025-04-30 01:10:08,104 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_4284cf1c (type: unknown, gen: 5)
+2025-04-30 01:10:08,105 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4284cf1c with fitness 0.0000
+2025-04-30 01:10:08,105 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_4284cf1c with fitness 0.0000
+2025-04-30 01:10:08,105 - evotrader_bridge - INFO - Evaluating strategy strategy_b4d3d55c
+2025-04-30 01:10:08,107 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b4d3d55c (type: unknown, gen: 5)
+2025-04-30 01:10:08,107 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b4d3d55c (type: unknown, gen: 5)
+2025-04-30 01:10:08,107 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b4d3d55c with fitness 0.0000
+2025-04-30 01:10:08,107 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b4d3d55c with fitness 0.0000
+2025-04-30 01:10:08,108 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b4d3d55c (type: unknown, gen: 5)
+2025-04-30 01:10:08,108 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b4d3d55c (type: unknown, gen: 5)
+2025-04-30 01:10:08,109 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b4d3d55c with fitness 0.0000
+2025-04-30 01:10:08,109 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b4d3d55c with fitness 0.0000
+2025-04-30 01:10:08,109 - evotrader_bridge - INFO - Evaluating strategy strategy_388bdc51
+2025-04-30 01:10:08,111 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_388bdc51 (type: unknown, gen: 5)
+2025-04-30 01:10:08,111 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_388bdc51 (type: unknown, gen: 5)
+2025-04-30 01:10:08,111 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_388bdc51 with fitness 0.0000
+2025-04-30 01:10:08,111 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_388bdc51 with fitness 0.0000
+2025-04-30 01:10:08,112 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_388bdc51 (type: unknown, gen: 5)
+2025-04-30 01:10:08,112 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_388bdc51 (type: unknown, gen: 5)
+2025-04-30 01:10:08,112 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_388bdc51 with fitness 0.0000
+2025-04-30 01:10:08,112 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_388bdc51 with fitness 0.0000
+2025-04-30 01:10:08,112 - evotrader_bridge - INFO - Evaluating strategy strategy_1e6cf591
+2025-04-30 01:10:08,115 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e6cf591 (type: unknown, gen: 5)
+2025-04-30 01:10:08,115 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e6cf591 (type: unknown, gen: 5)
+2025-04-30 01:10:08,115 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e6cf591 with fitness 0.0000
+2025-04-30 01:10:08,115 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e6cf591 with fitness 0.0000
+2025-04-30 01:10:08,116 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e6cf591 (type: unknown, gen: 5)
+2025-04-30 01:10:08,116 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_1e6cf591 (type: unknown, gen: 5)
+2025-04-30 01:10:08,117 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e6cf591 with fitness 0.0000
+2025-04-30 01:10:08,117 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_1e6cf591 with fitness 0.0000
+2025-04-30 01:10:08,117 - evotrader_bridge - INFO - Evaluating strategy strategy_d7b3fd8a
+2025-04-30 01:10:08,119 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d7b3fd8a (type: unknown, gen: 5)
+2025-04-30 01:10:08,119 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d7b3fd8a (type: unknown, gen: 5)
+2025-04-30 01:10:08,119 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d7b3fd8a with fitness 0.0000
+2025-04-30 01:10:08,119 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d7b3fd8a with fitness 0.0000
+2025-04-30 01:10:08,120 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d7b3fd8a (type: unknown, gen: 5)
+2025-04-30 01:10:08,120 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_d7b3fd8a (type: unknown, gen: 5)
+2025-04-30 01:10:08,121 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d7b3fd8a with fitness 0.0000
+2025-04-30 01:10:08,121 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_d7b3fd8a with fitness 0.0000
+2025-04-30 01:10:08,121 - evotrader_bridge - INFO - Evaluating strategy strategy_2d7df039
+2025-04-30 01:10:08,123 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2d7df039 (type: unknown, gen: 5)
+2025-04-30 01:10:08,123 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2d7df039 (type: unknown, gen: 5)
+2025-04-30 01:10:08,123 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2d7df039 with fitness 0.0000
+2025-04-30 01:10:08,123 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2d7df039 with fitness 0.0000
+2025-04-30 01:10:08,124 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2d7df039 (type: unknown, gen: 5)
+2025-04-30 01:10:08,124 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_2d7df039 (type: unknown, gen: 5)
+2025-04-30 01:10:08,124 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2d7df039 with fitness 0.0000
+2025-04-30 01:10:08,124 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_2d7df039 with fitness 0.0000
+2025-04-30 01:10:08,125 - evotrader_bridge - INFO - Evaluating strategy strategy_f446ba4f
+2025-04-30 01:10:08,127 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f446ba4f (type: unknown, gen: 5)
+2025-04-30 01:10:08,127 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f446ba4f (type: unknown, gen: 5)
+2025-04-30 01:10:08,127 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f446ba4f with fitness 0.0000
+2025-04-30 01:10:08,127 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f446ba4f with fitness 0.0000
+2025-04-30 01:10:08,128 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f446ba4f (type: unknown, gen: 5)
+2025-04-30 01:10:08,128 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_f446ba4f (type: unknown, gen: 5)
+2025-04-30 01:10:08,129 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f446ba4f with fitness 0.0000
+2025-04-30 01:10:08,129 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_f446ba4f with fitness 0.0000
+2025-04-30 01:10:08,129 - evotrader_bridge - INFO - Evaluating strategy strategy_0103f6d8
+2025-04-30 01:10:08,131 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0103f6d8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,131 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0103f6d8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,132 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0103f6d8 with fitness 0.0000
+2025-04-30 01:10:08,132 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0103f6d8 with fitness 0.0000
+2025-04-30 01:10:08,132 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0103f6d8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,132 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_0103f6d8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,133 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0103f6d8 with fitness 0.0000
+2025-04-30 01:10:08,133 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_0103f6d8 with fitness 0.0000
+2025-04-30 01:10:08,133 - evotrader_bridge - INFO - Evaluating strategy strategy_a042943c
+2025-04-30 01:10:08,135 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a042943c (type: unknown, gen: 5)
+2025-04-30 01:10:08,135 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a042943c (type: unknown, gen: 5)
+2025-04-30 01:10:08,136 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a042943c with fitness 0.0000
+2025-04-30 01:10:08,136 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a042943c with fitness 0.0000
+2025-04-30 01:10:08,137 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a042943c (type: unknown, gen: 5)
+2025-04-30 01:10:08,137 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_a042943c (type: unknown, gen: 5)
+2025-04-30 01:10:08,137 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a042943c with fitness 0.0000
+2025-04-30 01:10:08,137 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_a042943c with fitness 0.0000
+2025-04-30 01:10:08,137 - evotrader_bridge - INFO - Evaluating strategy strategy_551a07fc
+2025-04-30 01:10:08,140 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_551a07fc (type: unknown, gen: 5)
+2025-04-30 01:10:08,140 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_551a07fc (type: unknown, gen: 5)
+2025-04-30 01:10:08,140 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_551a07fc with fitness 0.0000
+2025-04-30 01:10:08,140 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_551a07fc with fitness 0.0000
+2025-04-30 01:10:08,141 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_551a07fc (type: unknown, gen: 5)
+2025-04-30 01:10:08,141 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_551a07fc (type: unknown, gen: 5)
+2025-04-30 01:10:08,141 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_551a07fc with fitness 0.0000
+2025-04-30 01:10:08,141 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_551a07fc with fitness 0.0000
+2025-04-30 01:10:08,141 - evotrader_bridge - INFO - Evaluating strategy strategy_b1abb896
+2025-04-30 01:10:08,144 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1abb896 (type: unknown, gen: 5)
+2025-04-30 01:10:08,144 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1abb896 (type: unknown, gen: 5)
+2025-04-30 01:10:08,144 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1abb896 with fitness 0.0000
+2025-04-30 01:10:08,144 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1abb896 with fitness 0.0000
+2025-04-30 01:10:08,145 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1abb896 (type: unknown, gen: 5)
+2025-04-30 01:10:08,145 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_b1abb896 (type: unknown, gen: 5)
+2025-04-30 01:10:08,145 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1abb896 with fitness 0.0000
+2025-04-30 01:10:08,145 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_b1abb896 with fitness 0.0000
+2025-04-30 01:10:08,145 - evotrader_bridge - INFO - Evaluating strategy strategy_565cef45
+2025-04-30 01:10:08,147 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_565cef45 (type: unknown, gen: 5)
+2025-04-30 01:10:08,147 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_565cef45 (type: unknown, gen: 5)
+2025-04-30 01:10:08,148 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_565cef45 with fitness 0.0000
+2025-04-30 01:10:08,148 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_565cef45 with fitness 0.0000
+2025-04-30 01:10:08,148 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_565cef45 (type: unknown, gen: 5)
+2025-04-30 01:10:08,148 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_565cef45 (type: unknown, gen: 5)
+2025-04-30 01:10:08,149 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_565cef45 with fitness 0.0000
+2025-04-30 01:10:08,149 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_565cef45 with fitness 0.0000
+2025-04-30 01:10:08,149 - evotrader_bridge - INFO - Evaluating strategy strategy_bfcc9eb7
+2025-04-30 01:10:08,151 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfcc9eb7 (type: unknown, gen: 5)
+2025-04-30 01:10:08,151 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfcc9eb7 (type: unknown, gen: 5)
+2025-04-30 01:10:08,151 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfcc9eb7 with fitness 0.0000
+2025-04-30 01:10:08,151 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfcc9eb7 with fitness 0.0000
+2025-04-30 01:10:08,152 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfcc9eb7 (type: unknown, gen: 5)
+2025-04-30 01:10:08,152 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_bfcc9eb7 (type: unknown, gen: 5)
+2025-04-30 01:10:08,152 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfcc9eb7 with fitness 0.0000
+2025-04-30 01:10:08,152 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_bfcc9eb7 with fitness 0.0000
+2025-04-30 01:10:08,152 - evotrader_bridge - INFO - Evaluating strategy strategy_74ca6f82
+2025-04-30 01:10:08,155 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_74ca6f82 (type: unknown, gen: 5)
+2025-04-30 01:10:08,155 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_74ca6f82 (type: unknown, gen: 5)
+2025-04-30 01:10:08,155 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_74ca6f82 with fitness 0.0000
+2025-04-30 01:10:08,155 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_74ca6f82 with fitness 0.0000
+2025-04-30 01:10:08,156 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_74ca6f82 (type: unknown, gen: 5)
+2025-04-30 01:10:08,156 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_74ca6f82 (type: unknown, gen: 5)
+2025-04-30 01:10:08,156 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_74ca6f82 with fitness 0.0000
+2025-04-30 01:10:08,156 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_74ca6f82 with fitness 0.0000
+2025-04-30 01:10:08,156 - evotrader_bridge - INFO - Evaluating strategy strategy_fea1c6b8
+2025-04-30 01:10:08,159 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fea1c6b8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,159 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fea1c6b8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,159 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fea1c6b8 with fitness 0.0000
+2025-04-30 01:10:08,159 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fea1c6b8 with fitness 0.0000
+2025-04-30 01:10:08,160 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fea1c6b8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,160 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Registered strategy strategy_fea1c6b8 (type: unknown, gen: 5)
+2025-04-30 01:10:08,160 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fea1c6b8 with fitness 0.0000
+2025-04-30 01:10:08,160 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Recorded performance for strategy strategy_fea1c6b8 with fitness 0.0000

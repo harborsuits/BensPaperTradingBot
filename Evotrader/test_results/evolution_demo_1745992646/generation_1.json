@@ -1,0 +1,29 @@
+{
+  "generation": 1,
+  "avg_fitness": 0.5629708802259571,
+  "max_fitness": 0.7322524305629513,
+  "strategy_distribution": {
+    "RSIStrategy": 3,
+    "VerticalSpread": 5,
+    "MovingAverageCrossover": 5,
+    "BollingerBands": 6,
+    "IronCondor": 1
+  },
+  "best_strategy": {
+    "generation": 1,
+    "id": "MovingAverageCrossover_81148",
+    "type": "MovingAverageCrossover",
+    "fitness": 0.7322524305629513,
+    "parameters": {
+      "fast_period": 18,
+      "slow_period": 159,
+      "signal_threshold": 0.036732508685630647
+    },
+    "metrics": {
+      "fitness": 0.7322524305629513,
+      "profit": 73.22524305629513,
+      "win_rate": 0.6661262152814756,
+      "drawdown": 8.032427083111461
+    }
+  }
+}

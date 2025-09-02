@@ -1,0 +1,19 @@
+[Unit]
+Description=Trading Bot Adaptive Context Scheduler
+After=network.target
+
+[Service]
+Type=simple
+User=tradingbot
+Group=tradingbot
+WorkingDirectory=/home/tradingbot/trading_bot
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /home/tradingbot/trading_bot/scripts/run_adaptive_context_scheduler.py --market-interval 15 --after-interval 60 --run-now
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=context-scheduler
+
+[Install]
+WantedBy=multi-user.target 

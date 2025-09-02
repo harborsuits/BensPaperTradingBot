@@ -1,0 +1,38 @@
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+JWT_SECRET_KEY=generate_a_random_32_byte_key_here
+MONGODB_URI=mongodb://localhost:27017/bensbot_trading
+MONGODB_DATABASE=bensbot_trading
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PREFIX=bensbot:
+
+# Recovery settings
+RECOVER_ON_STARTUP=true
+RECOVER_OPEN_ORDERS=true
+RECOVER_POSITIONS=true
+SYNC_INTERVAL_SECONDS=300
+
+# Broker credentials - REPLACE THESE with your actual API keys
+# Alpaca credentials
+ALPACA_API_KEY=your_alpaca_key_here
+ALPACA_API_SECRET=your_alpaca_secret_here
+ALPACA_PAPER=true  # Set to false for live trading
+
+# Tradier credentials
+TRADIER_API_KEY=your_tradier_token_here
+TRADIER_ACCOUNT_ID=your_tradier_account_id_here
+
+# Risk parameters
+RISK_MAX_DRAWDOWN_PCT=5.0
+RISK_VOLATILITY_THRESHOLD=2.5
+RISK_COOLDOWN_MINUTES=60
+RISK_MARGIN_CALL_THRESHOLD=0.25
+RISK_MARGIN_WARNING_THRESHOLD=0.35
+RISK_MAX_LEVERAGE=2.0
+RISK_POSITION_SIZE_LIMIT_PCT=5.0
+
+# Dashboard credentials
+ADMIN_USERNAME=bensbot_admin
+ADMIN_PASSWORD=replace_with_strong_password

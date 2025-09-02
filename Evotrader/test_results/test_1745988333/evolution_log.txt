@@ -1,0 +1,32 @@
+Added /Users/bendickinson/Desktop/Evotrader to Python path
+Successfully imported evotrader module from /Users/bendickinson/Desktop/Evotrader/evotrader/__init__.py
+Setting up test environment with 10 strategies...
+
+
+ERRORS:
+2025-04-30 00:45:33,925 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745988333/performance.db
+2025-04-30 00:45:33,926 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745988333/simulations/performance.db
+2025-04-30 00:45:33,926 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745988333/simulations/performance.db
+2025-04-30 00:45:33,926 - evotrader_bridge - INFO - EvoTraderBridge initialized successfully
+2025-04-30 00:45:33,926 - evotrader_bridge - INFO - Adapting BensBot strategy: VerticalSpread
+Traceback (most recent call last):
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 261, in <module>
+    main()
+    ~~~~^^
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 196, in main
+    bridge, strategies = setup_test_environment(
+                         ~~~~~~~~~~~~~~~~~~~~~~^
+        strategy_count=args.strategies,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        test_id=args.test_id
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 100, in setup_test_environment
+    adapter = bridge.adapt_benbot_strategy(benbot_strategy)
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/main.py", line 157, in adapt_benbot_strategy
+    adapter = BensBotStrategyAdapter(
+        strategy_id=strategy_id,
+        benbot_strategy=benbot_strategy
+    )
+TypeError: Can't instantiate abstract class BensBotStrategyAdapter without an implementation for abstract method 'generate_signals'

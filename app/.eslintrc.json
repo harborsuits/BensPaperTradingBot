@@ -1,0 +1,70 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["react", "@typescript-eslint", "no-only-tests"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      { 
+        "selector": "MemberExpression[property.name='charAt']", 
+        "message": "Use utils/string.initial() or capitalize()." 
+      },
+      { 
+        "selector": "MemberExpression[property.name='toFixed']", 
+        "message": "Use utils/number.fmtNum()/fmtPercent()." 
+      },
+      {
+        "selector": "CallExpression[callee.property.name='toFixed']",
+        "message": "Use utils/number.fmtNum()/fmtPercent() helpers."
+      },
+      {
+        "selector": "CallExpression[callee.property.name='call'] MemberExpression[property.name='charAt']", 
+        "message": "Use utils/string.initial() or capitalize()."
+      },
+      {
+        "selector": "CallExpression[callee.property.name='apply'] MemberExpression[property.name='charAt']", 
+        "message": "Use utils/string.initial() or capitalize()."
+      }
+    ],
+    "no-restricted-properties": [
+      "error",
+      { 
+        "object": "String", 
+        "property": "charAt", 
+        "message": "Use utils/string.initial() or capitalize()."
+      },
+      { 
+        "property": "toFixed", 
+        "message": "Use utils/number.fmtNum()/fmtPercent helpers."
+      }
+    ],
+    "no-only-tests/no-only-tests": "error",
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+  }
+}

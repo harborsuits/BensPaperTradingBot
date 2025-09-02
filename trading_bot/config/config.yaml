@@ -1,0 +1,106 @@
+# Trading Bot Configuration - YAML Format
+# This is the canonical configuration file for the trading bot system.
+# This configuration can be overridden with environment variables where needed.
+
+# Broker configuration (Tradier)
+broker:
+  name: tradier
+  api_key: ${TRADIER_API_KEY}  # Will be replaced with environment variable
+  account_id: ${TRADIER_ACCOUNT_ID}  # Will be replaced with environment variable
+  sandbox: true
+  timeout_seconds: 15
+  max_retries: 3
+  paper_trading: true  # Set to false for live trading
+
+# Risk management settings
+risk:
+  max_position_pct: 0.05  # Maximum 5% of portfolio per position
+  max_risk_pct: 0.01  # Risk 1% of portfolio per trade
+  max_portfolio_risk: 0.20  # Maximum 20% of portfolio at risk
+  max_correlated_positions: 3  # Maximum number of correlated positions
+  max_sector_allocation: 0.30  # Maximum 30% allocation to a single sector
+  max_open_trades: 5  # Maximum number of open trades
+  correlation_threshold: 0.7  # Correlation threshold for risk grouping
+  enable_portfolio_stop_loss: true  # Master portfolio stop loss
+  portfolio_stop_loss_pct: 0.05  # 5% portfolio drawdown triggers stop
+  enable_position_stop_loss: true  # Individual position stop losses
+
+# Data source configuration
+data:
+  provider: tradier  # Use broker's API for data
+  use_websocket: false  # Set to true to enable WebSocket for real-time data
+  cache_expiry_seconds: 10
+  max_cache_items: 1000
+  historical_source: alpha_vantage
+  api_keys:
+    alpha_vantage: ${ALPHA_VANTAGE_API_KEY}
+    finnhub: ${FINNHUB_API_KEY}
+    polygon: ${POLYGON_API_KEY}
+
+# Notification settings
+notifications:
+  enable_notifications: true
+  telegram_token: ${TELEGRAM_TOKEN}
+  telegram_chat_id: ${TELEGRAM_CHAT_ID}
+  slack_webhook: ${SLACK_WEBHOOK_URL}
+  email_to: ${EMAIL_TO}
+  email_from: ${EMAIL_FROM}
+  email_smtp_server: ${EMAIL_SMTP_SERVER}
+  email_smtp_port: 587
+  email_username: ${EMAIL_USERNAME}
+  email_password: ${EMAIL_PASSWORD}
+  notification_levels:
+    - critical
+    - error
+    - warning
+    - info
+
+# Autonomous orchestrator settings
+orchestrator:
+  step_interval_seconds: 30
+  enabled_strategies:
+    - momentum_reversal
+    - breakout
+    - mean_reversion
+  trading_hours_only: true
+  market_hours_start: "09:30"
+  market_hours_end: "16:00"
+  timezone: "America/New_York"
+
+# Backtesting configuration
+backtest:
+  default_symbols:
+    - SPY
+    - QQQ
+    - AAPL
+    - MSFT
+    - GOOGL
+  default_start_date: "2024-01-01"
+  default_end_date: "2024-12-31"
+  initial_capital: 100000.0
+  commission_per_trade: 0.0
+  slippage_pct: 0.0005
+  data_source: local  # local, alpha_vantage, etc.
+
+# Logging configuration
+logging:
+  level: INFO
+  file_path: "./logs/trading_bot.log"
+  max_size_mb: 10
+  backup_count: 5
+  console_logging: true
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# UI settings
+ui:
+  theme: dark
+  refresh_interval_seconds: 5
+  default_page: dashboard
+  chart_style: candle
+  show_indicators: true
+  locale: en-US
+  timezone_display: local
+
+# Environment and version
+environment: development  # development, testing, production
+version: "1.0.0"

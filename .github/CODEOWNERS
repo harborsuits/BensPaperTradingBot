@@ -1,0 +1,34 @@
+# BensBot CODEOWNERS File
+# This file determines who is responsible for reviewing code changes
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @TheClitCommander
+
+# Core trading engine
+/trading_bot/core/ @TheClitCommander
+
+# Strategy implementations
+/trading_bot/strategies/ @TheClitCommander
+
+# Broker adapters
+/trading_bot/brokers/ @TheClitCommander
+
+# Configuration and schemas
+/trading_bot/config/ @TheClitCommander
+
+# Persistence layer
+/trading_bot/persistence/ @TheClitCommander
+
+# Dashboard
+/trading_bot/dashboard/ @TheClitCommander
+
+# Tests
+/tests/ @TheClitCommander
+
+# CI/CD Workflows
+/.github/workflows/ @TheClitCommander
+
+# Container-related files
+/Dockerfile* @TheClitCommander
+/docker-compose.yml @TheClitCommander

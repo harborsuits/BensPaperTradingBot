@@ -1,0 +1,119 @@
+{
+    "risk_management": {
+        "circuit_breakers": {
+            "daily_loss_threshold": -3.0,
+            "weekly_loss_threshold": -8.0,
+            "monthly_loss_threshold": -15.0,
+            "drawdown_threshold": -20.0,
+            "reduce_exposure_pct": 50.0,
+            "cooldown_days": 3
+        },
+        "position_sizing": {
+            "baseline_volatility": 15.0,
+            "volatility_window": 20,
+            "regime_factors": {
+                "bullish": 1.0,
+                "neutral": 0.8,
+                "bearish": 0.5,
+                "volatile": 0.6
+            }
+        },
+        "strategy_specific": {
+            "trend_following": {
+                "max_allocation": 40.0,
+                "risk_factor": 1.0 
+            },
+            "momentum": {
+                "max_allocation": 40.0,
+                "risk_factor": 1.1
+            },
+            "mean_reversion": {
+                "max_allocation": 35.0,
+                "risk_factor": 0.9
+            },
+            "breakout_swing": {
+                "max_allocation": 30.0,
+                "risk_factor": 1.2
+            },
+            "volatility_breakout": {
+                "max_allocation": 15.0,
+                "risk_factor": 1.5  
+            },
+            "option_spreads": {
+                "max_allocation": 10.0,
+                "risk_factor": 1.3
+            }
+        }
+    },
+    "stress_testing": {
+        "scenarios": {
+            "market_crash": {"market": -20.0, "volatility": 50.0},
+            "sector_rotation": {"market": -5.0, "volatility": 30.0},
+            "volatility_spike": {"market": -10.0, "volatility": 100.0},
+            "liquidity_crisis": {"market": -15.0, "volatility": 80.0},
+            "stagflation": {"market": -12.0, "volatility": 40.0}
+        },
+        "triggers": {
+            "scheduled": "monthly",
+            "on_breach": true,
+            "on_allocation_change": true
+        }
+    },
+    "monitoring": {
+        "timeframes": {
+            "daily": {"window": 1, "threshold": -3.0},
+            "weekly": {"window": 5, "threshold": -8.0},
+            "monthly": {"window": 20, "threshold": -15.0},
+            "quarterly": {"window": 63, "threshold": -25.0}
+        },
+        "alert_thresholds": {
+            "volatility_spike": 30.0,
+            "correlation_change": 0.3,
+            "liquidity_reduction": 50.0
+        }
+    },
+    "strategy_profiles": {
+        "momentum": {
+            "beta": 1.1,
+            "volatility_sensitivity": 0.4,
+            "max_drawdown_expected": -15.0,
+            "typical_win_rate": 0.55,
+            "risk_category": "medium"
+        },
+        "mean_reversion": {
+            "beta": 0.7,
+            "volatility_sensitivity": 0.9,
+            "max_drawdown_expected": -12.0,
+            "typical_win_rate": 0.65,
+            "risk_category": "medium"
+        },
+        "trend_following": {
+            "beta": 1.2,
+            "volatility_sensitivity": 0.3,
+            "max_drawdown_expected": -18.0,
+            "typical_win_rate": 0.45,
+            "risk_category": "high"
+        },
+        "breakout_swing": {
+            "beta": 1.3,
+            "volatility_sensitivity": 0.7,
+            "max_drawdown_expected": -20.0,
+            "typical_win_rate": 0.50,
+            "risk_category": "high"
+        },
+        "volatility_breakout": {
+            "beta": 1.5,
+            "volatility_sensitivity": 1.0,
+            "max_drawdown_expected": -25.0,
+            "typical_win_rate": 0.48,
+            "risk_category": "very_high"
+        },
+        "option_spreads": {
+            "beta": 0.6,
+            "volatility_sensitivity": 1.2,
+            "max_drawdown_expected": -10.0,
+            "typical_win_rate": 0.70,
+            "risk_category": "medium"
+        }
+    }
+} 

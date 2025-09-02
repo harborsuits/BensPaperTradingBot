@@ -1,0 +1,11 @@
+Added /Users/bendickinson/Desktop/Evotrader to Python path
+Successfully imported evotrader module from /Users/bendickinson/Desktop/Evotrader/evotrader/__init__.py
+
+
+ERRORS:
+Traceback (most recent call last):
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 24, in <module>
+    from main import EvoTraderBridge
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/main.py", line 16, in <module>
+    from .strategy_adapter import BensBotStrategyAdapter
+ImportError: attempted relative import with no known parent package

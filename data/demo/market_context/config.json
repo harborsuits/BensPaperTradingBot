@@ -1,0 +1,52 @@
+{
+  "default_symbols": [
+    "SPY",
+    "QQQ",
+    "IWM"
+  ],
+  "update_interval": 60,
+  "short_window": 20,
+  "medium_window": 50,
+  "long_window": 200,
+  "volatility_window": 20,
+  "regime_thresholds": {
+    "bull": {
+      "trend_strength": 0.05,
+      "volatility_ratio": 1.2
+    },
+    "bear": {
+      "trend_strength": -0.05,
+      "volatility_ratio": 1.2
+    },
+    "sideways": {
+      "trend_range": 0.03,
+      "volatility_ratio": 1.0
+    },
+    "high_vol": {
+      "volatility_ratio": 1.5
+    },
+    "low_vol": {
+      "volatility_ratio": 0.5
+    },
+    "crisis": {
+      "volatility_ratio": 2.0,
+      "drawdown": -0.1
+    }
+  },
+  "indicator_weights": {
+    "trend": 0.4,
+    "volatility": 0.3,
+    "momentum": 0.2,
+    "volume": 0.1
+  },
+  "regime_change_threshold": 3,
+  "data_sources": [
+    "price",
+    "volume",
+    "technical_indicators"
+  ],
+  "logging": {
+    "level": "INFO",
+    "file": "market_context.log"
+  }
+}

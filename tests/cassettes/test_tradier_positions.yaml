@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/accounts/VA1201776/positions
+  response:
+    body:
+      string: '{"positions":"null"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization, content-type
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:22 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Ratelimit-Allowed:
+      - '200'
+      X-Ratelimit-Available:
+      - '199'
+      X-Ratelimit-Expiry:
+      - '1745447760000'
+      X-Ratelimit-Used:
+      - '1'
+    status:
+      code: 200
+      message: ''
+version: 1

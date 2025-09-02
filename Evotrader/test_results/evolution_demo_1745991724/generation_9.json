@@ -1,0 +1,25 @@
+{
+  "generation": 9,
+  "avg_fitness": 0.7357539790234449,
+  "max_fitness": 0.95,
+  "strategy_distribution": {
+    "BollingerBands": 20
+  },
+  "best_strategy": {
+    "generation": 9,
+    "id": "BollingerBands_45129",
+    "type": "BollingerBands",
+    "fitness": 0.95,
+    "parameters": {
+      "period": 24,
+      "std_dev": 2.2125893717113176,
+      "signal_threshold": 0.10024461257930477
+    },
+    "metrics": {
+      "fitness": 0.95,
+      "profit": 95.0,
+      "win_rate": 0.7749999999999999,
+      "drawdown": 1.5000000000000013
+    }
+  }
+}

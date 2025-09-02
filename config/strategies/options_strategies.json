@@ -1,0 +1,80 @@
+{
+  "strategies": [
+    {
+      "strategy_id": "bull_call_spread_1",
+      "name": "Bull Call Spread - Index ETFs",
+      "description": "Bullish vertical spread strategy for index ETFs in uptrending markets",
+      "class_path": "trading_bot.strategies.options.BullCallSpreadStrategy",
+      "symbols": ["SPY", "QQQ"],
+      "asset_type": "options",
+      "timeframe": "1d",
+      "broker_id": "etrade",
+      "enabled": true,
+      "parameters": {
+        "days_to_expiration": 30,
+        "strike_delta_long": 0.50,
+        "strike_delta_short": 0.30,
+        "min_credit_debit_ratio": 0.40,
+        "profit_target_percent": 50,
+        "stop_loss_percent": 75,
+        "position_sizing_percent": 0.02
+      },
+      "risk_limits": {
+        "max_positions": 3,
+        "max_allocation_percent": 0.10,
+        "max_loss_per_spread": 500
+      }
+    },
+    {
+      "strategy_id": "iron_condor_1",
+      "name": "Iron Condor - Low Volatility",
+      "description": "Non-directional options strategy for range-bound low volatility markets",
+      "class_path": "trading_bot.strategies.options.IronCondorStrategy",
+      "symbols": ["SPY", "IWM"],
+      "asset_type": "options",
+      "timeframe": "1d",
+      "broker_id": "etrade",
+      "enabled": true,
+      "parameters": {
+        "days_to_expiration": 45,
+        "delta_put_sell": 0.16,
+        "delta_put_buy": 0.08,
+        "delta_call_sell": 0.16, 
+        "delta_call_buy": 0.08,
+        "min_credit": 0.80,
+        "profit_target_percent": 50,
+        "stop_loss_percent": 200,
+        "position_sizing_percent": 0.03
+      },
+      "risk_limits": {
+        "max_positions": 2,
+        "max_allocation_percent": 0.15
+      }
+    },
+    {
+      "strategy_id": "calendar_spread_1",
+      "name": "Earnings Calendar Spread",
+      "description": "Trades calendar spreads around earnings announcements",
+      "class_path": "trading_bot.strategies.options.CalendarSpreadStrategy",
+      "symbols": [],  // Dynamically determined based on earnings calendar
+      "asset_type": "options",
+      "timeframe": "1d",
+      "broker_id": "etrade",
+      "enabled": true,
+      "parameters": {
+        "front_month_dte": 7,
+        "back_month_dte": 35,
+        "days_before_earnings": 5,
+        "target_iv_percentile": 60,
+        "strike_selection": "atm",
+        "profit_target_percent": 30,
+        "stop_loss_percent": 40,
+        "position_sizing_percent": 0.02
+      },
+      "risk_limits": {
+        "max_positions": 3,
+        "max_loss_per_spread": 300
+      }
+    }
+  ]
+}

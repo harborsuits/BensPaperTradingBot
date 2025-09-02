@@ -1,0 +1,75 @@
+{
+  "strategies": [
+    {
+      "strategy_id": "crypto_macd_1",
+      "name": "Bitcoin MACD Strategy",
+      "description": "MACD-based trading strategy for Bitcoin",
+      "class_path": "trading_bot.strategies.crypto.CryptoMACDStrategy", 
+      "symbols": ["BTC-USD"],
+      "asset_type": "crypto",
+      "timeframe": "4h",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "fast_period": 12,
+        "slow_period": 26,
+        "signal_period": 9,
+        "histogram_threshold": 0.0002,
+        "risk_per_trade": 0.02,
+        "profit_target_percent": 5.0,
+        "stop_loss_percent": 2.0
+      },
+      "risk_limits": {
+        "max_drawdown": 0.10,
+        "max_consecutive_losses": 4
+      }
+    },
+    {
+      "strategy_id": "crypto_rsi_1",
+      "name": "Ethereum RSI Strategy",
+      "description": "RSI-based mean reversion strategy for Ethereum",
+      "class_path": "trading_bot.strategies.crypto.CryptoRSIStrategy",
+      "symbols": ["ETH-USD"],
+      "asset_type": "crypto",
+      "timeframe": "1h",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "rsi_period": 14,
+        "overbought_threshold": 70,
+        "oversold_threshold": 30,
+        "entry_rsi_confirmation_periods": 2,
+        "exit_rsi_threshold": 50,
+        "risk_per_trade": 0.025
+      },
+      "risk_limits": {
+        "max_drawdown": 0.12,
+        "max_positions": 1
+      }
+    },
+    {
+      "strategy_id": "crypto_breakout_1",
+      "name": "Multi-Coin Breakout Strategy",
+      "description": "Volatility breakout strategy for multiple cryptocurrencies",
+      "class_path": "trading_bot.strategies.crypto.CryptoBreakoutStrategy",
+      "symbols": ["BTC-USD", "ETH-USD", "SOL-USD", "AVAX-USD"],
+      "asset_type": "crypto",
+      "timeframe": "1d",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "lookback_period": 20,
+        "breakout_atr_multiplier": 2.0,
+        "volume_confirmation": true,
+        "min_volume_percentile": 75,
+        "profit_take_atr_multiplier": 3.0,
+        "stop_loss_atr_multiplier": 1.5,
+        "risk_per_trade": 0.015
+      },
+      "risk_limits": {
+        "max_positions": 2,
+        "max_allocation_per_coin": 0.08
+      }
+    }
+  ]
+}

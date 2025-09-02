@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BensBot Pro - Market Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #14191f;
+            --sidebar-bg: #0d1117;
+            --card-bg: #1c2128;
+            --accent-color: #2d81ff;
+            --text-color: #e6e6e6;
+            --border-color: #30363d;
+            --success-color: #238636;
+            --warning-color: #9e6a03;
+            --danger-color: #f85149;
+            --chart-grid: rgba(110, 118, 129, 0.1);
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: var(--sidebar-bg);
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #8b949e;
+        }
+        
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const ScannerSettings = ({ strategies, selectedStrategy, setSelectedStrategy }) => {
+            const scanTypes = [
+                { id: 'momentum', name: 'Momentum' },
+                { id: 'meanReversion', name: 'Mean Reversion' },
+                { id: 'breakout', name: 'Breakout' },
+                { id: 'volatility', name: 'Volatility' },
+                { id: 'sentiment', name: 'Sentiment' }
+            ];
+            
+            const marketRegimes = [
+                { id: 'all', name: 'All Regimes' },
+                { id: 'bullish', name: 'Bullish Trend' },
+                { id: 'bearish', name: 'Bearish Trend' },
+                { id: 'highVol', name: 'High Volatility' },
+                { id: 'lowVol', name: 'Low Volatility' },
+                { id: 'sideways', name: 'Sideways/Range' }
+            ];
+            
+            const filters = [
+                { name: 'Market Cap', options: ['Any', 'Large Cap', 'Mid Cap', 'Small Cap', 'Micro Cap'] },
+                { name: 'Sector', options: ['Any', 'Technology', 'Healthcare', 'Financial', 'Energy', 'Consumer', 'Industrial', 'Utilities'] },
+                { name: 'Volume', options: ['Any', 'High', 'Medium', 'Low'] }
+            ];
+            
+            return (
+                <div className="dashboard-card">
+                    <h2 className="text-xl font-semibold mb-6">Scanner Settings</h2>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">Strategy Template</h3>
+                            <div className="space-y-2">
+                                {strategies.map(strategy => (
+                                    <div key={strategy.id} className="flex items-center">
+                                        <input 
+                                            type="radio" 
+                                            id={strategy.id} 
+                                            name="strategy" 
+                                            checked={selectedStrategy === strategy.id}
+                                            onChange={() => setSelectedStrategy(strategy.id)}
+                                            className="mr-2 accent-blue-500"
+                                        />
+                                        <label htmlFor={strategy.id} className="text-sm cursor-pointer">
+                                            {strategy.name} {strategy.isPro && <span className="text-yellow-400 text-xs font-medium ml-1">PRO</span>}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">Scan Type</h3>
+                            <select className="bg-gray-800 border border-gray-700 text-white rounded-md px-3 py-2 w-full text-sm">
+                                {scanTypes.map(type => (
+                                    <option key={type.id} value={type.id}>{type.name}</option>
+                                ))}
+                            </select>
+                            
+                            <h3 className="text-sm font-medium mb-2 mt-4">Market Regime</h3>
+                            <select className="bg-gray-800 border border-gray-700 text-white rounded-md px-3 py-2 w-full text-sm">
+                                {marketRegimes.map(regime => (
+                                    <option key={regime.id} value={regime.id}>{regime.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">Filters</h3>
+                            <div className="space-y-3">
+                                {filters.map((filter, index) => (
+                                    <div key={index}>
+                                        <label className="text-xs text-gray-400 block mb-1">{filter.name}</label>
+                                        <select className="bg-gray-800 border border-gray-700 text-white rounded-md px-3 py-2 w-full text-sm">
+                                            {filter.options.map((option, optIdx) => (
+                                                <option key={optIdx} value={option}>{option}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="flex justify-end">
+                        <button className="px-4 py-2 bg-green-700 text-white hover:bg-green-600 rounded-md text-sm font-medium transition-colors duration-200">
+                            Run Scan
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const ScanResults = ({ selectedStrategy }) => {
+            // Sample scan results data
+            const resultsData = {
+                'momentum-basic': [
+                    { symbol: 'AAPL', name: 'Apple Inc.', sector: 'Technology', score: 92, volume: '+45%', priceChange: '4.2%', rsi: 68, macd: 'Bullish', note: 'High volume breakout with strong sector performance' },
+                    { symbol: 'NVDA', name: 'NVIDIA Corp.', sector: 'Technology', score: 88, volume: '+78%', priceChange: '5.8%', rsi: 72, macd: 'Bullish', note: 'Earnings momentum and sector leadership' },
+                    { symbol: 'AMD', name: 'Advanced Micro Devices', sector: 'Technology', score: 84, volume: '+32%', priceChange: '3.5%', rsi: 65, macd: 'Bullish', note: 'Breaking above resistance with increasing volume' },
+                    { symbol: 'TSLA', name: 'Tesla Inc.', sector: 'Consumer Discretionary', score: 79, volume: '+54%', priceChange: '2.9%', rsi: 62, macd: 'Bullish', note: 'Production targets exceeded, strong momentum' },
+                    { symbol: 'MSFT', name: 'Microsoft Corp.', sector: 'Technology', score: 77, volume: '+18%', priceChange: '2.4%', rsi: 60, macd: 'Bullish', note: 'Cloud growth accelerating, new product cycles' }
+                ],
+                'mean-reversion': [
+                    { symbol: 'JPM', name: 'JPMorgan Chase', sector: 'Financial', score: 86, volume: '+12%', priceChange: '-2.8%', rsi: 32, macd: 'Oversold', note: 'Oversold conditions near support, positive earnings' },
+                    { symbol: 'WMT', name: 'Walmart Inc.', sector: 'Consumer Staples', score: 82, volume: '+8%', priceChange: '-1.9%', rsi: 34, macd: 'Oversold', note: 'Near strong support level with positive divergence' },
+                    { symbol: 'PFE', name: 'Pfizer Inc.', sector: 'Healthcare', score: 79, volume: '+5%', priceChange: '-3.2%', rsi: 28, macd: 'Oversold', note: 'At 52-week low with improving pipeline news' },
+                    { symbol: 'XOM', name: 'Exxon Mobil', sector: 'Energy', score: 76, volume: '+15%', priceChange: '-2.5%', rsi: 35, macd: 'Neutral', note: 'Pulled back to support with improving fundamentals' },
+                    { symbol: 'VZ', name: 'Verizon', sector: 'Communication', score: 74, volume: '+7%', priceChange: '-1.6%', rsi: 36, macd: 'Neutral', note: 'Dividend support with oversold technicals' }
+                ],
+                'breakout-pro': [
+                    { symbol: 'COIN', name: 'Coinbase Global', sector: 'Financial', score: 94, volume: '+108%', priceChange: '8.7%', rsi: 74, macd: 'Strong Bullish', note: 'Breaking out from 3-month consolidation on very high volume' },
+                    { symbol: 'CRWD', name: 'CrowdStrike', sector: 'Technology', score: 89, volume: '+65%', priceChange: '6.4%', rsi: 70, macd: 'Bullish', note: 'Cup and handle pattern with earnings catalyst' },
+                    { symbol: 'SHOP', name: 'Shopify Inc.', sector: 'Technology', score: 86, volume: '+72%', priceChange: '5.8%', rsi: 68, macd: 'Bullish', note: 'Breaking above downtrend line with expanding volume' },
+                    { symbol: 'DKNG', name: 'DraftKings', sector: 'Consumer Discretionary', score: 82, volume: '+48%', priceChange: '4.9%', rsi: 65, macd: 'Bullish', note: 'Inverse head and shoulders pattern completing' },
+                    { symbol: 'NET', name: 'Cloudflare', sector: 'Technology', score: 80, volume: '+54%', priceChange: '5.2%', rsi: 67, macd: 'Bullish', note: 'Breaking above resistance on earnings surprise' }
+                ]
+            };
+            
+            const results = resultsData[selectedStrategy] || resultsData['momentum-basic'];
+            
+            const getScoreBadgeColor = (score) => {
+                if (score >= 90) return 'bg-green-500';
+                if (score >= 80) return 'bg-green-400';
+                if (score >= 70) return 'bg-yellow-400';
+                if (score >= 60) return 'bg-yellow-500';
+                return 'bg-red-500';
+            };
+            
+            return (
+                <div className="dashboard-card">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold">Scan Results</h2>
+                        <div className="text-sm text-gray-400">
+                            {results.length} matches found • Updated: May 3, 2025 9:45 PM
+                        </div>
+                    </div>
+                    
+                    <div className="overflow-x-auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Name</th>
+                                    <th>Sector</th>
+                                    <th>Match Score</th>
+                                    <th>Volume</th>
+                                    <th>Price Change</th>
+                                    <th>RSI</th>
+                                    <th>MACD</th>
+                                    <th>Notes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {results.map((result, index) => (
+                                    <tr key={index}>
+                                        <td className="font-bold">{result.symbol}</td>
+                                        <td>{result.name}</td>
+                                        <td>{result.sector}</td>
+                                        <td>
+                                            <span className={`status-badge ${getScoreBadgeColor(result.score)}`}>
+                                                {result.score}
+                                            </span>
+                                        </td>
+                                        <td className={result.volume.startsWith('+') ? 'text-green-400' : 'text-red-400'}>
+                                            {result.volume}
+                                        </td>
+                                        <td className={result.priceChange.startsWith('+') || !result.priceChange.startsWith('-') ? 'text-green-400' : 'text-red-400'}>
+                                            {result.priceChange}
+                                        </td>
+                                        <td>{result.rsi}</td>
+                                        <td>{result.macd}</td>
+                                        <td className="text-sm max-w-xs truncate">{result.note}</td>
+                                        <td>
+                                            <div className="flex space-x-2">
+                                                <button className="px-3 py-1 bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 rounded text-xs">
+                                                    Chart
+                                                </button>
+                                                <button className="px-3 py-1 bg-green-600/20 text-green-400 hover:bg-green-600/30 rounded text-xs">
+                                                    Backtest
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+        
+        const MarketScanner = () => {
+            const strategies = [
+                { id: 'momentum-basic', name: 'Momentum Basic', isPro: false },
+                { id: 'mean-reversion', name: 'Mean Reversion', isPro: false },
+                { id: 'breakout-pro', name: 'Breakout Pro', isPro: true },
+                { id: 'volatility-pro', name: 'Volatility Edge Pro', isPro: true },
+                { id: 'multi-factor', name: 'Multi-Factor', isPro: true }
+            ];
+            
+            const [selectedStrategy, setSelectedStrategy] = React.useState('momentum-basic');
+            
+            return (
+                <div className="container mx-auto p-6">
+                    <h1 className="text-2xl font-bold mb-6">Market Scanner</h1>
+                    
+                    <ScannerSettings 
+                        strategies={strategies}
+                        selectedStrategy={selectedStrategy}
+                        setSelectedStrategy={setSelectedStrategy}
+                    />
+                    
+                    <ScanResults selectedStrategy={selectedStrategy} />
+                </div>
+            );
+        };
+        
+        const App = () => {
+            return (
+                <div>
+                    <div className="flex justify-between items-center p-6 bg-gray-900">
+                        <h1 className="text-2xl font-bold text-white">BensBot Pro</h1>
+                    </div>
+                    <MarketScanner />
+                </div>
+            );
+        };
+        
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

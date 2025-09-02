@@ -1,0 +1,51 @@
+{
+  "strategies": [
+    {
+      "strategy_id": "forex_trend_1",
+      "name": "EUR/USD Trend Following",
+      "description": "MA-based trend following strategy for EUR/USD",
+      "class_path": "trading_bot.strategies.forex.ForexTrendFollowingStrategy",
+      "symbols": ["EUR/USD"],
+      "asset_type": "forex",
+      "timeframe": "1h",
+      "broker_id": "tradier", 
+      "enabled": true,
+      "parameters": {
+        "ma_period": 20,
+        "ma_type": "EMA",
+        "trailing_stop_pips": 50,
+        "risk_per_trade": 0.01,
+        "position_sizing": "pip_based"
+      },
+      "risk_limits": {
+        "max_drawdown": 0.05,
+        "max_consecutive_losses": 5,
+        "max_daily_trades": 3
+      }
+    },
+    {
+      "strategy_id": "forex_trend_2",
+      "name": "GBP/USD Trend Following",
+      "description": "Dual MA crossover strategy for GBP/USD",
+      "class_path": "trading_bot.strategies.forex.ForexTrendFollowingStrategy",
+      "symbols": ["GBP/USD"],
+      "asset_type": "forex",
+      "timeframe": "4h",
+      "broker_id": "tradier", 
+      "enabled": true,
+      "parameters": {
+        "fast_ma_period": 10,
+        "slow_ma_period": 30,
+        "ma_type": "EMA",
+        "trailing_stop_pips": 70,
+        "risk_per_trade": 0.015,
+        "position_sizing": "pip_based"
+      },
+      "risk_limits": {
+        "max_drawdown": 0.06,
+        "max_consecutive_losses": 4,
+        "max_daily_trades": 2
+      }
+    }
+  ]
+}

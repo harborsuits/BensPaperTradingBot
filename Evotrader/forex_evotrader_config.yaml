@@ -1,0 +1,81 @@
+# Forex EvoTrader - Configuration File
+# Contains settings for the integrated forex evolution, backtesting, and deployment system
+
+# BenBot Integration Settings
+benbot:
+  endpoint: "http://localhost:8080/benbot/api"  # BenBot API endpoint (change to actual endpoint when available)
+  priority_override: true  # Whether BenBot can override local decisions
+  report_frequency_minutes: 30  # How often to report metrics to BenBot
+  sync_pairs: true  # Whether to sync pair selection with BenBot
+  receive_directives: true  # Whether to accept trading directives from BenBot
+
+# Component Configuration Paths
+pair_config: "forex_pairs.yaml"  # Forex pair universe configuration
+news_config: null  # News guard configuration (null = use defaults)
+session_db: "session_performance.db"  # Session performance database
+strategy_templates: "forex_strategy_templates.yaml"  # Strategy templates
+prop_risk_profile: "prop_risk_profile.yaml"  # Prop firm risk profile
+
+# File Structure Paths
+data_dir: "data"  # Directory for market data
+results_dir: "results"  # Directory for evolution results
+reports_dir: "reports"  # Directory for generated reports
+logs_dir: "logs"  # Directory for logs
+
+# Evolution Parameters
+evolution:
+  population_size: 50  # Number of strategies in each generation
+  generations: 20  # Maximum number of generations to run
+  crossover_rate: 0.7  # Probability of crossover
+  mutation_rate: 0.3  # Probability of mutation
+  elite_size: 5  # Number of top strategies to preserve unchanged
+  session_fitness_weight: 0.3  # Weight of session-specific performance in fitness
+  pip_fitness_weight: 0.7  # Weight of pip-based metrics in fitness
+  max_concurrent_processes: 8  # Maximum number of concurrent processes for parallel evolution
+  early_stopping_generations: 5  # Stop if no improvement after this many generations
+  
+# Session Settings
+sessions:
+  default_focus: "London-NewYork"  # Default session to focus on if not specified
+  weight_overlaps: true  # Give higher weight to session overlaps
+  session_specific_metrics: true  # Calculate session-specific metrics
+
+# Pip-Based Performance Settings
+pip_metrics:
+  include_spread_costs: true  # Include spread costs in pip calculations
+  risk_per_trade_pips: 20  # Default risk per trade in pips
+  use_dynamic_position_sizing: true  # Adjust position size based on pip risk
+  risk_reward_minimum: 1.5  # Minimum risk-reward ratio to accept
+  track_cumulative_pips: true  # Track cumulative pips over time
+
+# News Filtering Settings
+news_filtering:
+  enabled: true  # Whether to enable news filtering
+  high_impact_buffer_minutes: 30  # Minutes to avoid trading before/after high impact news
+  medium_impact_buffer_minutes: 15  # Minutes to avoid trading before/after medium impact news
+  benbot_can_override: true  # Whether BenBot can override news restrictions
+
+# Prop Firm Compliance
+prop_compliance:
+  max_drawdown_percent: 5.0  # Maximum drawdown allowed (%)
+  daily_loss_limit_percent: 3.0  # Maximum daily loss allowed (%)
+  target_profit_percent: 8.0  # Target profit (%)
+  verify_all_trades: true  # Verify all trades against compliance rules
+  reject_non_compliant: true  # Reject strategies that violate compliance rules
+
+# Backtest Settings
+backtest:
+  default_timeframes: ["5m", "15m", "1h", "4h"]  # Default timeframes to test
+  out_of_sample_percent: 20  # Percentage of data to reserve for out-of-sample testing
+  min_trades_per_session: 20  # Minimum trades required per session for valid results
+  monte_carlo_simulations: 100  # Number of Monte Carlo simulations for robustness testing
+  synthetic_scenarios: ["trend", "range", "volatile", "news_shock"]  # Synthetic scenarios to test
+
+# Forward Testing
+forward_test:
+  paper_trading_enabled: true  # Enable paper trading
+  check_news_before_trade: true  # Check for news events before placing trades
+  verify_benbot_approval: true  # Verify BenBot approval before executing trades
+  session_restricted_trading: false  # Restrict trading to specific sessions only
+  real_time_reporting: true  # Report results in real-time
+  alert_on_drawdown: true  # Alert when drawdown exceeds threshold

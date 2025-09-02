@@ -1,0 +1,191 @@
+{
+  "MOM-TECH-2404": {
+    "strategy_id": "MOM-TECH-2404",
+    "strategy_type": "Momentum",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "GOOGL"
+    ],
+    "universe": "Tech Sector",
+    "parameters": {
+      "rsi_period": 14,
+      "rsi_oversold": 25,
+      "rsi_overbought": 65,
+      "rate_of_change_period": 10,
+      "ma_period": 100
+    },
+    "performance": {
+      "returns": 23.342052908857752,
+      "sharpe_ratio": 1.9352317572516629,
+      "drawdown": 10.818908762566693,
+      "win_rate": 56.43698117494092,
+      "profit_factor": 1.841094935298814,
+      "trades_count": 64
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "MOM-CONSUMER-2404": {
+    "strategy_id": "MOM-CONSUMER-2404",
+    "strategy_type": "Momentum",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "GOOGL"
+    ],
+    "universe": "Consumer Sector",
+    "parameters": {
+      "rsi_period": 14,
+      "rsi_oversold": 30,
+      "rsi_overbought": 65,
+      "rate_of_change_period": 10,
+      "ma_period": 50
+    },
+    "performance": {
+      "returns": 28.626084644552442,
+      "sharpe_ratio": 1.6061830415502527,
+      "drawdown": 10.933385654083402,
+      "win_rate": 58.15735165415048,
+      "profit_factor": 2.092708217299621,
+      "trades_count": 70
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "MOM-NASDAQ-2404": {
+    "strategy_id": "MOM-NASDAQ-2404",
+    "strategy_type": "Momentum",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "GOOGL"
+    ],
+    "universe": "Nasdaq 100",
+    "parameters": {
+      "rsi_period": 14,
+      "rsi_oversold": 35,
+      "rsi_overbought": 70,
+      "rate_of_change_period": 10,
+      "ma_period": 50
+    },
+    "performance": {
+      "returns": 25.012576097057483,
+      "sharpe_ratio": 1.7636298664320722,
+      "drawdown": 8.757052231270386,
+      "win_rate": 62.33338849499177,
+      "profit_factor": 2.1214023251243286,
+      "trades_count": 53
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "MR-BANKING-2404": {
+    "strategy_id": "MR-BANKING-2404",
+    "strategy_type": "Mean Reversion",
+    "symbols": [
+      "MSFT",
+      "GOOGL",
+      "AMZN"
+    ],
+    "universe": "Banking Sector",
+    "parameters": {
+      "lookback_period": 30,
+      "std_dev_threshold": 2.5,
+      "ma_period": 100,
+      "exit_threshold": 0.5
+    },
+    "performance": {
+      "returns": 13.194408100091884,
+      "sharpe_ratio": 1.7236771853692006,
+      "drawdown": 9.289679274461864,
+      "win_rate": 74.81699590213057,
+      "profit_factor": 1.8903946376157794,
+      "trades_count": 78
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "MR-UTILITIES-2404": {
+    "strategy_id": "MR-UTILITIES-2404",
+    "strategy_type": "Mean Reversion",
+    "symbols": [
+      "MSFT",
+      "GOOGL",
+      "AMZN"
+    ],
+    "universe": "Utilities Sector",
+    "parameters": {
+      "lookback_period": 20,
+      "std_dev_threshold": 1.5,
+      "ma_period": 100,
+      "exit_threshold": 1.5
+    },
+    "performance": {
+      "returns": 20.79741796682012,
+      "sharpe_ratio": 1.7362653729945476,
+      "drawdown": 7.132648215739174,
+      "win_rate": 74.10723538287881,
+      "profit_factor": 1.7628117260023919,
+      "trades_count": 75
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "MR-NASDAQ-2404": {
+    "strategy_id": "MR-NASDAQ-2404",
+    "strategy_type": "Mean Reversion",
+    "symbols": [
+      "MSFT",
+      "GOOGL",
+      "AMZN"
+    ],
+    "universe": "Nasdaq 100",
+    "parameters": {
+      "lookback_period": 10,
+      "std_dev_threshold": 1.5,
+      "ma_period": 50,
+      "exit_threshold": 1.5
+    },
+    "performance": {
+      "returns": 23.295889834267506,
+      "sharpe_ratio": 1.7875885510117409,
+      "drawdown": 11.91597932027259,
+      "win_rate": 67.04513254587816,
+      "profit_factor": 1.904494204977263,
+      "trades_count": 47
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  },
+  "TF-NASDAQ-2404": {
+    "strategy_id": "TF-NASDAQ-2404",
+    "strategy_type": "Trend Following",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "TSLA",
+      "NVDA",
+      "ADBE"
+    ],
+    "universe": "Nasdaq 100",
+    "parameters": {
+      "fast_ma": 30,
+      "slow_ma": 50,
+      "signal_smoothing": 9,
+      "atr_period": 10
+    },
+    "performance": {
+      "returns": 21.5915360524169,
+      "sharpe_ratio": 1.7627434835121878,
+      "drawdown": 12.463283195433162,
+      "win_rate": 51.092841481350874,
+      "profit_factor": 1.7928907341470217,
+      "trades_count": 51
+    },
+    "status": "backtested",
+    "meets_criteria": true
+  }
+}

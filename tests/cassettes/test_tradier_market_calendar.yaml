@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/markets/calendar?month=4&year=2025
+  response:
+    body:
+      string: '{"calendar":{"month":4,"year":2025,"days":{"day":[{"date":"2025-04-01","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-02","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-03","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-04","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-05","status":"closed","description":"Market
+        is closed"},{"date":"2025-04-06","status":"closed","description":"Market is
+        closed"},{"date":"2025-04-07","status":"open","description":"Market is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-08","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-09","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-10","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-11","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-12","status":"closed","description":"Market
+        is closed"},{"date":"2025-04-13","status":"closed","description":"Market is
+        closed"},{"date":"2025-04-14","status":"open","description":"Market is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-15","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-16","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-17","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-18","status":"closed","description":"Market
+        is closed for Good Friday"},{"date":"2025-04-19","status":"closed","description":"Market
+        is closed"},{"date":"2025-04-20","status":"closed","description":"Market is
+        closed"},{"date":"2025-04-21","status":"open","description":"Market is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-22","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-23","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-24","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-25","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-26","status":"closed","description":"Market
+        is closed"},{"date":"2025-04-27","status":"closed","description":"Market is
+        closed"},{"date":"2025-04-28","status":"open","description":"Market is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-29","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}},{"date":"2025-04-30","status":"open","description":"Market
+        is open","premarket":{"start":"07:00","end":"09:24"},"open":{"start":"09:30","end":"16:00"},"postmarket":{"start":"16:00","end":"19:55"}}]}}}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:23 GMT
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: ''
+version: 1

@@ -1,0 +1,11 @@
+{
+    "strategies": ["mean_reversion"],
+    "initial_allocations": {
+        "mean_reversion": 100.0
+    },
+    "initial_capital": 100000.0,
+    "commission_rate": 0.001,
+    "slippage": 0.001,
+    "rebalance_frequency": "weekly",
+    "use_mock": true
+} 

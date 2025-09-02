@@ -1,0 +1,34 @@
+{
+  "watched_symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "SPY", "QQQ"],
+  "default_timeframes": ["1d", "4h", "1h"],
+  "primary_timeframe": "1d",
+  "detector": {
+    "auto_update": true,
+    "detection_interval_seconds": 1800,
+    "min_data_points": 100,
+    "emit_events": true,
+    "use_ml_classifier": true,
+    "ml_model_type": "rf"
+  },
+  "parameter_optimizer": {
+    "transition_smoothing": true,
+    "smoothing_factor": 0.3,
+    "max_performance_history": 100,
+    "enable_scheduled_optimization": true,
+    "optimization_interval_hours": 168
+  },
+  "strategy_selector": {
+    "scoring_weights": {
+      "profit_factor": 0.3,
+      "sharpe_ratio": 0.2,
+      "win_rate": 0.1,
+      "expectancy": 0.2,
+      "correlation": 0.1,
+      "sample_size": 0.1
+    },
+    "min_strategies": 1,
+    "max_strategies": 5,
+    "min_score_threshold": 0.4,
+    "correlation_penalty": 0.5
+  }
+}

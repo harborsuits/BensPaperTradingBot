@@ -1,0 +1,191 @@
+version: '3.8'
+
+services:
+  # Nginx reverse proxy with SSL termination
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    restart: unless-stopped
+    depends_on:
+      - dashboard
+    networks:
+      - public-network
+      - bensbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - public-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+  
+  # Main trading bot engine
+  trading-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MONGODB_URI: mongodb://mongodb:27017/bensbot_trading
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PREFIX: "bensbot:"
+      # Broker API credentials can be passed through environment
+      TRADIER_API_KEY: ${TRADIER_API_KEY:-}
+      TRADIER_ACCOUNT_ID: ${TRADIER_ACCOUNT_ID:-}
+      ALPACA_API_KEY: ${ALPACA_API_KEY:-}
+      ALPACA_API_SECRET: ${ALPACA_API_SECRET:-}
+      ALPACA_PAPER: ${ALPACA_PAPER:-true}
+    command: ["python", "-m", "trading_bot.run_bot", "--config", "/app/config/config.yaml"]
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - bensbot-network
+
+  # FastAPI-based dashboard and API
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/app/logs:rw
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MONGODB_URI: mongodb://mongodb:27017/bensbot_trading
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change_this_in_production}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-adminpassword}
+      # Removed direct port mapping - traffic comes through Nginx
+    command: ["uvicorn", "trading_bot.dashboard.api:app", "--host", "0.0.0.0", "--port", "8000"]
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - redis
+      - trading-bot
+    networks:
+      - bensbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MongoDB for durable storage
+  mongodb:
+    image: mongo:6.0
+    # Ports are not exposed to host - only accessible within the docker network
+    volumes:
+      - mongodb_data:/data/db:rw
+    restart: unless-stopped
+    command: ["--wiredTigerCacheSizeGB", "1", "--auth"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-bensbot}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-change_this_in_production}
+    networks:
+      - bensbot-private-network
+      - bensbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1.5G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "echo", "'db.runCommand({serverStatus:1}).ok'" , "|", "mongosh", "admin", "-u", "$MONGO_INITDB_ROOT_USERNAME", "-p", "$MONGO_INITDB_ROOT_PASSWORD", "--quiet"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for hot-state caching and idempotency
+  redis:
+    image: redis:7-alpine
+    # Ports are not exposed to host - only accessible within the docker network
+    volumes:
+      - redis_data:/data:rw
+    restart: unless-stopped
+    command: redis-server --requirepass "${REDIS_PASSWORD:-change_this_in_production}"
+    networks:
+      - bensbot-private-network
+      - bensbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongodb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/volumes/mongodb
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/volumes/redis
+
+networks:
+  # Public network - only services that need external access
+  public-network:
+    driver: bridge
+  # Internal network for communication between services
+  bensbot-network:
+    driver: bridge
+    internal: false
+  # Private network for database communication only
+  bensbot-private-network:
+    driver: bridge
+    internal: true

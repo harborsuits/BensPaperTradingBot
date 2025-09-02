@@ -1,0 +1,23 @@
+fastapi==0.116.0
+uvicorn==0.35.0
+
+pandas==2.3.2
+numpy==2.3.1
+matplotlib==3.8.4
+psutil==5.9.8
+pytz
+
+requests==2.32.5
+python-dotenv==1.1.0
+tenacity==9.1.2
+cachetools==6.1.0
+backoff==2.2.1
+
+yfinance==0.2.43
+ccxt==4.5.1
+alpaca-trade-api==3.1.1
+pymongo==4.14.1
+
+# Optional, used by websocket clients/servers via dependencies of uvicorn/fastapi
+h11==0.16.0
+

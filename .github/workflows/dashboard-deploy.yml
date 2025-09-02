@@ -1,0 +1,178 @@
+name: Deploy Dashboard
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'trading_bot/api/**'
+      - 'trading_bot/dashboard/**'
+      - 'trading_bot/app.py'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'requirements.txt'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'trading_bot/api/**'
+      - 'trading_bot/dashboard/**'
+      - 'trading_bot/app.py'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'requirements.txt'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: Install frontend dependencies
+      run: |
+        cd trading_bot/dashboard
+        npm ci
+    
+    - name: Install backend dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Lint frontend
+      run: |
+        cd trading_bot/dashboard
+        npm run lint
+    
+    - name: Build frontend
+      run: |
+        cd trading_bot/dashboard
+        npm run build
+    
+    - name: Test API
+      run: |
+        pytest trading_bot/tests/test_api_endpoints.py -v
+    
+    - name: Upload frontend build
+      uses: actions/upload-artifact@v3
+      with:
+        name: dashboard-build
+        path: |
+          trading_bot/dashboard/build
+          trading_bot/dashboard/dist
+  
+  deploy-dashboard:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download frontend build
+      uses: actions/download-artifact@v3
+      with:
+        name: dashboard-build
+        path: build
+    
+    - name: Set up environment variables
+      run: |
+        echo "DEPLOY_ENV=${{ github.event.inputs.environment || 'staging' }}" >> $GITHUB_ENV
+        if [ "${{ github.event.inputs.environment }}" = "production" ] || [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+        fi
+    
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v2
+      with:
+        publish-dir: './build'
+        production-branch: main
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: 'Deploy from GitHub Actions'
+        enable-pull-request-comment: true
+        enable-commit-comment: true
+        overwrites-pull-request-comment: true
+        production-deploy: ${{ env.DEPLOY_ENV == 'production' }}
+        alias: ${{ env.DEPLOY_ENV }}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      timeout-minutes: 5
+  
+  deploy-api:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install gunicorn
+    
+    - name: Generate environment variables
+      run: |
+        mkdir -p .github/workflows/temp
+        echo "TRADIER_API_KEY=${{ secrets.TRADIER_API_KEY }}" > .github/workflows/temp/.env
+        echo "TRADIER_ACCOUNT_ID=${{ secrets.TRADIER_ACCOUNT_ID }}" >> .github/workflows/temp/.env
+        echo "ALPHA_VANTAGE_KEY=${{ secrets.ALPHA_VANTAGE_KEY }}" >> .github/workflows/temp/.env
+        echo "FINNHUB_KEY=${{ secrets.FINNHUB_KEY }}" >> .github/workflows/temp/.env
+        echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" >> .github/workflows/temp/.env
+        echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .github/workflows/temp/.env
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .github/workflows/temp/.env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .github/workflows/temp/.env
+    
+    - name: Zip application
+      run: |
+        zip -r deploy.zip . -x "*.git*" -x "*.github*" -x "node_modules/*" -x "__pycache__/*" -x "venv/*" -x "test_venv/*"
+    
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.14
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: ${{ env.DEPLOY_ENV == 'production' && secrets.HEROKU_PROD_APP_NAME || secrets.HEROKU_STAGING_APP_NAME }}
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        usedocker: true
+        env_file: .github/workflows/temp/.env
+      env:
+        DEPLOY_ENV: ${{ github.event.inputs.environment || 'staging' }}
+    
+    - name: Clean up
+      run: rm -rf .github/workflows/temp

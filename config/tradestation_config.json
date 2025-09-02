@@ -1,0 +1,30 @@
+{
+  "max_retries": 3,
+  "retry_delay": 2,
+  "auto_failover": true,
+  "credential_store": {
+    "type": "encrypted",
+    "path": "data/credentials.enc",
+    "master_password": "${TRADING_BOT_MASTER_PASSWORD}"
+  },
+  "audit_log": {
+    "enabled": true,
+    "type": "sqlite",
+    "path": "data/trading_audit.db"
+  },
+  "brokers": {
+    "tradestation": {
+      "enabled": true,
+      "client_id": "YOUR_TRADESTATION_CLIENT_ID",
+      "client_secret": "YOUR_TRADESTATION_CLIENT_SECRET",
+      "redirect_uri": "http://localhost:8080/callback",
+      "sandbox": true,
+      "primary": true
+    }
+  },
+  "asset_routing": {
+    "stock": "tradestation",
+    "option": "tradestation",
+    "futures": "tradestation"
+  }
+}

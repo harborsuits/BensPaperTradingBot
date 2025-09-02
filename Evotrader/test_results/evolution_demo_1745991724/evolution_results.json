@@ -1,0 +1,553 @@
+{
+  "generations": [
+    {
+      "generation": 0,
+      "avg_fitness": 0.5815819765415817,
+      "max_fitness": 0.8516302168092688,
+      "strategy_distribution": {
+        "BollingerBands": 10,
+        "VerticalSpread": 2,
+        "RSIStrategy": 3,
+        "MovingAverageCrossover": 3,
+        "IronCondor": 2
+      },
+      "best_strategy": {
+        "generation": 0,
+        "id": "RSIStrategy_36169",
+        "type": "RSIStrategy",
+        "fitness": 0.8516302168092688,
+        "parameters": {
+          "rsi_period": 16,
+          "overbought": 76,
+          "oversold": 25
+        },
+        "metrics": {
+          "fitness": 0.8516302168092688,
+          "profit": 85.16302168092687,
+          "win_rate": 0.7258151084046344,
+          "drawdown": 4.4510934957219375
+        }
+      }
+    },
+    {
+      "generation": 1,
+      "avg_fitness": 0.579253149479746,
+      "max_fitness": 0.8356114167317664,
+      "strategy_distribution": {
+        "RSIStrategy": 3,
+        "BollingerBands": 14,
+        "VerticalSpread": 1,
+        "IronCondor": 1,
+        "MovingAverageCrossover": 1
+      },
+      "best_strategy": {
+        "generation": 1,
+        "id": "BollingerBands_49681",
+        "type": "BollingerBands",
+        "fitness": 0.8356114167317664,
+        "parameters": {
+          "period": 33,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.09609482276095486
+        },
+        "metrics": {
+          "fitness": 0.8356114167317664,
+          "profit": 83.56114167317664,
+          "win_rate": 0.7178057083658832,
+          "drawdown": 4.931657498047008
+        }
+      }
+    },
+    {
+      "generation": 2,
+      "avg_fitness": 0.5923892123725994,
+      "max_fitness": 0.867952756497962,
+      "strategy_distribution": {
+        "BollingerBands": 17,
+        "RSIStrategy": 2,
+        "MovingAverageCrossover": 1
+      },
+      "best_strategy": {
+        "generation": 2,
+        "id": "BollingerBands_95309",
+        "type": "BollingerBands",
+        "fitness": 0.867952756497962,
+        "parameters": {
+          "period": 33,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.09609482276095486
+        },
+        "metrics": {
+          "fitness": 0.867952756497962,
+          "profit": 86.7952756497962,
+          "win_rate": 0.733976378248981,
+          "drawdown": 3.96141730506114
+        }
+      }
+    },
+    {
+      "generation": 3,
+      "avg_fitness": 0.628524329115258,
+      "max_fitness": 0.9060771244327518,
+      "strategy_distribution": {
+        "BollingerBands": 18,
+        "RSIStrategy": 1,
+        "MovingAverageCrossover": 1
+      },
+      "best_strategy": {
+        "generation": 3,
+        "id": "BollingerBands_94978",
+        "type": "BollingerBands",
+        "fitness": 0.9060771244327518,
+        "parameters": {
+          "period": 19,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.061471349077509736
+        },
+        "metrics": {
+          "fitness": 0.9060771244327518,
+          "profit": 90.60771244327518,
+          "win_rate": 0.7530385622163759,
+          "drawdown": 2.8176862670174465
+        }
+      }
+    },
+    {
+      "generation": 4,
+      "avg_fitness": 0.6505092199502924,
+      "max_fitness": 0.8347514548467769,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 4,
+        "id": "BollingerBands_70925",
+        "type": "BollingerBands",
+        "fitness": 0.8347514548467769,
+        "parameters": {
+          "period": 19,
+          "std_dev": 2.720299494966625,
+          "signal_threshold": 0.061471349077509736
+        },
+        "metrics": {
+          "fitness": 0.8347514548467769,
+          "profit": 83.4751454846777,
+          "win_rate": 0.7173757274233885,
+          "drawdown": 4.957456354596692
+        }
+      }
+    },
+    {
+      "generation": 5,
+      "avg_fitness": 0.6319514219259303,
+      "max_fitness": 0.8778777208526454,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 5,
+        "id": "BollingerBands_65210",
+        "type": "BollingerBands",
+        "fitness": 0.8778777208526454,
+        "parameters": {
+          "period": 18,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.026891379210606643
+        },
+        "metrics": {
+          "fitness": 0.8778777208526454,
+          "profit": 87.78777208526454,
+          "win_rate": 0.7389388604263227,
+          "drawdown": 3.663668374420639
+        }
+      }
+    },
+    {
+      "generation": 6,
+      "avg_fitness": 0.7531743709953416,
+      "max_fitness": 0.95,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 6,
+        "id": "BollingerBands_80211",
+        "type": "BollingerBands",
+        "fitness": 0.95,
+        "parameters": {
+          "period": 18,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.026891379210606643
+        },
+        "metrics": {
+          "fitness": 0.95,
+          "profit": 95.0,
+          "win_rate": 0.7749999999999999,
+          "drawdown": 1.5000000000000013
+        }
+      }
+    },
+    {
+      "generation": 7,
+      "avg_fitness": 0.7580837673319276,
+      "max_fitness": 0.95,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 7,
+        "id": "BollingerBands_50557",
+        "type": "BollingerBands",
+        "fitness": 0.95,
+        "parameters": {
+          "period": 16,
+          "std_dev": 2.720299494966625,
+          "signal_threshold": 0.061471349077509736
+        },
+        "metrics": {
+          "fitness": 0.95,
+          "profit": 95.0,
+          "win_rate": 0.7749999999999999,
+          "drawdown": 1.5000000000000013
+        }
+      }
+    },
+    {
+      "generation": 8,
+      "avg_fitness": 0.7731982275505855,
+      "max_fitness": 0.95,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 8,
+        "id": "BollingerBands_81364",
+        "type": "BollingerBands",
+        "fitness": 0.95,
+        "parameters": {
+          "period": 24,
+          "std_dev": 2.2125893717113176,
+          "signal_threshold": 0.10024461257930477
+        },
+        "metrics": {
+          "fitness": 0.95,
+          "profit": 95.0,
+          "win_rate": 0.7749999999999999,
+          "drawdown": 1.5000000000000013
+        }
+      }
+    },
+    {
+      "generation": 9,
+      "avg_fitness": 0.7357539790234449,
+      "max_fitness": 0.95,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 9,
+        "id": "BollingerBands_45129",
+        "type": "BollingerBands",
+        "fitness": 0.95,
+        "parameters": {
+          "period": 24,
+          "std_dev": 2.2125893717113176,
+          "signal_threshold": 0.10024461257930477
+        },
+        "metrics": {
+          "fitness": 0.95,
+          "profit": 95.0,
+          "win_rate": 0.7749999999999999,
+          "drawdown": 1.5000000000000013
+        }
+      }
+    },
+    {
+      "generation": 10,
+      "avg_fitness": 0.7851445438013622,
+      "max_fitness": 0.95,
+      "strategy_distribution": {
+        "BollingerBands": 20
+      },
+      "best_strategy": {
+        "generation": 10,
+        "id": "BollingerBands_71292",
+        "type": "BollingerBands",
+        "fitness": 0.95,
+        "parameters": {
+          "period": 18,
+          "std_dev": 2.1240400897608644,
+          "signal_threshold": 0.02564549886959707
+        },
+        "metrics": {
+          "fitness": 0.95,
+          "profit": 95.0,
+          "win_rate": 0.7749999999999999,
+          "drawdown": 1.5000000000000013
+        }
+      }
+    }
+  ],
+  "strategy_distribution": [
+    {
+      "BollingerBands": 10,
+      "VerticalSpread": 2,
+      "RSIStrategy": 3,
+      "MovingAverageCrossover": 3,
+      "IronCondor": 2
+    },
+    {
+      "RSIStrategy": 3,
+      "BollingerBands": 14,
+      "VerticalSpread": 1,
+      "IronCondor": 1,
+      "MovingAverageCrossover": 1
+    },
+    {
+      "BollingerBands": 17,
+      "RSIStrategy": 2,
+      "MovingAverageCrossover": 1
+    },
+    {
+      "BollingerBands": 18,
+      "RSIStrategy": 1,
+      "MovingAverageCrossover": 1
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    },
+    {
+      "BollingerBands": 20
+    }
+  ],
+  "best_strategies": [
+    {
+      "generation": 0,
+      "id": "RSIStrategy_36169",
+      "type": "RSIStrategy",
+      "fitness": 0.8516302168092688,
+      "parameters": {
+        "rsi_period": 16,
+        "overbought": 76,
+        "oversold": 25
+      },
+      "metrics": {
+        "fitness": 0.8516302168092688,
+        "profit": 85.16302168092687,
+        "win_rate": 0.7258151084046344,
+        "drawdown": 4.4510934957219375
+      }
+    },
+    {
+      "generation": 1,
+      "id": "BollingerBands_49681",
+      "type": "BollingerBands",
+      "fitness": 0.8356114167317664,
+      "parameters": {
+        "period": 33,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.09609482276095486
+      },
+      "metrics": {
+        "fitness": 0.8356114167317664,
+        "profit": 83.56114167317664,
+        "win_rate": 0.7178057083658832,
+        "drawdown": 4.931657498047008
+      }
+    },
+    {
+      "generation": 2,
+      "id": "BollingerBands_95309",
+      "type": "BollingerBands",
+      "fitness": 0.867952756497962,
+      "parameters": {
+        "period": 33,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.09609482276095486
+      },
+      "metrics": {
+        "fitness": 0.867952756497962,
+        "profit": 86.7952756497962,
+        "win_rate": 0.733976378248981,
+        "drawdown": 3.96141730506114
+      }
+    },
+    {
+      "generation": 3,
+      "id": "BollingerBands_94978",
+      "type": "BollingerBands",
+      "fitness": 0.9060771244327518,
+      "parameters": {
+        "period": 19,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.061471349077509736
+      },
+      "metrics": {
+        "fitness": 0.9060771244327518,
+        "profit": 90.60771244327518,
+        "win_rate": 0.7530385622163759,
+        "drawdown": 2.8176862670174465
+      }
+    },
+    {
+      "generation": 4,
+      "id": "BollingerBands_70925",
+      "type": "BollingerBands",
+      "fitness": 0.8347514548467769,
+      "parameters": {
+        "period": 19,
+        "std_dev": 2.720299494966625,
+        "signal_threshold": 0.061471349077509736
+      },
+      "metrics": {
+        "fitness": 0.8347514548467769,
+        "profit": 83.4751454846777,
+        "win_rate": 0.7173757274233885,
+        "drawdown": 4.957456354596692
+      }
+    },
+    {
+      "generation": 5,
+      "id": "BollingerBands_65210",
+      "type": "BollingerBands",
+      "fitness": 0.8778777208526454,
+      "parameters": {
+        "period": 18,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.026891379210606643
+      },
+      "metrics": {
+        "fitness": 0.8778777208526454,
+        "profit": 87.78777208526454,
+        "win_rate": 0.7389388604263227,
+        "drawdown": 3.663668374420639
+      }
+    },
+    {
+      "generation": 6,
+      "id": "BollingerBands_80211",
+      "type": "BollingerBands",
+      "fitness": 0.95,
+      "parameters": {
+        "period": 18,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.026891379210606643
+      },
+      "metrics": {
+        "fitness": 0.95,
+        "profit": 95.0,
+        "win_rate": 0.7749999999999999,
+        "drawdown": 1.5000000000000013
+      }
+    },
+    {
+      "generation": 7,
+      "id": "BollingerBands_50557",
+      "type": "BollingerBands",
+      "fitness": 0.95,
+      "parameters": {
+        "period": 16,
+        "std_dev": 2.720299494966625,
+        "signal_threshold": 0.061471349077509736
+      },
+      "metrics": {
+        "fitness": 0.95,
+        "profit": 95.0,
+        "win_rate": 0.7749999999999999,
+        "drawdown": 1.5000000000000013
+      }
+    },
+    {
+      "generation": 8,
+      "id": "BollingerBands_81364",
+      "type": "BollingerBands",
+      "fitness": 0.95,
+      "parameters": {
+        "period": 24,
+        "std_dev": 2.2125893717113176,
+        "signal_threshold": 0.10024461257930477
+      },
+      "metrics": {
+        "fitness": 0.95,
+        "profit": 95.0,
+        "win_rate": 0.7749999999999999,
+        "drawdown": 1.5000000000000013
+      }
+    },
+    {
+      "generation": 9,
+      "id": "BollingerBands_45129",
+      "type": "BollingerBands",
+      "fitness": 0.95,
+      "parameters": {
+        "period": 24,
+        "std_dev": 2.2125893717113176,
+        "signal_threshold": 0.10024461257930477
+      },
+      "metrics": {
+        "fitness": 0.95,
+        "profit": 95.0,
+        "win_rate": 0.7749999999999999,
+        "drawdown": 1.5000000000000013
+      }
+    },
+    {
+      "generation": 10,
+      "id": "BollingerBands_71292",
+      "type": "BollingerBands",
+      "fitness": 0.95,
+      "parameters": {
+        "period": 18,
+        "std_dev": 2.1240400897608644,
+        "signal_threshold": 0.02564549886959707
+      },
+      "metrics": {
+        "fitness": 0.95,
+        "profit": 95.0,
+        "win_rate": 0.7749999999999999,
+        "drawdown": 1.5000000000000013
+      }
+    }
+  ],
+  "avg_fitness": [
+    0.5815819765415817,
+    0.579253149479746,
+    0.5923892123725994,
+    0.628524329115258,
+    0.6505092199502924,
+    0.6319514219259303,
+    0.7531743709953416,
+    0.7580837673319276,
+    0.7731982275505855,
+    0.7357539790234449,
+    0.7851445438013622
+  ],
+  "max_fitness": [
+    0.8516302168092688,
+    0.8356114167317664,
+    0.867952756497962,
+    0.9060771244327518,
+    0.8347514548467769,
+    0.8778777208526454,
+    0.95,
+    0.95,
+    0.95,
+    0.95,
+    0.95
+  ]
+}

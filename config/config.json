@@ -1,0 +1,145 @@
+{
+    "output_dir": "./output",
+    "data_sources": {
+        "spy": {
+            "path": "./data/spy_daily.csv",
+            "index_col": "date",
+            "description": "S&P 500 ETF daily data"
+        },
+        "qqq": {
+            "path": "./data/qqq_daily.csv",
+            "index_col": "date",
+            "description": "NASDAQ 100 ETF daily data"
+        }
+    },
+    "feature_engineering": {
+        "include_technicals": true,
+        "ta_feature_sets": ["momentum", "trend", "volatility", "volume"],
+        "lookback_periods": [5, 10, 20, 50, 200],
+        "include_lags": true,
+        "lags": [1, 2, 3, 5, 10],
+        "normalize_features": true,
+        "detect_market_regime": true,
+        "feature_selection": "importance",
+        "max_features": 50,
+        "add_pca_components": false
+    },
+    "model_trainer": {
+        "model_algorithm": "random_forest",
+        "n_estimators": 100,
+        "max_depth": 10,
+        "cv_splits": 5,
+        "calculate_shap": true,
+        "class_weight": "balanced",
+        "min_regime_samples": 50,
+        "random_seed": 42
+    },
+    "trade_analyzer": {
+        "log_save_frequency": 10
+    },
+    "visualization": {
+        "interactive": true
+    },
+    "models": [
+        {
+            "name": "spy_direction",
+            "type": "classification",
+            "data_source": "spy",
+            "target_horizon": 5,
+            "threshold": 0.01,
+            "use_regime_models": true,
+            "description": "Predict SPY 5-day direction (up/down)"
+        },
+        {
+            "name": "spy_return",
+            "type": "regression",
+            "data_source": "spy",
+            "target_horizon": 5,
+            "description": "Predict SPY 5-day return percentage"
+        },
+        {
+            "name": "qqq_direction",
+            "type": "classification",
+            "data_source": "qqq",
+            "target_horizon": 5,
+            "threshold": 0.01,
+            "use_regime_models": true,
+            "description": "Predict QQQ 5-day direction (up/down)"
+        }
+    ],
+    "backtest": {
+        "model_name": "spy_direction",
+        "data_source": "spy",
+        "test_size": 0.2,
+        "transaction_cost": 0.001,
+        "initial_capital": 10000,
+        "symbols": ["AAPL", "MSFT", "GOOG"],
+        "start_date": "2022-01-01",
+        "end_date": "2023-01-01"
+    },
+    "api_keys": {
+        "finnhub": "YOUR_FINNHUB_API_KEY",
+        "marketaux": "YOUR_MARKETAUX_API_KEY",
+        "newsdata": "YOUR_NEWSDATA_API_KEY",
+        "gnews": "YOUR_GNEWS_API_KEY",
+        "tradingview": "YOUR_TRADINGVIEW_API_KEY",
+        "alpha_vantage": "YOUR_ALPHA_VANTAGE_API_KEY"
+    },
+    "backtest_settings": {
+        "default_symbols": [
+            "AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", 
+            "JPM", "BAC", "V", "SPY", "QQQ", "IWM"
+        ],
+        "default_strategies": [
+            "Momentum", 
+            "Trend Following", 
+            "Breakout", 
+            "Mean Reversion", 
+            "Volatility Expansion"
+        ],
+        "lookback_days": 90,
+        "trading_fee_pct": 0.0005,
+        "slippage_pct": 0.0010
+    },
+    "tradingview_settings": {
+        "chart_template": "Default",
+        "timeframe": "D",
+        "script_version": "v5"
+    },
+    "system_settings": {
+        "cache_duration_hours": 24,
+        "max_memory_usage_mb": 2048,
+        "log_level": "INFO",
+        "notification_email": ""
+    },
+    "alpha_vantage_api_key": "YOUR_API_KEY_HERE",
+    "strategies": {
+        "sma_crossover": {
+            "short_window": 20,
+            "long_window": 50
+        },
+        "macd": {
+            "fast_period": 12,
+            "slow_period": 26,
+            "signal_period": 9
+        },
+        "rsi": {
+            "period": 14,
+            "overbought": 70,
+            "oversold": 30
+        },
+        "bollinger_bands": {
+            "period": 20,
+            "std_dev": 2
+        },
+        "multi_indicator": {
+            "enabled_indicators": ["sma_crossover", "rsi"],
+            "weights": [0.5, 0.5]
+        }
+    },
+    "output": {
+        "save_plots": true,
+        "save_trade_log": true,
+        "results_dir": "backtest_results"
+    }
+} 

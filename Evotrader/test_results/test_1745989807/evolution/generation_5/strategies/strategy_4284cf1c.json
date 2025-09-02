@@ -1,0 +1,44 @@
+{
+  "strategy_id": "strategy_4284cf1c",
+  "parameters": {
+    "fast_period": 8,
+    "slow_period": 5,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 5,
+    "parent_ids": [
+      "strategy_a19f77dc"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_8bd3db4c",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_c1d056b7",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_189c169f",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_eccded78",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_a19f77dc",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "MovingAverageCrossover"
+}

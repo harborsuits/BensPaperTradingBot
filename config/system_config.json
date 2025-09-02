@@ -1,0 +1,24 @@
+{
+  "enable_market_regime_system": true,
+  "market_regime_config_path": "config/market_regime_config.json",
+  "watched_symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "SPY", "QQQ"],
+  "data_dir": "data",
+  "trading_hours": {
+    "start": "09:30",
+    "end": "16:00",
+    "timezone": "America/New_York"
+  },
+  "initial_capital": 10000,
+  "risk_per_trade": 0.02,
+  "max_open_positions": 5,
+  "broker_config_path": "config/broker_config.json",
+  "market_data_config_path": "config/market_data_config.json",
+  "log_level": "INFO",
+  "system_safeguards": {
+    "circuit_breakers": {
+      "max_drawdown_percent": 10,
+      "max_daily_loss_percent": 3,
+      "consecutive_loss_count": 3
+    }
+  }
+}

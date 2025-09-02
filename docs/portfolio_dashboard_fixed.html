@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BensBot Pro - Portfolio Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #121a22;
+            --text-color: #e6e6e6;
+            --accent-color: #3771e0;
+            --secondary-bg: #1a2531;
+            --border-color: #2a3948;
+            --positive-color: #1eb980;
+            --negative-color: #ff5252;
+            --warning-color: #ffb74d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+        
+        .date {
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        .container {
+            padding: 20px 30px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: #243242;
+        }
+        
+        .market-regime {
+            background-color: var(--secondary-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .market-regime h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .market-regime p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .action-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .action-link:hover {
+            text-decoration: underline;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .portfolio-card {
+            background-color: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .portfolio-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .change {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .change-positive {
+            color: var(--positive-color);
+        }
+        
+        .change-negative {
+            color: var(--negative-color);
+        }
+        
+        .arrow-up {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid var(--positive-color);
+            margin-right: 5px;
+        }
+        
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid var(--negative-color);
+            margin-right: 5px;
+        }
+        
+        .label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background-color: #0e1621;
+            border-right: 1px solid var(--border-color);
+            padding-top: 20px;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        
+        .nav-section {
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+        
+        .nav-section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #888;
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link.active {
+            background-color: rgba(55, 113, 224, 0.1);
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+        
+        .nav-icon {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .positions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .positions-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background-color: var(--secondary-bg);
+            color: #888;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .positions-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .positions-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-profitable {
+            background-color: rgba(30, 185, 128, 0.1);
+            color: var(--positive-color);
+        }
+        
+        .status-at-risk {
+            background-color: rgba(255, 82, 82, 0.1);
+            color: var(--negative-color);
+        }
+        
+        .status-neutral {
+            background-color: rgba(255, 183, 77, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .action-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            padding: 8px;
+            background-color: var(--secondary-bg);
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .action-icon:hover {
+            background-color: #243242;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Portfolio Dashboard</h1>
+            <div class="date">Sunday, May 4, 2025</div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn">Actions</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="market-regime">
+            <h2>Current Market Regime: Bullish Trend</h2>
+            <p>The market is in a strong bullish trend with decreasing volatility. The VIX index is at 18.5, down 2.1 from yesterday. Your portfolio is currently well-positioned for this regime with 53.9% of assets allocated to trend-following strategies.</p>
+            <div class="actions">
+                <a href="#" class="action-link">Market Analysis</a>
+                <a href="#" class="action-link">Optimize Allocations</a>
+            </div>
+        </div>
+        
+        <div class="portfolio-grid">
+            <div class="portfolio-card">
+                <div class="label">Total Portfolio Value</div>
+                <div class="portfolio-value">$137,251</div>
+                <div class="change change-positive">
+                    <div class="arrow-up"></div>
+                    <div>$1824.63 today</div>
+                </div>
+                <div class="change change-positive">
+                    <div class="arrow-up"></div>
+                    <div>9.87% total</div>
+                </div>
+            </div>
+            
+            <div class="portfolio-card">
+                <div class="label">Uninvested Cash</div>
+                <div class="portfolio-value">$42,320</div>
+                <div class="label">Available for trading</div>
+                <div class="change">30.8% of portfolio</div>
+            </div>
+            
+            <div class="portfolio-card">
+                <div class="label">Active Positions</div>
+                <div class="portfolio-value">18</div>
+                <div class="change change-positive">
+                    <div class="arrow-up"></div>
+                    <div>72.4% Win Rate (30d)</div>
+                </div>
+                <div class="change change-positive">
+                    <div class="arrow-up"></div>
+                    <div>4.8% Avg Return per Trade</div>
+                </div>
+            </div>
+            
+            <div class="portfolio-card">
+                <div class="label">Strategy Allocations</div>
+                <div style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Momentum</span>
+                        <span>34.24%</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: #243242; border-radius: 4px; overflow: hidden;">
+                        <div style="width: 34.24%; height: 100%; background-color: var(--accent-color);"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Mean Reversion</span>
+                        <span>22.44%</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: #243242; border-radius: 4px; overflow: hidden;">
+                        <div style="width: 22.44%; height: 100%; background-color: #5c8af0;"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Breakout</span>
+                        <span>19.70%</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background-color: #243242; border-radius: 4px; overflow: hidden;">
+                        <div style="width: 19.7%; height: 100%; background-color: #7fa3f5;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="margin-top: 30px; margin-bottom: 15px;">Top Positions</h2>
+        <table class="positions-table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Change</th>
+                    <th>Strategy</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AAPL</td>
+                    <td>Apple Inc</td>
+                    <td>$22,150</td>
+                    <td class="change-positive">+2.3%</td>
+                    <td>Momentum</td>
+                    <td><span class="status-badge status-profitable">Profitable</span></td>
+                    <td>
+                        <span class="action-icon">⋯</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>MSFT</td>
+                    <td>Microsoft Corp</td>
+                    <td>$19,750</td>
+                    <td class="change-positive">+1.8%</td>
+                    <td>Momentum</td>
+                    <td><span class="status-badge status-profitable">Profitable</span></td>
+                    <td>
+                        <span class="action-icon">⋯</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>AMD</td>
+                    <td>Advanced Micro Devices</td>
+                    <td>$12,800</td>
+                    <td class="change-negative">-0.7%</td>
+                    <td>Momentum</td>
+                    <td><span class="status-badge status-at-risk">At Risk</span></td>
+                    <td>
+                        <span class="action-icon">⋯</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>SPY Call Spread</td>
+                    <td>S&P 500 ETF Options</td>
+                    <td>$8,500</td>
+                    <td class="change-positive">+5.2%</td>
+                    <td>Options Spread</td>
+                    <td><span class="status-badge status-profitable">Profitable</span></td>
+                    <td>
+                        <span class="action-icon">⋯</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>NVDA</td>
+                    <td>NVIDIA Corp</td>
+                    <td>$10,350</td>
+                    <td class="change-positive">+2.7%</td>
+                    <td>Breakout</td>
+                    <td><span class="status-badge status-profitable">Profitable</span></td>
+                    <td>
+                        <span class="action-icon">⋯</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 30px;">
+            <h2 style="margin-bottom: 15px;">Recent Market News Impact</h2>
+            <div class="market-regime" style="background-color: rgba(55, 113, 224, 0.05);">
+                <h3 style="color: var(--accent-color);">Fed maintains interest rates, hints at future cuts</h3>
+                <p>The Federal Reserve has maintained interest rates at the current level, but language in their statement suggests potential cuts in the coming months if inflation continues to moderate. This news has positively impacted rate-sensitive sectors in your portfolio, particularly financials and technology.</p>
+                <div class="label">Portfolio Impact: Positive</div>
+                <div class="actions">
+                    <a href="#" class="action-link">View Full Analysis</a>
+                    <a href="#" class="action-link">Adjust Strategy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // This would be where you'd add JavaScript to make the dashboard interactive
+        // For a static HTML preview, we're keeping this minimal
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Portfolio Dashboard loaded');
+        });
+    </script>
+</body>
+</html>

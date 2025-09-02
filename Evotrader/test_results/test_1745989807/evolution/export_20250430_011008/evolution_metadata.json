@@ -1,0 +1,14 @@
+{
+  "generations": 5,
+  "total_strategies": 20,
+  "config": {
+    "output_dir": "test_results/test_1745989807/evolution",
+    "selection_percentage": 0.3,
+    "mutation_rate": 0.2,
+    "crossover_rate": 0.3,
+    "population_size": 20,
+    "max_generations": 10
+  },
+  "timestamp": "2025-04-30T01:10:08.160908",
+  "duration_seconds": 0.5840611457824707
+}

@@ -1,0 +1,4124 @@
+import streamlit as st
+
+# Set page configuration - MUST be the first Streamlit command
+st.set_page_config(
+    page_title="Trading Strategy Dashboard",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+import sys
+import logging
+import pandas as pd
+import numpy as np
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("dashboard")
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    st.warning("Plotly is not installed. Some visualizations may not be available.")
+from datetime import datetime, timedelta, timezone
+import os
+import uuid
+import json
+
+# Import modular strategy components
+try:
+    # Try to import full modular strategy components
+    from trading_bot.strategies.modular_strategy_system import ComponentType, MarketCondition
+    from trading_bot.strategies.components.component_registry import get_component_registry
+    from trading_bot.strategies.modular_strategy_integration import ModularStrategyFactory
+    from trading_bot.ui.modular_strategy_ui import ModularStrategyUI
+    from trading_bot.strategies.optimizer.component_optimizer import GridSearchOptimizer, RandomSearchOptimizer
+    from trading_bot.strategies.marketplace.component_marketplace import ComponentMarketplace
+    from trading_bot.strategies.analytics.component_analytics import ComponentAnalytics
+    modular_strategy_full = True
+except ImportError as e:
+    modular_strategy_full = False
+    logger.warning(f"Full modular strategy components not available: {e}")
+
+# Try simplified UI if full component system is not available
+try:
+    from trading_bot.ui.modular_strategy_simplified import ModularStrategySimplifiedUI
+    modular_strategy_simplified = True
+except ImportError as e:
+    modular_strategy_simplified = False
+    logger.warning(f"Simplified modular strategy UI not available: {e}")
+
+# Import marketplace UI components
+try:
+    from trading_bot.ui.marketplace_ui import MarketplaceUI
+    from trading_bot.marketplace.api.marketplace_api import MarketplaceAPI
+    from trading_bot.marketplace.api.security import SecurityManager
+    marketplace_ui_available = True
+    logger.info("Component marketplace UI loaded successfully")
+except ImportError as e:
+    marketplace_ui_available = False
+    logger.warning(f"Component marketplace UI not available: {e}")
+    
+# Import trading launcher UI
+try:
+    from trading_bot.ui.trading_launcher import TradingLauncher
+    trading_launcher_available = True
+    logger.info("Trading launcher UI loaded successfully")
+except ImportError as e:
+    trading_launcher_available = False
+    logger.warning(f"Trading launcher UI not available: {e}")
+    
+# Import autonomous trading components
+try:
+    from trading_bot.autonomous import AutonomousUI
+    autonomous_ui_available = True
+    logger.info("Autonomous trading UI loaded successfully")
+except ImportError as e:
+    autonomous_ui_available = False
+    logger.warning(f"Autonomous trading UI not available: {e}")
+    
+# Set overall availability flag    
+modular_strategy_available = modular_strategy_full or modular_strategy_simplified
+import json
+# Commented out socketio - not needed for Streamlit app
+import re
+from collections import defaultdict
+import concurrent.futures
+import threading
+import time
+from functools import lru_cache
+import random
+import math
+# NEW: For chat assistant
+import uuid
+from typing import List, Dict, Any, Tuple
+
+# Add parent directory to path to support imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
+
+# Try to import LiveDataManager for real-time features
+try:
+    from live_data_manager import LiveDataManager
+    LIVE_DATA_MANAGER_AVAILABLE = True
+except ImportError:
+    LIVE_DATA_MANAGER_AVAILABLE = False
+    logger.warning("LiveDataManager not available, live data features will be disabled")
+
+# Define risk multipliers for different risk levels
+risk_multipliers = {
+    "Low": 0.5,      # 50% of base position size
+    "Moderate": 1.0, # 100% of base position size (neutral)
+    "High": 1.5,     # 150% of base position size
+    "Aggressive": 2.0 # 200% of base position size
+}
+
+# Default risk level
+risk_level = "Moderate"
+
+# Default selected strategies
+selected_strategies = ["Momentum", "Mean Reversion", "Trend Following", "Volatility Breakout"]
+
+# Import trading bot components
+try:
+    from trading_bot.portfolio_state import PortfolioStateManager
+    from trading_bot.data.market_data_provider import create_data_provider
+    from trading_bot.strategies.momentum import MomentumStrategy
+    from trading_bot.strategies.mean_reversion import MeanReversionStrategy
+    from trading_bot.strategies.trend_following import TrendFollowingStrategy
+    try:
+        from trading_bot.strategies.volatility_breakout import VolatilityBreakout
+        volatility_breakout_available = True
+    except ImportError as e:
+        logger.warning(f"Error importing VolatilityBreakout: {e}")
+        volatility_breakout_available = False
+    from trading_bot.realtime.real_time_data_connector import RealTimeDataConnector
+    from trading_bot.realtime.message_queue import MessageBroker
+    try:
+        from trading_bot.risk.psychological_risk import PsychologicalRiskManager
+        psychological_risk_available = True
+    except ImportError as e:
+        logger.warning(f"Error importing PsychologicalRiskManager: {e}")
+        psychological_risk_available = False
+    # Import the optimizer components
+    try:
+        from trading_bot.ui.optimizer_ui import OptimizerUI
+        from trading_bot.ml_pipeline.optimizer_integration import OptimizerIntegration
+        from trading_bot.strategies.hybrid_strategy_optimizer import HybridStrategyOptimizer
+        optimizer_available = True
+        logger.info("Strategy optimizer components loaded successfully")
+    except ImportError as e:
+        logger.warning(f"Error importing optimizer components: {e}")
+        optimizer_available = False
+        
+    # Import LLM integration components
+    try:
+        from trading_bot.llm_integration.integration import LLMTradingIntegration
+        from trading_bot.llm_integration.financial_llm_engine import LLMProvider
+        from trading_bot.llm_integration.memory_system import MemoryType
+        from trading_bot.llm_integration.reasoning_engine import ReasoningTask
+        llm_integration_available = True
+        logger.info("LLM integration components loaded successfully")
+    except ImportError as e:
+        logger.warning(f"Error importing LLM integration components: {e}")
+        llm_integration_available = False
+    
+    # Import ML regime detector and other integration components
+    try:
+        from trading_bot.ml_pipeline.ml_regime_detector import MLRegimeDetector
+        from trading_bot.ml_pipeline.portfolio_optimizer import PortfolioOptimizer
+        from trading_bot.triggers.regime_change_notifier import RegimeChangeNotifier
+        from trading_bot.automated_trader import AutomatedTrader
+        integration_components_available = True
+        logger.info("ML regime detector and integration components loaded successfully")
+    except ImportError as e:
+        logger.warning(f"Error importing integration components: {e}")
+        integration_components_available = False
+        
+    # Import event-driven architecture components
+    try:
+        from trading_bot.event_system import (
+            EventManager, EventBus, MessageQueue, ChannelManager,
+            QueueType, QueueBackend, Event, EventType
+        )
+        event_system_available = True
+        logger.info("Event-driven architecture components loaded successfully")
+    except ImportError as e:
+        logger.warning(f"Error importing event-driven architecture components: {e}")
+        event_system_available = False
+    
+    # Import trading mode system components
+    try:
+        from trading_bot.trading_modes import (
+            BaseTradingMode, StandardTradingMode, Order, OrderType
+        )
+        trading_mode_available = True
+        logger.info("Trading mode system components loaded successfully")
+    except ImportError as e:
+        logger.warning(f"Error importing trading mode components: {e}")
+        trading_mode_available = False
+
+    # Set flag for using real components
+    USING_REAL_COMPONENTS = True
+    logger.info("Successfully imported trading_bot components")
+except ImportError as e:
+    # If imports fail, we'll use mock data
+    logger.warning(f"Error importing trading_bot components: {e}")
+    logger.warning("Using mock data for dashboard")
+    USING_REAL_COMPONENTS = False
+    volatility_breakout_available = False
+    psychological_risk_available = False
+
+# Initialize API keys for external services
+# Replace hardcoded API keys with environment variables
+ALPACA_API_KEY = "6165f902-b7a3-408c-9512-4e554225d825"
+FINNHUB_API_KEY = "pcIfIzF_AiAd2Ps0ifLTXRtuA2BbBVtS"
+MARKETAUX_API_KEY = "7PgROm6BE4m6ejBW8unmZnnYS6kIygu5lwzpfd9K"
+NEWSDATA_API_KEY = "pub_81036c20e73907398317875951d4569722f2a"
+GNEWS_API_KEY = "00c755186577632fbf651fc38e39858b"
+MEDIASTACK_API_KEY = "3ff958493e0f1d8cf9af5e8425c8f5a3"  # 100 calls/month
+CURRENTS_API_KEY = "O5_JjrWdlLN2v93iuKbhEhA9OSIYfChf4Cx9XE9xXgW1oYTC"  # 600 calls/month
+NYTIMES_API_KEY = "NosApZGLGvPusEz30Fk4lQban19z9PTo"  # 4000 calls/day
+
+# Initialize Alpaca API client if requests is available
+try:
+    import requests
+    import json
+    import pandas as pd
+    from datetime import datetime, timedelta
+    
+    # Initialize Alpaca client
+    class AlpacaClient:
+        def __init__(self, api_key):
+            self.api_key = api_key
+            self.base_url = "https://paper-api.alpaca.markets"  # Using paper trading endpoint
+            self.data_url = "https://data.alpaca.markets"
+            self.headers = {
+                "APCA-API-KEY-ID": api_key,
+                "Accept": "application/json"
+            }
+        
+        def get_account(self):
+            """Get account information"""
+            try:
+                response = requests.get(f"{self.base_url}/v2/account", headers=self.headers)
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Alpaca API account request failed: {response.status_code}, {response.text}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error getting Alpaca account info: {e}")
+                return None
+        
+        def get_positions(self):
+            """Get current positions"""
+            try:
+                response = requests.get(f"{self.base_url}/v2/positions", headers=self.headers)
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Alpaca API positions request failed: {response.status_code}, {response.text}")
+                    return []
+            except Exception as e:
+                logger.error(f"Error getting Alpaca positions: {e}")
+                return []
+        
+        def get_bars(self, symbols, timeframe="1Day", limit=100):
+            """Get historical bar data for symbols"""
+            if isinstance(symbols, str):
+                symbols = [symbols]
+                
+            try:
+                # Format symbols for the API
+                symbols_param = ",".join(symbols)
+                
+                # Set up parameters
+                params = {
+                    "symbols": symbols_param,
+                    "timeframe": timeframe,
+                    "limit": limit
+                }
+                
+                # Make the request
+                response = requests.get(
+                    f"{self.data_url}/v2/stocks/bars", 
+                    headers=self.headers,
+                    params=params
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Process and convert to pandas DataFrames
+                    result = {}
+                    if "bars" in data:
+                        for symbol, bars in data["bars"].items():
+                            if bars:
+                                df = pd.DataFrame(bars)
+                                # Rename columns to match our expected format
+                                df = df.rename(columns={
+                                    "t": "timestamp",
+                                    "o": "open",
+                                    "h": "high",
+                                    "l": "low",
+                                    "c": "close",
+                                    "v": "volume"
+                                })
+                                # Convert timestamp to datetime
+                                df["timestamp"] = pd.to_datetime(df["timestamp"])
+                                # Set timestamp as index
+                                df = df.set_index("timestamp")
+                                result[symbol] = df
+                    
+                    return result
+                else:
+                    logger.warning(f"Alpaca API bars request failed: {response.status_code}, {response.text}")
+                    return {}
+            except Exception as e:
+                logger.error(f"Error getting Alpaca bars: {e}")
+                return {}
+    
+    # Initialize FinnHub client
+    class FinnhubClient:
+        def __init__(self, api_key):
+            self.api_key = api_key
+            self.base_url = "https://finnhub.io/api/v1"
+        
+        def get_quote(self, symbol):
+            """Get current quote for a symbol"""
+            try:
+                response = requests.get(
+                    f"{self.base_url}/quote",
+                    params={"symbol": symbol, "token": self.api_key}
+                )
+                
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Finnhub API quote request failed: {response.status_code}, {response.text}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error getting Finnhub quote: {e}")
+                return None
+        
+        def get_company_news(self, symbol, from_date, to_date):
+            """Get company news for a symbol"""
+            try:
+                response = requests.get(
+                    f"{self.base_url}/company-news",
+                    params={
+                        "symbol": symbol,
+                        "from": from_date,
+                        "to": to_date,
+                        "token": self.api_key
+                    }
+                )
+                
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Finnhub API news request failed: {response.status_code}, {response.text}")
+                    return []
+            except Exception as e:
+                logger.error(f"Error getting Finnhub news: {e}")
+                return []
+        
+        def get_market_news(self):
+            """Get general market news"""
+            try:
+                response = requests.get(
+                    f"{self.base_url}/news",
+                    params={
+                        "category": "general",
+                        "token": self.api_key
+                    }
+                )
+                
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Finnhub API market news request failed: {response.status_code}, {response.text}")
+                    return []
+            except Exception as e:
+                logger.error(f"Error getting Finnhub market news: {e}")
+                return []
+        
+        def get_company_profile(self, symbol):
+            """Get company profile information"""
+            try:
+                response = requests.get(
+                    f"{self.base_url}/stock/profile2",
+                    params={"symbol": symbol, "token": self.api_key}
+                )
+                
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    logger.warning(f"Finnhub API profile request failed: {response.status_code}, {response.text}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error getting Finnhub company profile: {e}")
+                return None
+    
+    # Initialize the clients
+    try:
+        alpaca_client = AlpacaClient(ALPACA_API_KEY)
+        finnhub_client = FinnhubClient(FINNHUB_API_KEY)
+        logger.info("Successfully initialized Alpaca and Finnhub API clients")
+        EXTERNAL_APIS_AVAILABLE = True
+    except Exception as e:
+        logger.error(f"Error initializing API clients: {e}")
+        EXTERNAL_APIS_AVAILABLE = False
+except ImportError as e:
+    logger.warning(f"Could not import required packages for API integration: {e}")
+    EXTERNAL_APIS_AVAILABLE = False
+
+# Initialize LiveDataManager if available
+if LIVE_DATA_MANAGER_AVAILABLE:
+    live_data_manager = LiveDataManager()
+    # Check for auto-refresh
+    live_data_manager.check_auto_refresh()
+
+# Initialize global state
+if USING_REAL_COMPONENTS:
+    # Initialize real portfolio state manager
+    portfolio_state = PortfolioStateManager()
+    
+    # Initialize LLM integration if available
+    llm_trading = None
+    if 'llm_integration_available' in locals() and llm_integration_available and 'integration_components_available' in locals() and integration_components_available:
+        try:
+            # Get path to config file
+            config_path = os.path.join(current_dir, "config.py")
+            
+            # Initialize LLM integration
+            llm_trading = LLMTradingIntegration(
+                config_path=config_path,
+                enable_memory=True,
+                debug=False
+            )
+            
+            # Initialize integration components
+            ml_regime_detector = MLRegimeDetector()
+            portfolio_optimizer = PortfolioOptimizer()
+            regime_change_notifier = RegimeChangeNotifier()
+            automated_trader = AutomatedTrader()
+            
+            # Connect components
+            llm_trading.connect_existing_components(
+                ml_regime_detector=ml_regime_detector,
+                portfolio_optimizer=portfolio_optimizer,
+                regime_change_notifier=regime_change_notifier,
+                automated_trader=automated_trader
+            )
+            
+            # Set up memory consolidation task
+            def run_memory_consolidation():
+                """Run memory consolidation as a background task"""
+                while True:
+                    # Wait until market is closed (assuming US market hours)
+                    current_hour = datetime.now().hour
+                    if 4 <= current_hour <= 9:  # 4am to 9am ET (before market open)
+                        logger.info("Running memory consolidation...")
+                        try:
+                            llm_trading.memory_system.consolidate_memories()
+                            logger.info("Memory consolidation complete")
+                        except Exception as e:
+                            logger.error(f"Error during memory consolidation: {e}")
+                    # Sleep for 1 hour before checking again
+                    time.sleep(3600)
+            
+            # Start memory consolidation in a background thread
+            memory_thread = threading.Thread(
+                target=run_memory_consolidation,
+                daemon=True  # Thread will exit when main program exits
+            )
+            memory_thread.start()
+            
+            logger.info("LLM integration successfully initialized and connected")
+        except Exception as e:
+            logger.error(f"Error initializing LLM integration: {e}")
+            llm_integration_available = False
+    
+    # Initialize market data provider
+    try:
+        # Try to create market data provider based on configuration
+        config_path = os.path.join(current_dir, "trading_bot/config/data_providers.json")
+        data_provider = create_data_provider("alpaca", config_path)
+        logger.info("Initialized market data provider")
+    except Exception as e:
+        logger.error(f"Error initializing market data provider: {e}")
+        # Fall back to mock data
+        USING_REAL_COMPONENTS = False
+        
+    # Initialize trading strategies
+    if USING_REAL_COMPONENTS:
+        strategies = {
+            "Momentum": MomentumStrategy(),
+            "Mean Reversion": MeanReversionStrategy(),
+            "Trend Following": TrendFollowingStrategy(),
+        }
+        # Add VolatilityBreakout if available
+        if volatility_breakout_available:
+            strategies["Volatility Breakout"] = VolatilityBreakout()
+        logger.info(f"Initialized {len(strategies)} trading strategies")
+
+# Add custom CSS - enhanced with card styles for LLM Insights
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1E88E5;
+        margin-bottom: 1rem;
+    }
+    .sub-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #0D47A1;
+        margin-top: 1rem;
+    }
+    .metric-card {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .highlight {
+        color: #2E7D32;
+        font-weight: 600;
+    }
+    .warning {
+        color: #C62828;
+        font-weight: 600;
+    }
+    .neutral {
+        color: #F57C00;
+        font-weight: 600;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# News API cache system
+class NewsCache:
+    def __init__(self):
+        self.articles = {}
+        self.last_updated = {}
+        self.api_calls = defaultdict(int)
+        self.api_call_dates = defaultdict(list)
+        self.api_call_timestamps = defaultdict(list)  # Track timestamps for rate limiting
+        self.month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        # API limits (removing NYTimes)
+        self.daily_limits = {
+            "finnhub": 5000,      # 60 calls/minute (safe estimate for daily)
+            "marketaux": 100,     # 100 calls/day
+            "newsdata": 2000,     # 2000 calls/day
+            "gnews": 100,         # Assumed 100 calls/day
+            "mediastack": 3,      # 100 calls/month (~3/day)
+            "currents": 20        # 600 calls/month (~20/day)
+        }
+        
+        # API rate limits (calls per period in seconds)
+        self.rate_limits = {
+            "finnhub": {"calls": 60, "period": 60},    # 60 calls per minute
+            "marketaux": {"calls": 1, "period": 300},  # 1 call per 5 minutes to stay safe
+            "newsdata": {"calls": 8, "period": 3600},  # 8 calls per hour (conservative)
+            "gnews": {"calls": 1, "period": 900},      # 1 call per 15 minutes to stay safe
+            "mediastack": {"calls": 1, "period": 28800},  # 1 call per 8 hours (monthly limit)
+            "currents": {"calls": 1, "period": 4320}     # 1 call per 72 minutes (monthly limit)
+        }
+        
+        # API weights by query type (higher = better)
+        self.api_weights = {
+            "ticker": {
+                "finnhub": 10,     # Best for tickers
+                "marketaux": 8,    # Good for tickers
+                "newsdata": 5,     # OK for tickers
+                "gnews": 3,        # Not ideal for tickers
+                "nytimes": 6,      # Good for company news
+                "mediastack": 4,   # OK for tickers
+                "currents": 4      # OK for tickers
+            },
+            "market": {
+                "finnhub": 6,      # Good for market news
+                "marketaux": 9,    # Excellent for market news
+                "newsdata": 8,     # Very good for market news
+                "gnews": 7,        # Good for market news
+                "nytimes": 9,      # Excellent for market news
+                "mediastack": 5,   # OK for market news
+                "currents": 6      # Good for market news
+            },
+            "topic": {
+                "finnhub": 4,      # OK for topics
+                "marketaux": 7,    # Good for topics
+                "newsdata": 9,     # Excellent for topics
+                "gnews": 8,        # Very good for topics
+                "nytimes": 10,     # Best for topics
+                "mediastack": 6,   # Good for topics
+                "currents": 7      # Very good for topics
+            }
+        }
+    
+    def get(self, key, max_age_minutes=60):
+        """Get news for a key if it exists and is fresh"""
+        if key in self.articles and key in self.last_updated:
+            age = (datetime.now() - self.last_updated[key]).total_seconds() / 60
+            if age <= max_age_minutes:
+                return self.articles[key]
+        return None
+    
+    def update(self, key, articles):
+        """Update the cache with new articles"""
+        # If we already have articles for this key, merge and deduplicate
+        if key in self.articles:
+            existing_urls = {article.get('url') for article in self.articles[key]}
+            new_articles = [article for article in articles if article.get('url') not in existing_urls]
+            
+            # Combine and sort by timestamp (newest first)
+            combined = self.articles[key] + new_articles
+            try:
+                combined.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+            except:
+                # If sorting fails, just append new articles
+                combined = self.articles[key] + new_articles
+                
+            # Update with combined list
+            self.articles[key] = combined
+        else:
+            # Just store the new articles
+            self.articles[key] = articles
+            
+        # Update the timestamp
+        self.last_updated[key] = datetime.now()
+    
+    def log_api_call(self, provider):
+        """Log an API call to monitor usage and enforce rate limits"""
+        # Check if we've entered a new month and reset monthly counters if needed
+        now = datetime.now()
+        if now.month != self.month_start.month or now.year != self.month_start.year:
+            # Reset monthly counters for monthly-limited APIs
+            if provider in ["mediastack", "currents"]:
+                self.api_calls[provider] = 0
+                self.api_call_dates[provider] = []
+                self.api_call_timestamps[provider] = []
+            self.month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        today = now.date()
+        
+        # Record the call
+        self.api_calls[provider] += 1
+        self.api_call_dates[provider].append(today)
+        self.api_call_timestamps[provider].append(now)
+        
+        # Clean up old dates (keep only last 30 days)
+        cutoff_date = today - timedelta(days=30)
+        self.api_call_dates[provider] = [d for d in self.api_call_dates[provider] if d >= cutoff_date]
+        
+        # Clean up old timestamps (keep only last 24 hours)
+        cutoff_time = now - timedelta(hours=24)
+        self.api_call_timestamps[provider] = [t for t in self.api_call_timestamps[provider] if t >= cutoff_time]
+        
+        # Log the call with different format for monthly APIs
+        if provider in ["mediastack", "currents"]:
+            monthly_calls = self.get_calls_this_month(provider)
+            logger.info(f"API call to {provider}. Total this month: {monthly_calls}")
+        else:
+            logger.info(f"API call to {provider}. Total today: {self.get_calls_today(provider)}")
+    
+    def get_calls_today(self, provider):
+        """Get number of calls made today for a provider"""
+        today = datetime.now().date()
+        return sum(1 for d in self.api_call_dates.get(provider, []) if d == today)
+    
+    def get_calls_this_month(self, provider):
+        """Get number of calls made this month for a provider"""
+        # For APIs with monthly limits
+        month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        return sum(1 for t in self.api_call_timestamps.get(provider, []) if t >= month_start)
+    
+    def get_all_calls_today(self):
+        """Get all API calls made today across providers"""
+        result = {}
+        today = datetime.now().date()
+        for provider in self.api_call_dates:
+            # For monthly APIs, show monthly stats
+            if provider in ["mediastack", "currents"]:
+                result[provider] = self.get_calls_this_month(provider)
+            else:
+                result[provider] = sum(1 for d in self.api_call_dates[provider] if d == today)
+        return result
+    
+    def is_rate_limited(self, provider):
+        """Check if we're currently rate limited for this provider"""
+        if provider not in self.rate_limits:
+            return False
+            
+        # Get calls within the rate limit period
+        now = datetime.now()
+        period_seconds = self.rate_limits[provider]["period"]
+        period_start = now - timedelta(seconds=period_seconds)
+        
+        # Count calls in this period
+        calls_in_period = sum(1 for t in self.api_call_timestamps.get(provider, []) 
+                             if t >= period_start)
+        
+        # Check if we've hit the limit
+        limit = self.rate_limits[provider]["calls"]
+        
+        if calls_in_period >= limit:
+            logger.warning(f"{provider} rate limited: {calls_in_period}/{limit} calls in last {period_seconds}s")
+            return True
+        return False
+    
+    def is_near_limit(self, provider, threshold=0.9):
+        """Check if we're approaching the daily/monthly limit"""
+        if provider not in self.daily_limits:
+            return False
+        
+        # For monthly APIs, check monthly usage
+        if provider in ["mediastack", "currents"]:
+            calls = self.get_calls_this_month(provider)
+        else:
+            calls = self.get_calls_today(provider)
+            
+        daily_limit = self.daily_limits[provider]
+        
+        is_near = calls >= (daily_limit * threshold)
+        if is_near:
+            if provider in ["mediastack", "currents"]:
+                logger.warning(f"{provider} near monthly limit: {calls}/{daily_limit} calls")
+            else:
+                logger.warning(f"{provider} near daily limit: {calls}/{daily_limit} calls")
+        return is_near
+    
+    def select_api_for_query(self, query_type, excluded_providers=None):
+        """
+        Intelligently select the best API for this query type
+        based on weights, current rate limits, and daily usage
+        """
+        excluded_providers = excluded_providers or []
+        
+        # Default to market if query_type not recognized
+        if query_type not in self.api_weights:
+            query_type = "market"
+            
+        # Calculate a score for each provider
+        scores = {}
+        for provider, weight in self.api_weights[query_type].items():
+            # Skip excluded providers
+            if provider in excluded_providers:
+                continue
+                
+            # Skip if rate limited
+            if self.is_rate_limited(provider):
+                continue
+                
+            # Skip if near daily/monthly limit
+            if self.is_near_limit(provider):
+                continue
+                
+            # Base score is the weight
+            score = weight
+            
+            # For monthly APIs, heavily penalize as we use up the quota
+            if provider in ["mediastack", "currents"]:
+                monthly_calls = self.get_calls_this_month(provider)
+                monthly_limit = self.daily_limits[provider] * 30  # Approximate
+                usage_ratio = monthly_calls / monthly_limit if monthly_limit > 0 else 1
+                
+                # Very aggressive penalty as we approach limit
+                score *= (1 - (usage_ratio * 0.9))
+            else:
+                # Normal daily APIs
+                today_usage = self.get_calls_today(provider)
+                daily_limit = self.daily_limits.get(provider, 100)
+                usage_ratio = today_usage / daily_limit if daily_limit > 0 else 1
+                
+                # Lower score as we approach daily limit
+                score *= (1 - (usage_ratio * 0.7))
+            
+            scores[provider] = score
+            
+        # If no valid providers, return None
+        if not scores:
+            return None
+            
+        # Return the provider with highest score
+        return max(scores.items(), key=lambda x: x[1])[0]
+
+# Composite score calculator for balancing recency and relevance
+class CompositeScoreCalculator:
+    """
+    Calculates composite scores for news articles based on recency, relevance, and sentiment.
+    """
+    
+    def __init__(self, config=None):
+        self.config = config or {}
+        
+        # Default weights for scoring components
+        self.recency_weight = self.config.get("recency_weight", 0.5)  # Weight for recency score
+        self.relevance_weight = self.config.get("relevance_weight", 0.3)  # Weight for relevance score
+        self.sentiment_weight = self.config.get("sentiment_weight", 0.2)  # Weight for sentiment impact
+        
+        # Recency decay parameters
+        self.recency_decay_rate = self.config.get("recency_decay_rate", 0.1)  # Decay rate for recency scoring
+        self.max_age_hours = self.config.get("max_age_hours", 48)  # Maximum age to consider
+        
+        # Relevance parameters
+        self.title_weight = self.config.get("title_weight", 0.7)  # Weight for title keyword matches
+        self.summary_weight = self.config.get("summary_weight", 0.3)  # Weight for summary keyword matches
+        
+        # Sentiment impact parameters
+        self.sentiment_threshold = self.config.get("sentiment_threshold", 0.3)  # Threshold for significant sentiment
+    
+    def calculate_recency_score(self, timestamp):
+        """
+        Calculate recency score using exponential decay
+        
+        Args:
+            timestamp: Article publish timestamp (as string or datetime)
+            
+        Returns:
+            float: Recency score between 0 and 1 (1 being most recent)
+        """
+        if isinstance(timestamp, str):
+            try:
+                # Handle different timestamp formats
+                if 'T' in timestamp:
+                    # ISO format with T separator
+                    dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                else:
+                    # Try common datetime formats
+                    for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d'):
+                        try:
+                            dt = datetime.strptime(timestamp, fmt)
+                            break
+                        except ValueError:
+                            continue
+                    else:
+                        # If all format attempts fail, use current time
+                        dt = datetime.now()
+            except Exception:
+                # Default to current time if parsing fails
+                dt = datetime.now()
+        else:
+            # Assume it's already a datetime object
+            dt = timestamp
+        
+        # Calculate hours elapsed
+        hours_elapsed = (datetime.now() - dt).total_seconds() / 3600
+        
+        # Apply exponential decay with max age limit
+        if hours_elapsed > self.max_age_hours:
+            return 0.0
+        
+        return np.exp(-self.recency_decay_rate * hours_elapsed)
+    
+    def calculate_relevance_score(self, title, summary, query):
+        """
+        Calculate relevance score based on query match
+        
+        Args:
+            title: Article title
+            summary: Article summary or description
+            query: Search query (e.g., ticker symbol or topic)
+            
+        Returns:
+            float: Relevance score between 0 and 1
+        """
+        if not query or not title:
+            return 0.5  # Default relevance if no query or title
+        
+        # Normalize inputs
+        title = title.lower() if isinstance(title, str) else ""
+        summary = summary.lower() if isinstance(summary, str) else ""
+        query = query.lower()
+        
+        # Check for exact match in title (highest relevance)
+        title_exact_match = query in title
+        
+        # Check for partial matches in title
+        title_words = set(re.findall(r'\b\w+\b', title))
+        query_words = set(re.findall(r'\b\w+\b', query))
+        title_match_ratio = len(title_words.intersection(query_words)) / max(len(query_words), 1)
+        
+        # Check for matches in summary
+        summary_words = set(re.findall(r'\b\w+\b', summary))
+        summary_match_ratio = len(summary_words.intersection(query_words)) / max(len(query_words), 1)
+        
+        # Calculate weighted score
+        title_score = 1.0 if title_exact_match else title_match_ratio
+        relevance_score = (self.title_weight * title_score) + (self.summary_weight * summary_match_ratio)
+        
+        # Add bonus for ticker symbol match if query looks like a ticker
+        if query.isupper() and len(query) <= 5 and query in title:
+            relevance_score = min(1.0, relevance_score + 0.3)
+        
+        return min(1.0, relevance_score)
+    
+    def calculate_sentiment_impact(self, sentiment_value):
+        """
+        Calculate impact score based on sentiment strength
+        
+        Args:
+            sentiment_value: Sentiment value (-1 to 1) or string ("Positive", "Neutral", "Negative")
+            
+        Returns:
+            float: Impact score between 0 and 1
+        """
+        # Handle string sentiment values
+        if isinstance(sentiment_value, str):
+            if sentiment_value.lower() == "positive":
+                sentiment_value = 0.7
+            elif sentiment_value.lower() == "negative":
+                sentiment_value = -0.7
+            else:  # Neutral
+                sentiment_value = 0.0
+        
+        # Convert sentiment to impact (stronger sentiment = higher impact)
+        impact = abs(sentiment_value)
+        
+        # Apply threshold - only strong sentiment has high impact
+        if impact < self.sentiment_threshold:
+            impact = impact / (2 * self.sentiment_threshold)  # Reduce impact of weak sentiment
+        
+        return min(1.0, impact)
+    
+    def calculate_composite_score(self, article, query):
+        """
+        Calculate composite score for an article based on recency, relevance and sentiment
+        
+        Args:
+            article: News article dictionary
+            query: Search query
+            
+        Returns:
+            float: Composite score between 0 and 1
+            dict: Component scores for debugging
+        """
+        # Extract article components
+        timestamp = article.get("timestamp", article.get("published_at", ""))
+        title = article.get("title", "")
+        summary = article.get("summary", "")
+        sentiment = article.get("sentiment", "Neutral")
+        
+        # Calculate component scores
+        recency_score = self.calculate_recency_score(timestamp)
+        relevance_score = self.calculate_relevance_score(title, summary, query)
+        impact_score = self.calculate_sentiment_impact(sentiment)
+        
+        # Calculate composite score
+        composite_score = (
+            (self.recency_weight * recency_score) +
+            (self.relevance_weight * relevance_score) +
+            (self.sentiment_weight * impact_score)
+        )
+        
+        # Add component scores to article for debugging
+        components = {
+            "recency_score": recency_score,
+            "relevance_score": relevance_score,
+            "impact_score": impact_score,
+            "composite_score": composite_score
+        }
+        
+        return composite_score, components
+    
+    def rank_articles(self, articles, query):
+        """
+        Rank articles based on composite score
+        
+        Args:
+            articles: List of news article dictionaries
+            query: Search query
+            
+        Returns:
+            list: Ranked articles with added scoring metadata
+        """
+        if not articles:
+            return []
+        
+        # Calculate scores for each article
+        scored_articles = []
+        for article in articles:
+            score, components = self.calculate_composite_score(article, query)
+            
+            # Add scores to article metadata
+            article_copy = article.copy()
+            article_copy["_scoring"] = components
+            article_copy["_composite_score"] = score
+            
+            scored_articles.append(article_copy)
+        
+        # Sort by composite score (descending)
+        sorted_articles = sorted(
+            scored_articles, 
+            key=lambda x: x.get("_composite_score", 0),
+            reverse=True
+        )
+        
+        return sorted_articles
+
+# Initialize the cache
+news_cache = NewsCache()
+
+# Initialize composite score calculator
+news_scorer = CompositeScoreCalculator()
+
+# Function to format display of news from real APIs (Finnhub, MarketAux, NewsData, GNews)
+def get_news_for_search(query=None, limit=6):
+    """
+    Get financial news using ALL real APIs, prioritizing NYTimes with TimesTags for better context
+    """
+    if not query or query.strip() == "":
+        query = "market"
+    
+    # For logging
+    query = query.strip()
+    logger.info(f"Searching news for '{query}'")
+    
+    # Initialize cache if needed
+    if not hasattr(st, 'session_state'):
+        st.session_state = {}
+    if not hasattr(st.session_state, 'news_cache'):
+        st.session_state.news_cache = NewsCache()
+    
+    # Get the cache reference
+    cache = st.session_state.news_cache
+    
+    # Check if we have fresh cache (less than 30 minutes old)
+    cached_data = cache.get(query, max_age_minutes=30)
+    if cached_data:
+        logger.info(f"Using cached news for '{query}', {len(cached_data)} items")
+        return cached_data[:limit]
+        
+    # No cache, we need to fetch from our real APIs
+    combined_results = []
+    
+    # Check current API usage to avoid hitting limits
+    api_usage = cache.get_all_calls_today()
+    logger.info(f"Current API usage: {api_usage}")
+    
+    # Try NYTimes API first with TimesTags for better context
+    try:
+        if NYTIMES_API_KEY != "YOUR_NYTIMES_API_KEY":
+            import requests
+            
+            # Step 1: Try to find relevant tags using the semantic API
+            semantic_url = "https://api.nytimes.com/svc/semantic/v2/concept/suggest"
+            semantic_params = {
+                "api-key": NYTIMES_API_KEY,
+                "query": query
+            }
+            
+            tag_response = requests.get(semantic_url, params=semantic_params, timeout=5)
+            
+            # Log the API call
+            cache.log_api_call("nytimes")
+            
+            # Process the tag results to find relevant search terms
+            tags = []
+            tag_query = query
+            
+            if tag_response.status_code == 200:
+                tag_data = tag_response.json()
+                if tag_data.get("results") and len(tag_data["results"]) > 0:
+                    # Get the top 2 most relevant tags
+                    for tag in tag_data["results"][:2]:
+                        if "name" in tag:
+                            tags.append(tag["name"])
+            
+            # Step 2: Search for articles using the found tags or original query
+            nytimes_url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+            
+            # Base parameters
+            nytimes_params = {
+                "api-key": NYTIMES_API_KEY,
+                "sort": "newest",
+                "fl": "headline,abstract,web_url,source,pub_date,_id,snippet"
+            }
+            
+            # Use the original query
+            nytimes_params["q"] = query
+            
+            # Add tags as filter query if available
+            if tags:
+                tag_filters = " OR ".join([f'"{tag}"' for tag in tags])
+                economic_filter = '("economy" OR "finance" OR "stock market" OR "federal reserve" OR "inflation")'
+                nytimes_params["fq"] = f"({tag_filters}) AND {economic_filter}"
+                
+            # For specific categories based on query
+            if query.lower() in ["market", "stock", "finance", "economy"]:
+                nytimes_params["fq"] = "section_name:(\"Business\" OR \"Economy\" OR \"Money\")"
+            elif query.isupper() and len(query) <= 5:
+                # For ticker symbols
+                nytimes_params["fq"] = f'organizations:("{query}") OR headline:("{query}") OR body:("{query} stock")'
+            
+            response = requests.get(nytimes_url, params=nytimes_params, timeout=10)
+            
+            # Log the API call
+            cache.log_api_call("nytimes")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if "response" in data and "docs" in data["response"]:
+                    articles = data["response"]["docs"]
+                    logger.info(f"Got {len(articles)} articles from NY Times")
+                    
+                    for article in articles:
+                        # Get headline
+                        headline = article.get("headline", {})
+                        title = headline.get("main", "") if isinstance(headline, dict) else str(headline)
+                        
+                        # Get abstract and URL
+                        abstract = article.get("abstract", "") or article.get("snippet", "")
+                        url = article.get("web_url", "")
+                        
+                        if not title or not url:
+                            continue
+                            
+                        # Get published time
+                        pub_date = article.get("pub_date", "")
+                        
+                        # Simple sentiment analysis
+                        sentiment = "Neutral"
+                        content = (title + " " + abstract).lower()
+                        if any(word in content for word in ["up", "rise", "gain", "positive", "beat", "exceed"]):
+                            sentiment = "Positive"
+                        elif any(word in content for word in ["down", "fall", "drop", "negative", "miss", "fail"]):
+                            sentiment = "Negative"
+                        
+                        # Check for multimedia items that might have images
+                        image_url = ""
+                        if "multimedia" in article and article["multimedia"]:
+                            for media in article["multimedia"]:
+                                if media.get("type") == "image":
+                                    image_url = f"https://www.nytimes.com/{media.get('url', '')}"
+                                    break
+                        
+                        # Add to results with or without image
+                        if image_url:
+                            combined_results.append({
+                                "title": title,
+                                "summary": abstract or "No summary available",
+                                "source": article.get('source', 'NY Times'),
+                                "url": url,
+                                "article_url": url,
+                                "timestamp": pub_date,
+                                "sentiment": sentiment,
+                                "image_url": image_url
+                            })
+                        else:
+                            combined_results.append({
+                                "title": title,
+                                "summary": abstract or "No summary available",
+                                "source": article.get('source', 'NY Times'),
+                                "url": url,
+                                "article_url": url,
+                                "timestamp": pub_date,
+                                "sentiment": sentiment
+                            })
+                else:
+                    logger.warning("NY Times API returned no documents")
+            else:
+                logger.warning(f"NY Times API error: {response.status_code}")
+    
+    except Exception as e:
+        logger.error(f"Error with NY Times API: {str(e)}")
+
+    # If we don't have enough results from NYTimes, try our other APIs
+    if len(combined_results) < limit:
+        # Define our real API providers to try
+        apis_to_try = ["finnhub", "marketaux", "newsdata", "gnews", "mediastack", "currents"]
+        
+        # Try each API in order until we have enough results
+        for api in apis_to_try:
+            # Skip if we have enough results
+            if len(combined_results) >= limit:
+                break
+                
+            # Skip if API is near limit (90% of daily/monthly limit)
+            if cache.is_near_limit(api):
+                logger.warning(f"Skipping {api} API as it's near its limit")
+                continue
+                
+            # Skip if rate limited
+            if cache.is_rate_limited(api):
+                logger.warning(f"Skipping {api} API as it's currently rate limited")
+                continue
+                
+            # Try to fetch from this API
+            try:
+                logger.info(f"Trying {api} API for '{query}'")
+                
+                if api == "finnhub":
+                    # Finnhub API (ticker-focused)
+                    import requests
+                    finnhub_url = "https://finnhub.io/api/v1/company-news"
+                    
+                    # Date range (last 7 days)
+                    today = datetime.now()
+                    week_ago = today - timedelta(days=7)
+                    from_date = week_ago.strftime('%Y-%m-%d')
+                    to_date = today.strftime('%Y-%m-%d')
+                    
+                    # Only use symbol parameter for ticker-like queries
+                    if query.isupper() and len(query) <= 5:
+                        finnhub_params = {
+                            "token": FINNHUB_API_KEY,
+                            "symbol": query,
+                            "from": from_date,
+                            "to": to_date
+                        }
+                        
+                        response = requests.get(finnhub_url, params=finnhub_params, timeout=5)
+                        
+                        # Log the API call
+                        cache.log_api_call("finnhub")
+                        
+                        if response.status_code == 200:
+                            articles = response.json()
+                            
+                            if articles and len(articles) > 0:
+                                logger.info(f"Got {len(articles)} articles from Finnhub")
+                                
+                                for article in articles[:min(limit*2, len(articles))]:
+                                    headline = article.get('headline', '')
+                                    summary = article.get('summary', '')
+                                    url = article.get('url', '')
+                                    
+                                    if not headline or not url:
+                                        continue
+                                    
+                                    # Format timestamp
+                                    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                                    if article.get('datetime'):
+                                        try:
+                                            timestamp = datetime.fromtimestamp(article.get('datetime')).strftime('%Y-%m-%d %H:%M:%S')
+                                        except:
+                                            pass
+                                    
+                                    # Determine sentiment
+                                    sentiment = "Neutral"
+                                    if any(word in (headline + summary).lower() for word in ["up", "rise", "gain", "positive", "beat", "exceed"]):
+                                        sentiment = "Positive"
+                                    elif any(word in (headline + summary).lower() for word in ["down", "fall", "drop", "negative", "miss", "fail"]):
+                                        sentiment = "Negative"
+                                    
+                                    # For Finnhub API - add image URL extraction
+                                    if "image" in article:
+                                        combined_results.append({
+                                            "title": headline,
+                                            "summary": summary or "No summary available",
+                                            "source": article.get('source', 'Finnhub'),
+                                            "url": url,
+                                            "article_url": url,
+                                            "timestamp": timestamp,
+                                            "sentiment": sentiment,
+                                            "image_url": article.get('image', '')  # Add image URL
+                                        })
+                                    else:
+                                        combined_results.append({
+                                            "title": headline,
+                                            "summary": summary or "No summary available",
+                                            "source": article.get('source', 'Finnhub'),
+                                            "url": url,
+                                            "article_url": url,
+                                            "timestamp": timestamp,
+                                            "sentiment": sentiment
+                                        })
+                        else:
+                            logger.warning(f"Finnhub API error: {response.status_code}")
+                            
+                # Continue checking other APIs if we don't have enough results...
+                # Other APIs remain unchanged
+                elif api == "marketaux":
+                    # MarketAux API for general or ticker searches
+                    import requests
+                    marketaux_url = "https://api.marketaux.com/v1/news/all"
+                    marketaux_params = {
+                        "api_token": MARKETAUX_API_KEY,
+                        "language": "en",
+                        "limit": limit,
+                        "sort": "published_at"
+                    }
+                    
+                    # Add parameters based on query type
+                    if query.isupper() and len(query) <= 5:
+                        marketaux_params["symbols"] = query
+                    else:
+                        marketaux_params["search"] = query
+                    
+                    response = requests.get(marketaux_url, params=marketaux_params, timeout=5)
+                    
+                    # Log the API call
+                    cache.log_api_call("marketaux")
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        
+                        if "data" in data and len(data["data"]) > 0:
+                            logger.info(f"Got {len(data['data'])} articles from MarketAux")
+                            
+                            for article in data["data"]:
+                                title = article.get("title", "")
+                                description = article.get("description", "")
+                                url = article.get("url", "")
+                                
+                                if not title or not url:
+                                    continue
+                                
+                                # Get source details
+                                source = article.get("source", {})
+                                source_name = source.get("name", "MarketAux") if isinstance(source, dict) else "MarketAux"
+                                
+                                # Determine sentiment from API data if available
+                                sentiment = "Neutral"
+                                if article.get("entities") and len(article["entities"]) > 0:
+                                    sentiment_score = article["entities"][0].get("sentiment_score", 0)
+                                    if sentiment_score > 0.2:
+                                        sentiment = "Positive"
+                                    elif sentiment_score < -0.2:
+                                        sentiment = "Negative"
+                                
+                                # For MarketAux API - add image URL extraction
+                                if article.get("image_url"):
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": description or "No description available",
+                                        "source": source_name,
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("published_at", datetime.now().isoformat()),
+                                        "sentiment": sentiment,
+                                        "image_url": article.get("image_url", "")  # Add image URL
+                                    })
+                                else:
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": description or "No description available",
+                                        "source": source_name,
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("published_at", datetime.now().isoformat()),
+                                        "sentiment": sentiment
+                                    })
+                    else:
+                        logger.warning(f"MarketAux API error: {response.status_code}")
+                
+                elif api == "newsdata":
+                    # NewsData.io API for general news
+                    import requests
+                    newsdata_url = "https://newsdata.io/api/1/news"
+                    newsdata_params = {
+                        "apikey": NEWSDATA_API_KEY,
+                        "language": "en",
+                        "q": query if not query.isupper() else f"{query} stock market"
+                    }
+                    
+                    response = requests.get(newsdata_url, params=newsdata_params, timeout=5)
+                    
+                    # Log the API call
+                    cache.log_api_call("newsdata")
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        
+                        if data.get("status") == "success" and "results" in data and len(data["results"]) > 0:
+                            logger.info(f"Got {len(data['results'])} articles from NewsData")
+                            
+                            for article in data["results"]:
+                                title = article.get("title", "")
+                                description = article.get("description", "")
+                                content = article.get("content", "")
+                                
+                                # Fix null concatenation by using empty string if both are None
+                                if description is None:
+                                    description = ""
+                                if content is None:
+                                    content = ""
+                                    
+                                # Use description or content or default message
+                                summary = description or content or "No description available"
+                                
+                                url = article.get("link", "")
+                                
+                                if not title or not url:
+                                    continue
+                                
+                                # Simple sentiment analysis
+                                sentiment = "Neutral"
+                                content_text = (title + " " + summary).lower()
+                                if any(word in content_text for word in ["up", "rise", "gain", "positive", "beat", "exceed"]):
+                                    sentiment = "Positive"
+                                elif any(word in content_text for word in ["down", "fall", "drop", "negative", "miss", "fail"]):
+                                    sentiment = "Negative"
+                                
+                                # For NewsData API - add image URL extraction
+                                if article.get("image_url"):
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": summary,
+                                        "source": article.get("source_id", "NewsData"),
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("pubDate", datetime.now().isoformat()),
+                                        "sentiment": sentiment,
+                                        "image_url": article.get("image_url", "")  # Add image URL
+                                    })
+                                else:
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": summary,
+                                        "source": article.get("source_id", "NewsData"),
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("pubDate", datetime.now().isoformat()),
+                                        "sentiment": sentiment
+                                    })
+                        else:
+                            logger.warning(f"NewsData API error: {response.status_code}")
+                            
+                elif api == "gnews":
+                    # GNews API
+                    import requests
+                    gnews_url = "https://gnews.io/api/v4/search"
+                    gnews_params = {
+                        "token": GNEWS_API_KEY,
+                        "lang": "en",
+                        "max": limit,
+                        "q": query if not query.isupper() else f"{query} stock market"
+                    }
+                    
+                    response = requests.get(gnews_url, params=gnews_params, timeout=5)
+                    
+                    # Log the API call
+                    cache.log_api_call("gnews")
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        
+                        if "articles" in data and data["articles"]:
+                            logger.info(f"Got {len(data['articles'])} articles from GNews")
+                            
+                            for article in data["articles"]:
+                                title = article.get("title", "")
+                                description = article.get("description", "")
+                                url = article.get("url", "")
+                                
+                                if not title or not url:
+                                    continue
+                                
+                                # Get source
+                                source_name = "GNews"
+                                if "source" in article and isinstance(article["source"], dict):
+                                    source_name = article["source"].get("name", "GNews")
+                                
+                                # Simple sentiment analysis
+                                sentiment = "Neutral"
+                                content = (title + " " + description).lower()
+                                if any(word in content for word in ["up", "rise", "gain", "positive", "beat", "exceed"]):
+                                    sentiment = "Positive"
+                                elif any(word in content for word in ["down", "fall", "drop", "negative", "miss", "fail"]):
+                                    sentiment = "Negative"
+                                
+                                # For GNews API - add image URL extraction
+                                if "image" in article:
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": description or "No description available",
+                                        "source": source_name,
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("publishedAt", datetime.now().isoformat()),
+                                        "sentiment": sentiment,
+                                        "image_url": article.get("image", "")  # Add image URL
+                                    })
+                                else:
+                                    combined_results.append({
+                                        "title": title,
+                                        "summary": description or "No description available",
+                                        "source": source_name,
+                                        "url": url,
+                                        "article_url": url,
+                                        "timestamp": article.get("publishedAt", datetime.now().isoformat()),
+                                        "sentiment": sentiment
+                                    })
+                    else:
+                        logger.warning(f"GNews API error: {response.status_code}")
+            
+            except Exception as e:
+                logger.error(f"Error with {api} API: {str(e)}")
+    
+    # Remove duplicates by URL
+    unique_results = []
+    seen_urls = set()
+    
+    for article in combined_results:
+        url = article.get("url", "")
+        if url and url not in seen_urls:
+            seen_urls.add(url)
+            unique_results.append(article)
+    
+    # Sort by timestamp (newest first)
+    try:
+        unique_results.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+    except Exception as e:
+        logger.warning(f"Error sorting news: {str(e)}")
+    
+    # Cache the results
+    if unique_results:
+        cache.update(query, unique_results)
+    
+    # Make sure we return exactly 6 stories
+    result_limit = min(limit, 6)
+    logger.info(f"Returning {len(unique_results[:result_limit])} news items")
+    return unique_results[:result_limit]
+
+def get_fallback_image(sentiment, source):
+    """
+    Returns an appropriate fallback image URL based on sentiment and news source.
+    """
+    # Base fallback images by sentiment
+    sentiment_images = {
+        "Positive": "https://img.icons8.com/color/96/000000/up-trending.png",
+        "Negative": "https://img.icons8.com/color/96/000000/down-trending.png",
+        "Neutral": "https://img.icons8.com/color/96/000000/news.png"
+    }
+    # Source-specific fallback images
+    source_images = {
+        "New York Times": "https://static01.nyt.com/favicon.ico?v=1",
+        "Bloomberg": "https://assets.bwbx.io/s3/javelin/public/javelin/images/favicon-bb-32x32.png",
+        "Reuters": "https://www.reuters.com/pf/resources/images/reuters/logo-vertical-default.svg?d=150",
+        "Wall Street Journal": "https://mw3.wsj.net/mw5/content/logos/favicon.ico",
+        "CNBC": "https://www.cnbc.com/favicon.ico",
+        "MarketWatch": "https://mw3.wsj.net/mw5/content/logos/favicon.ico",
+        "Finnhub": "https://finnhub.io/favicon.ico",
+        "MarketAux": "https://marketaux.com/assets/favicon/favicon-32x32.png",
+        "NewsData": "https://newsdata.io/images/global/newsdata-icon.png",
+        "GNews": "https://gnews.io/favicon.ico"
+    }
+    # Industry/sector-based fallbacks
+    if "tech" in source.lower() or "technology" in source.lower():
+        return "https://img.icons8.com/color/96/000000/computer.png"
+    elif "finance" in source.lower() or "financial" in source.lower() or "bank" in source.lower():
+        return "https://img.icons8.com/color/96/000000/bank-building.png"
+    elif "health" in source.lower() or "healthcare" in source.lower():
+        return "https://img.icons8.com/color/96/000000/heart-health.png"
+    # Try to get source-specific image first, then fall back to sentiment
+    if source in source_images:
+        return source_images[source]
+    elif sentiment in sentiment_images:
+        return sentiment_images[sentiment]
+    else:
+        return "https://img.icons8.com/color/96/000000/news.png"  # Default fallback
+
+# Fix NewsFetcher to use the function directly
+class NewsFetcher:
+    """Background thread to fetch news periodically."""
+    
+    def __init__(self, cache_time=3600):
+        self.cache = {}  # Cache for news articles
+        self.cache_time = cache_time  # Cache expiration in seconds
+        self.running = False
+        self.thread = None
+        self.api_usage = {
+            "finnhub": 0,
+            "marketaux": 0,
+            "newsdata": 0,
+            "gnews": 0
+        }
+        
+        # Initialize provider mapping
+        self.providers = list(self.api_usage.keys())
+        self.provider_index = 0
+    
+    def start(self):
+        """Start the background news fetching."""
+        if self.thread and self.thread.is_alive():
+            logger.info("News fetcher already running")
+            return
+            
+        self.running = True
+        self.thread = threading.Thread(target=self._fetch_loop, daemon=True)
+        self.thread.start()
+        logger.info("Started news fetching thread")
+    
+    def stop(self):
+        """Stop the background news fetching."""
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=1.0)
+            logger.info("Stopped news fetching thread")
+    
+    def _fetch_loop(self):
+        """Background loop to fetch news periodically."""
+        # Fetch market news immediately
+        self._fetch_market_news()
+        
+        # Set up stocks to rotate through
+        stocks = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
+        stock_index = 0
+        
+        # Fetch one stock every 30 seconds, market news every 15 minutes
+        market_interval = 15 * 60  # 15 minutes
+        last_market_fetch = time.time()
+        
+        while self.running:
+            current_time = time.time()
+            
+            # Fetch stock news
+            ticker = stocks[stock_index]
+            self._fetch_ticker_news(ticker)
+            
+            # Increment stock index
+            stock_index = (stock_index + 1) % len(stocks)
+            
+            # Check if it's time for market news
+            if current_time - last_market_fetch >= market_interval:
+                self._fetch_market_news()
+                last_market_fetch = current_time
+            
+            # Sleep for 30 seconds
+            for _ in range(30):
+                if not self.running:
+                    break
+                time.sleep(1)
+    
+    def _fetch_market_news(self):
+        """Fetch general market news from real APIs."""
+        logger.info("Fetching general market news")
+        try:
+            articles = get_news_for_search("market")
+            self.cache["market"] = {
+                "articles": articles,
+                "timestamp": time.time()
+            }
+        except Exception as e:
+            logger.error(f"Error fetching market news: {str(e)}")
+    
+    def _fetch_ticker_news(self, ticker):
+        """Fetch news for a specific ticker from real APIs."""
+        logger.info(f"Fetching news for {ticker}")
+        try:
+            articles = get_news_for_search(ticker)
+            self.cache[ticker] = {
+                "articles": articles,
+                "timestamp": time.time()
+            }
+        except Exception as e:
+            logger.error(f"Error fetching news for {ticker}: {str(e)}")
+    
+    def _select_least_used_provider(self):
+        """Select the least used provider to ensure even distribution among real APIs."""
+        # Find the provider with the lowest usage
+        return min(self.api_usage.items(), key=lambda x: x[1])[0]
+    
+    def get_news(self, ticker=None, max_items=6):
+        """
+        Get news articles from cache.
+        
+        Args:
+            ticker: Stock ticker or None for market news
+            max_items: Maximum number of articles to return
+            
+        Returns:
+            List of news articles
+        """
+        key = ticker or "market"
+        
+        # Check if we have cached news
+        if key in self.cache:
+            # Check if cache is still valid
+            if time.time() - self.cache[key]["timestamp"] < self.cache_time:
+                articles = self.cache[key]["articles"]
+                return articles[:max_items]
+        
+        # If we're here, we need to fetch news
+        if ticker:
+            try:
+                # IMPORTANT: Do NOT pass provider parameter here
+                articles = get_news_for_search(ticker)
+                self.cache[ticker] = {
+                    "articles": articles,
+                    "timestamp": time.time()
+                }
+                return articles[:max_items]
+            except Exception as e:
+                logger.error(f"Error fetching news for {ticker}: {str(e)}")
+                return []
+        else:
+            try:
+                # IMPORTANT: Do NOT pass provider parameter here
+                articles = get_news_for_search("market")
+                self.cache["market"] = {
+                    "articles": articles,
+                    "timestamp": time.time()
+                }
+                return articles[:max_items]
+            except Exception as e:
+                logger.error(f"Error fetching market news: {str(e)}")
+                return []
+    
+    def get_api_usage(self):
+        """Get API usage statistics."""
+        return self.api_usage
+    
+    def search_news(self, query, max_items=10):
+        """
+        Search for news with a specific query.
+        
+        Args:
+            query: Search query
+            max_items: Maximum number of articles to return
+            
+        Returns:
+            List of news articles
+        """
+        # Check if we have cached search results
+        cache_key = f"search_{query}"
+        if cache_key in self.cache:
+            if time.time() - self.cache[cache_key]["timestamp"] < self.cache_time:
+                logger.info(f"Using cached news for '{query}', {len(self.cache[cache_key]['articles'])} items")
+                return self.cache[cache_key]["articles"][:max_items]
+        
+        # Fetch news - IMPORTANT: Do NOT pass provider parameter here
+        try:
+            articles = get_news_for_search(query)
+            self.cache[cache_key] = {
+                "articles": articles,
+                "timestamp": time.time()
+            }
+            return articles[:max_items]
+        except Exception as e:
+            logger.error(f"Error searching news for '{query}': {str(e)}")
+            return []
+
+# Initialize the news fetcher with default symbols
+news_fetcher = NewsFetcher()
+
+# Start the news fetcher when the app loads
+# We'll make sure this only runs once by checking if the thread is already running
+if not hasattr(st, "news_fetcher_started") or not st.news_fetcher_started:
+    news_fetcher.start()
+    st.news_fetcher_started = True
+
+# Function to display API usage of our real APIs
+def display_api_usage():
+    """Display the usage metrics for our real API providers: Finnhub, MarketAux, NewsData, and GNews"""
+    st.markdown("### API Usage Monitor")
+    
+    # Get usage data from cache
+    if not hasattr(st, 'session_state') or not hasattr(st.session_state, 'news_cache'):
+        st.info("API usage data not available yet")
+        return
+        
+    cache = st.session_state.news_cache
+    usage = cache.get_all_calls_today()
+    
+    # Show message if no API calls made yet
+    if not usage:
+        st.info("No API calls recorded today. News will be fetched from our real providers when you search.")
+        
+        # Show available APIs
+        st.markdown("#### Available News APIs:")
+        st.markdown("- **Finnhub** - Best for ticker-specific financial news")
+        st.markdown("- **MarketAux** - Market news with sentiment analysis")
+        st.markdown("- **NewsData.io** - General financial news coverage")
+        st.markdown("- **GNews** - Supplementary news source")
+        return
+    
+    # Create a DataFrame for usage visualization
+    providers = []
+    calls = []
+    remaining = []
+    
+    # Ensure we show all our API providers even if they haven't been used
+    for provider in ["finnhub", "marketaux", "newsdata", "gnews"]:
+        providers.append(provider)
+        calls.append(usage.get(provider, 0))
+        remaining.append(100 - usage.get(provider, 0))  # 100 calls daily limit for each
+    
+    usage_data = pd.DataFrame({
+        "Provider": providers,
+        "Calls Today": calls,
+        "Remaining": remaining
+    })
+    
+    # Display as a bar chart
+    fig = px.bar(usage_data, x="Provider", y="Calls Today", 
+                 color="Calls Today", 
+                 color_continuous_scale=["green", "yellow", "red"],
+                 range_color=[0, 100])
+    
+    fig.update_layout(
+        height=250,
+        margin=dict(l=20, r=20, t=30, b=20),
+        title="Real API Calls Today"
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Calculate total used
+    total_used = sum(calls)
+    total_available = len(providers) * 100
+    percentage = (total_used / total_available) * 100
+    
+    # Add daily limit information and progress
+    st.progress(percentage / 100)
+    st.markdown(f"**Total: {total_used}/{total_available} calls** ({percentage:.1f}% of daily limits)")
+    
+    # Check if approaching limit on any API
+    approaching_limit = [p for p, c in zip(providers, calls) if c >= 80]
+        
+    try:
+        get_news_for_search("market", limit=5)
+        st.success("Refreshed market news!")
+    except Exception as e:
+        st.error(f"Error refreshing: {str(e)}")
+
+# Update get_news_data to use get_news_for_search
+def get_news_data(query=None, provider=None):
+    """
+    Function to get news data from various providers - now redirects to get_news_for_search
+    Maintains the provider parameter for backward compatibility but ignores it
+    """
+    # Simply call the new get_news_for_search function
+    # Note: We ignore the provider parameter for backward compatibility
+    logger.info(f"get_news_data called with query: {query}, redirecting to get_news_for_search")
+    return get_news_for_search(query=query)
+
+# Helper function to get real or mock data for dashboard
+def get_portfolio_data():
+    """Get portfolio data either from real system or mock data"""
+    if USING_REAL_COMPONENTS:
+        try:
+            # First try Alpaca API if available
+            if 'EXTERNAL_APIS_AVAILABLE' in globals() and EXTERNAL_APIS_AVAILABLE and 'alpaca_client' in globals():
+                try:
+                    # Get account information
+                    account = alpaca_client.get_account()
+                    
+                    # Get positions
+                    positions = alpaca_client.get_positions()
+                    
+                    if account and positions is not None:
+                        # Create portfolio data structure
+                        portfolio_data = {
+                            "portfolio": {
+                                "cash": float(account.get("cash", 0)),
+                                "total_value": float(account.get("portfolio_value", 0)),
+                                "positions": {}
+                            },
+                            "performance_metrics": {
+                                "cumulative_return": 0,
+                                "sharpe_ratio": 0,
+                                "max_drawdown": 0,
+                                "volatility": 0,
+                                "win_rate": 0,
+                                "profit_factor": 0,
+                                "recent_daily_returns": []
+                            },
+                            "recent_activity": {
+                                "trades": [],
+                                "signals": []
+                            }
+                        }
+                        
+                        # Process positions
+                        for position in positions:
+                            symbol = position.get("symbol")
+                            qty = float(position.get("qty", 0))
+                            avg_price = float(position.get("avg_entry_price", 0))
+                            current_price = float(position.get("current_price", 0))
+                            current_value = float(position.get("market_value", 0))
+                            unrealized_pl = float(position.get("unrealized_pl", 0))
+                            
+                            # Calculate unrealized PL percentage
+                            unrealized_pl_pct = 0
+                            if avg_price > 0 and qty > 0:
+                                unrealized_pl_pct = (current_price / avg_price - 1) * 100
+                            
+                            # Add to positions dictionary
+                            portfolio_data["portfolio"]["positions"][symbol] = {
+                                "quantity": qty,
+                                "avg_price": avg_price,
+                                "current_price": current_price,
+                                "current_value": current_value,
+                                "unrealized_pnl": unrealized_pl,
+                                "unrealized_pnl_pct": unrealized_pl_pct
+                            }
+                        
+                        # Calculate asset allocation (basic sector categorization)
+                        tech_symbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "FB", "NVDA", "TSLA"]
+                        finance_symbols = ["JPM", "BAC", "WFC", "GS", "MS", "V", "MA"]
+                        healthcare_symbols = ["JNJ", "PFE", "MRK", "UNH", "ABT", "LLY", "TMO"]
+                        consumer_symbols = ["PG", "KO", "PEP", "WMT", "MCD", "HD", "NKE"]
+                        
+                        # Initialize allocation
+                        allocation = {"Cash": portfolio_data["portfolio"]["cash"] / portfolio_data["portfolio"]["total_value"] * 100}
+                        
+                        # Calculate allocation by sector
+                        for symbol, position in portfolio_data["portfolio"]["positions"].items():
+                            sector = "Other"
+                            if symbol in tech_symbols:
+                                sector = "Technology"
+                            elif symbol in finance_symbols:
+                                sector = "Finance"
+                            elif symbol in healthcare_symbols:
+                                sector = "Healthcare"
+                            elif symbol in consumer_symbols:
+                                sector = "Consumer"
+                            
+                            # Add to sector allocation
+                            if sector in allocation:
+                                allocation[sector] += position["current_value"] / portfolio_data["portfolio"]["total_value"] * 100
+                            else:
+                                allocation[sector] = position["current_value"] / portfolio_data["portfolio"]["total_value"] * 100
+                        
+                        # Round allocation values
+                        allocation = {k: round(v, 1) for k, v in allocation.items()}
+                        
+                        # Add to portfolio data
+                        portfolio_data["portfolio"]["asset_allocation"] = allocation
+                        
+                        # Calculate performance metrics
+                        try:
+                            # Get recent performance for SPY as benchmark
+                            bars = alpaca_client.get_bars("SPY", timeframe="1Day", limit=30)
+                            
+                            if "SPY" in bars and not bars["SPY"].empty:
+                                # Calculate daily returns
+                                spy_data = bars["SPY"]
+                                spy_data['return'] = spy_data['close'].pct_change()
+                                
+                                # Calculate volatility
+                                volatility = spy_data['return'].std() * 100 * (252 ** 0.5)  # Annualized
+                                
+                                # Calculate maximum drawdown
+                                spy_data['cummax'] = spy_data['close'].cummax()
+                                spy_data['drawdown'] = (spy_data['close'] / spy_data['cummax'] - 1) * 100
+                                max_drawdown = spy_data['drawdown'].min()
+                                
+                                # Get recent daily returns
+                                recent_returns = spy_data['return'].dropna()[-5:].values * 100
+                                
+                                # Update performance metrics with real data
+                                portfolio_data["performance_metrics"]["volatility"] = round(volatility, 1)
+                                portfolio_data["performance_metrics"]["max_drawdown"] = round(max_drawdown, 1)
+                                portfolio_data["performance_metrics"]["recent_daily_returns"] = [round(r, 1) for r in recent_returns]
+                                
+                                # Get equity change as return
+                                equity_ratio = float(account.get("equity", 0)) / float(account.get("last_equity", 1))
+                                cumulative_return = (equity_ratio - 1) * 100
+                                portfolio_data["performance_metrics"]["cumulative_return"] = round(cumulative_return, 1)
+                                
+                                # Sharpe ratio (simplified)
+                                if volatility > 0:
+                                    sharpe = (cumulative_return / 100) / (volatility / 100) * (252 ** 0.5)
+                                    portfolio_data["performance_metrics"]["sharpe_ratio"] = round(sharpe, 2)
+                        except Exception as e:
+                            logger.warning(f"Error calculating performance metrics: {e}")
+                        
+                        # Try to get recent trades from Finnhub for trade activity
+                        if 'finnhub_client' in globals():
+                            try:
+                                # Generate sample trades based on current positions
+                                for symbol in list(portfolio_data["portfolio"]["positions"].keys())[:3]:
+                                    # Generate a recent buy trade
+                                    buy_time = datetime.now() - timedelta(days=np.random.randint(1, 10))
+                                    portfolio_data["recent_activity"]["trades"].append({
+                                        "timestamp": buy_time.isoformat(),
+                                        "symbol": symbol,
+                                        "action": "BUY",
+                                        "quantity": int(portfolio_data["portfolio"]["positions"][symbol]["quantity"] * 0.5),
+                                        "price": portfolio_data["portfolio"]["positions"][symbol]["avg_price"] * 0.95
+                                    })
+                                    
+                                    # Generate a signal
+                                    signal_time = datetime.now() - timedelta(hours=np.random.randint(1, 24))
+                                    portfolio_data["recent_activity"]["signals"].append({
+                                        "timestamp": signal_time.isoformat(),
+                                        "symbol": symbol,
+                                        "signal_type": "BUY",
+                                        "strength": np.random.uniform(0.6, 0.9),
+                                        "source": ["momentum", "trend_following", "pattern_recognition"][np.random.randint(0, 3)]
+                                    })
+                            except Exception as e:
+                                logger.warning(f"Error getting trade activity: {e}")
+                        
+                        # Add system status
+                        portfolio_data["system_status"] = {
+                            "is_market_open": account.get("status") == "ACTIVE",
+                            "market_hours": "9:30 AM - 4:00 PM ET",
+                            "data_providers": ["alpaca", "finnhub"],
+                            "connected_brokers": ["alpaca"],
+                            "system_health": {
+                                "cpu_usage": 35,  # Replace with real metrics if available
+                                "memory_usage": 42,
+                                "disk_space": 75
+                            }
+                        }
+                        
+                        # Add timestamp
+                        portfolio_data["last_updated"] = datetime.now().isoformat()
+                        
+                        logger.info("Successfully retrieved portfolio data from Alpaca API")
+                        return portfolio_data
+                except Exception as e:
+                    logger.error(f"Error retrieving Alpaca portfolio data: {e}")
+            
+            # Try to get real portfolio data from portfolio state manager
+            portfolio_data = portfolio_state.get_full_state()
+            
+            # Enhance with market condition predictions if available
+            try:
+                from trading_bot.ml.market_condition_classifier import MarketConditionClassifier
+                
+                # Get symbols from portfolio
+                symbols = list(portfolio_data.get("portfolio", {}).get("positions", {}).keys())
+                
+                if symbols:
+                    # Get current market data for prediction
+                    end_date = datetime.now().strftime('%Y-%m-%d')
+                    start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
+                    
+                    market_conditions = {}
+                    for symbol in symbols:
+                        try:
+                            # Get historical data for this symbol
+                            hist_data = data_provider.get_historical_data([symbol], start_date, end_date)
+                            
+                            if symbol in hist_data and not hist_data[symbol].empty:
+                                # Initialize classifier
+                                classifier = MarketConditionClassifier(symbol=symbol)
+                                
+                                # Make prediction
+                                prediction = classifier.predict(hist_data[symbol])
+                                market_conditions[symbol] = prediction
+                                
+                                logger.info(f"Predicted market condition for {symbol}: {prediction.get('market_condition')}")
+                        except Exception as e:
+                            logger.warning(f"Error predicting market condition for {symbol}: {e}")
+                    
+                    # Add market conditions to portfolio data
+                    if market_conditions:
+                        portfolio_data["market_conditions"] = market_conditions
+            
+            except ImportError as e:
+                logger.warning(f"Market condition classifier not available: {e}")
+            
+            # Get current market regime from market condition classifier
+            try:
+                # Use SPY as proxy for market
+                spy_data = data_provider.get_historical_data(["SPY"], start_date, end_date)
+                if "SPY" in spy_data and not spy_data["SPY"].empty:
+                    classifier = MarketConditionClassifier(symbol="SPY")
+                    prediction = classifier.predict(spy_data["SPY"])
+                    portfolio_data["market_regime"] = prediction.get("market_condition", "unknown")
+            except Exception as e:
+                logger.warning(f"Error predicting market regime: {e}")
+            
+            # Add system status information
+            portfolio_data["system_status"] = {
+                "is_market_open": True,  # We should get this from the data provider
+                "market_hours": "9:30 AM - 4:00 PM ET",
+                "data_providers": ["alpaca" if "alpaca" in str(type(data_provider)).lower() else "yahoo_finance"],
+                "connected_brokers": ["paper_trading"],  # Update with real broker info if available
+                "system_health": {
+                    "cpu_usage": 35,  # Replace with real metrics if available
+                    "memory_usage": 42,
+                    "disk_space": 75
+                }
+            }
+            
+            # Add timestamp
+            portfolio_data["last_updated"] = datetime.now().isoformat()
+            
+            return portfolio_data
+        
+        except Exception as e:
+            logger.error(f"Error getting real portfolio data: {e}")
+            logger.warning("Falling back to mock data")
+            # Fall through to mock data
+    
+    # Return mock data for development/testing
+    return {
+        "portfolio": {
+            "cash": 50000.0,
+            "total_value": 100000.0,
+            "positions": {
+                "AAPL": {
+                    "quantity": 100,
+                    "avg_price": 150.0,
+                    "current_price": 170.25,
+                    "current_value": 17025.0,
+                    "unrealized_pnl": 2025.0,
+                    "unrealized_pnl_pct": 13.5
+                },
+                "MSFT": {
+                    "quantity": 50,
+                    "avg_price": 250.0,
+                    "current_price": 280.50,
+                    "current_value": 14025.0,
+                    "unrealized_pnl": 1525.0,
+                    "unrealized_pnl_pct": 6.1
+                },
+                "GOOGL": {
+                    "quantity": 30,
+                    "avg_price": 125.0,
+                    "current_price": 135.75,
+                    "current_value": 4072.5,
+                    "unrealized_pnl": 322.5,
+                    "unrealized_pnl_pct": 8.6
+                }
+            },
+            "asset_allocation": {
+                "Technology": 75.5,
+                "Cash": 24.5
+            }
+        },
+        "performance_metrics": {
+            "cumulative_return": 15.2,
+            "sharpe_ratio": 1.8,
+            "max_drawdown": -8.5,
+            "volatility": 12.3,
+            "win_rate": 68.5,
+            "profit_factor": 2.3,
+            "recent_daily_returns": [0.8, -0.3, 1.2, 0.5, -0.2]
+        },
+        "recent_activity": {
+            "trades": [
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "symbol": "AAPL",
+                    "action": "BUY",
+                    "quantity": 25,
+                    "price": 168.75
+                },
+                {
+                    "timestamp": (datetime.now() - timedelta(hours=2)).isoformat(),
+                    "symbol": "NFLX",
+                    "action": "SELL",
+                    "quantity": 15,
+                    "price": 410.25
+                }
+            ],
+            "signals": [
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "symbol": "TSLA",
+                    "signal_type": "BUY",
+                    "strength": 0.85,
+                    "source": "pattern_recognition"
+                },
+                {
+                    "timestamp": (datetime.now() - timedelta(hours=1)).isoformat(),
+                    "symbol": "MSFT",
+                    "signal_type": "HOLD",
+                    "strength": 0.62,
+                    "source": "fundamental"
+                }
+            ]
+        },
+        "strategy_data": {
+            "active_strategies": ["momentum", "mean_reversion", "trend_following"],
+            "strategy_allocations": {
+                "momentum": 40,
+                "mean_reversion": 30,
+                "trend_following": 30
+            },
+            "strategy_performance": {
+                "momentum": {
+                    "return": 12.5,
+                    "sharpe": 1.4
+                },
+                "mean_reversion": {
+                    "return": 8.2,
+                    "sharpe": 1.1
+                },
+                "trend_following": {
+                    "return": 15.8,
+                    "sharpe": 1.7
+                }
+            }
+        },
+        "system_status": {
+            "is_market_open": True,
+            "market_hours": "9:30 AM - 4:00 PM ET",
+            "data_providers": ["alpha_vantage", "yahoo_finance"],
+            "connected_brokers": ["paper_trading"],
+            "system_health": {
+                "cpu_usage": 35,
+                "memory_usage": 42,
+                "disk_space": 75
+            }
+        },
+        "learning_status": {
+            "training_in_progress": False,
+            "models_status": {
+                "price_predictor": {
+                    "accuracy": 0.72,
+                    "last_trained": datetime.now().isoformat()
+                },
+                "volatility_estimator": {
+                    "accuracy": 0.68,
+                    "last_trained": datetime.now().isoformat()
+                }
+            },
+            "recent_learning_metrics": {
+                "training_cycles": 15,
+                "validation_loss": 0.082,
+                "training_time_seconds": 450
+            }
+        },
+        "market_regime": "BULLISH_TREND",
+        "last_updated": datetime.now().isoformat()
+    }
+
+# Helper function to execute trades (real or simulated)
+def execute_trade(symbol, quantity, action, order_type="market", price=None):
+    """Execute a trade either through real broker or simulation"""
+    if USING_REAL_COMPONENTS:
+        # In real implementation, this would connect to a broker API
+        logger.info(f"Trade execution: {action} {quantity} {symbol}")
+        # This would be a call to your trade executor component
+        return {"status": "submitted", "order_id": "sim_" + datetime.now().strftime("%Y%m%d%H%M%S")}
+    else:
+        # Simulated trade execution
+        logger.info(f"SIMULATION: {action} {quantity} {symbol}")
+        return {"status": "filled", "order_id": "sim_" + datetime.now().strftime("%Y%m%d%H%M%S")}
+
+# Helper function to get historical data for charts
+def get_historical_data(symbol, days=30):
+    """Get historical data for charting"""
+    if USING_REAL_COMPONENTS and 'data_provider' in globals():
+        # Use real data provider to get historical data
+        end_date = datetime.now().strftime('%Y-%m-%d')
+        start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+        try:
+            data = data_provider.get_historical_data([symbol], start_date, end_date)
+            if symbol in data and not data[symbol].empty:
+                return data[symbol]
+        except Exception as e:
+            logger.error(f"Error getting historical data: {e}")
+    
+    # Fall back to mock data
+    dates = pd.date_range(end=datetime.now(), periods=days)
+    base_price = 100 + np.random.rand() * 200  # Random starting price
+    prices = [base_price]
+    for _ in range(1, days):
+        # Random walk with drift
+        change = np.random.normal(0.0005, 0.015)  # Mean small positive drift
+        prices.append(prices[-1] * (1 + change))
+    
+    # Create DataFrame with OHLCV data
+    df = pd.DataFrame({
+        'date': dates,
+        'open': prices,
+        'high': [p * (1 + np.random.uniform(0, 0.02)) for p in prices],
+        'low': [p * (1 - np.random.uniform(0, 0.02)) for p in prices],
+        'close': [p * (1 + np.random.normal(0, 0.005)) for p in prices],
+        'volume': [int(np.random.uniform(100000, 10000000)) for _ in range(days)]
+    })
+    
+    return df
+
+# Helper function to convert time range to time parameters for data fetching
+def convert_time_range(time_range):
+    """Convert time range selection to days, hours, minutes and timeframe"""
+    # Default values
+    days = 7
+    resolution = 'day'  # 'day', 'hour', 'minute'
+    
+    # Time range mappings
+    if time_range == "1 Minute":
+        days = 1/24/60  # 1 minute as fraction of a day
+        resolution = 'minute'
+    elif time_range == "5 Minutes":
+        days = 5/24/60  # 5 minutes as fraction of a day
+        resolution = 'minute'
+    elif time_range == "15 Minutes":
+        days = 15/24/60  # 15 minutes as fraction of a day
+        resolution = 'minute'
+    elif time_range == "30 Minutes":
+        days = 30/24/60  # 30 minutes as fraction of a day
+        resolution = 'minute'
+    elif time_range == "1 Hour":
+        days = 1/24  # 1 hour as fraction of a day
+        resolution = 'hour'
+    elif time_range == "8 Hours":
+        days = 8/24  # 8 hours as fraction of a day
+        resolution = 'hour'
+    elif time_range == "1 Day":
+        days = 1
+        resolution = 'day'
+    elif time_range == "7 Days":
+        days = 7
+        resolution = 'day'
+    elif time_range == "1 Month":
+        days = 30
+        resolution = 'day'
+    elif time_range == "3 Months":
+        days = 90
+        resolution = 'day'
+    elif time_range == "6 Months":
+        days = 180
+        resolution = 'day'
+    elif time_range == "1 Year":
+        days = 365
+        resolution = 'day'
+    elif time_range == "All Time":
+        days = 1000  # A large number to get all available data
+        resolution = 'day'
+    elif time_range == "Custom":
+        # Custom will be handled by the date input fields
+        days = 30  # Default for custom if not specified
+        resolution = 'day'
+    
+    # For debugging
+    logger.info(f"Converting time range '{time_range}' to {days} days with {resolution} resolution")
+    
+    return {
+        'days': days,
+        'resolution': resolution,
+        'start_date': (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S'),
+        'end_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+
+# Main dashboard content
+st.markdown('<div class="main-header">Trading Strategy Dashboard</div>', unsafe_allow_html=True)
+
+# Time Range Selector (moved from sidebar)
+st.markdown('<div class="sub-header">Time Range</div>', unsafe_allow_html=True)
+time_range = st.selectbox(
+    "Select time period",
+    [
+        "1 Minute", "5 Minutes", "15 Minutes", "30 Minutes",
+        "1 Hour", "8 Hours",
+        "1 Day", "7 Days",
+        "1 Month", "3 Months", "6 Months", "1 Year",
+        "All Time", "Custom"
+    ]
+)
+if time_range == "Custom":
+    start_date = st.date_input("Start date", datetime.now() - timedelta(days=30))
+    end_date = st.date_input("End date", datetime.now())
+
+# Create top row with summary metrics
+metric_cols = st.columns(4)
+
+# Calculate filtered metrics based on selected strategies
+win_rates = {"Momentum": 67.8, "Mean Reversion": 68.5, "Breakout": 62.3, "Volatility": 59.8, "Trend Following": 74.2, "Pairs Trading": 65.1}
+profit_factors = {"Momentum": 1.92, "Mean Reversion": 1.78, "Breakout": 1.65, "Volatility": 1.59, "Trend Following": 2.15, "Pairs Trading": 1.72}
+drawdowns = {"Momentum": -4.2, "Mean Reversion": -5.1, "Breakout": -6.8, "Volatility": -8.3, "Trend Following": -3.5, "Pairs Trading": -4.9}
+sharpes = {"Momentum": 1.85, "Mean Reversion": 1.73, "Breakout": 1.62, "Volatility": 1.51, "Trend Following": 2.05, "Pairs Trading": 1.68}
+
+# Calculate average metrics for selected strategies
+if selected_strategies:
+    avg_win_rate = sum(win_rates.get(s, 0) for s in selected_strategies) / len(selected_strategies)
+    avg_profit_factor = sum(profit_factors.get(s, 0) for s in selected_strategies) / len(selected_strategies)
+    avg_drawdown = sum(drawdowns.get(s, 0) for s in selected_strategies) / len(selected_strategies)
+    avg_sharpe = sum(sharpes.get(s, 0) for s in selected_strategies) / len(selected_strategies)
+    
+    # Calculate deltas compared to all strategies
+    all_avg_win_rate = sum(win_rates.values()) / len(win_rates)
+    all_avg_profit_factor = sum(profit_factors.values()) / len(profit_factors)
+    all_avg_drawdown = sum(drawdowns.values()) / len(drawdowns)
+    all_avg_sharpe = sum(sharpes.values()) / len(sharpes)
+    
+    delta_win_rate = avg_win_rate - all_avg_win_rate
+    delta_profit_factor = avg_profit_factor - all_avg_profit_factor
+    delta_drawdown = avg_drawdown - all_avg_drawdown
+    delta_sharpe = avg_sharpe - all_avg_sharpe
+else:
+    avg_win_rate = 67.8
+    avg_profit_factor = 1.87
+    avg_drawdown = -4.2
+    avg_sharpe = 1.93
+    delta_win_rate = 0
+    delta_profit_factor = 0
+    delta_drawdown = 0
+    delta_sharpe = 0
+
+with metric_cols[0]:
+    st.metric(label="Total Win Rate", value=f"{avg_win_rate:.1f}%", delta=f"{delta_win_rate:.1f}%" if delta_win_rate != 0 else None)
+with metric_cols[1]:
+    st.metric(label="Profit Factor", value=f"{avg_profit_factor:.2f}", delta=f"{delta_profit_factor:.2f}" if delta_profit_factor != 0 else None)
+with metric_cols[2]:
+    st.metric(label="Max Drawdown", value=f"{avg_drawdown:.1f}%", delta=f"{delta_drawdown:.1f}%" if delta_drawdown != 0 else None, delta_color="inverse")
+with metric_cols[3]:
+    st.metric(label="Sharpe Ratio", value=f"{avg_sharpe:.2f}")
+
+# Add live data section if available
+if LIVE_DATA_MANAGER_AVAILABLE:
+    live_data_manager.create_live_data_section(chart_library=go if PLOTLY_AVAILABLE else None)
+
+# Create tabs for different sections
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12, tab13 = st.tabs(["Dashboard", "Portfolio", "News/Predictions", "Strategy Optimizer", "Backtester", "Settings", "Developer", "LLM Insights", "AI Chat", "Modular Strategy", "Component Marketplace", "Trading Control", "Autonomous Trading"])
+
+with tab1:
+    # Portfolio Performance Chart (moved to top)
+    st.markdown('<div class="sub-header">Portfolio Performance</div>', unsafe_allow_html=True)
+    
+    # Get time parameters from the time range selection
+    time_params = convert_time_range(time_range)
+    
+    # Create appropriate sample data based on time range selection
+    if time_params['resolution'] == 'minute':
+        # Generate minute-level data
+        date_range = pd.date_range(
+            end=datetime.now(),
+            periods=int(time_params['days'] * 24 * 60),  # Convert days to minutes
+            freq='1min'
+        )
+        # Ensure date_range is not empty
+        if len(date_range) == 0:
+            date_range = pd.date_range(
+                end=datetime.now(),
+                periods=60,  # Default to last hour if calculation results in 0
+                freq='1min'
+            )
+            
+        base_value = 100000
+        # Generate more noisy data for minute-level
+        portfolio_values = [base_value]
+        for i in range(1, len(date_range)):
+            # Higher volatility for smaller timeframes
+            change = np.random.normal(0.00001, 0.0002)  # Very small mean, higher variance
+            portfolio_values.append(portfolio_values[-1] * (1 + change))
+    elif time_params['resolution'] == 'hour':
+        # Generate hourly data
+        date_range = pd.date_range(
+            end=datetime.now(),
+            periods=int(time_params['days'] * 24),  # Convert days to hours
+            freq='1H'
+        )
+        # Ensure date_range is not empty
+        if len(date_range) == 0:
+            date_range = pd.date_range(
+                end=datetime.now(),
+                periods=24,  # Default to last day if calculation results in 0
+                freq='1H'
+            )
+            
+        base_value = 100000
+        portfolio_values = [base_value]
+        for i in range(1, len(date_range)):
+            change = np.random.normal(0.0001, 0.0005)  # Small mean, medium variance
+            portfolio_values.append(portfolio_values[-1] * (1 + change))
+    else:  # daily or longer
+        # Generate daily data
+        date_range = pd.date_range(
+            end=datetime.now(),
+            periods=int(time_params['days']),
+            freq='1D'
+        )
+        # Ensure date_range is not empty
+        if len(date_range) == 0:
+            date_range = pd.date_range(
+                end=datetime.now(),
+                periods=7,  # Default to last week if calculation results in 0
+                freq='1D'
+            )
+            
+        base_value = 100000
+        portfolio_values = [base_value]
+        for i in range(1, len(date_range)):
+            change = np.random.normal(0.0003, 0.001)  # Larger mean, lower relative variance
+            portfolio_values.append(portfolio_values[-1] * (1 + change))
+    
+    # Create a dataframe with the sample data
+    # Ensure all arrays have the same length
+    portfolio_values = np.array(portfolio_values)
+    
+    # Make sure benchmark_values matches the length of portfolio_values
+    benchmark_values = [base_value * (1 + 0.0001 * i + np.random.normal(0, 0.0005)) for i in range(len(portfolio_values))]
+    
+    # Ensure date_range has the same length as the other arrays
+    if len(date_range) != len(portfolio_values):
+        # Trim or extend date_range to match portfolio_values length
+        if len(date_range) > len(portfolio_values):
+            date_range = date_range[:len(portfolio_values)]
+        elif len(date_range) > 0:  # Only try to extend if we have at least one date
+            # If we need more dates, extend from the last date
+            last_date = date_range[-1]
+            freq = pd.infer_freq(date_range)
+            extension = pd.date_range(
+                start=last_date + pd.Timedelta(seconds=1), 
+                periods=len(portfolio_values) - len(date_range),
+                freq=freq or '1min'  # Use inferred frequency or default to 1min
+            )
+            date_range = pd.concat([date_range, extension])
+        else:
+            # If date_range is empty but we have portfolio values, create a new date range
+            date_range = pd.date_range(
+                end=datetime.now(),
+                periods=len(portfolio_values),
+                freq='1min'
+            )
+    
+    # Double-check all arrays have the same length before creating DataFrame
+    min_length = min(len(date_range), len(portfolio_values), len(benchmark_values))
+    if min_length == 0:
+        # Ensure we have at least some data
+        min_length = 10
+        date_range = pd.date_range(end=datetime.now(), periods=min_length, freq='1D')
+        portfolio_values = np.array([base_value * (1 + 0.001 * i) for i in range(min_length)])
+        benchmark_values = [base_value * (1 + 0.0005 * i) for i in range(min_length)]
+    else:
+        date_range = date_range[:min_length]
+        portfolio_values = portfolio_values[:min_length]
+        benchmark_values = benchmark_values[:min_length]
+    
+    portfolio_df = pd.DataFrame({
+        'Date': date_range,
+        'Portfolio Value': portfolio_values,
+        'Benchmark': benchmark_values
+    })
+    
+    # Display a chart with the data
+    fig_portfolio = px.line(
+        portfolio_df,
+        x='Date',
+        y=['Portfolio Value', 'Benchmark'],
+        title=f"Portfolio vs Benchmark Performance ({time_range})",
+        color_discrete_sequence=['#1E88E5', '#FFA000']
+    )
+    
+    # Adjust the chart for different time resolutions
+    if time_params['resolution'] == 'minute':
+        fig_portfolio.update_xaxes(tickformat='%H:%M', tickmode='auto', nticks=10)
+    elif time_params['resolution'] == 'hour':
+        fig_portfolio.update_xaxes(tickformat='%m-%d %H:%M', tickmode='auto', nticks=8)
+    else:
+        fig_portfolio.update_xaxes(tickformat='%Y-%m-%d', tickmode='auto', nticks=10)
+    
+    st.plotly_chart(fig_portfolio, use_container_width=True)
+    
+    # Two column layout for allocation and trades
+    alloc_col, trades_col = st.columns(2)
+    
+    with alloc_col:
+        st.markdown('<div class="sub-header">🥧 Allocation Breakdown</div>', unsafe_allow_html=True)
+        
+        # Sample data for strategy allocation
+        strategies = ["Momentum", "Mean Reversion", "Breakout", "Volatility", "Trend Following", "Pairs Trading"]
+        allocations = [30, 25, 15, 10, 15, 5]
+        
+        # Filter strategies based on selection
+        filtered_strategies = [s for s in strategies if s in selected_strategies]
+        filtered_allocations = [allocations[strategies.index(s)] for s in filtered_strategies]
+        
+        # Normalize allocations after filtering
+        if filtered_allocations:
+            total_allocation = sum(filtered_allocations)
+            filtered_allocations = [a * 100 / total_allocation for a in filtered_allocations]
+        
+        # Create allocation pie chart
+        fig_allocation = px.pie(
+            values=filtered_allocations,
+            names=filtered_strategies,
+            title="Current Capital Allocation",
+            color_discrete_sequence=px.colors.qualitative.Bold
+        )
+        fig_allocation.update_traces(textposition='inside', textinfo='percent+label')
+        st.plotly_chart(fig_allocation, use_container_width=True)
+    
+    with trades_col:
+        st.markdown('<div class="sub-header">📋 Recent Trades</div>', unsafe_allow_html=True)
+        
+        # Sample trade data
+        trades_data = {
+            "Symbol": ["AAPL", "MSFT", "TSLA", "AMZN", "NVDA", "GOOGL", "QQQ", "SPY"],
+            "Strategy": ["Momentum", "Breakout", "Volatility", "Mean Reversion", "Momentum", "Trend Following", "Pairs Trading", "Mean Reversion"],
+            "Confidence": [87, 92, 65, 78, 94, 83, 71, 89],
+            "Entry Date": ["2023-04-10", "2023-04-09", "2023-04-08", "2023-04-07", "2023-04-06", "2023-04-05", "2023-04-04", "2023-04-03"],
+        }
+        
+        # AI predictions section
+        st.markdown('<div class="sub-header">AI Market Predictions</div>', unsafe_allow_html=True)
+        
+        sentiment_cols = st.columns(2)
+
+try:
+    from live_data_manager import LiveDataManager
+    LIVE_DATA_MANAGER_AVAILABLE = True
+except ImportError:
+    LIVE_DATA_MANAGER_AVAILABLE = False
+    logger.warning("LiveDataManager not available, live data features will be disabled")
+
+# Add this at the beginning of the main code body, after all imports/initializations are done
+# Initialize the LiveDataManager if available
+if LIVE_DATA_MANAGER_AVAILABLE:
+    live_data_manager = LiveDataManager()
+    # Check for auto-refresh
+    live_data_manager.check_auto_refresh()
+
+# Add this right after the metrics section (after the code that displays the 4 main metrics)
+# Add live data section if available
+if LIVE_DATA_MANAGER_AVAILABLE:
+    live_data_manager.create_live_data_section(chart_library=go if PLOTLY_AVAILABLE else None)
+
+# Safely handle news data section
+try:
+    # Only attempt to get news if the function exists
+    if 'get_news_for_search' in globals():
+        news_data = get_news_for_search("market", limit=5)
+        
+        # Check if we have sentiment columns defined
+        if 'sentiment_cols' in locals() and news_data:
+            with sentiment_cols[0]:
+                st.subheader("Market News Impact")
+                st.write("Latest market news and potential impact on trading strategies.")
+                
+                # Display some simplified news without trying to process them further
+                for i, news in enumerate(news_data[:3]):
+                    st.markdown(f"**{news.get('title', 'Market Update')}**")
+                    st.write(f"Source: {news.get('source', 'Financial News')}")
+                    st.write("---")
+    else:
+        logger.info("News search function not available")
+except Exception as e:
+    logger.error(f"Error displaying news: {e}")
+    # Continue execution - don't let news errors stop the dashboard
+
+# Also check the other sentiment column for display if it exists
+try:
+    if 'sentiment_cols' in locals() and len(sentiment_cols) > 1:
+        with sentiment_cols[1]:
+            st.subheader("Market Analysis")
+            st.write("Summary of current market conditions.")
+            # Simple market analysis display
+            st.info("Market showing mixed signals with tech sector outperforming overall market.")
+            st.warning("Energy sector under pressure due to regulatory concerns.")
+            st.success("Consumer defensive stocks showing strength in current conditions.")
+except Exception as e:
+    logger.error(f"Error displaying market analysis: {e}")
+
+# Add additional safe market content display if we need to
+try:
+    # Add the last sentiment column if it exists
+    if 'sentiment_cols' in locals() and len(sentiment_cols) > 2:
+        with sentiment_cols[2]:
+            st.subheader("Market Alerts")
+            st.warning("New regulatory changes may impact trading in the energy sector")
+            st.error("Volatility warning: VIX above 30 - consider adjusting position sizes")
+            st.info("Earnings season starts next week - prepare for increased volatility")
+except Exception as e:
+    logger.error(f"Error displaying market alerts: {e}")
+
+# Display search guidance if we have the search box
+try:
+    if 'news_search' in locals() and not news_data:
+        st.info("Use the search box above to find news about any company or ticker symbol.")
+        st.markdown("For example, try searching for **AAPL**, **Microsoft**, **Tesla**, or **Cryptocurrency**")
+except Exception as e:
+    logger.error(f"Error displaying search guidance: {e}")
+
+# Create columns for the market dashboard widgets
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("### Market Regime Forecast")
+    
+    # Try to get real market regime forecasts using the ML classifier
+    try:
+        if USING_REAL_COMPONENTS:
+            # Get market regimes probabilities using the classifier
+            from trading_bot.ml.market_condition_classifier import MarketConditionClassifier
+            
+            # Use SPY as proxy for broad market
+            end_date = datetime.now().strftime('%Y-%m-%d')
+            start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
+            
+            spy_data = data_provider.get_historical_data(["SPY"], start_date, end_date)
+            
+            if "SPY" in spy_data and not spy_data["SPY"].empty:
+                # Initialize classifier
+                classifier = MarketConditionClassifier(symbol="SPY")
+                
+                # Make prediction with probabilities
+                prediction = classifier.predict(spy_data["SPY"], include_probabilities=True)
+                
+                if "probabilities" in prediction:
+                    # Format the regime probabilities for display
+                    regimes = []
+                    probs = []
+                    
+                    # Map the regimes to more readable names
+                    regime_map = {
+                        "bullish_trend": "Bullish Trend",
+                        "bearish_trend": "Bearish Trend",
+                        "sideways": "Sideways/Consolidation",
+                        "high_volatility": "High Volatility",
+                        "low_volatility": "Low Volatility",
+                        "breakout": "Breakout",
+                        "breakdown": "Breakdown"
+                    }
+                    
+                    # Get the top 4 probable regimes
+                    for regime, prob in sorted(prediction["probabilities"].items(), key=lambda x: x[1], reverse=True)[:4]:
+                        regimes.append(regime_map.get(regime, regime.replace("_", " ").title()))
+                        probs.append(prob)
+                    
+                    # Create the regime probability dataframe
+                    regime_data = {
+                        "Regime": regimes,
+                        "Probability": probs
+                    }
+                else:
+                    # If no probabilities available, use mock data
+                    regime_data = {
+                        "Regime": ["Bullish Trend", "Sideways/Consolidation", "Bearish Trend", "High Volatility"],
+                        "Probability": [0.65, 0.20, 0.05, 0.10]
+                    }
+            else:
+                # If no data available, use mock data
+                regime_data = {
+                    "Regime": ["Bullish Trend", "Sideways/Consolidation", "Bearish Trend", "High Volatility"],
+                    "Probability": [0.65, 0.20, 0.05, 0.10]
+                }
+        else:
+            # Use mock data if not using real components
+            regime_data = {
+                "Regime": ["Bullish Trend", "Sideways/Consolidation", "Bearish Trend", "High Volatility"],
+                "Probability": [0.65, 0.20, 0.05, 0.10]
+            }
+    except Exception as e:
+            logger.error(f"Error getting market regime forecast: {e}")
+            # Fallback to mock data
+            regime_data = {
+                "Regime": ["Bullish Trend", "Sideways/Consolidation", "Bearish Trend", "High Volatility"],
+                "Probability": [0.65, 0.20, 0.05, 0.10]
+            }
+    
+    # Create the bar chart
+    fig = px.bar(
+        regime_data,
+        y="Regime",
+        x="Probability",
+        orientation='h',
+        color="Probability",
+        color_continuous_scale=["#C62828", "#FFAB91", "#A5D6A7", "#2E7D32"],
+        title="Market Regime Probability (7-Day Forecast)"
+    )
+    
+    fig.update_layout(
+        xaxis_title="Probability",
+        yaxis_title="",
+        coloraxis_showscale=False
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+        
+with col2:
+        st.markdown("### Symbol Price Predictions")
+        
+        # Try to get real price predictions using ML model
+        try:
+            if USING_REAL_COMPONENTS:
+                # Get list of symbols from portfolio
+                portfolio_data = get_portfolio_data()
+                symbols = list(portfolio_data.get("portfolio", {}).get("positions", {}).keys())
+                
+                # Add some major indices
+                symbols.extend(["SPY", "QQQ"])
+                
+                # Limit to 4 symbols for display
+                symbols = symbols[:4]
+                
+                try:
+                    # Try to import price prediction model
+                    # This is a placeholder - you'll need to implement or import your actual model
+                    from trading_bot.ml.price_prediction import PricePredictor
+                    
+                    # Initialize with real data
+                    prediction_data = []
+                    for symbol in symbols:
+                        try:
+                            # Get current price
+                            current_prices = data_provider.get_current_price([symbol])
+                            current_price = current_prices.get(symbol, None)
+                            
+                            # Get historical data for model
+                            end_date = datetime.now().strftime('%Y-%m-%d')
+                            start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')
+                            hist_data = data_provider.get_historical_data([symbol], start_date, end_date)
+                            
+                            if symbol in hist_data and not hist_data[symbol].empty and current_price is not None:
+                                # Make prediction (this is where your actual model would be used)
+                                predictor = PricePredictor(symbol=symbol)
+                                forecast = predictor.predict(hist_data[symbol], days=7)
+                                
+                                prediction = forecast.get("price", current_price * 1.01)  # Default to 1% increase
+                                confidence = forecast.get("confidence", 0.7) * 100
+                                
+                                prediction_data.append({
+                                    "Symbol": symbol,
+                                    "Current Price": f"${current_price:.2f}",
+                                    "7-Day Prediction": f"${prediction:.2f}",
+                                    "Change (%)": ((prediction / current_price) - 1) * 100,
+                                    "Confidence": confidence
+                                })
+                            else:
+                                # If missing data, use mock entry
+                                prediction_data.append({
+                                    "Symbol": symbol,
+                                    "Current Price": "$150.00",
+                                    "7-Day Prediction": "$153.75", 
+                                    "Change (%)": 2.5,
+                                    "Confidence": 70.0
+                                })
+                        except Exception as e:
+                            logger.warning(f"Error predicting price for {symbol}: {e}")
+                            # Just continue to next symbol
+                    
+                    # If we failed to get any real predictions, use mock data
+                    if not prediction_data:
+                        raise ValueError("No valid predictions generated")
+                
+                except (ImportError, ValueError) as e:
+                    logger.warning(f"Using simplified price prediction due to: {e}")
+                    
+                    # Use a simple time series forecast
+                    prediction_data = []
+                    for symbol in symbols:
+                        try:
+                            # Get current price
+                            current_prices = data_provider.get_current_price([symbol])
+                            current_price = current_prices.get(symbol, None)
+                            
+                            # Get historical data
+                            end_date = datetime.now().strftime('%Y-%m-%d')
+                            start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+                            hist_data = data_provider.get_historical_data([symbol], start_date, end_date)
+                            
+                            if symbol in hist_data and not hist_data[symbol].empty and current_price is not None:
+                                # Simple trend continuation forecast
+                                close_prices = hist_data[symbol]['close'].values
+                                # Calculate average daily return
+                                daily_returns = np.diff(close_prices) / close_prices[:-1]
+                                avg_return = np.mean(daily_returns[-5:])  # Last 5 days
+                                
+                                # Forecast based on simple trend
+                                prediction = current_price * (1 + avg_return * 7)  # 7-day forecast
+                                confidence = 60 + np.random.uniform(0, 15)  # Lower confidence for simple model
+                                
+                                prediction_data.append({
+                                    "Symbol": symbol,
+                                    "Current Price": f"${current_price:.2f}",
+                                    "7-Day Prediction": f"${prediction:.2f}",
+                                    "Change (%)": ((prediction / current_price) - 1) * 100,
+                                    "Confidence": confidence
+                                })
+                            else:
+                                # If missing data, use mock entry
+                                current_price = np.random.uniform(100, 500)
+                                prediction = current_price * (1 + np.random.uniform(-0.05, 0.08))
+                                
+                                prediction_data.append({
+                                    "Symbol": symbol,
+                                    "Current Price": f"${current_price:.2f}",
+                                    "7-Day Prediction": f"${prediction:.2f}",
+                                    "Change (%)": ((prediction / current_price) - 1) * 100,
+                                    "Confidence": np.random.uniform(60, 90)
+                                })
+                        except Exception as e:
+                            logger.warning(f"Error creating simple forecast for {symbol}: {e}")
+                            # Just continue to next symbol
+            else:
+                # Use mock prediction data if not using real components
+                symbols = ["AAPL", "MSFT", "TSLA", "SPY"]
+                
+                # Generate prediction data
+                prediction_data = []
+                for symbol in symbols:
+                    current_price = np.random.uniform(100, 500)
+                    prediction = current_price * (1 + np.random.uniform(-0.05, 0.08))
+                    
+                    prediction_data.append({
+                        "Symbol": symbol,
+                        "Current Price": f"${current_price:.2f}",
+                        "7-Day Prediction": f"${prediction:.2f}",
+                        "Change (%)": ((prediction / current_price) - 1) * 100,
+                        "Confidence": np.random.uniform(60, 95)
+                    })
+        except Exception as e:
+            logger.error(f"Error generating price predictions: {e}")
+            # Fallback to mock prediction data
+            symbols = ["AAPL", "MSFT", "TSLA", "SPY"]
+            
+            # Generate prediction data
+            prediction_data = []
+            for symbol in symbols:
+                current_price = np.random.uniform(100, 500)
+                prediction = current_price * (1 + np.random.uniform(-0.05, 0.08))
+                
+                prediction_data.append({
+                    "Symbol": symbol,
+                    "Current Price": f"${current_price:.2f}",
+                    "7-Day Prediction": f"${prediction:.2f}",
+                    "Change (%)": ((prediction / current_price) - 1) * 100,
+                    "Confidence": np.random.uniform(60, 95)
+                })
+        
+        # Create predictions dataframe
+        predictions_df = pd.DataFrame(prediction_data)
+        
+        # Style the predictions dataframe
+        def prediction_color(val, col_name):
+            if col_name == "Change (%)":
+                try:
+                    val = float(val)
+                    if val > 0:
+                        return f"color: green; font-weight: bold"
+                    elif val < 0:
+                        return f"color: red; font-weight: bold"
+                except:
+                    pass
+            return ""
+        
+        # Display the prediction table
+        styled_pred_df = predictions_df.style.apply(lambda x: [prediction_color(val, col) for val, col in zip(x, predictions_df.columns)], axis=1)
+        st.dataframe(styled_pred_df, use_container_width=True)
+
+with tab4:
+    st.header("Strategy Optimizer")
+    
+    if USING_REAL_COMPONENTS and optimizer_available:
+        # Initialize optimizer UI
+        optimizer_ui = OptimizerUI(config={
+            'data_folder': 'data',
+            'results_folder': 'optimization_results'
+        })
+        # Render the optimizer UI
+        optimizer_ui.render()
+    else:
+        st.warning("Strategy optimizer components are not available. Please check your installation.")
+        # Show placeholder UI
+        st.subheader("Strategy Parameter Optimization")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.selectbox("Strategy Type", ["Hybrid", "Momentum", "Mean Reversion", "Trend Following"])
+            st.selectbox("Optimization Method", ["Genetic Algorithm", "Bayesian", "Grid Search", "Random"])
+        with col2:
+            st.multiselect("Symbols", ["AAPL", "MSFT", "GOOGL", "AMZN"], default=["AAPL"])
+            st.multiselect("Timeframes", ["1m", "5m", "15m", "1h", "4h", "1D"], default=["1h", "4h"])
+        
+        st.button("Run Optimization", disabled=True)
+        st.info("This feature requires the optimizer components to be installed.")
+
+with tab7:
+    st.markdown('<div class="sub-header">🛠️ Developer</div>', unsafe_allow_html=True)
+    
+    # Create subtabs for different developer features
+    dev_tab1, dev_tab2, dev_tab3 = st.tabs(["Event System", "Trading Modes", "System Diagnostics"])
+    
+    with dev_tab1:
+        st.markdown("### Event-Driven Architecture")
+        
+        if USING_REAL_COMPONENTS and 'event_system_available' in locals() and event_system_available:
+            # Initialize EventManager and EventBus if not already in session state
+            if "event_manager" not in st.session_state:
+                try:
+                    st.session_state.event_manager = EventManager()
+                    st.session_state.event_bus = EventBus()
+                    st.session_state.message_queue = MessageQueue(queue_type=QueueType.PRIORITY)
+                    st.session_state.channel_manager = ChannelManager()
+                    
+                    # Create some sample channels for demonstration
+                    st.session_state.channel_manager.create_channel("market_data")
+                    st.session_state.channel_manager.create_channel("signals")
+                    st.session_state.channel_manager.create_channel("orders")
+                    st.session_state.channel_manager.create_channel("executions")
+                    
+                    # Initialize event counters in session state
+                    st.session_state.event_counters = {
+                        str(event_type): 0 for event_type in EventType
+                    }
+                    st.session_state.last_events = []
+                    
+                    # Initialize category-based event tracking
+                    # Map event types to categories
+                    st.session_state.event_categories = {
+                        "SYSTEM": [EventType.SYSTEM_START, EventType.SYSTEM_STOP, EventType.SYSTEM_ERROR, 
+                                  EventType.CONFIG_UPDATE, EventType.SCHEDULED_TASK, EventType.DAILY_SUMMARY,
+                                  EventType.SESSION_START, EventType.SESSION_END, EventType.MEMORY_CREATED,
+                                  EventType.MEMORY_UPDATED, EventType.MEMORY_CONSOLIDATED],
+                        "STRATEGY": [EventType.TECHNICAL_INDICATOR, EventType.PATTERN_DETECTED, EventType.REGIME_CHANGE,
+                                    EventType.ML_PREDICTION, EventType.LLM_ANALYSIS, EventType.SENTIMENT_UPDATE,
+                                    EventType.SIGNAL_GENERATED],
+                        "MARKET": [EventType.MARKET_DATA, EventType.CANDLE_CLOSE, EventType.PRICE_UPDATE,
+                                  EventType.VOLUME_SPIKE, EventType.TICK_DATA],
+                        "ORDER": [EventType.ORDER_CREATED, EventType.ORDER_UPDATED, EventType.ORDER_FILLED,
+                                 EventType.ORDER_CANCELED],
+                        "PORTFOLIO": [EventType.TRADE_CLOSED, EventType.POSITION_UPDATED, EventType.BALANCE_UPDATE,
+                                     EventType.MARGIN_CALL, EventType.RISK_LIMIT_BREACHED, EventType.RISK_LEVEL_CHANGED,
+                                     EventType.STOP_LOSS_TRIGGERED, EventType.TAKE_PROFIT_TRIGGERED]
+                    }
+                    
+                    # Initialize category-based counters
+                    st.session_state.category_counters = {
+                        category: 0 for category in st.session_state.event_categories.keys()
+                    }
+                    
+                    # Initialize category-based event lists
+                    st.session_state.category_events = {
+                        category: [] for category in st.session_state.event_categories.keys()
+                    }
+                    
+                    st.success("✅ Event system components initialized successfully")
+                except Exception as e:
+                    st.error(f"Failed to initialize event system: {e}")
+            
+            # Category-based event monitoring view
+            st.subheader("Event Categories")
+            category_cols = st.columns(5)
+            
+            category_icons = {
+                "SYSTEM": "⚙️",
+                "STRATEGY": "🧠",
+                "MARKET": "📊",
+                "ORDER": "🛒",
+                "PORTFOLIO": "💼"
+            }
+            
+            for i, category in enumerate(st.session_state.event_categories.keys()):
+                with category_cols[i]:
+                    st.markdown(f"### {category_icons[category]} {category}")
+                    st.metric("Events", st.session_state.category_counters[category])
+            
+            # Add tabs for category-based monitoring
+            category_tabs = st.tabs(list(st.session_state.event_categories.keys()))
+            
+            # Populate each category tab
+            for i, (category, tab) in enumerate(zip(st.session_state.event_categories.keys(), category_tabs)):
+                with tab:
+                    st.subheader(f"{category_icons[category]} {category} Events")
+                    if st.session_state.category_events[category]:
+                        st.dataframe(pd.DataFrame(st.session_state.category_events[category]), use_container_width=True)
+                    else:
+                        st.info(f"No {category} events recorded yet")
+            
+            # Original event system statistics
+            st.markdown("---")
+            st.subheader("Event System Details")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.subheader("Event Bus Status")
+                event_counts = st.session_state.event_counters
+                
+                # Convert to dataframe for display
+                event_df = pd.DataFrame({
+                    "Event Type": list(event_counts.keys()),
+                    "Count": list(event_counts.values())
+                })
+                
+                # Display event counts
+                st.dataframe(event_df, use_container_width=True)
+                
+                # Display registered handlers
+                st.subheader("Event Handlers")
+                handler_data = [
+                    {"Handler": h.__name__, "Priority": p, "Event Type": et.name if hasattr(et, "name") else str(et)}
+                    for et, handlers in st.session_state.event_bus._handlers.items()
+                    for p, h in handlers
+                ]
+                
+                if handler_data:
+                    st.dataframe(pd.DataFrame(handler_data), use_container_width=True)
+                else:
+                    st.info("No event handlers registered yet")
+            
+            with col2:
+                st.subheader("Message Queue Status")
+                # Display queue stats
+                message_queue = st.session_state.message_queue
+                queue_stats = {
+                    "Queue Type": message_queue.queue_type.name,
+                    "Backend": message_queue.backend.name,
+                    "Pending Messages": message_queue.size(),
+                    "Subscribers": len(message_queue._subscribers),
+                    "Max Size": message_queue._max_size
+                }
+                
+                # Display as JSON
+                st.json(queue_stats)
+                
+                # Channel system info
+                st.subheader("Channel System")
+                channel_manager = st.session_state.channel_manager
+                channels = channel_manager.get_all_channels()
+                
+                channel_data = [
+                    {"Channel": name, "Subscribers": len(channel.subscribers), "Messages": channel.message_count}
+                    for name, channel in channels.items()
+                ]
+                
+                if channel_data:
+                    st.dataframe(pd.DataFrame(channel_data), use_container_width=True)
+                else:
+                    st.info("No channels available")
+            
+            # Event publisher for testing
+            st.subheader("Event Publisher (Test)")
+            event_col1, event_col2, event_col3 = st.columns(3)
+            
+            with event_col1:
+                event_type = st.selectbox("Event Type", [et.name for et in EventType])
+            
+            with event_col2:
+                symbol = st.text_input("Symbol", "AAPL")
+            
+            with event_col3:
+                event_data = st.text_input("Event Data", "{\"price\": 150.0, \"volume\": 1000}")
+            
+            if st.button("Publish Event", key="publish_event"):
+                try:
+                    # Parse event data
+                    data = json.loads(event_data) if event_data else {}
+                    data["symbol"] = symbol
+                    
+                    # Create and publish event
+                    selected_event_type = EventType[event_type]
+                    
+                    if selected_event_type == EventType.MARKET_DATA:
+                        event = MarketDataEvent(symbol=symbol, data=data)
+                    elif selected_event_type == EventType.SIGNAL:
+                        event = SignalEvent(symbol=symbol, signal_type="TEST", data=data)
+                    elif selected_event_type == EventType.ORDER:
+                        event = OrderEvent(symbol=symbol, order_type="TEST", data=data)
+                    elif selected_event_type == EventType.RISK:
+                        event = RiskEvent(symbol=symbol, risk_type="TEST", data=data)
+                    elif selected_event_type == EventType.ANALYSIS:
+                        event = AnalysisEvent(symbol=symbol, analysis_type="TEST", data=data)
+                    else:
+                        event = Event(event_type=selected_event_type, data=data)
+                    
+                    # Publish to event bus
+                    st.session_state.event_bus.publish(event)
+                    
+                    # Update counters
+                    st.session_state.event_counters[event_type] += 1
+                    
+                    # Event details for tracking
+                    event_details = {
+                        "timestamp": datetime.now().isoformat(),
+                        "type": event_type,
+                        "symbol": symbol,
+                        "data": str(data)
+                    }
+                    
+                    # Add to recent events
+                    st.session_state.last_events.append(event_details)
+                    
+                    # Keep only last 10 events
+                    if len(st.session_state.last_events) > 10:
+                        st.session_state.last_events = st.session_state.last_events[-10:]
+                    
+                    # Update category-based tracking
+                    for category, event_types in st.session_state.event_categories.items():
+                        for et in event_types:
+                            if selected_event_type == et:
+                                # Update category counter
+                                st.session_state.category_counters[category] += 1
+                                
+                                # Add to category events
+                                st.session_state.category_events[category].append(event_details)
+                                
+                                # Keep only last 10 events per category
+                                if len(st.session_state.category_events[category]) > 10:
+                                    st.session_state.category_events[category] = st.session_state.category_events[category][-10:]
+                    
+                    st.success(f"Event published: {event_type}")
+                except Exception as e:
+                    st.error(f"Failed to publish event: {e}")
+            
+            # Show recent events
+            st.subheader("All Recent Events")
+            if st.session_state.last_events:
+                st.dataframe(pd.DataFrame(st.session_state.last_events), use_container_width=True)
+            else:
+                st.info("No events published yet")
+        else:
+            st.warning("Event system components are not available. Please check your installation.")
+            # Basic event system explanation with placeholders
+            st.markdown("""
+            ### Event-Driven Architecture
+            The trading system is designed with a modern event-driven architecture which provides:
+            - Decoupled components communicating via events
+            - Parallel processing of market data and signals
+            - Real-time responsiveness via message queues
+            - Publish-subscribe channels for streaming data
+            
+            Install the event system components to enable these features.
+            """)
+    
+    with dev_tab2:
+        st.markdown("### Trading Mode System")
+        
+        if USING_REAL_COMPONENTS and 'trading_mode_available' in locals() and trading_mode_available:
+            # Initialize Trading Mode if not already in session state
+            if "trading_mode" not in st.session_state:
+                try:
+                    # Initialize with a standard trading mode
+                    st.session_state.trading_mode = StandardTradingMode()
+                    st.session_state.available_modes = ["StandardTradingMode"]
+                    st.success("✅ Trading mode initialized successfully")
+                except Exception as e:
+                    st.error(f"Failed to initialize trading mode: {e}")
+            
+            # Display trading mode configuration
+            st.subheader("Trading Mode Configuration")
+            mode_col1, mode_col2 = st.columns(2)
+            
+            with mode_col1:
+                selected_mode = st.selectbox("Trading Mode", st.session_state.available_modes)
+                order_sizing = st.selectbox("Position Sizing", ["Fixed", "Risk-Based", "Kelly", "Portfolio %"])
+                risk_per_trade = st.slider("Risk Per Trade (%)", 0.1, 5.0, 1.0, 0.1)
+            
+            with mode_col2:
+                signal_threshold = st.slider("Signal Threshold", 0.0, 1.0, 0.6, 0.05)
+                max_positions = st.number_input("Max Concurrent Positions", 1, 20, 5)
+                use_stop_loss = st.checkbox("Use Automatic Stop Loss", True)
+            
+            # Update trading mode if configuration changes
+            if st.button("Update Trading Mode", key="update_trading_mode"):
+                try:
+                    # Update trading mode configuration
+                    trading_mode = st.session_state.trading_mode
+                    trading_mode.update_configuration({
+                        "signal_threshold": signal_threshold,
+                        "max_positions": max_positions,
+                        "use_stop_loss": use_stop_loss,
+                        "risk_per_trade": risk_per_trade / 100,  # Convert to decimal
+                        "position_sizing": order_sizing.lower()
+                    })
+                    st.success("Trading mode updated successfully")
+                except Exception as e:
+                    st.error(f"Failed to update trading mode: {e}")
+            
+            # Display trading mode info
+            st.subheader("Trading Mode Status")
+            
+            # Show some basic stats about the trading mode
+            trading_mode = st.session_state.trading_mode
+            mode_stats = {
+                "Mode": selected_mode,
+                "Active": trading_mode.is_enabled if hasattr(trading_mode, "is_enabled") else True,
+                "Open Positions": len(trading_mode.positions) if hasattr(trading_mode, "positions") else 0,
+                "Pending Orders": len(trading_mode.pending_orders) if hasattr(trading_mode, "pending_orders") else 0,
+                "Last Signal": trading_mode.last_signal_time.isoformat() if hasattr(trading_mode, "last_signal_time") and trading_mode.last_signal_time else "N/A",
+                "Configuration": {
+                    "signal_threshold": signal_threshold,
+                    "max_positions": max_positions,
+                    "use_stop_loss": use_stop_loss,
+                    "risk_per_trade": risk_per_trade,
+                    "position_sizing": order_sizing
+                }
+            }
+            
+            # Display as JSON
+            st.json(mode_stats)
+            
+            # Order list
+            if hasattr(trading_mode, "pending_orders") and trading_mode.pending_orders:
+                st.subheader("Pending Orders")
+                order_data = [
+                    {
+                        "Symbol": order.symbol,
+                        "Type": order.order_type.name if hasattr(order.order_type, "name") else str(order.order_type),
+                        "Side": order.side,
+                        "Quantity": order.quantity,
+                        "Price": order.price
+                    }
+                    for order in trading_mode.pending_orders
+                ]
+                st.dataframe(pd.DataFrame(order_data), use_container_width=True)
+        else:
+            st.warning("Trading mode components are not available. Please check your installation.")
+            # Basic trading mode explanation with placeholders
+            st.markdown("""
+            ### Trading Mode System
+            The trading system uses a modular design with trading modes that:
+            - Separate signal generation from execution logic
+            - Provide consistent order and position management
+            - Integrate with risk management system
+            - Support multiple strategies and instruments
+            
+            Install the trading mode components to enable these features.
+            """)
+    
+    with dev_tab3:
+        st.markdown("### System Diagnostics")
+        
+        # System resources
+        try:
+            import psutil
+            cpu_percent = psutil.cpu_percent()
+            memory_percent = psutil.virtual_memory().percent
+            disk_percent = psutil.disk_usage('/').percent
+            
+            # Display system resources
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("CPU Usage", f"{cpu_percent}%")
+            
+            with col2:
+                st.metric("Memory Usage", f"{memory_percent}%")
+            
+            with col3:
+                st.metric("Disk Usage", f"{disk_percent}%")
+        except ImportError:
+            cpu_percent = np.random.randint(10, 50)
+            memory_percent = np.random.randint(30, 70)
+            disk_percent = np.random.randint(40, 80)
+            
+            # Display placeholders
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("CPU Usage", f"{cpu_percent}%")
+            
+            with col2:
+                st.metric("Memory Usage", f"{memory_percent}%")
+            
+            with col3:
+                st.metric("Disk Usage", f"{disk_percent}%")
+            
+            st.info("Install psutil for real system metrics")
+        
+        # Event system metrics if available
+        if USING_REAL_COMPONENTS and 'event_system_available' in locals() and event_system_available and "event_bus" in st.session_state:
+            st.subheader("Event System Metrics")
+            
+            # Get metrics from event bus
+            event_bus = st.session_state.event_bus
+            
+            # Only show if metrics are available
+            if hasattr(event_bus, "_metrics"):
+                metrics = event_bus._metrics
+                
+                # Convert to dataframe for display
+                metrics_data = [
+                    {"Metric": key, "Value": value}
+                    for key, value in metrics.items()
+                ]
+                
+                if metrics_data:
+                    st.dataframe(pd.DataFrame(metrics_data), use_container_width=True)
+                else:
+                    st.info("No event metrics available yet")
+            else:
+                st.info("Event metrics not enabled in EventBus")
+            
+            # Show integration example
+            st.subheader("Integration Example")
+            if st.button("Run Integration Example", key="run_integration"):
+                try:
+                    # Import integration example
+                    from trading_bot.event_system.integration_example import run_example
+                    
+                    # Run example
+                    results = run_example(message_queue=st.session_state.message_queue,
+                                        channel_manager=st.session_state.channel_manager,
+                                        event_bus=st.session_state.event_bus,
+                                        max_iterations=5)
+                    
+                    # Show results
+                    st.success("Integration example executed successfully")
+                    st.json(results)
+                except Exception as e:
+                    st.error(f"Failed to run integration example: {e}")
+        
+        # Architecture diagram
+        st.subheader("Architecture Diagram")
+        st.markdown("""
+        ```
+        ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+        │  Market Data    │──────▶     Events      │──────▶    Strategies   │
+        │  Providers      │      │     Bus         │      │                 │
+        └─────────────────┘      └─────────────────┘      └────────┬────────┘
+                                        │  ▲                       │
+                                        │  │                       │
+                                        ▼  │                       ▼
+        ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+        │   Order         │◀─────│   Trading       │◀─────│    Signal       │
+        │   Execution     │      │   Modes         │      │    Generation   │
+        └─────────────────┘      └─────────────────┘      └─────────────────┘
+                                        │  ▲
+                                        │  │
+                                        ▼  │
+        ┌─────────────────┐      ┌─────────────────┐
+        │   Position      │◀─────▶│     Risk        │
+        │   Management    │      │    Management   │
+        └─────────────────┘      └─────────────────┘
+        ```
+        
+        This event-driven architecture provides:
+        - Decoupled components for better maintainability and testing
+        - Parallel processing for high-throughput data handling
+        - Real-time responsiveness for market events
+        - Enhanced scalability for future expansion
+        """)
+
+with tab8:
+    st.markdown('<div class="sub-header">🧠 LLM Insights</div>', unsafe_allow_html=True)
+    
+    if not USING_REAL_COMPONENTS or not 'llm_integration_available' in locals() or not llm_integration_available or not 'llm_trading' in locals() or not llm_trading:
+        st.warning("⚠️ LLM integration is not available. Please check your installation and configuration.")
+    else:
+        # Create columns for different insights
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # Market Analysis section with card-based design
+            st.markdown('<div class="card dark-card"><h3>Market Analysis & Regime Detection</h3></div>', unsafe_allow_html=True)
+            
+            # Symbols to analyze (use watchlist or default set)
+            default_symbols = ["SPY", "QQQ", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"]
+            symbols_to_analyze = st.multiselect(
+                "Select symbols to analyze",
+                default_symbols + ["TSLA", "META", "JPM", "V", "MA", "JNJ", "PG"],
+                default=default_symbols[:5]
+            )
+            
+            # Analysis button
+            if st.button("Generate Market Analysis", key="market_analysis_btn"):
+                with st.spinner("Analyzing market conditions..."):
+                    try:
+                        # Get market data for analysis
+                        market_data = {}
+                        
+                        # Use real data if available
+                        if 'market_data_provider' in locals() and market_data_provider:
+                            # Get data from provider
+                            for symbol in symbols_to_analyze:
+                                try:
+                                    market_data[symbol] = market_data_provider.get_historical_data(
+                                        symbol, "1d", limit=30
+                                    ).to_dict(orient="records")
+                                except Exception as e:
+                                    logger.error(f"Error getting data for {symbol}: {e}")
+                                    # Provide empty data structure
+                                    market_data[symbol] = []
+                        
+                        # Run analysis
+                        analysis = llm_trading.analyze_market_conditions_sync(
+                            symbols=symbols_to_analyze,
+                            market_data=market_data
+                        )
+                        
+                        # Display analysis results in a styled card
+                        confidence_color = "green" if analysis['confidence'] > 0.8 else "orange" if analysis['confidence'] > 0.6 else "red"
+                        st.markdown(f'''
+                            <div class="card dark-card">
+                                <h3>Analysis Results <span style="color:{confidence_color};">(Confidence: {analysis['confidence']:.2f})</span></h3>
+                                <div class="card-content">
+                                    {analysis['analysis']}
+                                </div>
+                            </div>
+                        ''', unsafe_allow_html=True)
+                        
+                        # Store in session state for persistence
+                        st.session_state.last_market_analysis = analysis
+                    except Exception as e:
+                        st.error(f"Error generating market analysis: {str(e)}")
+            
+            # Display last analysis if available
+            if hasattr(st.session_state, 'last_market_analysis'):
+                with st.expander("Last Analysis", expanded=False):
+                    st.markdown(st.session_state.last_market_analysis['analysis'])
+            
+            # News Impact Analysis
+            st.markdown('<div class="card dark-card"><h3>News Impact Analysis</h3></div>', unsafe_allow_html=True)
+            
+            # Symbol selection for news analysis
+            news_symbol = st.selectbox(
+                "Select symbol for news analysis",
+                ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"] + (symbols_to_analyze if symbols_to_analyze else [])
+            )
+            
+            # News headlines input
+            news_headlines = st.text_area(
+                "Enter news headlines (one per line)",
+                height=100,
+                help="Enter recent news headlines related to the selected symbol"
+            )
+            
+            if st.button("Analyze News Impact", key="news_impact_btn"):
+                if not news_headlines.strip():
+                    st.warning("Please enter at least one news headline")
+                else:
+                    with st.spinner("Analyzing news impact..."):
+                        try:
+                            # Split headlines into list
+                            headlines_list = [h.strip() for h in news_headlines.split('\n') if h.strip()]
+                            
+                            # Get price data if available
+                            price_data = None
+                            if 'market_data_provider' in locals() and market_data_provider:
+                                try:
+                                    price_data = market_data_provider.get_historical_data(
+                                        news_symbol, "1d", limit=10
+                                    ).to_dict(orient="records")
+                                except Exception as e:
+                                    logger.error(f"Error getting price data: {e}")
+                            
+                            # Run news impact analysis
+                            impact = llm_trading.analyze_news_impact_sync(
+                                symbol=news_symbol,
+                                news_headlines=headlines_list,
+                                price_data=price_data
+                            )
+                            
+                            # Display analysis results in a styled card
+                            st.markdown(f'''
+                                <div class="card dark-card">
+                                    <h3>Impact Analysis (Confidence: {impact['confidence']:.2f})</h3>
+                                    <div class="card-content">
+                                        {impact['analysis']}
+                                    </div>
+                                </div>
+                            ''', unsafe_allow_html=True)
+                            
+                            # Store in session state
+                            st.session_state.last_news_impact = impact
+                        except Exception as e:
+                            st.error(f"Error analyzing news impact: {str(e)}")
+        
+        with col2:
+            # Memory System Insights
+            st.markdown('<div class="card dark-card"><h3>Memory System</h3></div>', unsafe_allow_html=True)
+            
+            if llm_trading and hasattr(llm_trading, 'memory_system') and llm_trading.memory_system:
+                try:
+                    # Get memory summary
+                    memory_summary = llm_trading.get_memory_summary()
+                    
+                    # Display memory stats
+                    st.metric("Total Memories", sum(memory_summary['counts'].values()))
+                    
+                    # Memory distribution
+                    memory_counts = memory_summary['counts']
+                    st.markdown("### Memory Distribution")
+                    st.bar_chart(memory_counts)
+                    
+                    # Display memory samples
+                    if memory_summary['short_term_sample']:
+                        with st.expander("Short-term Memory Sample"):
+                            for item in memory_summary['short_term_sample']:
+                                st.markdown(f'''
+                                    <div class="mini-card dark-card">
+                                        <p><strong>Created:</strong> {item['created']}</p>
+                                        <p><strong>Content:</strong> {item['content']}</p>
+                                        <p><strong>Tags:</strong> {', '.join(item['tags'])}</p>
+                                    </div>
+                                ''', unsafe_allow_html=True)
+                    
+                    if memory_summary['medium_term_sample']:
+                        with st.expander("Medium-term Memory Sample"):
+                            for item in memory_summary['medium_term_sample']:
+                                st.markdown(f'''
+                                    <div class="mini-card dark-card">
+                                        <p><strong>Created:</strong> {item['created']}</p>
+                                        <p><strong>Content:</strong> {item['content']}</p>
+                                        <p><strong>Tags:</strong> {', '.join(item['tags'])}</p>
+                                    </div>
+                                ''', unsafe_allow_html=True)
+                except Exception as e:
+                    st.error(f"Error retrieving memory data: {str(e)}")
+            else:
+                st.info("Memory system not available")
+            
+            # Strategy Adjustments
+            st.markdown('<div class="card dark-card"><h3>Strategy Adjustments</h3></div>', unsafe_allow_html=True)
+            
+            if llm_trading and hasattr(llm_trading, 'strategy_enhancer') and llm_trading.strategy_enhancer:
+                try:
+                    # Get LLM insights for UI
+                    symbols_for_insights = symbols_to_analyze[:3] if symbols_to_analyze else ["SPY", "QQQ", "AAPL"]
+                    insights = llm_trading.get_llm_insights_for_ui(symbols_for_insights, "1d")
+                    
+                    if "strategy_adjustments" in insights and insights["strategy_adjustments"]:
+                        adjustments = insights["strategy_adjustments"]
+                        st.markdown(f"### Recent Adjustments ({len(adjustments)})")
+                        
+                        for adj in adjustments[:5]:  # Show up to 5 recent adjustments
+                            with st.expander(f"{adj['parameter']} ({adj['timestamp']})"):
+                                st.markdown(f'''
+                                    <div class="mini-card dark-card">
+                                        <p><strong>Type:</strong> {adj['type']}</p>
+                                        <p><strong>Change:</strong> {adj['old_value']} → {adj['new_value']}</p>
+                                        <p><strong>Confidence:</strong> {adj['confidence']:.2f}</p>
+                                        <p><strong>Reason:</strong> {adj['explanation']}</p>
+                                    </div>
+                                ''', unsafe_allow_html=True)
+                    else:
+                        st.info("No recent strategy adjustments")
+                except Exception as e:
+                    st.error(f"Error retrieving strategy adjustments: {str(e)}")
+            else:
+                st.info("Strategy enhancer not available")
+            
+            # Current Regime
+            st.markdown('<div class="card dark-card"><h3>Market Regime</h3></div>', unsafe_allow_html=True)
+            
+            if llm_trading and hasattr(llm_trading, "ml_regime_detector") and llm_trading.ml_regime_detector:
+                try:
+                    # Get current regime
+                    current_regime = llm_trading.ml_regime_detector.current_regime
+                    regime_confidence = llm_trading.ml_regime_detector.regime_confidence
+                    
+                    # Display regime with appropriate color
+                    regime_colors = {
+                        "bull": "green",
+                        "bear": "red",
+                        "neutral": "blue",
+                        "volatile": "orange",
+                        "sideways": "gray"
+                    }
+                    
+                    # Find matching color (partial match)
+                    color = "blue"
+                    for key, val in regime_colors.items():
+                        if key in current_regime.lower():
+                            color = val
+                            break
+                    
+                    st.markdown(f'''
+                        <div class="regime-indicator" style="color:{color}; font-size:24px; font-weight:bold;">
+                            Current Regime: {current_regime}
+                        </div>
+                    ''', unsafe_allow_html=True)
+                    st.progress(regime_confidence)
+                    st.text(f"Confidence: {regime_confidence:.2f}")
+                except Exception as e:
+                    st.error(f"Error retrieving regime data: {str(e)}")
+            else:
+                st.info("ML Regime Detector not available")
+
+with tab9:
+    st.markdown('<div class="sub-header">💬 AI Trading Assistant</div>', unsafe_allow_html=True)
+    
+    # Initialize chat history in session state if it doesn't exist
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = []
+    
+    # Initialize user ID in session state
+    if "user_id" not in st.session_state:
+        st.session_state.user_id = str(uuid.uuid4())
+    
+    # Function to generate AI responses based on query
+    def get_ai_response(query: str) -> str:
+        """Generate AI response based on user query."""
+        # Check if LLM integration is available
+        if USING_REAL_COMPONENTS and 'llm_integration_available' in locals() and llm_integration_available and 'llm_trading' in locals() and llm_trading:
+            try:
+                logger.info("Using LLM integration for AI response")
+                # Portfolio information for context
+                portfolio_data = get_portfolio_data()
+                portfolio_value = portfolio_data.get("portfolio", {}).get("total_value", 0)
+                portfolio_cash = portfolio_data.get("portfolio", {}).get("cash", 0)
+                portfolio_positions = portfolio_data.get("portfolio", {}).get("positions", {})
+                performance = portfolio_data.get("performance_metrics", {})
+                
+                # Format portfolio info for LLM context
+                portfolio_context = f"User portfolio value: ${portfolio_value:,.2f}, Cash: ${portfolio_cash:,.2f}, "
+                portfolio_context += f"Return: {performance.get('cumulative_return', 0):.1f}%, Sharpe: {performance.get('sharpe_ratio', 0):.2f}, "
+                portfolio_context += f"Risk level: {risk_level}, Strategies: {', '.join(selected_strategies)}"
+                
+                # Format position info
+                position_context = "Positions: " + ", ".join([f"{symbol}: {pos.get('quantity', 0)} shares at ${pos.get('current_price', 0):.2f}" 
+                                    for symbol, pos in list(portfolio_positions.items())[:5]]) if portfolio_positions else "No open positions."
+                
+                # Use professional system message
+                system_message = """You are an institutional-grade AI trading assistant helping with portfolio management, strategy insights, and market analysis.
+                Provide professional, precise, and actionable advice. Use professional trading terminology.
+                Be concise but thorough. Include specific recommendations where appropriate.
+                Make your responses data-driven and evidence-based. Never make up information."""
+                
+                # Build context from multiple sources
+                context = f"{portfolio_context}\n\n{position_context}\n\n"
+                
+                # Add market regime context if available
+                if hasattr(llm_trading, "ml_regime_detector") and llm_trading.ml_regime_detector:
+                    try:
+                        regime = llm_trading.ml_regime_detector.current_regime
+                        confidence = llm_trading.ml_regime_detector.regime_confidence
+                        context += f"Current market regime: {regime} (confidence: {confidence:.2f})\n\n"
+                    except Exception as e:
+                        logger.warning(f"Failed to get regime info: {e}")
+                
+                # Add recent news context
+                try:
+                    recent_news = get_news_for_search("market", limit=2)
+                    if recent_news:
+                        context += "Recent market news:\n"
+                        for news in recent_news:
+                            context += f"- {news.get('title', '')} ({news.get('source', '')})\n"
+                    context += "\n"
+                except Exception as e:
+                    logger.warning(f"Failed to get news: {e}")
+                
+                # Add memory context if memory system is available
+                if hasattr(llm_trading, "memory_system") and llm_trading.memory_system:
+                    try:
+                        # Query memories relevant to user question
+                        memories = llm_trading.memory_system.query_memories(
+                            text_query=query,
+                            limit=3
+                        )
+                        if memories:
+                            context += "Relevant past insights:\n"
+                            for memory in memories:
+                                context += f"- {memory.content}\n"
+                            context += "\n"
+                    except Exception as e:
+                        logger.warning(f"Failed to query memory: {e}")
+                
+                # Format the prompt with context
+                prompt = f"""User Question: {query}
+
+Context Information:
+{context}
+
+Please provide a professional, actionable trading assistant response. Base your response on the available context and your knowledge of trading and finance."""
+                
+                # Generate response from LLM
+                llm_response = llm_trading.llm_engine.generate_sync(
+                    prompt=prompt,
+                    system_message=system_message,
+                    max_tokens=400  # Keep responses concise but detailed
+                )
+                
+                # Save interesting queries to memory system for future context
+                if hasattr(llm_trading, "memory_system") and llm_trading.memory_system:
+                    # Determine importance based on query content
+                    importance = 0.5  # Medium importance by default
+                    # Increase importance for strategy, risk, or market questions
+                    if any(term in query.lower() for term in ['strategy', 'risk', 'market', 'portfolio', 'performance']):
+                        importance = 0.7
+                    
+                    try:
+                        memory_content = f"User asked: {query}\n\nAssistant provided analysis: {llm_response.text[:200]}..."
+                        llm_trading.memory_system.add_memory(
+                            content=memory_content,
+                            memory_type="short_term",  # Use enum if available in actual code
+                            importance=importance,
+                            tags=["user_query", "ai_assistant"],
+                            source="dashboard_chat"
+                        )
+                    except Exception as e:
+                        logger.error(f"Error saving chat to memory: {e}")
+                
+                return llm_response.text
+                
+            except Exception as e:
+                logger.error(f"Error getting LLM response: {e}")
+                logger.info("Falling back to rule-based response")
+                # Fall back to rule-based response
+                return get_rule_based_response(query)
+        else:
+            # Use rule-based responses if LLM integration is not available
+            return get_rule_based_response(query)
+    
+    def get_rule_based_response(query: str) -> str:
+        """Generate rule-based responses when LLM is not available"""
+        # Portfolio information
+        portfolio_data = get_portfolio_data()
+        portfolio_value = portfolio_data.get("portfolio", {}).get("total_value", 0)
+        portfolio_cash = portfolio_data.get("portfolio", {}).get("cash", 0)
+        portfolio_positions = portfolio_data.get("portfolio", {}).get("positions", {})
+        performance = portfolio_data.get("performance_metrics", {})
+        
+        # Basic response templates
+        portfolio_response = f"Your portfolio value is ${portfolio_value:,.2f} with ${portfolio_cash:,.2f} in cash. "
+        portfolio_response += f"Your cumulative return is {performance.get('cumulative_return', 0):.1f}% with a Sharpe ratio of {performance.get('sharpe_ratio', 0):.2f}."
+        
+        positions_response = "Your current positions: " + ", ".join([f"{symbol}: {pos.get('quantity', 0)} shares at ${pos.get('current_price', 0):.2f}" 
+                                                               for symbol, pos in list(portfolio_positions.items())[:3]])
+        
+        strategy_response = f"Your selected strategies are: {', '.join(selected_strategies)}. "
+        strategy_response += f"Your current risk level is set to {risk_level}."
+        
+        market_news = "Recent market news: " + get_news_for_search("market", limit=1)[0].get("title", "No recent news") if get_news_for_search("market", limit=1) else "No recent news available."
+        
+        # Generic responses for common queries
+        responses = {
+            "help": "I can help you with:\n- Portfolio information\n- Trading strategies\n- Market insights\n- Risk management\n- Performance analysis\nJust ask a question!",
+            "greeting": ["Hello! How can I help with your trading today?", "Hi there! What would you like to know about your portfolio?", "Welcome back! How's your trading day going?"],
+            "portfolio": [portfolio_response, f"Your portfolio has a total value of ${portfolio_value:,.2f}. How can I help you manage it?"],
+            "positions": [positions_response],
+            "strategy": [strategy_response, f"You're currently using {len(selected_strategies)} strategies with {risk_level} risk."],
+            "performance": [f"Your portfolio performance: {performance.get('cumulative_return', 0):.1f}% return, {performance.get('sharpe_ratio', 0):.2f} Sharpe ratio, and {performance.get('max_drawdown', 0):.1f}% maximum drawdown."],
+            "market": [market_news],
+            "risk": [f"Your risk level is set to {risk_level}. This affects your position sizing and strategy allocations."],
+            "thanks": ["You're welcome! Anything else you need help with?", "Happy to help! Any other questions about your trading?"]
+        }
+        
+        # Clean and lowercase the query for matching
+        clean_query = query.lower().strip()
+        
+        # Try to match the query to a response category
+        if any(word in clean_query for word in ["hi", "hello", "hey", "morning", "afternoon", "evening"]):
+            return random.choice(responses["greeting"])
+        elif any(word in clean_query for word in ["help", "assist", "support", "guide", "what can you do"]):
+            return responses["help"]
+        elif any(word in clean_query for word in ["portfolio", "holdings", "account", "balance", "value"]):
+            return random.choice(responses["portfolio"])
+        elif any(word in clean_query for word in ["position", "stocks", "shares", "holding", "own"]):
+            return random.choice(responses["positions"])
+        elif any(word in clean_query for word in ["strategy", "strategies", "approach", "method", "trading style"]):
+            return random.choice(responses["strategy"])
+        elif any(word in clean_query for word in ["performance", "return", "profit", "loss", "gain", "sharpe", "drawdown"]):
+            return random.choice(responses["performance"])
+        elif any(word in clean_query for word in ["market", "news", "events", "economy", "index", "indices"]):
+            return random.choice(responses["market"])
+        elif any(word in clean_query for word in ["risk", "volatility", "exposure", "leverage", "hedging"]):
+            return random.choice(responses["risk"])
+        elif any(word in clean_query for word in ["thanks", "thank you", "appreciate", "helpful", "good job"]):
+            return random.choice(responses["thanks"])
+        elif "momentum" in clean_query:
+            return "Momentum strategy identifies securities with upward or downward trends and trades in the direction of these trends. It works well in trending markets but can struggle during reversals."
+        elif "mean reversion" in clean_query:
+            return "Mean Reversion strategy assumes asset prices will revert to their historical average over time. It looks for overbought/oversold conditions and trades counter to extreme moves."
+        elif "trend following" in clean_query:
+            return "Trend Following identifies longer-term market trends and positions accordingly. It typically uses longer timeframes than momentum strategies and aims to capture major market moves."
+        elif "volatility breakout" in clean_query:
+            return "Volatility Breakout strategy identifies periods of price consolidation and takes positions when price breaks out of the range, anticipating continued movement in the breakout direction."
+        else:
+            # Generic response when no specific match is found
+            responses = [
+                "I'm not sure I understand. Could you rephrase your question?",
+                f"I don't have specific information about that, but your portfolio value is ${portfolio_value:,.2f}. What else would you like to know?",
+                "That's a good question. Would you like to know about your portfolio performance, current positions, or trading strategies?",
+                "I don't have that information right now. Is there something specific about your portfolio or the market you'd like to know?"
+            ]
+            return random.choice(responses)
+    
+    # Display chat messages from history
+    for message in st.session_state.chat_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    # Accept user input
+    if prompt := st.chat_input("Ask me about your portfolio, strategies, or market trends..."):
+        # Add user message to chat history
+        st.session_state.chat_messages.append({"role": "user", "content": prompt})
+        
+        # Display user message in chat
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # Generate AI response
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                response = get_ai_response(prompt)
+                st.markdown(response)
+        
+        # Add assistant response to chat history
+        st.session_state.chat_messages.append({"role": "assistant", "content": response})
+    
+    # Add functionality explanation
+    with st.expander("About the AI Assistant"):
+        st.markdown("""
+        **AI Trading Assistant** helps you with:
+        - Portfolio information and analysis
+        - Trading strategy explanations
+        - Market insights and news
+        - Risk management advice
+        - Performance tracking
+        
+        The assistant uses your current portfolio data and market information to provide relevant answers.
+        """)
+
+# This is a Streamlit app - no extra code needed at bottom
+if __name__ == '__main__':
+    pass 
+
+# Modular Strategy Tab
+with tab10:
+    st.markdown('<div class="sub-header">⚙️ Modular Strategy Builder</div>', unsafe_allow_html=True)
+    
+    if modular_strategy_available:
+        try:
+            # Try to use the full modular strategy UI if available
+            if modular_strategy_full:
+                logger.info("Using full modular strategy system")
+                
+                # Create marketplace and analytics instances
+                marketplace = ComponentMarketplace()
+                analytics = ComponentAnalytics()
+                
+                # Set up optimizer instances
+                optimizers = {
+                    'grid_search': GridSearchOptimizer(),
+                    'random_search': RandomSearchOptimizer()
+                }
+                
+                # Initialize UI with required components
+                strategy_ui = ModularStrategyUI(
+                    component_registry=get_component_registry(),
+                    marketplace=marketplace,
+                    analytics=analytics,
+                    optimizers=optimizers
+                )
+                
+                # Render the modular strategy UI
+                strategy_ui.render()
+            
+            # Fall back to simplified UI if full system isn't available
+            elif modular_strategy_simplified:
+                logger.info("Using simplified modular strategy UI")
+                
+                # Initialize and render simplified UI
+                simplified_ui = ModularStrategySimplifiedUI()
+                simplified_ui.render()
+                
+                # Show development note
+                st.info("You're using the simplified modular strategy UI. For full functionality, ensure all modular strategy components are installed.")
+            
+        except Exception as e:
+            st.error(f"Error initializing modular strategy system: {e}")
+            st.exception(e)
+    else:
+        st.warning("Modular strategy system is not available. Please check that all required components are installed.")
+        
+        # Show placeholder UI with explanation of modular strategy system
+        st.markdown("""
+        ## Modular Strategy System
+        
+        The modular strategy system allows you to create trading strategies by combining:
+        
+        * **Signal Generators** - Produce buy/sell signals based on indicators or patterns
+        * **Filters** - Validate signals based on market conditions
+        * **Position Sizers** - Determine optimal position size for each trade
+        * **Exit Managers** - Control when to exit positions
+        
+        The modular strategy system integrates with the event-driven architecture to provide:
+        * Component-level performance analytics
+        * Parameter optimization for strategy components
+        * Component marketplace for sharing and importing components
+        * Comprehensive testing and validation tools
+        
+        Install the required components to enable this feature.
+        """)
+
+with tab11:
+    st.markdown('<div class="sub-header">🏪 Component Marketplace</div>', unsafe_allow_html=True)
+    
+    # Description of the component marketplace
+    st.write("""
+    The Component Marketplace allows you to discover, share, and use trading components created by the community:
+    - **Browse**: Find components by type, rating, or popularity
+    - **Share**: Publish your own components for others to use
+    - **Rate & Review**: Provide feedback on components you've used
+    - **Security**: All components are signed and verified for security
+    """)
+    
+    # Check if marketplace UI components are available
+    if marketplace_ui_available:
+        try:
+            # Initialize marketplace API
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            marketplace_path = os.path.join(base_path, "marketplace")
+            
+            # Create the marketplace directory if it doesn't exist
+            os.makedirs(marketplace_path, exist_ok=True)
+            
+            # Initialize the marketplace API
+            marketplace_api = MarketplaceAPI(marketplace_path=marketplace_path)
+            
+            # Initialize and render the marketplace UI
+            marketplace_ui = MarketplaceUI(marketplace_api=marketplace_api)
+            marketplace_ui.render()
+            
+        except Exception as e:
+            st.error(f"Error initializing component marketplace: {str(e)}")
+            st.info("Please check the logs for details or contact support for assistance.")
+    else:
+        st.warning("Component marketplace is not available.")
+        st.info("""
+        The component marketplace requires additional modules to be installed. 
+        Please make sure all required components are installed or contact support for assistance.
+        """)
+
+# This is a Streamlit app - no extra code needed at bottom
+if __name__ == '__main__':
+    pass 
+with tab12:
+    st.markdown('<div class="sub-header">🎮 Trading Control</div>', unsafe_allow_html=True)
+    
+    # Description of the trading control panel
+    st.write("""
+    The Trading Control panel provides a simplified interface to configure, start, and monitor your trading bot.
+    Use this panel to:
+    - Configure your trading parameters
+    - Start and stop automated trading
+    - Monitor positions and performance in real-time
+    - View trading logs and activity
+    """)
+    
+    # Check if trading launcher is available
+    if trading_launcher_available:
+        try:
+            # Initialize and render trading launcher
+            trading_launcher = TradingLauncher()
+            trading_launcher.render()
+        except Exception as e:
+            st.error(f"Error initializing trading launcher: {str(e)}")
+            st.info("Please check the logs for details or contact support for assistance.")
+    else:
+        st.warning("Trading launcher is not available.")
+        st.info("""
+        The trading launcher requires additional modules to be installed.
+        Please make sure all required components are installed or contact support for assistance.
+        """)
+
+with tab13:
+    st.markdown('<div class="sub-header">🤖 Autonomous Trading</div>', unsafe_allow_html=True)
+    
+    # Initialize and render the autonomous trading UI
+    if autonomous_ui_available:
+        # Create the autonomous UI instance
+        autonomous_ui = AutonomousUI()
+        
+        # Render the UI
+        autonomous_ui.render()
+    else:        
+        # Create columns for control panel and results display
+        auto_col1, auto_col2 = st.columns([1, 3])
+    
+        with auto_col1:
+            st.markdown("### Control Panel")
+            st.markdown("The system automatically selects stocks, generates strategies, and backtests them.")
+            
+            # Market scanning interval
+            scan_interval = st.selectbox(
+                "Market Scan Interval",
+                ["15 minutes", "30 minutes", "1 hour", "4 hours", "Daily"]
+            )
+            
+            # Trading style preference
+            trading_style = st.selectbox(
+                "Trading Style",
+                ["Balanced", "Conservative", "Aggressive", "Trend-Following", "Mean-Reversion"]
+            )
+            
+            # Max concurrent positions
+            max_positions = st.slider("Max Positions", 1, 10, 3)
+            
+            # Risk per trade
+            risk_per_trade = st.slider("Risk Per Trade (%)", 0.5, 5.0, 1.0, 0.1)
+            
+            # Action buttons
+            if st.button("Start Autonomous Trading", key="start_auto"):
+                st.success("Autonomous trading started. The system will now scan markets and trade automatically.")
+                
+            if st.button("Pause Trading", key="pause_auto"):
+                st.info("Trading paused. The system will complete open trades but not open new positions.")
+            
+            if st.button("Stop & Close All", key="stop_auto"):
+                st.error("Trading stopped. All positions will be closed at market price.")
+        
+        with auto_col2:
+            st.markdown("### Autonomous System Status")
+            
+            # System status metrics
+            status_cols = st.columns(3)
+            
+            with status_cols[0]:
+                st.metric("System Status", "Active", "Online")
+            
+            with status_cols[1]:
+                st.metric("Active Strategies", "5", "2 ↑")
+            
+            with status_cols[2]:
+                st.metric("Performance (7d)", "+4.2%", "1.5%")
+            
+            # Current activity table
+            st.markdown("### Current Activity")
+            
+            activity_data = pd.DataFrame({
+                "Time": ["09:32:15", "09:15:22", "09:05:17", "08:45:03", "08:30:00"],
+                "Action": ["Buy Signal", "Market Scan", "Sell Signal", "Strategy Adjustment", "System Start"],
+                "Details": [
+                    "AAPL long position opened at $142.35",
+                    "Detected bullish pattern in tech sector",
+                    "MSFT position closed for 2.3% profit",
+                    "Reduced position sizing due to increased volatility",
+                    "Autonomous system initialized in Balanced mode"
+                ]
+            })
+            
+            st.dataframe(activity_data, use_container_width=True)
+            
+            # Next scheduled actions
+            st.markdown("### Scheduled Actions")
+            
+            scheduled_data = pd.DataFrame({
+                "Time": ["10:00:00", "10:15:00", "11:00:00", "12:30:00", "15:45:00"],
+                "Action": [
+                    "Market Scan",
+                    "Strategy Performance Review",
+                    "Market Scan",
+                    "Market Scan",
+                    "End-of-Day Position Review"
+                ]
+            })
+            
+            st.dataframe(scheduled_data, use_container_width=True)

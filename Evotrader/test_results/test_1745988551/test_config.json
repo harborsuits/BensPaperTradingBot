@@ -1,0 +1,28 @@
+{
+  "output_dir": "test_results/test_1745988551",
+  "evolution": {
+    "output_dir": "test_results/test_1745988551/evolution",
+    "selection_percentage": 0.3,
+    "mutation_rate": 0.2,
+    "crossover_rate": 0.3,
+    "population_size": 10,
+    "max_generations": 10
+  },
+  "simulation": {
+    "output_dir": "test_results/test_1745988551/simulation",
+    "data_source": "synthetic",
+    "symbols": [
+      "BTC/USD",
+      "ETH/USD"
+    ],
+    "timeframe": "1h",
+    "initial_balance": 10000,
+    "fee_rate": 0.001
+  },
+  "ab_testing": {
+    "output_dir": "test_results/test_1745988551/ab_testing",
+    "test_count": 5,
+    "bootstrap_samples": 50,
+    "significance_level": 0.05
+  }
+}

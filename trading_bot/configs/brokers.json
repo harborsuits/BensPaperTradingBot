@@ -1,0 +1,50 @@
+{
+    "brokers": [
+        {
+            "name": "alpaca_paper",
+            "type": "alpaca",
+            "paper_trading": true,
+            "auto_connect": true,
+            "monitor": true,
+            "description": "Alpaca Paper Trading Account",
+            "connection_check_interval": 60,
+            "account_cache_ttl": 5,
+            "max_retries": 3,
+            "retry_delay": 2
+        },
+        {
+            "name": "alpaca_live",
+            "type": "alpaca",
+            "paper_trading": false,
+            "auto_connect": false,
+            "monitor": true,
+            "description": "Alpaca Live Trading Account",
+            "connection_check_interval": 30,
+            "account_cache_ttl": 5,
+            "max_retries": 3,
+            "retry_delay": 2
+        }
+    ],
+    "default_broker": "alpaca_paper",
+    "connection_monitoring": {
+        "enabled": true,
+        "check_interval": 60,
+        "degraded_threshold": 3,
+        "alert_history_retention_days": 30
+    },
+    "order_defaults": {
+        "time_in_force": "day",
+        "execution_speed": "balanced",
+        "price_aggression": "neutral"
+    },
+    "api_rate_limiting": {
+        "max_requests_per_minute": 200,
+        "max_requests_per_second": 5,
+        "cooldown_period": 60
+    },
+    "security": {
+        "encryption_enabled": false,
+        "credential_storage": "environment",
+        "access_logging": true
+    }
+} 

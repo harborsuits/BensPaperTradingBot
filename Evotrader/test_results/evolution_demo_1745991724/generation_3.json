@@ -1,0 +1,27 @@
+{
+  "generation": 3,
+  "avg_fitness": 0.628524329115258,
+  "max_fitness": 0.9060771244327518,
+  "strategy_distribution": {
+    "BollingerBands": 18,
+    "RSIStrategy": 1,
+    "MovingAverageCrossover": 1
+  },
+  "best_strategy": {
+    "generation": 3,
+    "id": "BollingerBands_94978",
+    "type": "BollingerBands",
+    "fitness": 0.9060771244327518,
+    "parameters": {
+      "period": 19,
+      "std_dev": 2.1240400897608644,
+      "signal_threshold": 0.061471349077509736
+    },
+    "metrics": {
+      "fitness": 0.9060771244327518,
+      "profit": 90.60771244327518,
+      "win_rate": 0.7530385622163759,
+      "drawdown": 2.8176862670174465
+    }
+  }
+}

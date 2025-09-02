@@ -1,0 +1,44 @@
+{
+  "strategy_id": "strategy_eb022775",
+  "parameters": {
+    "bb_period": 4,
+    "bb_std": 1.1241710921285577,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 5,
+    "parent_ids": [
+      "strategy_1e857489"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_3fb4bd64",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_f2cec11a",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_b40b1389",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_a2e13d98",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_1e857489",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "BollingerBands"
+}

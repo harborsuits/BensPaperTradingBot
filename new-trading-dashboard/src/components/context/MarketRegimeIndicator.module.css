@@ -1,0 +1,29 @@
+.confidenceBar {
+  width: 100%;
+  height: 0.5rem;
+  background-color: rgba(var(--muted), 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.confidenceFill {
+  height: 100%;
+  transition: all 500ms;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Confidence level classes */
+.confidence0 { width: 0%; }
+.confidence10 { width: 10%; }
+.confidence20 { width: 20%; }
+.confidence30 { width: 30%; }
+.confidence40 { width: 40%; }
+.confidence50 { width: 50%; }
+.confidence60 { width: 60%; }
+.confidence70 { width: 70%; }
+.confidence80 { width: 80%; }
+.confidence90 { width: 90%; }
+.confidence100 { width: 100%; }

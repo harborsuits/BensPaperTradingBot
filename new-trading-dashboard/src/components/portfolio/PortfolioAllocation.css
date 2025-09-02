@@ -1,0 +1,40 @@
+.allocation-color-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  margin-right: 0.5rem;
+}
+
+/* Color dot background colors for different allocation items */
+.color-dot-0 { background-color: #3B82F6; }
+.color-dot-1 { background-color: #10B981; }
+.color-dot-2 { background-color: #F59E0B; }
+.color-dot-3 { background-color: #8B5CF6; }
+.color-dot-4 { background-color: #EC4899; }
+.color-dot-5 { background-color: #06B6D4; }
+.color-dot-6 { background-color: #F97316; }
+.color-dot-7 { background-color: #14B8A6; }
+.color-dot-8 { background-color: #6366F1; }
+.color-dot-9 { background-color: #EF4444; }
+
+.allocation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.allocation-item-label {
+  display: flex;
+  align-items: center;
+}
+
+.allocation-item-value {
+  text-align: right;
+}
+
+.allocation-item-percentage {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}

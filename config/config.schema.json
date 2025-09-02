@@ -1,0 +1,639 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BensBot Configuration Schema",
+  "description": "Schema for the unified BensBot configuration file",
+  "type": "object",
+  "required": ["version", "environment", "broker_manager", "risk_manager", "persistence"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Configuration version",
+      "default": "1.1",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "environment": {
+      "type": "string",
+      "description": "Operating environment",
+      "enum": ["development", "staging", "production", "test"],
+      "default": "development"
+    },
+    "log_level": {
+      "type": "string",
+      "description": "Logging level",
+      "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+      "default": "INFO"
+    },
+    "data_dir": {
+      "type": "string",
+      "description": "Directory to store data files",
+      "default": "data"
+    },
+    "enable_config_hot_reload": {
+      "type": "boolean",
+      "description": "Enable hot reload of configuration file",
+      "default": false
+    },
+    "config_reload_interval_seconds": {
+      "type": "integer",
+      "description": "Interval for checking configuration file changes",
+      "minimum": 1,
+      "default": 60
+    },
+    "broker_manager": {
+      "type": "object",
+      "description": "Multi-broker management configuration",
+      "required": ["brokers"],
+      "additionalProperties": false,
+      "properties": {
+        "brokers": {
+          "type": "array",
+          "description": "List of broker configurations",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "type", "enabled", "credentials"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the broker"
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name for the broker"
+              },
+              "type": {
+                "type": "string",
+                "description": "Broker type",
+                "enum": ["tradier", "alpaca", "interactive_brokers", "paper", "simulator"]
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Whether this broker is enabled",
+                "default": true
+              },
+              "sandbox_mode": {
+                "type": "boolean",
+                "description": "Use sandbox/paper trading API",
+                "default": false
+              },
+              "timeout_seconds": {
+                "type": "integer",
+                "description": "Timeout for API requests in seconds",
+                "minimum": 1,
+                "default": 30
+              },
+              "retry_attempts": {
+                "type": "integer",
+                "description": "Number of retry attempts for failed requests",
+                "minimum": 0,
+                "default": 3
+              },
+              "credentials": {
+                "type": "object",
+                "description": "Broker credentials",
+                "additionalProperties": true,
+                "properties": {
+                  "api_key": {
+                    "type": "string",
+                    "description": "API key for broker authentication"
+                  },
+                  "api_secret": {
+                    "type": "string",
+                    "description": "API secret for broker authentication"
+                  },
+                  "account_id": {
+                    "type": "string",
+                    "description": "Account ID for broker"
+                  },
+                  "additional_params": {
+                    "type": "object",
+                    "description": "Additional broker-specific parameters",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "asset_routing": {
+          "type": "array",
+          "description": "Asset routing rules",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["symbol_pattern", "primary_broker_id"],
+            "additionalProperties": false,
+            "properties": {
+              "symbol_pattern": {
+                "type": "string",
+                "description": "Symbol pattern for matching assets (glob format)"
+              },
+              "primary_broker_id": {
+                "type": "string", 
+                "description": "ID of the primary broker for matching assets"
+              },
+              "failover_broker_ids": {
+                "type": "array",
+                "description": "List of broker IDs to use as failovers",
+                "default": [],
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "failover_enabled": {
+          "type": "boolean",
+          "description": "Enable automatic failover between brokers",
+          "default": true
+        },
+        "metrics_enabled": {
+          "type": "boolean",
+          "description": "Enable broker metrics collection",
+          "default": true
+        },
+        "quote_cache_ttl_seconds": {
+          "type": "integer",
+          "description": "Time to live for cached quotes in seconds",
+          "minimum": 0,
+          "default": 5
+        }
+      }
+    },
+    "risk_manager": {
+      "type": "object",
+      "description": "Risk management configuration",
+      "additionalProperties": false,
+      "required": ["max_drawdown_pct", "margin_call_threshold"],
+      "properties": {
+        "max_drawdown_pct": {
+          "type": "number",
+          "description": "Maximum allowed drawdown percentage before circuit breaker activation",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 5.0
+        },
+        "volatility_threshold": {
+          "type": "number",
+          "description": "Volatility threshold multiplier for circuit breaker",
+          "minimum": 0,
+          "default": 2.5
+        },
+        "cooldown_minutes": {
+          "type": "integer",
+          "description": "Cooldown period in minutes after circuit breaker activation",
+          "minimum": 1,
+          "default": 60
+        },
+        "margin_call_threshold": {
+          "type": "number",
+          "description": "Margin percentage below which forced liquidation occurs",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.25
+        },
+        "margin_warning_threshold": {
+          "type": "number",
+          "description": "Margin percentage below which warnings are generated",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.35
+        },
+        "max_leverage": {
+          "type": "number",
+          "description": "Maximum allowed leverage ratio",
+          "minimum": 1,
+          "default": 2.0
+        },
+        "position_size_limit_pct": {
+          "type": "number",
+          "description": "Maximum position size as percentage of account",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 5.0
+        },
+        "max_correlated_positions": {
+          "type": "integer",
+          "description": "Maximum number of correlated positions allowed",
+          "minimum": 1,
+          "default": 3
+        }
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "description": "Persistence layer configuration",
+      "required": ["mongodb", "redis", "recovery", "sync"],
+      "additionalProperties": false,
+      "properties": {
+        "mongodb": {
+          "type": "object",
+          "description": "MongoDB configuration",
+          "required": ["uri", "database"],
+          "additionalProperties": false,
+          "properties": {
+            "uri": {
+              "type": "string",
+              "description": "MongoDB URI including authentication",
+              "default": "mongodb://localhost:27017"
+            },
+            "database": {
+              "type": "string",
+              "description": "MongoDB database name",
+              "default": "bensbot_trading"
+            },
+            "max_pool_size": {
+              "type": "integer",
+              "description": "Maximum size of the connection pool",
+              "minimum": 1,
+              "default": 20
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "description": "Connection timeout in milliseconds",
+              "minimum": 1000,
+              "default": 5000
+            },
+            "retry_writes": {
+              "type": "boolean",
+              "description": "Enable retry for write operations",
+              "default": true
+            },
+            "retry_reads": {
+              "type": "boolean",
+              "description": "Enable retry for read operations",
+              "default": true
+            }
+          }
+        },
+        "redis": {
+          "type": "object",
+          "description": "Redis configuration",
+          "required": ["host", "port"],
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "Redis host address",
+              "default": "localhost"
+            },
+            "port": {
+              "type": "integer",
+              "description": "Redis port",
+              "default": 6379
+            },
+            "db": {
+              "type": "integer",
+              "description": "Redis database number",
+              "minimum": 0,
+              "default": 0
+            },
+            "password": {
+              "type": "string",
+              "description": "Redis password"
+            },
+            "timeout": {
+              "type": "number",
+              "description": "Redis connection timeout in seconds",
+              "minimum": 0.1,
+              "default": 5.0
+            },
+            "decode_responses": {
+              "type": "boolean",
+              "description": "Decode responses automatically",
+              "default": true
+            },
+            "key_prefix": {
+              "type": "string",
+              "description": "Prefix for Redis keys",
+              "default": "bensbot:"
+            }
+          }
+        },
+        "recovery": {
+          "type": "object",
+          "description": "Recovery configuration",
+          "additionalProperties": false,
+          "properties": {
+            "recover_on_startup": {
+              "type": "boolean",
+              "description": "Enable state recovery on startup",
+              "default": true
+            },
+            "recover_open_orders": {
+              "type": "boolean",
+              "description": "Recover open orders on startup",
+              "default": true
+            },
+            "recover_positions": {
+              "type": "boolean",
+              "description": "Recover positions on startup",
+              "default": true
+            },
+            "recover_pnl": {
+              "type": "boolean",
+              "description": "Recover PnL on startup",
+              "default": true
+            },
+            "recover_idempotency": {
+              "type": "boolean",
+              "description": "Recover idempotency records on startup",
+              "default": true
+            }
+          }
+        },
+        "sync": {
+          "type": "object",
+          "description": "Periodic synchronization configuration",
+          "additionalProperties": false,
+          "properties": {
+            "periodic_sync_enabled": {
+              "type": "boolean",
+              "description": "Enable periodic synchronization",
+              "default": true
+            },
+            "sync_interval_seconds": {
+              "type": "integer",
+              "description": "Interval for periodic synchronization in seconds",
+              "minimum": 60,
+              "default": 3600
+            }
+          }
+        }
+      }
+    },
+    "strategy_manager": {
+      "type": "object",
+      "description": "Strategy management configuration",
+      "additionalProperties": false,
+      "properties": {
+        "strategies": {
+          "type": "array",
+          "description": "List of strategy configurations",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "enabled", "class_path"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the strategy"
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name for the strategy"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Whether this strategy is enabled",
+                "default": true
+              },
+              "class_path": {
+                "type": "string",
+                "description": "Python import path to the strategy class"
+              },
+              "parameters": {
+                "type": "object",
+                "description": "Strategy-specific parameters",
+                "additionalProperties": true
+              },
+              "symbols": {
+                "type": "array",
+                "description": "List of symbols to trade",
+                "default": [],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "time_frames": {
+                "type": "array",
+                "description": "List of time frames to analyze",
+                "default": ["1d"],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "max_concurrent_trades": {
+                "type": "integer",
+                "description": "Maximum number of concurrent trades for this strategy",
+                "minimum": 1,
+                "default": 5
+              }
+            }
+          }
+        },
+        "rotation_enabled": {
+          "type": "boolean",
+          "description": "Enable strategy rotation based on performance",
+          "default": false
+        },
+        "concurrent_strategies_limit": {
+          "type": "integer",
+          "description": "Maximum number of concurrent strategies",
+          "minimum": 1,
+          "default": 5
+        },
+        "performance_evaluation_interval_minutes": {
+          "type": "integer",
+          "description": "Interval for evaluating strategy performance in minutes",
+          "minimum": 15,
+          "default": 1440
+        }
+      }
+    },
+    "dashboard": {
+      "type": "object",
+      "description": "Dashboard configuration",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "type": "integer",
+          "description": "Port for the dashboard server",
+          "minimum": 1024,
+          "maximum": 65535,
+          "default": 8501
+        },
+        "api_port": {
+          "type": "integer",
+          "description": "Port for the API server",
+          "minimum": 1024,
+          "maximum": 65535,
+          "default": 8000
+        },
+        "theme": {
+          "type": "string",
+          "description": "Dashboard theme",
+          "enum": ["light", "dark"],
+          "default": "light"
+        },
+        "refresh_interval_seconds": {
+          "type": "integer",
+          "description": "Data refresh interval in seconds",
+          "minimum": 1,
+          "default": 5
+        },
+        "enable_auth": {
+          "type": "boolean",
+          "description": "Enable authentication for dashboard",
+          "default": true
+        },
+        "jwt_expiry_minutes": {
+          "type": "integer",
+          "description": "JWT token expiry time in minutes",
+          "minimum": 5,
+          "default": 60
+        }
+      }
+    },
+    "market_data": {
+      "type": "object",
+      "description": "Market data configuration",
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "type": "array",
+          "description": "Market data sources",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "enabled"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the data source"
+              },
+              "type": {
+                "type": "string",
+                "description": "Type of market data source",
+                "enum": ["alpaca", "polygon", "finnhub", "yahoo", "tradier", "intrinio", "broker"]
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Whether this data source is enabled",
+                "default": true
+              },
+              "api_key": {
+                "type": "string",
+                "description": "API key for data source"
+              },
+              "cache_expiry_seconds": {
+                "type": "integer",
+                "description": "Cache expiry time in seconds",
+                "minimum": 0,
+                "default": 60
+              }
+            }
+          }
+        },
+        "default_source_id": {
+          "type": "string",
+          "description": "Default market data source ID"
+        },
+        "cache_dir": {
+          "type": "string",
+          "description": "Directory for caching market data",
+          "default": "data/market_data_cache"
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "description": "Notification configuration",
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "type": "object",
+          "description": "Email notification configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable email notifications",
+              "default": false
+            },
+            "smtp_server": {
+              "type": "string",
+              "description": "SMTP server address"
+            },
+            "smtp_port": {
+              "type": "integer",
+              "description": "SMTP server port",
+              "default": 587
+            },
+            "smtp_user": {
+              "type": "string",
+              "description": "SMTP username"
+            },
+            "smtp_password": {
+              "type": "string",
+              "description": "SMTP password"
+            },
+            "from_address": {
+              "type": "string",
+              "description": "Sender email address"
+            },
+            "to_addresses": {
+              "type": "array",
+              "description": "Recipient email addresses",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "slack": {
+          "type": "object",
+          "description": "Slack notification configuration",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable Slack notifications",
+              "default": false
+            },
+            "webhook_url": {
+              "type": "string",
+              "description": "Slack webhook URL"
+            },
+            "channel": {
+              "type": "string",
+              "description": "Slack channel"
+            }
+          }
+        },
+        "severity_levels": {
+          "type": "object",
+          "description": "Notification severity level configuration",
+          "additionalProperties": false,
+          "properties": {
+            "info": {
+              "type": "boolean",
+              "description": "Send notifications for info events",
+              "default": false
+            },
+            "warning": {
+              "type": "boolean",
+              "description": "Send notifications for warning events",
+              "default": true
+            },
+            "error": {
+              "type": "boolean",
+              "description": "Send notifications for error events",
+              "default": true
+            },
+            "critical": {
+              "type": "boolean",
+              "description": "Send notifications for critical events",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

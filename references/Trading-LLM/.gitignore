@@ -1,0 +1,5 @@
+llama-7b/
+dataset/
+venv/
+logs/
+**/__pycache__/

@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System Configuration Schema",
+  "description": "Schema for BensBot main configuration file (system_config.json)",
+  "type": "object",
+  "properties": {
+    "enable_market_regime_system": {
+      "type": "boolean",
+      "description": "Toggle for market regime logic"
+    },
+    "market_regime_config_path": {
+      "type": "string",
+      "description": "Path to market regime configuration JSON"
+    },
+    "watched_symbols": {
+      "type": "array",
+      "description": "List of tickers to monitor and trade",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "data_dir": {
+      "type": "string",
+      "description": "Root directory for data storage"
+    },
+    "trading_hours": {
+      "type": "object",
+      "description": "Market session start/end times and timezone",
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$",
+          "description": "Start time in HH:MM 24h format"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$",
+          "description": "End time in HH:MM 24h format"
+        },
+        "timezone": {
+          "type": "string",
+          "pattern": "^[A-Za-z_]+/[A-Za-z_]+(/[A-Za-z_]+)?$",
+          "description": "IANA timezone (e.g. America/New_York)"
+        }
+      },
+      "required": ["start", "end", "timezone"],
+      "additionalProperties": false
+    },
+    "initial_capital": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Starting equity in USD"
+    },
+    "risk_per_trade": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1,
+      "description": "Fraction of equity to risk per trade (0 < x < 1)"
+    },
+    "max_open_positions": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum simultaneous open positions allowed"
+    },
+    "broker_config_path": {
+      "type": "string",
+      "description": "Path to broker configuration file",
+      "default": "config/broker_config.json"
+    },
+    "market_data_config_path": {
+      "type": "string",
+      "description": "Path to market data configuration file",
+      "default": "config/market_data_config.json"
+    },
+    "log_level": {
+      "type": "string",
+      "description": "Logging level",
+      "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+      "default": "INFO"
+    },
+    "system_safeguards": {
+      "type": "object",
+      "description": "System safety controls",
+      "properties": {
+        "circuit_breakers": {
+          "type": "object",
+          "properties": {
+            "max_drawdown_percent": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 15,
+              "description": "Maximum portfolio drawdown before shutdown"
+            },
+            "max_daily_loss_percent": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Maximum daily loss before trading stops"
+            },
+            "consecutive_loss_count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Maximum consecutive losing trades before pausing"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "enable_market_regime_system",
+    "market_regime_config_path",
+    "watched_symbols",
+    "data_dir",
+    "trading_hours",
+    "initial_capital",
+    "risk_per_trade",
+    "max_open_positions"
+  ]
+}

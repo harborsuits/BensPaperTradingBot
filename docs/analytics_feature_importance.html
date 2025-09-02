@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BensBot Pro - Analytics: Feature Importance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/recharts@2.1.12/umd/Recharts.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #14191f;
+            --sidebar-bg: #0d1117;
+            --card-bg: #1c2128;
+            --accent-color: #2d81ff;
+            --text-color: #e6e6e6;
+            --border-color: #30363d;
+            --success-color: #238636;
+            --warning-color: #9e6a03;
+            --danger-color: #f85149;
+            --chart-grid: rgba(110, 118, 129, 0.1);
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const {
+            BarChart, Bar, XAxis, YAxis, 
+            CartesianGrid, Tooltip, Legend, ResponsiveContainer
+        } = Recharts;
+
+        const FeatureImportance = () => {
+            const [selectedStrategy, setSelectedStrategy] = React.useState('Momentum');
+            
+            const strategies = [
+                { id: 'Momentum', name: 'Momentum' },
+                { id: 'MeanReversion', name: 'Mean Reversion' },
+                { id: 'Breakout', name: 'Breakout' },
+                { id: 'OptionSpreads', name: 'Option Spreads' }
+            ];
+            
+            const featureData = {
+                Momentum: [
+                    { name: '200-Day MA', importance: 0.27 },
+                    { name: 'Volume Change', importance: 0.22 },
+                    { name: 'RSI', importance: 0.18 },
+                    { name: 'Earnings Surprise', importance: 0.12 },
+                    { name: 'Market Regime', importance: 0.10 },
+                    { name: 'Sector Strength', importance: 0.06 },
+                    { name: 'Volatility', importance: 0.05 }
+                ],
+                MeanReversion: [
+                    { name: 'RSI', importance: 0.32 },
+                    { name: 'Bollinger Bands', importance: 0.24 },
+                    { name: 'Historical Volatility', importance: 0.18 },
+                    { name: 'Volume Profile', importance: 0.12 },
+                    { name: 'Market Regime', importance: 0.08 },
+                    { name: 'Previous Support', importance: 0.06 }
+                ],
+                Breakout: [
+                    { name: 'Volume Surge', importance: 0.35 },
+                    { name: 'Price Patterns', importance: 0.25 },
+                    { name: 'ATR', importance: 0.15 },
+                    { name: 'Previous Resistance', importance: 0.12 },
+                    { name: 'Market Breadth', importance: 0.07 },
+                    { name: 'News Sentiment', importance: 0.06 }
+                ],
+                OptionSpreads: [
+                    { name: 'Implied Volatility', importance: 0.38 },
+                    { name: 'Term Structure', importance: 0.22 },
+                    { name: 'IV Percentile', importance: 0.16 },
+                    { name: 'Earnings Calendar', importance: 0.12 },
+                    { name: 'Put/Call Ratio', importance: 0.08 },
+                    { name: 'Market Regime', importance: 0.04 }
+                ]
+            };
+            
+            return (
+                <div className="dashboard-card">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold">Strategy Feature Importance</h2>
+                        
+                        <div className="flex space-x-1 bg-gray-800 rounded-md p-1">
+                            {strategies.map(strategy => (
+                                <button
+                                    key={strategy.id}
+                                    className={`px-3 py-1 text-xs font-medium rounded-md ${selectedStrategy === strategy.id 
+                                        ? 'bg-blue-600 text-white' 
+                                        : 'text-gray-400 hover:text-white'}`}
+                                    onClick={() => setSelectedStrategy(strategy.id)}
+                                >
+                                    {strategy.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div className="text-sm text-gray-400 mb-4">
+                        Feature importance values from machine learning model for the selected strategy
+                    </div>
+                    
+                    <div style={{ height: "400px" }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={featureData[selectedStrategy].sort((a, b) => b.importance - a.importance)}
+                                layout="vertical"
+                                margin={{ top: 5, right: 30, left: 120, bottom: 5 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" stroke="#30363d" horizontal={false} />
+                                <XAxis 
+                                    type="number" 
+                                    domain={[0, 0.4]}
+                                    tickFormatter={(value) => `${Math.round(value * 100)}%`}
+                                    tick={{ fill: '#8b949e' }}
+                                    axisLine={{ stroke: '#30363d' }}
+                                />
+                                <YAxis 
+                                    dataKey="name" 
+                                    type="category" 
+                                    tick={{ fill: '#e6e6e6' }}
+                                    width={100}
+                                    axisLine={{ stroke: '#30363d' }}
+                                />
+                                <Tooltip 
+                                    formatter={(value) => [`${Math.round(value * 100)}%`, 'Importance']}
+                                    contentStyle={{
+                                        backgroundColor: '#24292e',
+                                        borderColor: '#30363d',
+                                        color: '#e6e6e6'
+                                    }}
+                                />
+                                <Bar 
+                                    dataKey="importance" 
+                                    fill="#4f85e5"
+                                    radius={[0, 4, 4, 0]}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 mt-4">
+                        <div className="font-medium mb-1">Feature Importance Explained:</div>
+                        <p>Higher percentages indicate features that significantly impact the strategy's decision making and performance. These values are derived from machine learning model analysis of historical trades.</p>
+                    </div>
+                </div>
+            );
+        };
+        
+        const MarketRegimePerformance = () => {
+            const [selectedMetric, setSelectedMetric] = React.useState('winRate');
+            
+            const metrics = [
+                { id: 'winRate', name: 'Win Rate' },
+                { id: 'returns', name: 'Average Return' },
+                { id: 'trades', name: 'Trade Frequency' },
+                { id: 'drawdown', name: 'Max Drawdown' }
+            ];
+            
+            const regimePerformanceData = [
+                {
+                    regime: 'Bullish Trend',
+                    momentum: { winRate: 72, returns: 2.4, trades: 42, drawdown: 5.2 },
+                    meanReversion: { winRate: 48, returns: 0.8, trades: 25, drawdown: 8.4 },
+                    breakout: { winRate: 68, returns: 3.1, trades: 38, drawdown: 7.3 },
+                    optionSpreads: { winRate: 65, returns: 1.7, trades: 56, drawdown: 4.2 }
+                },
+                {
+                    regime: 'Bearish Trend',
+                    momentum: { winRate: 42, returns: -0.8, trades: 24, drawdown: 12.5 },
+                    meanReversion: { winRate: 67, returns: 1.8, trades: 48, drawdown: 6.3 },
+                    breakout: { winRate: 52, returns: 0.5, trades: 32, drawdown: 9.8 },
+                    optionSpreads: { winRate: 59, returns: 1.2, trades: 36, drawdown: 7.4 }
+                },
+                {
+                    regime: 'High Volatility',
+                    momentum: { winRate: 53, returns: 1.2, trades: 36, drawdown: 15.2 },
+                    meanReversion: { winRate: 72, returns: 2.5, trades: 62, drawdown: 8.4 },
+                    breakout: { winRate: 42, returns: -1.1, trades: 28, drawdown: 17.3 },
+                    optionSpreads: { winRate: 74, returns: 3.4, trades: 84, drawdown: 9.1 }
+                },
+                {
+                    regime: 'Low Volatility',
+                    momentum: { winRate: 58, returns: 0.9, trades: 18, drawdown: 3.8 },
+                    meanReversion: { winRate: 46, returns: 0.3, trades: 16, drawdown: 5.2 },
+                    breakout: { winRate: 38, returns: -0.5, trades: 12, drawdown: 6.4 },
+                    optionSpreads: { winRate: 62, returns: 1.1, trades: 24, drawdown: 3.2 }
+                },
+                {
+                    regime: 'Sideways/Range',
+                    momentum: { winRate: 45, returns: 0.2, trades: 22, drawdown: 6.7 },
+                    meanReversion: { winRate: 78, returns: 2.2, trades: 58, drawdown: 4.2 },
+                    breakout: { winRate: 35, returns: -0.7, trades: 14, drawdown: 8.3 },
+                    optionSpreads: { winRate: 68, returns: 1.5, trades: 42, drawdown: 5.3 }
+                }
+            ];
+            
+            const getMetricData = () => {
+                return regimePerformanceData.map(regime => {
+                    // Clone the regime object to avoid mutating the original data
+                    const result = { regime: regime.regime };
+                    
+                    result.momentum = regime.momentum[selectedMetric];
+                    result.meanReversion = regime.meanReversion[selectedMetric];
+                    result.breakout = regime.breakout[selectedMetric];
+                    result.optionSpreads = regime.optionSpreads[selectedMetric];
+                    
+                    return result;
+                });
+            };
+            
+            const formatTooltipValue = (value, name, props) => {
+                if (selectedMetric === 'winRate') return `${value}%`;
+                if (selectedMetric === 'returns') return `${value > 0 ? '+' : ''}${value}%`;
+                if (selectedMetric === 'drawdown') return `-${value}%`;
+                if (selectedMetric === 'trades') return `${value} trades`;
+                return value;
+            };
+            
+            return (
+                <div className="dashboard-card">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold">Strategy Performance by Market Regime</h2>
+                        
+                        <div className="flex space-x-1 bg-gray-800 rounded-md p-1">
+                            {metrics.map(metric => (
+                                <button
+                                    key={metric.id}
+                                    className={`px-3 py-1 text-xs font-medium rounded-md ${selectedMetric === metric.id 
+                                        ? 'bg-blue-600 text-white' 
+                                        : 'text-gray-400 hover:text-white'}`}
+                                    onClick={() => setSelectedMetric(metric.id)}
+                                >
+                                    {metric.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div className="text-sm text-gray-400 mb-4">
+                        Compare how different strategies perform across various market regimes
+                    </div>
+                    
+                    <div style={{ height: "350px" }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={getMetricData()}
+                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" stroke="#30363d" />
+                                <XAxis 
+                                    dataKey="regime"
+                                    tick={{ fill: '#8b949e' }}
+                                    axisLine={{ stroke: '#30363d' }}
+                                />
+                                <YAxis 
+                                    tick={{ fill: '#8b949e' }}
+                                    axisLine={{ stroke: '#30363d' }}
+                                    tickFormatter={(value) => {
+                                        if (selectedMetric === 'winRate' || selectedMetric === 'returns' || selectedMetric === 'drawdown') {
+                                            return `${value}%`;
+                                        }
+                                        return value;
+                                    }}
+                                    domain={selectedMetric === 'returns' ? ['dataMin', 'dataMax'] : [0, 'dataMax']}
+                                />
+                                <Tooltip 
+                                    formatter={formatTooltipValue}
+                                    contentStyle={{
+                                        backgroundColor: '#24292e',
+                                        borderColor: '#30363d',
+                                        color: '#e6e6e6'
+                                    }}
+                                />
+                                <Legend 
+                                    wrapperStyle={{ paddingTop: 10 }}
+                                    formatter={(value) => <span style={{ color: '#e6e6e6' }}>{value === 'meanReversion' ? 'Mean Reversion' : value === 'optionSpreads' ? 'Option Spreads' : value.charAt(0).toUpperCase() + value.slice(1)}</span>}
+                                />
+                                <Bar dataKey="momentum" name="Momentum" fill="#4f85e5" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="meanReversion" name="Mean Reversion" fill="#8884d8" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="breakout" name="Breakout" fill="#82ca9d" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="optionSpreads" name="Option Spreads" fill="#ffc658" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 mt-4">
+                        <div className="font-medium mb-1">Market Regime Analysis:</div>
+                        <p>Each strategy demonstrates different performance characteristics depending on the market regime. Use these insights to select the optimal strategies for current conditions or to create a balanced portfolio across regimes.</p>
+                    </div>
+                </div>
+            );
+        };
+        
+        const AnalyticsFeatureImportance = () => {
+            return (
+                <div className="container mx-auto p-6">
+                    <h1 className="text-2xl font-bold mb-6">Analytics Dashboard: Feature Importance & Market Regimes</h1>
+                    
+                    <FeatureImportance />
+                    <MarketRegimePerformance />
+                </div>
+            );
+        };
+        
+        const App = () => {
+            return (
+                <div>
+                    <div className="flex justify-between items-center p-6 bg-gray-900">
+                        <h1 className="text-2xl font-bold text-white">BensBot Pro</h1>
+                    </div>
+                    <AnalyticsFeatureImportance />
+                </div>
+            );
+        };
+        
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

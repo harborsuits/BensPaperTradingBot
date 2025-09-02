@@ -1,0 +1,23 @@
+{
+  "primary_source": "alpaca",
+  "backup_source": "yahoo",
+  "historical_source": "yahoo",
+  "caching": {
+    "enabled": true,
+    "expiry_minutes": 15,
+    "disk_cache": true
+  },
+  "daily_update": {
+    "enabled": true,
+    "time": "17:30",
+    "timezone": "America/New_York"
+  },
+  "timeframes": {
+    "1m": {"bars_to_keep": 1000, "update_interval_seconds": 60},
+    "5m": {"bars_to_keep": 1000, "update_interval_seconds": 300},
+    "15m": {"bars_to_keep": 1000, "update_interval_seconds": 900},
+    "1h": {"bars_to_keep": 1000, "update_interval_seconds": 3600},
+    "4h": {"bars_to_keep": 500, "update_interval_seconds": 14400},
+    "1d": {"bars_to_keep": 250, "update_interval_seconds": 86400}
+  }
+}

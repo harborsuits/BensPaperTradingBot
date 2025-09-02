@@ -1,0 +1,23 @@
+# Scope
+- Primary frontend: new-trading-dashboard (Vite @ :3003)
+- Backend API: live-api (Express @ :4000)
+- Do not edit or run the legacy root app on :5173. If UI code is needed from it, copy specific components into new-trading-dashboard only.
+
+# Networking
+- VITE_USE_MSW=false
+- VITE_API_BASE is empty to use Vite proxy; proxy /api and /metrics to http://localhost:4000; /ws to ws://localhost:4000
+- Never point the dashboard to :3003 for API responses; :3003 is the UI, :4000 is the API.
+
+# Data contracts (must preserve)
+- /api/strategies/active -> array or {items:[...]} + asOf ISO
+- /api/trades -> { items: [...] }
+- /api/decisions/recent -> Decision[]
+- /api/paper/account, /api/paper/positions, /api/paper/orders, /api/paper/orders/:id
+- /api/context/{regime,volatility,sentiment} (+ history/anomalies/news)
+- /metrics -> JSON (totalSymbolsTracked, errorRate, requestsLastHour, averageLatency)
+- Round confidence to whole % in UI; keep refetch intervals: trades/decisions 7–10s, strategies 60s, context 45s, metrics 30s, paper portfolio 15s.
+
+# UI behavior
+- DecisionCard places paper orders via POST /api/paper/orders and polls /api/paper/orders/:id; invalidate paperAccount, paperPositions, trades, portfolioSummary on success.
+
+

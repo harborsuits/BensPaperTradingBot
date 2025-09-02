@@ -1,0 +1,31 @@
+{
+  "generation": 1,
+  "duration_seconds": 0.27086806297302246,
+  "bot_count": 120,
+  "surviving_bots": 0,
+  "extinct_bots": 0,
+  "avg_balance": 10000.0,
+  "avg_equity": 10000.0,
+  "max_equity": 10000.0,
+  "min_equity": 10000.0,
+  "best_bot_id": "bot_0_0_1b67ff7a",
+  "worst_bot_id": "bot_0_0_1b67ff7a",
+  "total_trades": 0,
+  "avg_trades_per_bot": 0.0,
+  "win_rate": 0,
+  "avg_fitness": 0.0,
+  "strategy_distribution": {
+    "MovingAverageCrossover": 13,
+    "RSIStrategy": 9,
+    "BollingerBandsStrategy": 8,
+    "PriceDeviationStrategy": 11,
+    "ChannelBreakoutStrategy": 8,
+    "SupportResistanceStrategy": 9,
+    "ATRPositionSizing": 10,
+    "VolatilityBreakoutStrategy": 10,
+    "HeadAndShouldersStrategy": 10,
+    "DoubleTopBottomStrategy": 10,
+    "SwingTradingStrategy": 9,
+    "DayTradingStrategy": 13
+  }
+}

@@ -1,0 +1,2575 @@
+{
+  "current_allocations": {
+    "trend_following": 7.851335348282771,
+    "momentum": 6.517109179230177,
+    "mean_reversion": 37.61249446566138,
+    "breakout_swing": 18.496079532065178,
+    "volatility_breakout": 14.761490737380244,
+    "option_spreads": 14.761490737380244
+  },
+  "rotation_history": [
+    {
+      "timestamp": "2025-04-14T01:15:38.059533",
+      "previous_allocations": {
+        "trend_following": 4.813311144491542,
+        "momentum": 4.813311144491542,
+        "mean_reversion": 40.583702848939446,
+        "breakout_swing": 18.112798922873868,
+        "volatility_breakout": 15.838437969601799,
+        "option_spreads": 15.838437969601799
+      },
+      "target_allocations": {
+        "trend_following": 4.612366463192122,
+        "momentum": 1.5090383264793525,
+        "breakout_swing": 18.81532107435289,
+        "mean_reversion": 42.157780403812374,
+        "volatility_breakout": 16.45274686608163,
+        "option_spreads": 16.45274686608163
+      },
+      "constrained_allocations": {
+        "trend_following": 4.813311144491542,
+        "momentum": 4.813311144491542,
+        "mean_reversion": 40.583702848939446,
+        "breakout_swing": 18.112798922873868,
+        "volatility_breakout": 15.838437969601799,
+        "option_spreads": 15.838437969601799
+      },
+      "allocation_changes": {
+        "trend_following": -0.20094468129942022,
+        "momentum": -3.3042728180121896,
+        "mean_reversion": 1.5740775548729289,
+        "breakout_swing": 0.7025221514790232,
+        "volatility_breakout": 0.6143088964798302,
+        "option_spreads": 0.6143088964798302
+      },
+      "dollar_values": {
+        "trend_following": 4813.311144491541,
+        "momentum": 4813.311144491541,
+        "mean_reversion": 40583.70284893944,
+        "breakout_swing": 18112.79892287387,
+        "volatility_breakout": 15838.437969601799,
+        "option_spreads": 15838.437969601799
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:15:38.061566",
+      "previous_allocations": {
+        "trend_following": 4.813311144491542,
+        "momentum": 4.813311144491542,
+        "mean_reversion": 40.583702848939446,
+        "breakout_swing": 18.112798922873868,
+        "volatility_breakout": 15.838437969601799,
+        "option_spreads": 15.838437969601799
+      },
+      "target_allocations": {
+        "trend_following": 19.978149330573807,
+        "momentum": 0.9833905418556144,
+        "breakout_swing": 9.245016669459698,
+        "mean_reversion": 47.417916207868224,
+        "volatility_breakout": 11.18776362512133,
+        "option_spreads": 11.18776362512133
+      },
+      "constrained_allocations": {
+        "trend_following": 19.07845278111463,
+        "momentum": 4.814554377605579,
+        "mean_reversion": 45.659227211105296,
+        "breakout_swing": 8.902127095396747,
+        "volatility_breakout": 10.77281926738887,
+        "option_spreads": 10.77281926738887
+      },
+      "allocation_changes": {
+        "trend_following": 15.164838186082264,
+        "momentum": -3.8299206026359274,
+        "mean_reversion": 6.834213358928778,
+        "breakout_swing": -8.86778225341417,
+        "volatility_breakout": -4.6506743444804695,
+        "option_spreads": -4.6506743444804695
+      },
+      "dollar_values": {
+        "trend_following": 19078.45278111463,
+        "momentum": 4814.554377605579,
+        "mean_reversion": 45659.227211105295,
+        "breakout_swing": 8902.127095396747,
+        "volatility_breakout": 10772.819267388872,
+        "option_spreads": 10772.819267388872
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "materials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.639232",
+      "previous_allocations": {
+        "trend_following": 16.666666666666668,
+        "momentum": 16.666666666666668,
+        "mean_reversion": 16.666666666666668,
+        "breakout_swing": 16.666666666666668,
+        "volatility_breakout": 16.666666666666668,
+        "option_spreads": 16.666666666666668
+      },
+      "target_allocations": {
+        "trend_following": 20.763251528969278,
+        "momentum": 1.3429742996463954,
+        "breakout_swing": 9.712538250361218,
+        "mean_reversion": 44.926394208577506,
+        "volatility_breakout": 11.627420856222795,
+        "option_spreads": 11.627420856222795
+      },
+      "constrained_allocations": {
+        "trend_following": 22.96888507948185,
+        "momentum": 5.531138763944373,
+        "mean_reversion": 35.030545504981035,
+        "breakout_swing": 10.74427936257308,
+        "volatility_breakout": 12.862575644509835,
+        "option_spreads": 12.862575644509835
+      },
+      "allocation_changes": {
+        "trend_following": 4.09658486230261,
+        "momentum": -15.323692367020273,
+        "mean_reversion": 28.259727541910838,
+        "breakout_swing": -6.9541284163054495,
+        "volatility_breakout": -5.039245810443873,
+        "option_spreads": -5.039245810443873
+      },
+      "dollar_values": {
+        "trend_following": 22968.88507948185,
+        "momentum": 5531.138763944373,
+        "mean_reversion": 35030.54550498103,
+        "breakout_swing": 10744.27936257308,
+        "volatility_breakout": 12862.575644509836,
+        "option_spreads": 12862.575644509836
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_staples",
+        "bottom_sector": "utilities"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.641817",
+      "previous_allocations": {
+        "trend_following": 22.96888507948185,
+        "momentum": 5.531138763944373,
+        "mean_reversion": 35.03054550498103,
+        "breakout_swing": 10.74427936257308,
+        "volatility_breakout": 12.862575644509835,
+        "option_spreads": 12.862575644509835
+      },
+      "target_allocations": {
+        "trend_following": 20.763251528969278,
+        "momentum": 1.3429742996463954,
+        "breakout_swing": 9.712538250361218,
+        "mean_reversion": 44.926394208577506,
+        "volatility_breakout": 11.627420856222795,
+        "option_spreads": 11.627420856222795
+      },
+      "constrained_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "allocation_changes": {
+        "trend_following": -2.205633550512573,
+        "momentum": -4.188164464297977,
+        "mean_reversion": 9.895848703596478,
+        "breakout_swing": -1.0317411122118614,
+        "volatility_breakout": -1.2351547882870406,
+        "option_spreads": -1.2351547882870406
+      },
+      "dollar_values": {
+        "trend_following": 20030.722846505956,
+        "momentum": 4823.5997186083105,
+        "mean_reversion": 43341.388492516104,
+        "breakout_swing": 9369.879354282964,
+        "volatility_breakout": 11217.204794043335,
+        "option_spreads": 11217.204794043335
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.644128",
+      "previous_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "target_allocations": {
+        "trend_following": 5.992581746080677,
+        "momentum": 9.501487325330334,
+        "breakout_swing": 18.583632306709895,
+        "mean_reversion": 47.880901112833996,
+        "volatility_breakout": 6.135597533773828,
+        "option_spreads": 11.905799975271277
+      },
+      "constrained_allocations": {
+        "trend_following": 5.992581746080677,
+        "momentum": 9.501487325330334,
+        "mean_reversion": 47.880901112833996,
+        "breakout_swing": 18.583632306709895,
+        "volatility_breakout": 6.135597533773828,
+        "option_spreads": 11.905799975271277
+      },
+      "allocation_changes": {
+        "trend_following": -14.038141100425278,
+        "momentum": 4.677887606722024,
+        "mean_reversion": 4.539512620317893,
+        "breakout_swing": 9.21375295242693,
+        "volatility_breakout": -5.081607260269506,
+        "option_spreads": 0.6885951812279423
+      },
+      "dollar_values": {
+        "trend_following": 5992.581746080677,
+        "momentum": 9501.487325330334,
+        "mean_reversion": 47880.901112834,
+        "breakout_swing": 18583.632306709893,
+        "volatility_breakout": 6135.597533773828,
+        "option_spreads": 11905.799975271277
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.646888",
+      "previous_allocations": {
+        "trend_following": 5.992581746080676,
+        "momentum": 9.501487325330332,
+        "mean_reversion": 47.880901112833996,
+        "breakout_swing": 18.58363230670989,
+        "volatility_breakout": 6.1355975337738275,
+        "option_spreads": 11.905799975271275
+      },
+      "target_allocations": {
+        "trend_following": 5.992581746080677,
+        "momentum": 9.501487325330334,
+        "breakout_swing": 18.583632306709895,
+        "mean_reversion": 47.880901112833996,
+        "volatility_breakout": 6.135597533773828,
+        "option_spreads": 11.905799975271277
+      },
+      "constrained_allocations": {
+        "trend_following": 5.992581746080677,
+        "momentum": 9.501487325330334,
+        "mean_reversion": 47.880901112833996,
+        "breakout_swing": 18.583632306709895,
+        "volatility_breakout": 6.135597533773828,
+        "option_spreads": 11.905799975271277
+      },
+      "allocation_changes": {
+        "trend_following": 8.881784197001252e-16,
+        "momentum": 1.7763568394002505e-15,
+        "mean_reversion": 0.0,
+        "breakout_swing": 3.552713678800501e-15,
+        "volatility_breakout": 8.881784197001252e-16,
+        "option_spreads": 1.7763568394002505e-15
+      },
+      "dollar_values": {
+        "trend_following": 5992.581746080677,
+        "momentum": 9501.487325330334,
+        "mean_reversion": 47880.901112834,
+        "breakout_swing": 18583.632306709893,
+        "volatility_breakout": 6135.597533773828,
+        "option_spreads": 11905.799975271277
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_staples",
+        "bottom_sector": "industrials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.649165",
+      "previous_allocations": {
+        "trend_following": 5.992581746080676,
+        "momentum": 9.501487325330332,
+        "mean_reversion": 47.880901112833996,
+        "breakout_swing": 18.58363230670989,
+        "volatility_breakout": 6.1355975337738275,
+        "option_spreads": 11.905799975271275
+      },
+      "target_allocations": {
+        "trend_following": 20.763251528969278,
+        "momentum": 1.3429742996463954,
+        "breakout_swing": 9.712538250361218,
+        "mean_reversion": 44.926394208577506,
+        "volatility_breakout": 11.627420856222795,
+        "option_spreads": 11.627420856222795
+      },
+      "constrained_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "allocation_changes": {
+        "trend_following": 14.770669782888602,
+        "momentum": -8.158513025683938,
+        "mean_reversion": -2.9545069042564904,
+        "breakout_swing": -8.871094056348673,
+        "volatility_breakout": 5.491823322448967,
+        "option_spreads": -0.27837911904848056
+      },
+      "dollar_values": {
+        "trend_following": 20030.722846505956,
+        "momentum": 4823.5997186083105,
+        "mean_reversion": 43341.388492516104,
+        "breakout_swing": 9369.879354282964,
+        "volatility_breakout": 11217.204794043335,
+        "option_spreads": 11217.204794043335
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.651867",
+      "previous_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "target_allocations": {
+        "trend_following": 28.2178462435491,
+        "momentum": 28.2178462435491,
+        "breakout_swing": 28.2178462435491,
+        "mean_reversion": 3.280876776823842,
+        "volatility_breakout": 5.560992985255948,
+        "option_spreads": 6.504591507272912
+      },
+      "constrained_allocations": {
+        "trend_following": 25.01176375497377,
+        "momentum": 17.57126283329813,
+        "mean_reversion": 25.121269261462494,
+        "breakout_swing": 21.600998881545898,
+        "volatility_breakout": 4.929158717139357,
+        "option_spreads": 5.765546551580342
+      },
+      "allocation_changes": {
+        "trend_following": 8.187123397043145,
+        "momentum": 23.39424652494079,
+        "mean_reversion": -40.06051171569226,
+        "breakout_swing": 18.847966889266136,
+        "volatility_breakout": -5.656211808787387,
+        "option_spreads": -4.712613286770423
+      },
+      "dollar_values": {
+        "trend_following": 25011.76375497377,
+        "momentum": 17571.262833298133,
+        "mean_reversion": 25121.269261462494,
+        "breakout_swing": 21600.9988815459,
+        "volatility_breakout": 4929.158717139357,
+        "option_spreads": 5765.546551580342
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.654259",
+      "previous_allocations": {
+        "trend_following": 25.011763754973778,
+        "momentum": 17.571262833298135,
+        "mean_reversion": 25.121269261462498,
+        "breakout_swing": 21.6009988815459,
+        "volatility_breakout": 4.929158717139357,
+        "option_spreads": 5.765546551580343
+      },
+      "target_allocations": {
+        "trend_following": 5.992581746080677,
+        "momentum": 9.501487325330334,
+        "breakout_swing": 18.583632306709895,
+        "mean_reversion": 47.880901112833996,
+        "volatility_breakout": 6.135597533773828,
+        "option_spreads": 11.905799975271277
+      },
+      "constrained_allocations": {
+        "trend_following": 10.40080048015004,
+        "momentum": 9.870695748922424,
+        "mean_reversion": 41.68029997626939,
+        "breakout_swing": 19.305754365462086,
+        "volatility_breakout": 6.374014343234909,
+        "option_spreads": 12.368435085961153
+      },
+      "allocation_changes": {
+        "trend_following": -19.0191820088931,
+        "momentum": -8.069775507967801,
+        "mean_reversion": 22.7596318513715,
+        "breakout_swing": -3.0173665748360072,
+        "volatility_breakout": 1.2064388166344715,
+        "option_spreads": 6.140253423690934
+      },
+      "dollar_values": {
+        "trend_following": 10400.800480150041,
+        "momentum": 9870.695748922424,
+        "mean_reversion": 41680.29997626939,
+        "breakout_swing": 19305.754365462086,
+        "volatility_breakout": 6374.014343234909,
+        "option_spreads": 12368.435085961153
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "communication_services"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.656624",
+      "previous_allocations": {
+        "trend_following": 10.40080048015004,
+        "momentum": 9.870695748922424,
+        "mean_reversion": 41.68029997626939,
+        "breakout_swing": 19.305754365462086,
+        "volatility_breakout": 6.374014343234909,
+        "option_spreads": 12.368435085961153
+      },
+      "target_allocations": {
+        "trend_following": 20.763251528969278,
+        "momentum": 1.3429742996463954,
+        "breakout_swing": 9.712538250361218,
+        "mean_reversion": 44.926394208577506,
+        "volatility_breakout": 11.627420856222795,
+        "option_spreads": 11.627420856222795
+      },
+      "constrained_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "allocation_changes": {
+        "trend_following": 10.362451048819237,
+        "momentum": -8.52772144927603,
+        "mean_reversion": 3.246094232308117,
+        "breakout_swing": -9.593216115100867,
+        "volatility_breakout": 5.253406512987886,
+        "option_spreads": -0.741014229738358
+      },
+      "dollar_values": {
+        "trend_following": 20030.722846505956,
+        "momentum": 4823.5997186083105,
+        "mean_reversion": 43341.388492516104,
+        "breakout_swing": 9369.879354282964,
+        "volatility_breakout": 11217.204794043335,
+        "option_spreads": 11217.204794043335
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.659016",
+      "previous_allocations": {
+        "trend_following": 20.030722846505956,
+        "momentum": 4.82359971860831,
+        "mean_reversion": 43.3413884925161,
+        "breakout_swing": 9.369879354282965,
+        "volatility_breakout": 11.217204794043335,
+        "option_spreads": 11.217204794043335
+      },
+      "target_allocations": {
+        "trend_following": 28.2178462435491,
+        "momentum": 28.2178462435491,
+        "breakout_swing": 28.2178462435491,
+        "mean_reversion": 3.280876776823842,
+        "volatility_breakout": 5.560992985255948,
+        "option_spreads": 6.504591507272912
+      },
+      "constrained_allocations": {
+        "trend_following": 25.01176375497377,
+        "momentum": 17.57126283329813,
+        "mean_reversion": 25.121269261462494,
+        "breakout_swing": 21.600998881545898,
+        "volatility_breakout": 4.929158717139357,
+        "option_spreads": 5.765546551580342
+      },
+      "allocation_changes": {
+        "trend_following": 8.187123397043145,
+        "momentum": 23.39424652494079,
+        "mean_reversion": -40.06051171569226,
+        "breakout_swing": 18.847966889266136,
+        "volatility_breakout": -5.656211808787387,
+        "option_spreads": -4.712613286770423
+      },
+      "dollar_values": {
+        "trend_following": 25011.76375497377,
+        "momentum": 17571.262833298133,
+        "mean_reversion": 25121.269261462494,
+        "breakout_swing": 21600.9988815459,
+        "volatility_breakout": 4929.158717139357,
+        "option_spreads": 5765.546551580342
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_discretionary",
+        "bottom_sector": "energy"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.661406",
+      "previous_allocations": {
+        "trend_following": 25.011763754973778,
+        "momentum": 17.571262833298135,
+        "mean_reversion": 25.121269261462498,
+        "breakout_swing": 21.6009988815459,
+        "volatility_breakout": 4.929158717139357,
+        "option_spreads": 5.765546551580343
+      },
+      "target_allocations": {
+        "trend_following": 2.5769456099950987,
+        "momentum": 7.924053224001934,
+        "breakout_swing": 9.110733113516872,
+        "mean_reversion": 44.30621513958537,
+        "volatility_breakout": 18.041026456450364,
+        "option_spreads": 18.041026456450364
+      },
+      "constrained_allocations": {
+        "trend_following": 9.696635487449072,
+        "momentum": 7.6746373143413855,
+        "mean_reversion": 38.85842023878397,
+        "breakout_swing": 8.823965505709882,
+        "volatility_breakout": 17.47317072685784,
+        "option_spreads": 17.47317072685784
+      },
+      "allocation_changes": {
+        "trend_following": -22.434818144978678,
+        "momentum": -9.647209609296201,
+        "mean_reversion": 19.18494587812287,
+        "breakout_swing": -12.49026576802903,
+        "volatility_breakout": 13.111867739311007,
+        "option_spreads": 12.275479904870021
+      },
+      "dollar_values": {
+        "trend_following": 9696.635487449072,
+        "momentum": 7674.637314341386,
+        "mean_reversion": 38858.42023878397,
+        "breakout_swing": 8823.965505709883,
+        "volatility_breakout": 17473.170726857843,
+        "option_spreads": 17473.170726857843
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.664372",
+      "previous_allocations": {
+        "trend_following": 9.696635487449072,
+        "momentum": 7.6746373143413855,
+        "mean_reversion": 38.85842023878397,
+        "breakout_swing": 8.823965505709882,
+        "volatility_breakout": 17.47317072685784,
+        "option_spreads": 17.47317072685784
+      },
+      "target_allocations": {
+        "trend_following": 2.5769456099950987,
+        "momentum": 7.924053224001934,
+        "breakout_swing": 9.110733113516872,
+        "mean_reversion": 44.30621513958537,
+        "volatility_breakout": 18.041026456450364,
+        "option_spreads": 18.041026456450364
+      },
+      "constrained_allocations": {
+        "trend_following": 4.88171342846414,
+        "momentum": 7.736591406294962,
+        "mean_reversion": 43.25804908226702,
+        "breakout_swing": 8.895197636681644,
+        "volatility_breakout": 17.614224223146113,
+        "option_spreads": 17.614224223146113
+      },
+      "allocation_changes": {
+        "trend_following": -7.119689877453974,
+        "momentum": 0.2494159096605486,
+        "mean_reversion": 5.447794900801398,
+        "breakout_swing": 0.28676760780698984,
+        "volatility_breakout": 0.5678557295925231,
+        "option_spreads": 0.5678557295925231
+      },
+      "dollar_values": {
+        "trend_following": 4881.71342846414,
+        "momentum": 7736.591406294962,
+        "mean_reversion": 43258.04908226702,
+        "breakout_swing": 8895.197636681643,
+        "volatility_breakout": 17614.224223146113,
+        "option_spreads": 17614.224223146113
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "utilities"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:17:20.667293",
+      "previous_allocations": {
+        "trend_following": 4.88171342846414,
+        "momentum": 7.736591406294964,
+        "mean_reversion": 43.25804908226702,
+        "breakout_swing": 8.895197636681644,
+        "volatility_breakout": 17.614224223146117,
+        "option_spreads": 17.614224223146117
+      },
+      "target_allocations": {
+        "trend_following": 20.763251528969278,
+        "momentum": 1.3429742996463954,
+        "breakout_swing": 9.712538250361218,
+        "mean_reversion": 44.926394208577506,
+        "volatility_breakout": 11.627420856222795,
+        "option_spreads": 11.627420856222795
+      },
+      "constrained_allocations": {
+        "trend_following": 19.344800878856116,
+        "momentum": 4.864973270151017,
+        "mean_reversion": 43.713141389799404,
+        "breakout_swing": 9.450247794665332,
+        "volatility_breakout": 11.313418333264071,
+        "option_spreads": 11.313418333264071
+      },
+      "allocation_changes": {
+        "trend_following": 15.881538100505137,
+        "momentum": -6.393617106648568,
+        "mean_reversion": 1.6683451263104843,
+        "breakout_swing": 0.8173406136795744,
+        "volatility_breakout": -5.986803366923322,
+        "option_spreads": -5.986803366923322
+      },
+      "dollar_values": {
+        "trend_following": 19344.800878856116,
+        "momentum": 4864.9732701510175,
+        "mean_reversion": 43713.141389799406,
+        "breakout_swing": 9450.24779466533,
+        "volatility_breakout": 11313.418333264071,
+        "option_spreads": 11313.418333264071
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "industrials",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.550212",
+      "previous_allocations": {
+        "trend_following": 16.666666666666668,
+        "momentum": 16.666666666666668,
+        "mean_reversion": 16.666666666666668,
+        "breakout_swing": 16.666666666666668,
+        "volatility_breakout": 16.666666666666668,
+        "option_spreads": 16.666666666666668
+      },
+      "target_allocations": {
+        "trend_following": 25.764009995319793,
+        "momentum": 25.764009995319793,
+        "breakout_swing": 24.87262272722443,
+        "mean_reversion": 11.080398034399334,
+        "volatility_breakout": 5.394052116262855,
+        "option_spreads": 7.124907131473799
+      },
+      "constrained_allocations": {
+        "trend_following": 25.764009995319793,
+        "momentum": 25.764009995319793,
+        "mean_reversion": 11.080398034399334,
+        "breakout_swing": 24.87262272722443,
+        "volatility_breakout": 5.394052116262855,
+        "option_spreads": 7.124907131473799
+      },
+      "allocation_changes": {
+        "trend_following": 9.097343328653125,
+        "momentum": 9.097343328653125,
+        "mean_reversion": -5.586268632267334,
+        "breakout_swing": 8.205956060557764,
+        "volatility_breakout": -11.272614550403812,
+        "option_spreads": -9.541759535192869
+      },
+      "dollar_values": {
+        "trend_following": 25764.009995319793,
+        "momentum": 25764.009995319793,
+        "mean_reversion": 11080.398034399335,
+        "breakout_swing": 24872.62272722443,
+        "volatility_breakout": 5394.052116262855,
+        "option_spreads": 7124.907131473799
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "materials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.552958",
+      "previous_allocations": {
+        "trend_following": 25.764009995319793,
+        "momentum": 25.764009995319793,
+        "mean_reversion": 11.080398034399336,
+        "breakout_swing": 24.872622727224428,
+        "volatility_breakout": 5.394052116262855,
+        "option_spreads": 7.124907131473799
+      },
+      "target_allocations": {
+        "trend_following": 1.5743849098870561,
+        "momentum": 9.02339387254322,
+        "breakout_swing": 14.522525493644759,
+        "mean_reversion": 40.256316395508826,
+        "volatility_breakout": 17.311689664208068,
+        "option_spreads": 17.311689664208068
+      },
+      "constrained_allocations": {
+        "trend_following": 11.125094650633939,
+        "momentum": 11.125094650633939,
+        "mean_reversion": 26.955279378694023,
+        "breakout_swing": 15.009691625452852,
+        "volatility_breakout": 17.892419847292622,
+        "option_spreads": 17.892419847292622
+      },
+      "allocation_changes": {
+        "trend_following": -24.189625085432738,
+        "momentum": -16.740616122776572,
+        "mean_reversion": 29.17591836110949,
+        "breakout_swing": -10.35009723357967,
+        "volatility_breakout": 11.917637547945212,
+        "option_spreads": 10.186782532734268
+      },
+      "dollar_values": {
+        "trend_following": 11125.094650633939,
+        "momentum": 11125.094650633939,
+        "mean_reversion": 26955.279378694024,
+        "breakout_swing": 15009.691625452853,
+        "volatility_breakout": 17892.419847292622,
+        "option_spreads": 17892.419847292622
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "consumer_staples"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.555405",
+      "previous_allocations": {
+        "trend_following": 11.125094650633939,
+        "momentum": 11.125094650633939,
+        "mean_reversion": 26.955279378694026,
+        "breakout_swing": 15.009691625452854,
+        "volatility_breakout": 17.892419847292622,
+        "option_spreads": 17.892419847292622
+      },
+      "target_allocations": {
+        "trend_following": 21.706437276129304,
+        "momentum": 5.717239260235271,
+        "breakout_swing": 6.037019080276587,
+        "mean_reversion": 42.22809463409401,
+        "volatility_breakout": 12.155604874632411,
+        "option_spreads": 12.155604874632411
+      },
+      "constrained_allocations": {
+        "trend_following": 21.76581774740679,
+        "momentum": 5.73287942989371,
+        "mean_reversion": 42.07005290096271,
+        "breakout_swing": 6.053534044641201,
+        "volatility_breakout": 12.188857938547804,
+        "option_spreads": 12.188857938547804
+      },
+      "allocation_changes": {
+        "trend_following": 10.581342625495365,
+        "momentum": -5.407855390398668,
+        "mean_reversion": 15.272815255399987,
+        "breakout_swing": -8.972672545176266,
+        "volatility_breakout": -5.736814972660211,
+        "option_spreads": -5.736814972660211
+      },
+      "dollar_values": {
+        "trend_following": 21765.81774740679,
+        "momentum": 5732.879429893709,
+        "mean_reversion": 42070.052900962706,
+        "breakout_swing": 6053.534044641201,
+        "volatility_breakout": 12188.857938547804,
+        "option_spreads": 12188.857938547804
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "consumer_staples"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.557801",
+      "previous_allocations": {
+        "trend_following": 21.765817747406786,
+        "momentum": 5.732879429893709,
+        "mean_reversion": 42.0700529009627,
+        "breakout_swing": 6.0535340446412,
+        "volatility_breakout": 12.188857938547802,
+        "option_spreads": 12.188857938547802
+      },
+      "target_allocations": {
+        "trend_following": 25.764009995319793,
+        "momentum": 25.764009995319793,
+        "breakout_swing": 24.87262272722443,
+        "mean_reversion": 11.080398034399334,
+        "volatility_breakout": 5.394052116262855,
+        "option_spreads": 7.124907131473799
+      },
+      "constrained_allocations": {
+        "trend_following": 24.047177256978255,
+        "momentum": 19.351305436878047,
+        "mean_reversion": 25.266189563793816,
+        "breakout_swing": 19.650592634814306,
+        "volatility_breakout": 5.034609418204487,
+        "option_spreads": 6.650125689331082
+      },
+      "allocation_changes": {
+        "trend_following": 3.998192247913007,
+        "momentum": 20.031130565426082,
+        "mean_reversion": -30.989654866563367,
+        "breakout_swing": 18.81908868258323,
+        "volatility_breakout": -6.794805822284947,
+        "option_spreads": -5.0639508070740025
+      },
+      "dollar_values": {
+        "trend_following": 24047.177256978255,
+        "momentum": 19351.305436878047,
+        "mean_reversion": 25266.189563793818,
+        "breakout_swing": 19650.592634814308,
+        "volatility_breakout": 5034.609418204486,
+        "option_spreads": 6650.125689331082
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "consumer_staples"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.560257",
+      "previous_allocations": {
+        "trend_following": 24.047177256978255,
+        "momentum": 19.351305436878047,
+        "mean_reversion": 25.266189563793816,
+        "breakout_swing": 19.65059263481431,
+        "volatility_breakout": 5.034609418204487,
+        "option_spreads": 6.650125689331082
+      },
+      "target_allocations": {
+        "trend_following": 10.204957296348274,
+        "momentum": 5.216450784319771,
+        "breakout_swing": 16.411366957282773,
+        "mean_reversion": 48.2400893272612,
+        "volatility_breakout": 8.834302780653175,
+        "option_spreads": 11.092832854134803
+      },
+      "constrained_allocations": {
+        "trend_following": 11.089198901310285,
+        "momentum": 5.668447071985062,
+        "mean_reversion": 43.75518408397024,
+        "breakout_swing": 17.83338304578919,
+        "volatility_breakout": 9.599779582038755,
+        "option_spreads": 12.054007314906473
+      },
+      "allocation_changes": {
+        "trend_following": -13.842219960629981,
+        "momentum": -14.134854652558275,
+        "mean_reversion": 22.973899763467386,
+        "breakout_swing": -3.239225677531536,
+        "volatility_breakout": 3.7996933624486884,
+        "option_spreads": 4.442707164803721
+      },
+      "dollar_values": {
+        "trend_following": 11089.198901310285,
+        "momentum": 5668.4470719850615,
+        "mean_reversion": 43755.18408397024,
+        "breakout_swing": 17833.383045789193,
+        "volatility_breakout": 9599.779582038755,
+        "option_spreads": 12054.007314906474
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.563340",
+      "previous_allocations": {
+        "trend_following": 11.089198901310283,
+        "momentum": 5.668447071985061,
+        "mean_reversion": 43.75518408397024,
+        "breakout_swing": 17.833383045789187,
+        "volatility_breakout": 9.599779582038753,
+        "option_spreads": 12.054007314906471
+      },
+      "target_allocations": {
+        "trend_following": 10.204957296348274,
+        "momentum": 5.216450784319771,
+        "breakout_swing": 16.411366957282773,
+        "mean_reversion": 48.2400893272612,
+        "volatility_breakout": 8.834302780653175,
+        "option_spreads": 11.092832854134803
+      },
+      "constrained_allocations": {
+        "trend_following": 10.204957296348274,
+        "momentum": 5.216450784319771,
+        "mean_reversion": 48.2400893272612,
+        "breakout_swing": 16.411366957282773,
+        "volatility_breakout": 8.834302780653175,
+        "option_spreads": 11.092832854134803
+      },
+      "allocation_changes": {
+        "trend_following": -0.8842416049620088,
+        "momentum": -0.4519962876652901,
+        "mean_reversion": 4.48490524329096,
+        "breakout_swing": -1.422016088506414,
+        "volatility_breakout": -0.7654768013855779,
+        "option_spreads": -0.9611744607716677
+      },
+      "dollar_values": {
+        "trend_following": 10204.957296348275,
+        "momentum": 5216.450784319772,
+        "mean_reversion": 48240.0893272612,
+        "breakout_swing": 16411.36695728277,
+        "volatility_breakout": 8834.302780653175,
+        "option_spreads": 11092.832854134804
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "technology"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.565772",
+      "previous_allocations": {
+        "trend_following": 10.204957296348274,
+        "momentum": 5.216450784319771,
+        "mean_reversion": 48.2400893272612,
+        "breakout_swing": 16.411366957282773,
+        "volatility_breakout": 8.834302780653175,
+        "option_spreads": 11.092832854134803
+      },
+      "target_allocations": {
+        "trend_following": 25.764009995319793,
+        "momentum": 25.764009995319793,
+        "breakout_swing": 24.87262272722443,
+        "mean_reversion": 11.080398034399334,
+        "volatility_breakout": 5.394052116262855,
+        "option_spreads": 7.124907131473799
+      },
+      "constrained_allocations": {
+        "trend_following": 21.71847350399927,
+        "momentum": 17.42000375330004,
+        "mean_reversion": 28.642143322705987,
+        "breakout_swing": 21.432109220611853,
+        "volatility_breakout": 4.647918129312559,
+        "option_spreads": 6.139352070070294
+      },
+      "allocation_changes": {
+        "trend_following": 15.559052698971518,
+        "momentum": 20.54755921100002,
+        "mean_reversion": -37.159691292861865,
+        "breakout_swing": 8.461255769941658,
+        "volatility_breakout": -3.4402506643903203,
+        "option_spreads": -3.967925722661004
+      },
+      "dollar_values": {
+        "trend_following": 21718.47350399927,
+        "momentum": 17420.00375330004,
+        "mean_reversion": 28642.143322705986,
+        "breakout_swing": 21432.109220611852,
+        "volatility_breakout": 4647.918129312558,
+        "option_spreads": 6139.352070070294
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "industrials",
+        "bottom_sector": "technology"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.568181",
+      "previous_allocations": {
+        "trend_following": 21.718473503999274,
+        "momentum": 17.420003753300037,
+        "mean_reversion": 28.642143322705987,
+        "breakout_swing": 21.432109220611853,
+        "volatility_breakout": 4.647918129312559,
+        "option_spreads": 6.139352070070294
+      },
+      "target_allocations": {
+        "trend_following": 21.706437276129304,
+        "momentum": 5.717239260235271,
+        "breakout_swing": 6.037019080276587,
+        "mean_reversion": 42.22809463409401,
+        "volatility_breakout": 12.155604874632411,
+        "option_spreads": 12.155604874632411
+      },
+      "constrained_allocations": {
+        "trend_following": 21.62101477849902,
+        "momentum": 5.6947399043554245,
+        "mean_reversion": 42.06191216628852,
+        "breakout_swing": 6.406796598938112,
+        "volatility_breakout": 12.107768275959453,
+        "option_spreads": 12.107768275959453
+      },
+      "allocation_changes": {
+        "trend_following": -0.012036227869970162,
+        "momentum": -11.702764493064766,
+        "mean_reversion": 13.585951311388026,
+        "breakout_swing": -15.395090140335267,
+        "volatility_breakout": 7.507686745319853,
+        "option_spreads": 6.016252804562117
+      },
+      "dollar_values": {
+        "trend_following": 21621.01477849902,
+        "momentum": 5694.739904355424,
+        "mean_reversion": 42061.91216628852,
+        "breakout_swing": 6406.796598938113,
+        "volatility_breakout": 12107.768275959454,
+        "option_spreads": 12107.768275959454
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.570534",
+      "previous_allocations": {
+        "trend_following": 21.621014778499024,
+        "momentum": 5.694739904355425,
+        "mean_reversion": 42.06191216628853,
+        "breakout_swing": 6.406796598938113,
+        "volatility_breakout": 12.107768275959456,
+        "option_spreads": 12.107768275959456
+      },
+      "target_allocations": {
+        "trend_following": 1.5743849098870561,
+        "momentum": 9.02339387254322,
+        "breakout_swing": 14.522525493644759,
+        "mean_reversion": 40.256316395508826,
+        "volatility_breakout": 17.311689664208068,
+        "option_spreads": 17.311689664208068
+      },
+      "constrained_allocations": {
+        "trend_following": 6.302929267488467,
+        "momentum": 8.589893729888635,
+        "mean_reversion": 38.32233023168833,
+        "breakout_swing": 13.824837133574816,
+        "volatility_breakout": 16.48000481867988,
+        "option_spreads": 16.48000481867988
+      },
+      "allocation_changes": {
+        "trend_following": -20.04662986861197,
+        "momentum": 3.328653968187795,
+        "mean_reversion": -1.8055957707797035,
+        "breakout_swing": 8.115728894706645,
+        "volatility_breakout": 5.203921388248611,
+        "option_spreads": 5.203921388248611
+      },
+      "dollar_values": {
+        "trend_following": 6302.929267488466,
+        "momentum": 8589.893729888636,
+        "mean_reversion": 38322.330231688335,
+        "breakout_swing": 13824.837133574816,
+        "volatility_breakout": 16480.00481867988,
+        "option_spreads": 16480.00481867988
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "consumer_discretionary"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.573336",
+      "previous_allocations": {
+        "trend_following": 6.302929267488465,
+        "momentum": 8.589893729888635,
+        "mean_reversion": 38.322330231688326,
+        "breakout_swing": 13.824837133574814,
+        "volatility_breakout": 16.480004818679877,
+        "option_spreads": 16.480004818679877
+      },
+      "target_allocations": {
+        "trend_following": 1.5743849098870561,
+        "momentum": 9.02339387254322,
+        "breakout_swing": 14.522525493644759,
+        "mean_reversion": 40.256316395508826,
+        "volatility_breakout": 17.311689664208068,
+        "option_spreads": 17.311689664208068
+      },
+      "constrained_allocations": {
+        "trend_following": 4.834392326933311,
+        "momentum": 8.724525220063999,
+        "mean_reversion": 38.9229654186095,
+        "breakout_swing": 14.041517162833921,
+        "volatility_breakout": 16.738299935779636,
+        "option_spreads": 16.738299935779636
+      },
+      "allocation_changes": {
+        "trend_following": -4.728544357601409,
+        "momentum": 0.4335001426545855,
+        "mean_reversion": 1.9339861638204994,
+        "breakout_swing": 0.6976883600699448,
+        "volatility_breakout": 0.8316848455281907,
+        "option_spreads": 0.8316848455281907
+      },
+      "dollar_values": {
+        "trend_following": 4834.392326933311,
+        "momentum": 8724.525220063999,
+        "mean_reversion": 38922.9654186095,
+        "breakout_swing": 14041.517162833921,
+        "volatility_breakout": 16738.299935779636,
+        "option_spreads": 16738.299935779636
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.577083",
+      "previous_allocations": {
+        "trend_following": 4.834392326933312,
+        "momentum": 8.724525220063999,
+        "mean_reversion": 38.9229654186095,
+        "breakout_swing": 14.041517162833921,
+        "volatility_breakout": 16.738299935779636,
+        "option_spreads": 16.738299935779636
+      },
+      "target_allocations": {
+        "trend_following": 21.706437276129304,
+        "momentum": 5.717239260235271,
+        "breakout_swing": 6.037019080276587,
+        "mean_reversion": 42.22809463409401,
+        "volatility_breakout": 12.155604874632411,
+        "option_spreads": 12.155604874632411
+      },
+      "constrained_allocations": {
+        "trend_following": 20.21278474280281,
+        "momentum": 5.8263104099899685,
+        "mean_reversion": 43.033704933758344,
+        "breakout_swing": 6.152190858508187,
+        "volatility_breakout": 12.387504527470345,
+        "option_spreads": 12.387504527470345
+      },
+      "allocation_changes": {
+        "trend_following": 16.872044949195992,
+        "momentum": -3.007285959828728,
+        "mean_reversion": 3.305129215484513,
+        "breakout_swing": -8.004498082557333,
+        "volatility_breakout": -4.582695061147225,
+        "option_spreads": -4.582695061147225
+      },
+      "dollar_values": {
+        "trend_following": 20212.78474280281,
+        "momentum": 5826.310409989968,
+        "mean_reversion": 43033.704933758345,
+        "breakout_swing": 6152.190858508187,
+        "volatility_breakout": 12387.504527470344,
+        "option_spreads": 12387.504527470344
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "industrials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:24:44.579553",
+      "previous_allocations": {
+        "trend_following": 20.21278474280281,
+        "momentum": 5.8263104099899685,
+        "mean_reversion": 43.03370493375835,
+        "breakout_swing": 6.152190858508187,
+        "volatility_breakout": 12.387504527470345,
+        "option_spreads": 12.387504527470345
+      },
+      "target_allocations": {
+        "trend_following": 1.5743849098870561,
+        "momentum": 9.02339387254322,
+        "breakout_swing": 14.522525493644759,
+        "mean_reversion": 40.256316395508826,
+        "volatility_breakout": 17.311689664208068,
+        "option_spreads": 17.311689664208068
+      },
+      "constrained_allocations": {
+        "trend_following": 5.029781192305924,
+        "momentum": 8.706612497964652,
+        "mean_reversion": 38.84305089658799,
+        "breakout_swing": 14.012687881188588,
+        "volatility_breakout": 16.703933765976423,
+        "option_spreads": 16.703933765976423
+      },
+      "allocation_changes": {
+        "trend_following": -18.638399832915756,
+        "momentum": 3.197083462553252,
+        "mean_reversion": -2.777388538249525,
+        "breakout_swing": 8.370334635136572,
+        "volatility_breakout": 4.924185136737723,
+        "option_spreads": 4.924185136737723
+      },
+      "dollar_values": {
+        "trend_following": 5029.7811923059235,
+        "momentum": 8706.612497964652,
+        "mean_reversion": 38843.050896587985,
+        "breakout_swing": 14012.687881188587,
+        "volatility_breakout": 16703.933765976424,
+        "option_spreads": 16703.933765976424
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_discretionary",
+        "bottom_sector": "materials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.964538",
+      "previous_allocations": {
+        "trend_following": 16.666666666666668,
+        "momentum": 16.666666666666668,
+        "mean_reversion": 16.666666666666668,
+        "breakout_swing": 16.666666666666668,
+        "volatility_breakout": 16.666666666666668,
+        "option_spreads": 16.666666666666668
+      },
+      "target_allocations": {
+        "trend_following": 21.89581653312161,
+        "momentum": 8.846877268303006,
+        "breakout_swing": 8.430531049130042,
+        "mean_reversion": 36.30346063234913,
+        "volatility_breakout": 12.261657258548103,
+        "option_spreads": 12.261657258548103
+      },
+      "constrained_allocations": {
+        "trend_following": 22.96044506435968,
+        "momentum": 9.277034231755335,
+        "mean_reversion": 33.20637799789476,
+        "breakout_swing": 8.840444233907384,
+        "volatility_breakout": 12.857849236041423,
+        "option_spreads": 12.857849236041423
+      },
+      "allocation_changes": {
+        "trend_following": 5.229149866454943,
+        "momentum": -7.819789398363662,
+        "mean_reversion": 19.63679396568246,
+        "breakout_swing": -8.236135617536625,
+        "volatility_breakout": -4.4050094081185645,
+        "option_spreads": -4.4050094081185645
+      },
+      "dollar_values": {
+        "trend_following": 22960.44506435968,
+        "momentum": 9277.034231755335,
+        "mean_reversion": 33206.377997894764,
+        "breakout_swing": 8840.444233907383,
+        "volatility_breakout": 12857.849236041422,
+        "option_spreads": 12857.849236041422
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "healthcare"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.967480",
+      "previous_allocations": {
+        "trend_following": 22.960445064359682,
+        "momentum": 9.277034231755335,
+        "mean_reversion": 33.20637799789476,
+        "breakout_swing": 8.840444233907382,
+        "volatility_breakout": 12.857849236041421,
+        "option_spreads": 12.857849236041421
+      },
+      "target_allocations": {
+        "trend_following": 6.634094644499506,
+        "momentum": 1.3929347432159944,
+        "breakout_swing": 20.466053251217133,
+        "mean_reversion": 38.61107212629296,
+        "volatility_breakout": 16.447922617387203,
+        "option_spreads": 16.447922617387203
+      },
+      "constrained_allocations": {
+        "trend_following": 7.586186929138053,
+        "momentum": 4.764926375224139,
+        "mean_reversion": 36.79578319005098,
+        "breakout_swing": 19.503847386693252,
+        "volatility_breakout": 15.674628059446787,
+        "option_spreads": 15.674628059446787
+      },
+      "allocation_changes": {
+        "trend_following": -16.326350419860177,
+        "momentum": -7.884099488539341,
+        "mean_reversion": 5.404694128398198,
+        "breakout_swing": 11.62560901730975,
+        "volatility_breakout": 3.590073381345782,
+        "option_spreads": 3.590073381345782
+      },
+      "dollar_values": {
+        "trend_following": 7586.186929138053,
+        "momentum": 4764.9263752241395,
+        "mean_reversion": 36795.783190050985,
+        "breakout_swing": 19503.84738669325,
+        "volatility_breakout": 15674.628059446788,
+        "option_spreads": 15674.628059446788
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.970312",
+      "previous_allocations": {
+        "trend_following": 7.586186929138053,
+        "momentum": 4.76492637522414,
+        "mean_reversion": 36.79578319005098,
+        "breakout_swing": 19.503847386693252,
+        "volatility_breakout": 15.674628059446787,
+        "option_spreads": 15.674628059446787
+      },
+      "target_allocations": {
+        "trend_following": 21.89581653312161,
+        "momentum": 8.846877268303006,
+        "breakout_swing": 8.430531049130042,
+        "mean_reversion": 36.30346063234913,
+        "volatility_breakout": 12.261657258548103,
+        "option_spreads": 12.261657258548103
+      },
+      "constrained_allocations": {
+        "trend_following": 21.89581653312161,
+        "momentum": 8.846877268303006,
+        "mean_reversion": 36.30346063234913,
+        "breakout_swing": 8.430531049130042,
+        "volatility_breakout": 12.261657258548103,
+        "option_spreads": 12.261657258548103
+      },
+      "allocation_changes": {
+        "trend_following": 14.309629603983558,
+        "momentum": 4.081950893078866,
+        "mean_reversion": -0.4923225577018542,
+        "breakout_swing": -11.07331633756321,
+        "volatility_breakout": -3.412970800898684,
+        "option_spreads": -3.412970800898684
+      },
+      "dollar_values": {
+        "trend_following": 21895.81653312161,
+        "momentum": 8846.877268303006,
+        "mean_reversion": 36303.460632349124,
+        "breakout_swing": 8430.531049130042,
+        "volatility_breakout": 12261.657258548103,
+        "option_spreads": 12261.657258548103
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.972733",
+      "previous_allocations": {
+        "trend_following": 21.895816533121614,
+        "momentum": 8.846877268303006,
+        "mean_reversion": 36.30346063234913,
+        "breakout_swing": 8.430531049130044,
+        "volatility_breakout": 12.261657258548105,
+        "option_spreads": 12.261657258548105
+      },
+      "target_allocations": {
+        "trend_following": 6.634094644499506,
+        "momentum": 1.3929347432159944,
+        "breakout_swing": 20.466053251217133,
+        "mean_reversion": 38.61107212629296,
+        "volatility_breakout": 16.447922617387203,
+        "option_spreads": 16.447922617387203
+      },
+      "constrained_allocations": {
+        "trend_following": 6.6389689555806095,
+        "momentum": 4.81376565319906,
+        "mean_reversion": 37.17293056694813,
+        "breakout_swing": 19.7037568394504,
+        "volatility_breakout": 15.8352889924109,
+        "option_spreads": 15.8352889924109
+      },
+      "allocation_changes": {
+        "trend_following": -15.261721888622109,
+        "momentum": -7.453942525087012,
+        "mean_reversion": 2.3076114939438312,
+        "breakout_swing": 12.035522202087089,
+        "volatility_breakout": 4.186265358839098,
+        "option_spreads": 4.186265358839098
+      },
+      "dollar_values": {
+        "trend_following": 6638.96895558061,
+        "momentum": 4813.765653199061,
+        "mean_reversion": 37172.93056694813,
+        "breakout_swing": 19703.756839450398,
+        "volatility_breakout": 15835.2889924109,
+        "option_spreads": 15835.2889924109
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "energy"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.975042",
+      "previous_allocations": {
+        "trend_following": 6.6389689555806095,
+        "momentum": 4.81376565319906,
+        "mean_reversion": 37.17293056694813,
+        "breakout_swing": 19.7037568394504,
+        "volatility_breakout": 15.8352889924109,
+        "option_spreads": 15.8352889924109
+      },
+      "target_allocations": {
+        "trend_following": 7.5271803871892375,
+        "momentum": 11.386475444946015,
+        "breakout_swing": 15.339917469388503,
+        "mean_reversion": 47.85276160508954,
+        "volatility_breakout": 5.966688235770182,
+        "option_spreads": 11.926976857616532
+      },
+      "constrained_allocations": {
+        "trend_following": 7.527180387189237,
+        "momentum": 11.386475444946013,
+        "mean_reversion": 47.85276160508953,
+        "breakout_swing": 15.339917469388501,
+        "volatility_breakout": 5.966688235770181,
+        "option_spreads": 11.92697685761653
+      },
+      "allocation_changes": {
+        "trend_following": 0.888211431608628,
+        "momentum": 6.572709791746955,
+        "mean_reversion": 10.679831038141408,
+        "breakout_swing": -4.363839370061896,
+        "volatility_breakout": -9.868600756640719,
+        "option_spreads": -3.908312134794368
+      },
+      "dollar_values": {
+        "trend_following": 7527.180387189236,
+        "momentum": 11386.475444946014,
+        "mean_reversion": 47852.76160508953,
+        "breakout_swing": 15339.9174693885,
+        "volatility_breakout": 5966.688235770181,
+        "option_spreads": 11926.976857616532
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_discretionary",
+        "bottom_sector": "healthcare"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.980590",
+      "previous_allocations": {
+        "trend_following": 7.527180387189237,
+        "momentum": 11.386475444946015,
+        "mean_reversion": 47.85276160508953,
+        "breakout_swing": 15.339917469388501,
+        "volatility_breakout": 5.966688235770181,
+        "option_spreads": 11.926976857616532
+      },
+      "target_allocations": {
+        "trend_following": 28.901273678560337,
+        "momentum": 28.901273678560337,
+        "breakout_swing": 28.901273678560337,
+        "mean_reversion": 4.45913441389888,
+        "volatility_breakout": 3.5220850760639326,
+        "option_spreads": 5.314959474356183
+      },
+      "constrained_allocations": {
+        "trend_following": 18.620174278959748,
+        "momentum": 21.810131714122164,
+        "mean_reversion": 27.154936220058858,
+        "breakout_swing": 23.8887754050542,
+        "volatility_breakout": 4.132823983943564,
+        "option_spreads": 4.393158397861463
+      },
+      "allocation_changes": {
+        "trend_following": 21.3740932913711,
+        "momentum": 17.51479823361432,
+        "mean_reversion": -43.39362719119065,
+        "breakout_swing": 13.561356209171835,
+        "volatility_breakout": -2.444603159706248,
+        "option_spreads": -6.6120173832603495
+      },
+      "dollar_values": {
+        "trend_following": 18620.17427895975,
+        "momentum": 21810.131714122163,
+        "mean_reversion": 27154.936220058855,
+        "breakout_swing": 23888.7754050542,
+        "volatility_breakout": 4132.823983943565,
+        "option_spreads": 4393.158397861463
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "communication_services",
+        "bottom_sector": "energy"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.983407",
+      "previous_allocations": {
+        "trend_following": 18.620174278959748,
+        "momentum": 21.810131714122164,
+        "mean_reversion": 27.154936220058858,
+        "breakout_swing": 23.888775405054197,
+        "volatility_breakout": 4.132823983943564,
+        "option_spreads": 4.393158397861462
+      },
+      "target_allocations": {
+        "trend_following": 7.5271803871892375,
+        "momentum": 11.386475444946015,
+        "breakout_swing": 15.339917469388503,
+        "mean_reversion": 47.85276160508954,
+        "volatility_breakout": 5.966688235770182,
+        "option_spreads": 11.926976857616532
+      },
+      "constrained_allocations": {
+        "trend_following": 7.981979649909778,
+        "momentum": 12.07445691622317,
+        "mean_reversion": 44.70197680188731,
+        "breakout_swing": 16.26676959679939,
+        "volatility_breakout": 6.32720110658301,
+        "option_spreads": 12.647615928597332
+      },
+      "allocation_changes": {
+        "trend_following": -11.092993891770512,
+        "momentum": -10.42365626917615,
+        "mean_reversion": 20.697825385030683,
+        "breakout_swing": -8.548857935665694,
+        "volatility_breakout": 1.8338642518266175,
+        "option_spreads": 7.533818459755071
+      },
+      "dollar_values": {
+        "trend_following": 7981.979649909779,
+        "momentum": 12074.45691622317,
+        "mean_reversion": 44701.97680188731,
+        "breakout_swing": 16266.769596799388,
+        "volatility_breakout": 6327.201106583009,
+        "option_spreads": 12647.615928597334
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "communication_services",
+        "bottom_sector": "utilities"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.987157",
+      "previous_allocations": {
+        "trend_following": 7.981979649909779,
+        "momentum": 12.07445691622317,
+        "mean_reversion": 44.70197680188731,
+        "breakout_swing": 16.26676959679939,
+        "volatility_breakout": 6.32720110658301,
+        "option_spreads": 12.647615928597334
+      },
+      "target_allocations": {
+        "trend_following": 21.89581653312161,
+        "momentum": 8.846877268303006,
+        "breakout_swing": 8.430531049130042,
+        "mean_reversion": 36.30346063234913,
+        "volatility_breakout": 12.261657258548103,
+        "option_spreads": 12.261657258548103
+      },
+      "constrained_allocations": {
+        "trend_following": 21.89581653312161,
+        "momentum": 8.846877268303006,
+        "mean_reversion": 36.30346063234913,
+        "breakout_swing": 8.430531049130042,
+        "volatility_breakout": 12.261657258548103,
+        "option_spreads": 12.261657258548103
+      },
+      "allocation_changes": {
+        "trend_following": 13.913836883211832,
+        "momentum": -3.227579647920164,
+        "mean_reversion": -8.398516169538183,
+        "breakout_swing": -7.836238547669346,
+        "volatility_breakout": 5.934456151965094,
+        "option_spreads": -0.3859586700492308
+      },
+      "dollar_values": {
+        "trend_following": 21895.81653312161,
+        "momentum": 8846.877268303006,
+        "mean_reversion": 36303.460632349124,
+        "breakout_swing": 8430.531049130042,
+        "volatility_breakout": 12261.657258548103,
+        "option_spreads": 12261.657258548103
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "healthcare"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.989490",
+      "previous_allocations": {
+        "trend_following": 21.895816533121618,
+        "momentum": 8.846877268303006,
+        "mean_reversion": 36.30346063234913,
+        "breakout_swing": 8.430531049130042,
+        "volatility_breakout": 12.261657258548105,
+        "option_spreads": 12.261657258548105
+      },
+      "target_allocations": {
+        "trend_following": 28.901273678560337,
+        "momentum": 28.901273678560337,
+        "breakout_swing": 28.901273678560337,
+        "mean_reversion": 4.45913441389888,
+        "volatility_breakout": 3.5220850760639326,
+        "option_spreads": 5.314959474356183
+      },
+      "constrained_allocations": {
+        "trend_following": 26.810807632867522,
+        "momentum": 22.122002171806063,
+        "mean_reversion": 19.76255411027028,
+        "breakout_swing": 21.735770806535864,
+        "volatility_breakout": 4.638343612647844,
+        "option_spreads": 4.930521665872429
+      },
+      "allocation_changes": {
+        "trend_following": 7.005457145438719,
+        "momentum": 20.054396410257333,
+        "mean_reversion": -31.84432621845025,
+        "breakout_swing": 20.470742629430294,
+        "volatility_breakout": -8.739572182484173,
+        "option_spreads": -6.946697784191922
+      },
+      "dollar_values": {
+        "trend_following": 26810.807632867523,
+        "momentum": 22122.002171806063,
+        "mean_reversion": 19762.55411027028,
+        "breakout_swing": 21735.770806535864,
+        "volatility_breakout": 4638.343612647845,
+        "option_spreads": 4930.521665872429
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.991789",
+      "previous_allocations": {
+        "trend_following": 26.810807632867522,
+        "momentum": 22.12200217180606,
+        "mean_reversion": 19.76255411027028,
+        "breakout_swing": 21.735770806535864,
+        "volatility_breakout": 4.638343612647844,
+        "option_spreads": 4.93052166587243
+      },
+      "target_allocations": {
+        "trend_following": 7.5271803871892375,
+        "momentum": 11.386475444946015,
+        "breakout_swing": 15.339917469388503,
+        "mean_reversion": 47.85276160508954,
+        "volatility_breakout": 5.966688235770182,
+        "option_spreads": 11.926976857616532
+      },
+      "constrained_allocations": {
+        "trend_following": 12.951381432053672,
+        "momentum": 12.4860713372236,
+        "mean_reversion": 38.1195860460566,
+        "breakout_swing": 16.821298632398314,
+        "volatility_breakout": 6.542893393044377,
+        "option_spreads": 13.078769159223445
+      },
+      "allocation_changes": {
+        "trend_following": -19.283627245678286,
+        "momentum": -10.735526726860044,
+        "mean_reversion": 28.09020749481926,
+        "breakout_swing": -6.395853337147361,
+        "volatility_breakout": 1.3283446231223373,
+        "option_spreads": 6.9964551917441025
+      },
+      "dollar_values": {
+        "trend_following": 12951.381432053671,
+        "momentum": 12486.071337223599,
+        "mean_reversion": 38119.5860460566,
+        "breakout_swing": 16821.298632398313,
+        "volatility_breakout": 6542.893393044377,
+        "option_spreads": 13078.769159223444
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "utilities"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.994116",
+      "previous_allocations": {
+        "trend_following": 12.95138143205367,
+        "momentum": 12.4860713372236,
+        "mean_reversion": 38.1195860460566,
+        "breakout_swing": 16.82129863239831,
+        "volatility_breakout": 6.542893393044377,
+        "option_spreads": 13.078769159223445
+      },
+      "target_allocations": {
+        "trend_following": 28.901273678560337,
+        "momentum": 28.901273678560337,
+        "breakout_swing": 28.901273678560337,
+        "mean_reversion": 4.45913441389888,
+        "volatility_breakout": 3.5220850760639326,
+        "option_spreads": 5.314959474356183
+      },
+      "constrained_allocations": {
+        "trend_following": 23.733212948001373,
+        "momentum": 23.338123224285866,
+        "mean_reversion": 19.630588213842977,
+        "breakout_swing": 24.539756088589957,
+        "volatility_breakout": 4.245445436336278,
+        "option_spreads": 4.512874088943544
+      },
+      "allocation_changes": {
+        "trend_following": 15.949892246506666,
+        "momentum": 16.415202341336737,
+        "mean_reversion": -33.66045163215772,
+        "breakout_swing": 12.079975046162026,
+        "volatility_breakout": -3.0208083169804443,
+        "option_spreads": -7.763809684867262
+      },
+      "dollar_values": {
+        "trend_following": 23733.212948001372,
+        "momentum": 23338.123224285868,
+        "mean_reversion": 19630.588213842977,
+        "breakout_swing": 24539.756088589955,
+        "volatility_breakout": 4245.445436336278,
+        "option_spreads": 4512.874088943544
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "healthcare",
+        "bottom_sector": "technology"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:19.996630",
+      "previous_allocations": {
+        "trend_following": 23.73321294800137,
+        "momentum": 23.338123224285866,
+        "mean_reversion": 19.630588213842977,
+        "breakout_swing": 24.53975608858996,
+        "volatility_breakout": 4.245445436336278,
+        "option_spreads": 4.512874088943544
+      },
+      "target_allocations": {
+        "trend_following": 28.901273678560337,
+        "momentum": 28.901273678560337,
+        "breakout_swing": 28.901273678560337,
+        "mean_reversion": 4.45913441389888,
+        "volatility_breakout": 3.5220850760639326,
+        "option_spreads": 5.314959474356183
+      },
+      "constrained_allocations": {
+        "trend_following": 28.329365959943882,
+        "momentum": 28.329365959943882,
+        "mean_reversion": 4.901058388468064,
+        "breakout_swing": 28.329365959943882,
+        "volatility_breakout": 4.901058388468064,
+        "option_spreads": 5.2097853432322365
+      },
+      "allocation_changes": {
+        "trend_following": 5.168060730558967,
+        "momentum": 5.563150454274471,
+        "mean_reversion": -15.171453799944096,
+        "breakout_swing": 4.361517589970376,
+        "volatility_breakout": -0.7233603602723457,
+        "option_spreads": 0.8020853854126386
+      },
+      "dollar_values": {
+        "trend_following": 28329.36595994388,
+        "momentum": 28329.36595994388,
+        "mean_reversion": 4901.058388468064,
+        "breakout_swing": 28329.36595994388,
+        "volatility_breakout": 4901.058388468064,
+        "option_spreads": 5209.785343232236
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "industrials",
+        "bottom_sector": "materials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.287963",
+      "previous_allocations": {
+        "trend_following": 16.666666666666668,
+        "momentum": 16.666666666666668,
+        "mean_reversion": 16.666666666666668,
+        "breakout_swing": 16.666666666666668,
+        "volatility_breakout": 16.666666666666668,
+        "option_spreads": 16.666666666666668
+      },
+      "target_allocations": {
+        "trend_following": 20.99519858888143,
+        "momentum": 8.744399399455109,
+        "breakout_swing": 3.564488199300365,
+        "mean_reversion": 43.1812913928159,
+        "volatility_breakout": 11.757311209773597,
+        "option_spreads": 11.757311209773597
+      },
+      "constrained_allocations": {
+        "trend_following": 23.348522542348825,
+        "momentum": 9.724547526099714,
+        "mean_reversion": 35.21614131810432,
+        "breakout_swing": 5.560443366016471,
+        "volatility_breakout": 13.075172623715337,
+        "option_spreads": 13.075172623715337
+      },
+      "allocation_changes": {
+        "trend_following": 4.328531922214761,
+        "momentum": -7.922267267211559,
+        "mean_reversion": 26.514624726149233,
+        "breakout_swing": -13.102178467366302,
+        "volatility_breakout": -4.909355456893071,
+        "option_spreads": -4.909355456893071
+      },
+      "dollar_values": {
+        "trend_following": 23348.522542348823,
+        "momentum": 9724.547526099714,
+        "mean_reversion": 35216.141318104324,
+        "breakout_swing": 5560.443366016471,
+        "volatility_breakout": 13075.172623715336,
+        "option_spreads": 13075.172623715336
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "communication_services"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.290511",
+      "previous_allocations": {
+        "trend_following": 23.34852254234882,
+        "momentum": 9.724547526099713,
+        "mean_reversion": 35.21614131810432,
+        "breakout_swing": 5.560443366016471,
+        "volatility_breakout": 13.075172623715334,
+        "option_spreads": 13.075172623715334
+      },
+      "target_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "breakout_swing": 11.625015940516715,
+        "mean_reversion": 47.91120549072259,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "constrained_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072259,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "allocation_changes": {
+        "trend_following": -10.695329712312574,
+        "momentum": -0.1144572803354933,
+        "mean_reversion": 12.695064172618267,
+        "breakout_swing": 6.064572574500244,
+        "volatility_breakout": -5.596011176244062,
+        "option_spreads": -2.3538385782263713
+      },
+      "dollar_values": {
+        "trend_following": 12653.192830036247,
+        "momentum": 9610.090245764219,
+        "mean_reversion": 47911.20549072258,
+        "breakout_swing": 11625.015940516714,
+        "volatility_breakout": 7479.161447471272,
+        "option_spreads": 10721.334045488962
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_discretionary",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.292899",
+      "previous_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072258,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "target_allocations": {
+        "trend_following": 1.4821214528836093,
+        "momentum": 1.4821214528836093,
+        "breakout_swing": 20.285896696684073,
+        "mean_reversion": 44.370017342870916,
+        "volatility_breakout": 16.1899215273389,
+        "option_spreads": 16.1899215273389
+      },
+      "constrained_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.12571309519072,
+        "option_spreads": 15.12571309519072
+      },
+      "allocation_changes": {
+        "trend_following": -11.171071377152638,
+        "momentum": -8.12796879288061,
+        "mean_reversion": -3.5411881478516634,
+        "breakout_swing": 8.660880756167359,
+        "volatility_breakout": 8.710760079867628,
+        "option_spreads": 5.468587481849937
+      },
+      "dollar_values": {
+        "trend_following": 4671.336136388581,
+        "momentum": 4671.336136388581,
+        "mean_reversion": 41453.453077188184,
+        "breakout_swing": 18952.44845965321,
+        "volatility_breakout": 15125.71309519072,
+        "option_spreads": 15125.71309519072
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "utilities",
+        "bottom_sector": "real_estate"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.295209",
+      "previous_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.12571309519072,
+        "option_spreads": 15.12571309519072
+      },
+      "target_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "breakout_swing": 11.625015940516715,
+        "mean_reversion": 47.91120549072259,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "constrained_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072259,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "allocation_changes": {
+        "trend_following": 7.981856693647666,
+        "momentum": 4.938754109375639,
+        "mean_reversion": 6.457752413534401,
+        "breakout_swing": -7.327432519136494,
+        "volatility_breakout": -7.646551647719448,
+        "option_spreads": -4.404379049701758
+      },
+      "dollar_values": {
+        "trend_following": 12653.192830036247,
+        "momentum": 9610.090245764219,
+        "mean_reversion": 47911.20549072258,
+        "breakout_swing": 11625.015940516714,
+        "volatility_breakout": 7479.161447471272,
+        "option_spreads": 10721.334045488962
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "consumer_discretionary",
+        "bottom_sector": "energy"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.297998",
+      "previous_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072258,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "target_allocations": {
+        "trend_following": 1.4821214528836093,
+        "momentum": 1.4821214528836093,
+        "breakout_swing": 20.285896696684073,
+        "mean_reversion": 44.370017342870916,
+        "volatility_breakout": 16.1899215273389,
+        "option_spreads": 16.1899215273389
+      },
+      "constrained_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.12571309519072,
+        "option_spreads": 15.12571309519072
+      },
+      "allocation_changes": {
+        "trend_following": -11.171071377152638,
+        "momentum": -8.12796879288061,
+        "mean_reversion": -3.5411881478516634,
+        "breakout_swing": 8.660880756167359,
+        "volatility_breakout": 8.710760079867628,
+        "option_spreads": 5.468587481849937
+      },
+      "dollar_values": {
+        "trend_following": 4671.336136388581,
+        "momentum": 4671.336136388581,
+        "mean_reversion": 41453.453077188184,
+        "breakout_swing": 18952.44845965321,
+        "volatility_breakout": 15125.71309519072,
+        "option_spreads": 15125.71309519072
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "industrials",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.300307",
+      "previous_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.12571309519072,
+        "option_spreads": 15.12571309519072
+      },
+      "target_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "breakout_swing": 11.625015940516715,
+        "mean_reversion": 47.91120549072259,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "constrained_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072259,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "allocation_changes": {
+        "trend_following": 7.981856693647666,
+        "momentum": 4.938754109375639,
+        "mean_reversion": 6.457752413534401,
+        "breakout_swing": -7.327432519136494,
+        "volatility_breakout": -7.646551647719448,
+        "option_spreads": -4.404379049701758
+      },
+      "dollar_values": {
+        "trend_following": 12653.192830036247,
+        "momentum": 9610.090245764219,
+        "mean_reversion": 47911.20549072258,
+        "breakout_swing": 11625.015940516714,
+        "volatility_breakout": 7479.161447471272,
+        "option_spreads": 10721.334045488962
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "financials",
+        "bottom_sector": "technology"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.302664",
+      "previous_allocations": {
+        "trend_following": 12.653192830036247,
+        "momentum": 9.61009024576422,
+        "mean_reversion": 47.91120549072258,
+        "breakout_swing": 11.625015940516715,
+        "volatility_breakout": 7.479161447471272,
+        "option_spreads": 10.721334045488963
+      },
+      "target_allocations": {
+        "trend_following": 25.302831495805044,
+        "momentum": 25.302831495805044,
+        "breakout_swing": 25.302831495805044,
+        "mean_reversion": 19.131295166843937,
+        "volatility_breakout": 3.8980546986038505,
+        "option_spreads": 1.062155647137074
+      },
+      "constrained_allocations": {
+        "trend_following": 21.42003126826178,
+        "momentum": 20.83359337339024,
+        "mean_reversion": 27.860875997389524,
+        "breakout_swing": 21.42003126826178,
+        "volatility_breakout": 4.232734046348332,
+        "option_spreads": 4.232734046348332
+      },
+      "allocation_changes": {
+        "trend_following": 12.649638665768798,
+        "momentum": 15.692741250040825,
+        "mean_reversion": -28.779910323878642,
+        "breakout_swing": 13.67781555528833,
+        "volatility_breakout": -3.5811067488674215,
+        "option_spreads": -9.659178398351889
+      },
+      "dollar_values": {
+        "trend_following": 21420.03126826178,
+        "momentum": 20833.593373390242,
+        "mean_reversion": 27860.87599738952,
+        "breakout_swing": 21420.03126826178,
+        "volatility_breakout": 4232.7340463483315,
+        "option_spreads": 4232.7340463483315
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "technology",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.304993",
+      "previous_allocations": {
+        "trend_following": 21.420031268261784,
+        "momentum": 20.833593373390244,
+        "mean_reversion": 27.860875997389524,
+        "breakout_swing": 21.420031268261784,
+        "volatility_breakout": 4.232734046348332,
+        "option_spreads": 4.232734046348332
+      },
+      "target_allocations": {
+        "trend_following": 1.4821214528836093,
+        "momentum": 1.4821214528836093,
+        "breakout_swing": 20.285896696684073,
+        "mean_reversion": 44.370017342870916,
+        "volatility_breakout": 16.1899215273389,
+        "option_spreads": 16.1899215273389
+      },
+      "constrained_allocations": {
+        "trend_following": 5.95659394060269,
+        "momentum": 5.412488738436379,
+        "mean_reversion": 39.76691445680407,
+        "breakout_swing": 18.821535954275245,
+        "volatility_breakout": 15.021233454940802,
+        "option_spreads": 15.021233454940802
+      },
+      "allocation_changes": {
+        "trend_following": -19.937909815378173,
+        "momentum": -19.351471920506633,
+        "mean_reversion": 16.509141345481392,
+        "breakout_swing": -1.134134571577711,
+        "volatility_breakout": 11.957187480990568,
+        "option_spreads": 11.957187480990568
+      },
+      "dollar_values": {
+        "trend_following": 5956.59394060269,
+        "momentum": 5412.488738436379,
+        "mean_reversion": 39766.91445680407,
+        "breakout_swing": 18821.535954275245,
+        "volatility_breakout": 15021.233454940802,
+        "option_spreads": 15021.233454940802
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "energy",
+        "bottom_sector": "financials"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.307680",
+      "previous_allocations": {
+        "trend_following": 5.956593940602691,
+        "momentum": 5.41248873843638,
+        "mean_reversion": 39.76691445680408,
+        "breakout_swing": 18.821535954275248,
+        "volatility_breakout": 15.021233454940806,
+        "option_spreads": 15.021233454940806
+      },
+      "target_allocations": {
+        "trend_following": 1.4821214528836093,
+        "momentum": 1.4821214528836093,
+        "breakout_swing": 20.285896696684073,
+        "mean_reversion": 44.370017342870916,
+        "volatility_breakout": 16.1899215273389,
+        "option_spreads": 16.1899215273389
+      },
+      "constrained_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.12571309519072,
+        "option_spreads": 15.12571309519072
+      },
+      "allocation_changes": {
+        "trend_following": -4.474472487719082,
+        "momentum": -3.930367285552771,
+        "mean_reversion": 4.603102886066836,
+        "breakout_swing": 1.4643607424088252,
+        "volatility_breakout": 1.1686880723980941,
+        "option_spreads": 1.1686880723980941
+      },
+      "dollar_values": {
+        "trend_following": 4671.336136388581,
+        "momentum": 4671.336136388581,
+        "mean_reversion": 41453.453077188184,
+        "breakout_swing": 18952.44845965321,
+        "volatility_breakout": 15125.71309519072,
+        "option_spreads": 15125.71309519072
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "real_estate",
+        "bottom_sector": "communication_services"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.309971",
+      "previous_allocations": {
+        "trend_following": 4.671336136388581,
+        "momentum": 4.671336136388581,
+        "mean_reversion": 41.453453077188186,
+        "breakout_swing": 18.95244845965321,
+        "volatility_breakout": 15.125713095190722,
+        "option_spreads": 15.125713095190722
+      },
+      "target_allocations": {
+        "trend_following": 20.99519858888143,
+        "momentum": 8.744399399455109,
+        "breakout_swing": 3.564488199300365,
+        "mean_reversion": 43.1812913928159,
+        "volatility_breakout": 11.757311209773597,
+        "option_spreads": 11.757311209773597
+      },
+      "constrained_allocations": {
+        "trend_following": 19.64939771191667,
+        "momentum": 8.734647222762733,
+        "mean_reversion": 43.133133530368085,
+        "breakout_swing": 4.994423758427032,
+        "volatility_breakout": 11.744198888262744,
+        "option_spreads": 11.744198888262744
+      },
+      "allocation_changes": {
+        "trend_following": 16.323862452492847,
+        "momentum": 4.073063263066528,
+        "mean_reversion": 1.7278383156277144,
+        "breakout_swing": -15.387960260352843,
+        "volatility_breakout": -3.368401885417125,
+        "option_spreads": -3.368401885417125
+      },
+      "dollar_values": {
+        "trend_following": 19649.39771191667,
+        "momentum": 8734.647222762733,
+        "mean_reversion": 43133.13353036808,
+        "breakout_swing": 4994.423758427031,
+        "volatility_breakout": 11744.198888262745,
+        "option_spreads": 11744.198888262745
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "utilities",
+        "bottom_sector": "communication_services"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.312291",
+      "previous_allocations": {
+        "trend_following": 19.64939771191667,
+        "momentum": 8.734647222762733,
+        "mean_reversion": 43.13313353036808,
+        "breakout_swing": 4.994423758427033,
+        "volatility_breakout": 11.744198888262744,
+        "option_spreads": 11.744198888262744
+      },
+      "target_allocations": {
+        "trend_following": 25.302831495805044,
+        "momentum": 25.302831495805044,
+        "breakout_swing": 25.302831495805044,
+        "mean_reversion": 19.131295166843937,
+        "volatility_breakout": 3.8980546986038505,
+        "option_spreads": 1.062155647137074
+      },
+      "constrained_allocations": {
+        "trend_following": 23.611088502845824,
+        "momentum": 22.14775276250737,
+        "mean_reversion": 26.252157026695873,
+        "breakout_swing": 18.657600000296082,
+        "volatility_breakout": 4.665700853827428,
+        "option_spreads": 4.665700853827428
+      },
+      "allocation_changes": {
+        "trend_following": 5.653433783888374,
+        "momentum": 16.568184273042313,
+        "mean_reversion": -24.00183836352414,
+        "breakout_swing": 20.308407737378012,
+        "volatility_breakout": -7.846144189658894,
+        "option_spreads": -10.68204324112567
+      },
+      "dollar_values": {
+        "trend_following": 23611.08850284582,
+        "momentum": 22147.75276250737,
+        "mean_reversion": 26252.15702669587,
+        "breakout_swing": 18657.600000296083,
+        "volatility_breakout": 4665.700853827428,
+        "option_spreads": 4665.700853827428
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "utilities",
+        "bottom_sector": "healthcare"
+      },
+      "risk_level": "high"
+    },
+    {
+      "timestamp": "2025-04-14T01:27:38.314672",
+      "previous_allocations": {
+        "trend_following": 23.61108850284582,
+        "momentum": 22.14775276250737,
+        "mean_reversion": 26.252157026695873,
+        "breakout_swing": 18.657600000296082,
+        "volatility_breakout": 4.665700853827428,
+        "option_spreads": 4.665700853827428
+      },
+      "target_allocations": {
+        "trend_following": 1.4821214528836093,
+        "momentum": 1.4821214528836093,
+        "breakout_swing": 20.285896696684073,
+        "mean_reversion": 44.370017342870916,
+        "volatility_breakout": 16.1899215273389,
+        "option_spreads": 16.1899215273389
+      },
+      "constrained_allocations": {
+        "trend_following": 7.851335348282771,
+        "momentum": 6.517109179230177,
+        "mean_reversion": 37.61249446566138,
+        "breakout_swing": 18.496079532065178,
+        "volatility_breakout": 14.761490737380244,
+        "option_spreads": 14.761490737380244
+      },
+      "allocation_changes": {
+        "trend_following": -22.12896704996221,
+        "momentum": -20.66563130962376,
+        "mean_reversion": 18.117860316175044,
+        "breakout_swing": 1.6282966963879915,
+        "volatility_breakout": 11.524220673511472,
+        "option_spreads": 11.524220673511472
+      },
+      "dollar_values": {
+        "trend_following": 7851.3353482827715,
+        "momentum": 6517.109179230177,
+        "mean_reversion": 37612.49446566138,
+        "breakout_swing": 18496.079532065178,
+        "volatility_breakout": 14761.490737380245,
+        "option_spreads": 14761.490737380245
+      },
+      "portfolio_value": 100000.0,
+      "market_context_summary": {
+        "market_regime": "unknown",
+        "volatility_index": 0.0,
+        "top_sector": "materials",
+        "bottom_sector": "technology"
+      },
+      "risk_level": "high"
+    }
+  ],
+  "last_rotation_date": "2025-04-14T01:27:38.314676",
+  "portfolio_value": 100000.0,
+  "highest_portfolio_value": 100000.0,
+  "portfolio_drawdown": 15.0,
+  "current_risk_level": "high",
+  "strategy_drawdowns": {
+    "breakout_swing": 0.0,
+    "momentum": 0.0,
+    "mean_reversion": 0.0,
+    "trend_following": 0.0,
+    "volatility_breakout": 0.0,
+    "option_spreads": 0.0
+  }
+}

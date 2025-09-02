@@ -1,0 +1,83 @@
+{
+  "ensembles": [
+    {
+      "ensemble_id": "crypto_ensemble_1",
+      "name": "Crypto Multi-Strategy",
+      "description": "Combines momentum, mean-reversion, and breakout strategies for crypto trading",
+      "combination_method": "weighted",
+      "min_consensus": 0.6,
+      "auto_adjust_weights": true,
+      "symbols": ["BTC-USD", "ETH-USD"],
+      "broker_id": "alpaca",
+      "strategies": {
+        "crypto_macd_1": 0.4,
+        "crypto_rsi_1": 0.3,
+        "crypto_breakout_1": 0.3
+      },
+      "risk_limits": {
+        "max_allocation": 0.15,
+        "max_drawdown": 0.10,
+        "max_positions": 2
+      }
+    },
+    {
+      "ensemble_id": "forex_ensemble_1",
+      "name": "Forex Multi-Timeframe",
+      "description": "Multi-timeframe ensemble for major forex pairs",
+      "combination_method": "unanimous",
+      "min_consensus": 1.0,
+      "auto_adjust_weights": false,
+      "symbols": ["EUR/USD", "GBP/USD"],
+      "broker_id": "tradier",
+      "strategies": {
+        "forex_trend_1": 0.5,
+        "forex_trend_2": 0.5
+      },
+      "risk_limits": {
+        "max_allocation": 0.12,
+        "max_drawdown": 0.08,
+        "max_positions": 2
+      }
+    },
+    {
+      "ensemble_id": "diversified_portfolio_1",
+      "name": "Multi-Asset Diversified Portfolio",
+      "description": "Diversified ensemble across multiple asset classes",
+      "combination_method": "majority",
+      "min_consensus": 0.5,
+      "auto_adjust_weights": true,
+      "symbols": ["SPY", "BTC-USD", "EUR/USD", "GLD"],
+      "strategies": {
+        "stocks_trend_1": 0.3,
+        "crypto_macd_1": 0.2,
+        "forex_trend_1": 0.3,
+        "gap_trading_1": 0.2
+      },
+      "risk_limits": {
+        "max_allocation": 0.25,
+        "max_drawdown": 0.12,
+        "max_per_asset_class": 0.15
+      }
+    },
+    {
+      "ensemble_id": "options_income_1",
+      "name": "Options Income Strategies",
+      "description": "Combined options strategies for income generation",
+      "combination_method": "weighted",
+      "min_consensus": 0.0,
+      "auto_adjust_weights": true,
+      "symbols": ["SPY", "QQQ", "IWM"],
+      "broker_id": "etrade",
+      "strategies": {
+        "bull_call_spread_1": 0.3,
+        "iron_condor_1": 0.4,
+        "calendar_spread_1": 0.3
+      },
+      "risk_limits": {
+        "max_allocation": 0.20,
+        "max_drawdown": 0.15,
+        "max_positions": 5
+      }
+    }
+  ]
+}

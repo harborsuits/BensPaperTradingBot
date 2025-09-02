@@ -1,0 +1,17 @@
+{
+  "test_id": "test_1745989393",
+  "timestamp": "2025-04-30T01:03:15.655986",
+  "configuration": {
+    "strategies": 20,
+    "generations": 5,
+    "focus_strategies": "All"
+  },
+  "summary": {},
+  "performance": {},
+  "recommendations": {},
+  "charts": {
+    "fitness_progression": "analysis/charts/fitness_progression.png",
+    "strategy_distribution": "analysis/charts/strategy_distribution.png",
+    "performance_metrics": "analysis/charts/performance_metrics.png"
+  }
+}

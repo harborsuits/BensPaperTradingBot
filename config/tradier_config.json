@@ -1,0 +1,28 @@
+{
+  "max_retries": 3,
+  "retry_delay": 2,
+  "auto_failover": true,
+  "credential_store": {
+    "type": "encrypted",
+    "path": "data/credentials.enc",
+    "master_password": "${TRADING_BOT_MASTER_PASSWORD}"
+  },
+  "audit_log": {
+    "enabled": true,
+    "type": "sqlite",
+    "path": "data/trading_audit.db"
+  },
+  "brokers": {
+    "tradier": {
+      "enabled": true,
+      "api_key": "${TRADIER_API_KEY}",
+      "account_id": "${TRADIER_ACCOUNT_ID}",
+      "sandbox": true,
+      "primary": true
+    }
+  },
+  "asset_routing": {
+    "stock": "tradier",
+    "option": "tradier"
+  }
+}

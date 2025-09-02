@@ -1,0 +1,29 @@
+{
+  "strategy_id": "strategy_13cb1522",
+  "parameters": {
+    "spread_type": "bear_call",
+    "strike_width": 7,
+    "ma_period": 21,
+    "volatility_threshold": 0.2805429798361763,
+    "days_to_expiry": 30,
+    "take_profit_pct": 115,
+    "stop_loss_pct": 200,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 1,
+    "parent_ids": [
+      "strategy_aadf881e"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_aadf881e",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "VerticalSpread"
+}

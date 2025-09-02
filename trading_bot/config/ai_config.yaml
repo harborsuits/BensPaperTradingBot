@@ -1,0 +1,26 @@
+# AI Assistant Configuration
+ai_assistant:
+  # Provider can be one of: openai, claude, mistral, simulated
+  provider: openai
+  
+  # Model configuration
+  model: gpt-4-turbo  # For OpenAI
+  # model: claude-3-opus-20240229  # For Claude
+  # model: mistral-medium  # For Mistral
+  
+  # API Keys (replace with your actual keys in production)
+  # api_key: your_openai_key_here
+  # api_key: your_anthropic_key_here
+  # api_key: your_mistral_key_here
+  
+  # Conversation settings
+  max_history_length: 10
+  system_prompt: "You are an expert trading assistant specialized in financial analysis, market insights, and trading strategies. Provide concise, accurate information to help with investment decisions."
+  
+  # Integration settings
+  allow_market_data_access: true
+  allow_portfolio_access: true
+  allow_strategy_access: true
+  
+  # Rate limiting
+  requests_per_minute: 60

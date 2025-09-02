@@ -1,0 +1,471 @@
+{
+  "generations": [
+    {
+      "generation": 0,
+      "avg_fitness": 0.5482396813954196,
+      "max_fitness": 0.8546028051260882,
+      "strategy_distribution": {
+        "BollingerBands": 6,
+        "RSIStrategy": 4,
+        "IronCondor": 1,
+        "MovingAverageCrossover": 4,
+        "VerticalSpread": 5
+      },
+      "best_strategy": {
+        "generation": 0,
+        "id": "RSIStrategy_43665",
+        "type": "RSIStrategy",
+        "fitness": 0.8546028051260882,
+        "parameters": {
+          "rsi_period": 13,
+          "overbought": 67,
+          "oversold": 29
+        },
+        "metrics": {
+          "fitness": 0.8546028051260882,
+          "profit": 85.46028051260882,
+          "win_rate": 0.7273014025630441,
+          "drawdown": 4.361915846217354
+        }
+      }
+    },
+    {
+      "generation": 1,
+      "avg_fitness": 0.5629708802259571,
+      "max_fitness": 0.7322524305629513,
+      "strategy_distribution": {
+        "RSIStrategy": 3,
+        "VerticalSpread": 5,
+        "MovingAverageCrossover": 5,
+        "BollingerBands": 6,
+        "IronCondor": 1
+      },
+      "best_strategy": {
+        "generation": 1,
+        "id": "MovingAverageCrossover_81148",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.7322524305629513,
+        "parameters": {
+          "fast_period": 18,
+          "slow_period": 159,
+          "signal_threshold": 0.036732508685630647
+        },
+        "metrics": {
+          "fitness": 0.7322524305629513,
+          "profit": 73.22524305629513,
+          "win_rate": 0.6661262152814756,
+          "drawdown": 8.032427083111461
+        }
+      }
+    },
+    {
+      "generation": 2,
+      "avg_fitness": 0.5398068375290388,
+      "max_fitness": 0.7872753023077413,
+      "strategy_distribution": {
+        "MovingAverageCrossover": 3,
+        "BollingerBands": 14,
+        "VerticalSpread": 2,
+        "RSIStrategy": 1
+      },
+      "best_strategy": {
+        "generation": 2,
+        "id": "BollingerBands_76394",
+        "type": "BollingerBands",
+        "fitness": 0.7872753023077413,
+        "parameters": {
+          "period": 32,
+          "std_dev": 2.346877408258103,
+          "signal_threshold": 0.07072247289613334
+        },
+        "metrics": {
+          "fitness": 0.7872753023077413,
+          "profit": 78.72753023077414,
+          "win_rate": 0.6936376511538707,
+          "drawdown": 6.3817409307677595
+        }
+      }
+    },
+    {
+      "generation": 3,
+      "avg_fitness": 0.6514378544295796,
+      "max_fitness": 0.8665338558390494,
+      "strategy_distribution": {
+        "BollingerBands": 12,
+        "MovingAverageCrossover": 7,
+        "VerticalSpread": 1
+      },
+      "best_strategy": {
+        "generation": 3,
+        "id": "MovingAverageCrossover_42487",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.8665338558390494,
+        "parameters": {
+          "fast_period": 18,
+          "slow_period": 159,
+          "signal_threshold": 0.036732508685630647
+        },
+        "metrics": {
+          "fitness": 0.8665338558390494,
+          "profit": 86.65338558390494,
+          "win_rate": 0.7332669279195247,
+          "drawdown": 4.003984324828518
+        }
+      }
+    },
+    {
+      "generation": 4,
+      "avg_fitness": 0.6491948169651914,
+      "max_fitness": 0.8808346918805484,
+      "strategy_distribution": {
+        "MovingAverageCrossover": 10,
+        "BollingerBands": 10
+      },
+      "best_strategy": {
+        "generation": 4,
+        "id": "BollingerBands_26534",
+        "type": "BollingerBands",
+        "fitness": 0.8808346918805484,
+        "parameters": {
+          "period": 32,
+          "std_dev": 2.346877408258103,
+          "signal_threshold": 0.07072247289613334
+        },
+        "metrics": {
+          "fitness": 0.8808346918805484,
+          "profit": 88.08346918805483,
+          "win_rate": 0.7404173459402742,
+          "drawdown": 3.5749592435835478
+        }
+      }
+    },
+    {
+      "generation": 5,
+      "avg_fitness": 0.6478145480743072,
+      "max_fitness": 0.8978356145988996,
+      "strategy_distribution": {
+        "BollingerBands": 8,
+        "MovingAverageCrossover": 12
+      },
+      "best_strategy": {
+        "generation": 5,
+        "id": "MovingAverageCrossover_93007",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.8978356145988996,
+        "parameters": {
+          "fast_period": 18,
+          "slow_period": 159,
+          "signal_threshold": 0.036732508685630647
+        },
+        "metrics": {
+          "fitness": 0.8978356145988996,
+          "profit": 89.78356145988997,
+          "win_rate": 0.7489178072994498,
+          "drawdown": 3.0649315620330118
+        }
+      }
+    },
+    {
+      "generation": 6,
+      "avg_fitness": 0.6617244885933168,
+      "max_fitness": 0.8860124799200392,
+      "strategy_distribution": {
+        "MovingAverageCrossover": 13,
+        "BollingerBands": 7
+      },
+      "best_strategy": {
+        "generation": 6,
+        "id": "MovingAverageCrossover_21764",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.8860124799200392,
+        "parameters": {
+          "fast_period": 18,
+          "slow_period": 159,
+          "signal_threshold": 0.036732508685630647
+        },
+        "metrics": {
+          "fitness": 0.8860124799200392,
+          "profit": 88.60124799200392,
+          "win_rate": 0.7430062399600196,
+          "drawdown": 3.419625602398825
+        }
+      }
+    },
+    {
+      "generation": 7,
+      "avg_fitness": 0.6587011704109821,
+      "max_fitness": 0.9316034900197053,
+      "strategy_distribution": {
+        "MovingAverageCrossover": 14,
+        "BollingerBands": 6
+      },
+      "best_strategy": {
+        "generation": 7,
+        "id": "MovingAverageCrossover_94094",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.9316034900197053,
+        "parameters": {
+          "fast_period": 18,
+          "slow_period": 159,
+          "signal_threshold": 0.036732508685630647
+        },
+        "metrics": {
+          "fitness": 0.9316034900197053,
+          "profit": 93.16034900197053,
+          "win_rate": 0.7658017450098527,
+          "drawdown": 2.05189529940884
+        }
+      }
+    },
+    {
+      "generation": 8,
+      "avg_fitness": 0.696595708844255,
+      "max_fitness": 0.9324816723556446,
+      "strategy_distribution": {
+        "MovingAverageCrossover": 10,
+        "BollingerBands": 10
+      },
+      "best_strategy": {
+        "generation": 8,
+        "id": "MovingAverageCrossover_23142",
+        "type": "MovingAverageCrossover",
+        "fitness": 0.9324816723556446,
+        "parameters": {
+          "fast_period": 16,
+          "slow_period": 159,
+          "signal_threshold": 0.037545440475656784
+        },
+        "metrics": {
+          "fitness": 0.9324816723556446,
+          "profit": 93.24816723556447,
+          "win_rate": 0.7662408361778223,
+          "drawdown": 2.0255498293306617
+        }
+      }
+    }
+  ],
+  "strategy_distribution": [
+    {
+      "BollingerBands": 6,
+      "RSIStrategy": 4,
+      "IronCondor": 1,
+      "MovingAverageCrossover": 4,
+      "VerticalSpread": 5
+    },
+    {
+      "RSIStrategy": 3,
+      "VerticalSpread": 5,
+      "MovingAverageCrossover": 5,
+      "BollingerBands": 6,
+      "IronCondor": 1
+    },
+    {
+      "MovingAverageCrossover": 3,
+      "BollingerBands": 14,
+      "VerticalSpread": 2,
+      "RSIStrategy": 1
+    },
+    {
+      "BollingerBands": 12,
+      "MovingAverageCrossover": 7,
+      "VerticalSpread": 1
+    },
+    {
+      "MovingAverageCrossover": 10,
+      "BollingerBands": 10
+    },
+    {
+      "BollingerBands": 8,
+      "MovingAverageCrossover": 12
+    },
+    {
+      "MovingAverageCrossover": 13,
+      "BollingerBands": 7
+    },
+    {
+      "MovingAverageCrossover": 14,
+      "BollingerBands": 6
+    },
+    {
+      "MovingAverageCrossover": 10,
+      "BollingerBands": 10
+    }
+  ],
+  "best_strategies": [
+    {
+      "generation": 0,
+      "id": "RSIStrategy_43665",
+      "type": "RSIStrategy",
+      "fitness": 0.8546028051260882,
+      "parameters": {
+        "rsi_period": 13,
+        "overbought": 67,
+        "oversold": 29
+      },
+      "metrics": {
+        "fitness": 0.8546028051260882,
+        "profit": 85.46028051260882,
+        "win_rate": 0.7273014025630441,
+        "drawdown": 4.361915846217354
+      }
+    },
+    {
+      "generation": 1,
+      "id": "MovingAverageCrossover_81148",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.7322524305629513,
+      "parameters": {
+        "fast_period": 18,
+        "slow_period": 159,
+        "signal_threshold": 0.036732508685630647
+      },
+      "metrics": {
+        "fitness": 0.7322524305629513,
+        "profit": 73.22524305629513,
+        "win_rate": 0.6661262152814756,
+        "drawdown": 8.032427083111461
+      }
+    },
+    {
+      "generation": 2,
+      "id": "BollingerBands_76394",
+      "type": "BollingerBands",
+      "fitness": 0.7872753023077413,
+      "parameters": {
+        "period": 32,
+        "std_dev": 2.346877408258103,
+        "signal_threshold": 0.07072247289613334
+      },
+      "metrics": {
+        "fitness": 0.7872753023077413,
+        "profit": 78.72753023077414,
+        "win_rate": 0.6936376511538707,
+        "drawdown": 6.3817409307677595
+      }
+    },
+    {
+      "generation": 3,
+      "id": "MovingAverageCrossover_42487",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.8665338558390494,
+      "parameters": {
+        "fast_period": 18,
+        "slow_period": 159,
+        "signal_threshold": 0.036732508685630647
+      },
+      "metrics": {
+        "fitness": 0.8665338558390494,
+        "profit": 86.65338558390494,
+        "win_rate": 0.7332669279195247,
+        "drawdown": 4.003984324828518
+      }
+    },
+    {
+      "generation": 4,
+      "id": "BollingerBands_26534",
+      "type": "BollingerBands",
+      "fitness": 0.8808346918805484,
+      "parameters": {
+        "period": 32,
+        "std_dev": 2.346877408258103,
+        "signal_threshold": 0.07072247289613334
+      },
+      "metrics": {
+        "fitness": 0.8808346918805484,
+        "profit": 88.08346918805483,
+        "win_rate": 0.7404173459402742,
+        "drawdown": 3.5749592435835478
+      }
+    },
+    {
+      "generation": 5,
+      "id": "MovingAverageCrossover_93007",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.8978356145988996,
+      "parameters": {
+        "fast_period": 18,
+        "slow_period": 159,
+        "signal_threshold": 0.036732508685630647
+      },
+      "metrics": {
+        "fitness": 0.8978356145988996,
+        "profit": 89.78356145988997,
+        "win_rate": 0.7489178072994498,
+        "drawdown": 3.0649315620330118
+      }
+    },
+    {
+      "generation": 6,
+      "id": "MovingAverageCrossover_21764",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.8860124799200392,
+      "parameters": {
+        "fast_period": 18,
+        "slow_period": 159,
+        "signal_threshold": 0.036732508685630647
+      },
+      "metrics": {
+        "fitness": 0.8860124799200392,
+        "profit": 88.60124799200392,
+        "win_rate": 0.7430062399600196,
+        "drawdown": 3.419625602398825
+      }
+    },
+    {
+      "generation": 7,
+      "id": "MovingAverageCrossover_94094",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.9316034900197053,
+      "parameters": {
+        "fast_period": 18,
+        "slow_period": 159,
+        "signal_threshold": 0.036732508685630647
+      },
+      "metrics": {
+        "fitness": 0.9316034900197053,
+        "profit": 93.16034900197053,
+        "win_rate": 0.7658017450098527,
+        "drawdown": 2.05189529940884
+      }
+    },
+    {
+      "generation": 8,
+      "id": "MovingAverageCrossover_23142",
+      "type": "MovingAverageCrossover",
+      "fitness": 0.9324816723556446,
+      "parameters": {
+        "fast_period": 16,
+        "slow_period": 159,
+        "signal_threshold": 0.037545440475656784
+      },
+      "metrics": {
+        "fitness": 0.9324816723556446,
+        "profit": 93.24816723556447,
+        "win_rate": 0.7662408361778223,
+        "drawdown": 2.0255498293306617
+      }
+    }
+  ],
+  "avg_fitness": [
+    0.5482396813954196,
+    0.5629708802259571,
+    0.5398068375290388,
+    0.6514378544295796,
+    0.6491948169651914,
+    0.6478145480743072,
+    0.6617244885933168,
+    0.6587011704109821,
+    0.696595708844255
+  ],
+  "max_fitness": [
+    0.8546028051260882,
+    0.7322524305629513,
+    0.7872753023077413,
+    0.8665338558390494,
+    0.8808346918805484,
+    0.8978356145988996,
+    0.8860124799200392,
+    0.9316034900197053,
+    0.9324816723556446
+  ]
+}

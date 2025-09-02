@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/accounts/VA1201776/balances
+  response:
+    body:
+      string: '{"balances":{"option_short_value":0,"total_equity":100000.0,"account_number":"VA1201776","account_type":"margin","close_pl":0,"current_requirement":0,"equity":0,"long_market_value":0,"market_value":0,"open_pl":0,"option_long_value":0,"option_requirement":0,"pending_orders_count":0,"short_market_value":0,"stock_long_value":0,"total_cash":100000.0,"uncleared_funds":0,"pending_cash":0,"margin":{"fed_call":0,"maintenance_call":0,"option_buying_power":100000.0,"stock_buying_power":200000.0,"stock_short_value":0,"sweep":0}}}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization, content-type
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:21 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Ratelimit-Allowed:
+      - '200'
+      X-Ratelimit-Available:
+      - '199'
+      X-Ratelimit-Expiry:
+      - '1745447760000'
+      X-Ratelimit-Used:
+      - '1'
+    status:
+      code: 200
+      message: ''
+version: 1

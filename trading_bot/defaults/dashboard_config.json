@@ -1,0 +1,109 @@
+{
+  "api": {
+    "url": "http://localhost:5000",
+    "timeout": 10,
+    "retry_count": 3,
+    "authentication": {
+      "enabled": false,
+      "token": ""
+    }
+  },
+  "dashboard": {
+    "refresh_interval": 10,
+    "color_theme": "dark",
+    "layout": "default",
+    "panels": {
+      "summary": true,
+      "open_positions": true,
+      "recent_trades": true,
+      "recommendations": true,
+      "statistics": true,
+      "charts": true,
+      "notifications": true,
+      "commands": true
+    }
+  },
+  "notifications": {
+    "enabled": true,
+    "min_level": "INFO",
+    "desktop": {
+      "enabled": true,
+      "timeout": 10
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "sender_email": "",
+      "sender_password": "",
+      "recipients": [],
+      "min_level": "WARNING"
+    },
+    "slack": {
+      "enabled": false,
+      "token": "",
+      "channel": "#trading-alerts",
+      "username": "Trading Bot",
+      "min_level": "INFO"
+    },
+    "rate_limit": {
+      "enabled": true,
+      "max_notifications": 10,
+      "time_window": 60,
+      "cooldown": 300
+    }
+  },
+  "charts": {
+    "equity_curve": {
+      "enabled": true,
+      "days": 30,
+      "include_deposit_withdrawals": true
+    },
+    "win_loss": {
+      "enabled": true,
+      "count": 50
+    },
+    "strategy_performance": {
+      "enabled": true,
+      "top_count": 5
+    },
+    "pnl_distribution": {
+      "enabled": true,
+      "bins": 20
+    },
+    "drawdown": {
+      "enabled": true,
+      "days": 90
+    },
+    "day_of_week": {
+      "enabled": true
+    },
+    "trade_duration": {
+      "enabled": true
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file": {
+      "enabled": true,
+      "path": "dashboard.log",
+      "max_size_mb": 10,
+      "backup_count": 3
+    },
+    "console": {
+      "enabled": true,
+      "level": "INFO"
+    }
+  },
+  "ai_coaching": {
+    "enabled": false,
+    "recommendation_threshold": 0.7,
+    "auto_apply": false,
+    "coaching_model": "default"
+  },
+  "error_handling": {
+    "retry_on_failure": true,
+    "alert_on_error": true,
+    "log_details": true
+  }
+} 

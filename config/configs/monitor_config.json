@@ -1,0 +1,39 @@
+{
+    "telegram_token": "",
+    "telegram_chat_id": "",
+    "email_config": {
+        "sender": "alerts@your-trading-system.com",
+        "receiver": "your-email@example.com",
+        "smtp_server": "smtp.your-provider.com",
+        "smtp_port": 587,
+        "username": "your-username",
+        "password": "your-password"
+    },
+    "thresholds": {
+        "drawdown_alert": -0.10,
+        "daily_loss_alert": -0.05,
+        "strategy_underperformance_days": 14,
+        "volatility_alert": 0.25
+    },
+    "monitoring": {
+        "check_interval_minutes": 30,
+        "daily_report_time": "17:00",
+        "weekly_report_day": "Friday",
+        "auto_adjust_thresholds": true,
+        "enable_notifications": true
+    },
+    "strategies": {
+        "momentum": {
+            "drawdown_alert": -0.15,
+            "volatility_alert": 0.30
+        },
+        "volatility_breakout": {
+            "drawdown_alert": -0.20,
+            "volatility_alert": 0.40
+        },
+        "option_spreads": {
+            "drawdown_alert": -0.08,
+            "daily_loss_alert": -0.04
+        }
+    }
+} 

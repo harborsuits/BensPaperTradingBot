@@ -1,0 +1,14 @@
+Added /Users/bendickinson/Desktop/Evotrader to Python path
+Successfully imported evotrader module from /Users/bendickinson/Desktop/Evotrader/evotrader/__init__.py
+
+
+ERRORS:
+Traceback (most recent call last):
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/run_test_evolution.py", line 24, in <module>
+    from main import EvoTraderBridge
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/main.py", line 22, in <module>
+    from benbot.evotrader_bridge.testing_framework import SimulationEnvironment
+  File "/Users/bendickinson/Desktop/Evotrader/benbot/evotrader_bridge/testing_framework.py", line 627
+    trade = {
+            ^
+SyntaxError: '{' was never closed

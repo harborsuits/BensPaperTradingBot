@@ -1,0 +1,29 @@
+{
+  "strategy_id": "strategy_78153856",
+  "parameters": {
+    "spread_type": "bear_put",
+    "strike_width": 5,
+    "ma_period": 14,
+    "volatility_threshold": 0.3613675315786618,
+    "days_to_expiry": 60,
+    "take_profit_pct": 50,
+    "stop_loss_pct": 200,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 1,
+    "parent_ids": [
+      "strategy_2ba2951e"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_2ba2951e",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "VerticalSpread"
+}

@@ -1,0 +1,34 @@
+{
+  "strategy_id": "strategy_9e84281f",
+  "parameters": {
+    "spread_type": "bull_put",
+    "strike_width": 9,
+    "ma_period": 44,
+    "volatility_threshold": 0.15911003555101474,
+    "days_to_expiry": 53,
+    "take_profit_pct": 50,
+    "stop_loss_pct": 200,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 2,
+    "parent_ids": [
+      "strategy_b6608b80"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_3bb722f7",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_b6608b80",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "VerticalSpread"
+}

@@ -1,0 +1,16 @@
+{
+  "alpaca": {
+    "api_key": "YOUR_ALPACA_API_KEY",
+    "api_secret": "YOUR_ALPACA_API_SECRET",
+    "base_url": "https://paper-api.alpaca.markets"
+  },
+  "yahoo": {
+    "cache_dir": "./data/yahoo_cache"
+  },
+  "polygon": {
+    "api_key": "YOUR_POLYGON_API_KEY"
+  },
+  "alpha_vantage": {
+    "api_key": "YOUR_ALPHA_VANTAGE_API_KEY"
+  }
+} 

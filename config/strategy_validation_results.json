@@ -1,0 +1,985 @@
+{
+  "total_strategies": 40,
+  "valid_strategies": 1,
+  "average_score": 29.825,
+  "target_strategies": 3,
+  "target_valid": 1,
+  "target_average": 68.0,
+  "strategy_results": [
+    {
+      "filename": "iron_condor_strategy_new.py",
+      "path": "trading_bot/strategies/options/complex_spreads/iron_condor_strategy_new.py",
+      "class_name": "IronCondorStrategy",
+      "registered": true,
+      "methods_found": [
+        "define_universe",
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "missing_methods": [],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "gamma_risk",
+        "event"
+      ],
+      "follows_pattern": true,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 64,
+      "valid": false
+    },
+    {
+      "filename": "covered_call_strategy.py",
+      "path": "trading_bot/strategies/options/income_strategies/covered_call_strategy.py",
+      "class_name": "CoveredCallStrategy",
+      "registered": false,
+      "methods_found": [
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "missing_methods": [
+        "define_universe"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "covered_call_strategy_new.py",
+      "path": "trading_bot/strategies/options/income_strategies/covered_call_strategy_new.py",
+      "class_name": "CoveredCallStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "missing_methods": [
+        "define_universe"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "drawdown"
+      ],
+      "follows_pattern": true,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 52,
+      "valid": false
+    },
+    {
+      "filename": "bull_call_spread_strategy_new.py",
+      "path": "trading_bot/strategies/options/vertical_spreads/bull_call_spread_strategy_new.py",
+      "class_name": "BullCallSpreadStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "missing_methods": [
+        "define_universe"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss"
+      ],
+      "follows_pattern": true,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 47,
+      "valid": false
+    },
+    {
+      "filename": "strangle_strategy.py",
+      "path": "trading_bot/strategies/options/volatility_spreads/strangle_strategy.py",
+      "class_name": "StrangleStrategy",
+      "registered": false,
+      "methods_found": [],
+      "missing_methods": [
+        "define_universe",
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": false,
+      "score": 29,
+      "valid": false
+    },
+    {
+      "filename": "straddle_strangle_strategy.py",
+      "path": "trading_bot/strategies/options/volatility_spreads/straddle_strangle_strategy.py",
+      "class_name": "StraddleStrangleStrategy",
+      "registered": true,
+      "methods_found": [
+        "define_universe",
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "missing_methods": [],
+      "important_found": [
+        "_adjust_signal_confidence",
+        "_track_position",
+        "get_positions"
+      ],
+      "exit_strategies": [
+        "profit_target",
+        "time_stop",
+        "iv_decrease",
+        "event",
+        "drawdown"
+      ],
+      "follows_pattern": true,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 88,
+      "valid": true
+    },
+    {
+      "filename": "indicator_strategy.py",
+      "path": "trading_bot/strategies/indicator/indicator_strategy.py",
+      "class_name": "IndicatorStrategy",
+      "registered": false,
+      "methods_found": [],
+      "missing_methods": [
+        "define_universe",
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 11,
+      "valid": false
+    },
+    {
+      "filename": "volatility_breakout_strategy.py",
+      "path": "trading_bot/strategies/indicator/volatility_breakout_strategy.py",
+      "class_name": "VolatilityBreakoutStrategy",
+      "registered": false,
+      "methods_found": [],
+      "missing_methods": [
+        "define_universe",
+        "generate_signals",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 5,
+      "valid": false
+    },
+    {
+      "filename": "forex_momentum_strategy.py",
+      "path": "trading_bot/strategies/forex/momentum/forex_momentum_strategy.py",
+      "class_name": "ForexMomentumStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_counter_trend_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_counter_trend_strategy.py",
+      "class_name": "ForexCounterTrendStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 17,
+      "valid": false
+    },
+    {
+      "filename": "forex_range_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_range_trading_strategy.py",
+      "class_name": "ForexRangeTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "forex_momentum_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_momentum_strategy.py",
+      "class_name": "ForexMomentumStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 17,
+      "valid": false
+    },
+    {
+      "filename": "forex_position_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_position_trading_strategy.py",
+      "class_name": "ForexPositionTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event",
+        "drawdown"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": false,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "trend_following_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/trend_following_strategy.py",
+      "class_name": "ForexTrendFollowingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_scalping_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_scalping_strategy.py",
+      "class_name": "ForexScalpingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "forex_grid_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_grid_trading_strategy.py",
+      "class_name": "ForexGridTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event",
+        "drawdown"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": false,
+      "score": 29,
+      "valid": false
+    },
+    {
+      "filename": "forex_retracement_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_retracement_strategy.py",
+      "class_name": "ForexRetracementStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": false,
+      "score": 29,
+      "valid": false
+    },
+    {
+      "filename": "forex_swing_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_swing_trading_strategy.py",
+      "class_name": "ForexSwingTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event",
+        "drawdown"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_breakout_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_breakout_strategy.py",
+      "class_name": "ForexBreakoutStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 17,
+      "valid": false
+    },
+    {
+      "filename": "forex_carry_trade_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_carry_trade_strategy.py",
+      "class_name": "ForexCarryTradeStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "forex_day_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/trend/forex_day_trading_strategy.py",
+      "class_name": "ForexDayTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": false,
+      "has_parameters": false,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "forex_swing_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/swing/forex_swing_trading_strategy.py",
+      "class_name": "ForexSwingTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_scalping_strategy.py",
+      "path": "trading_bot/strategies/forex/scalping/forex_scalping_strategy.py",
+      "class_name": "ForexScalpingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "london_session_breakout_strategy.py",
+      "path": "trading_bot/strategies/forex/breakout/london_session_breakout_strategy.py",
+      "class_name": "LondonSessionBreakoutStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_breakout_strategy.py",
+      "path": "trading_bot/strategies/forex/breakout/forex_breakout_strategy.py",
+      "class_name": "ForexBreakoutStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "forex_range_trading_strategy.py",
+      "path": "trading_bot/strategies/forex/range/forex_range_trading_strategy.py",
+      "class_name": "ForexRangeTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "vwap_mean_reversion_strategy.py",
+      "path": "trading_bot/strategies/stocks/vwap_mean_reversion_strategy.py",
+      "class_name": "VWAPMeanReversionStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "profit_target",
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "gap_trading_strategy.py",
+      "path": "trading_bot/strategies/stocks/gap_trading_strategy.py",
+      "class_name": "GapTradingStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": true,
+      "has_risk_management": true,
+      "has_parameters": true,
+      "score": 35,
+      "valid": false
+    },
+    {
+      "filename": "stocks_momentum_strategy.py",
+      "path": "trading_bot/strategies/stocks/momentum/stocks_momentum_strategy.py",
+      "class_name": "StocksMomentumStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_trend_strategy.py",
+      "path": "trading_bot/strategies/stocks/trend/stocks_trend_strategy.py",
+      "class_name": "StocksTrendStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_value_strategy.py",
+      "path": "trading_bot/strategies/stocks/value/stocks_value_strategy.py",
+      "class_name": "StocksValueStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_growth_strategy.py",
+      "path": "trading_bot/strategies/stocks/growth/stocks_growth_strategy.py",
+      "class_name": "StocksGrowthStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_fundamental_strategy.py",
+      "path": "trading_bot/strategies/stocks/fundamental/stocks_fundamental_strategy.py",
+      "class_name": "StocksFundamentalStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_breakout_strategy.py",
+      "path": "trading_bot/strategies/stocks/breakout/stocks_breakout_strategy.py",
+      "class_name": "StocksBreakoutStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_dividend_strategy.py",
+      "path": "trading_bot/strategies/stocks/dividend/stocks_dividend_strategy.py",
+      "class_name": "StocksDividendStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_statistical_strategy.py",
+      "path": "trading_bot/strategies/stocks/statistical/stocks_statistical_strategy.py",
+      "class_name": "StocksStatisticalStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_sentiment_strategy.py",
+      "path": "trading_bot/strategies/stocks/sentiment/stocks_sentiment_strategy.py",
+      "class_name": "StocksSentimentStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_mean_reversion_strategy.py",
+      "path": "trading_bot/strategies/stocks/mean_reversion/stocks_mean_reversion_strategy.py",
+      "class_name": "StocksMean_reversionStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_technical_strategy.py",
+      "path": "trading_bot/strategies/stocks/technical/stocks_technical_strategy.py",
+      "class_name": "StocksTechnicalStrategy",
+      "registered": true,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": false,
+      "has_parameters": true,
+      "score": 23,
+      "valid": false
+    },
+    {
+      "filename": "stocks_base_strategy.py",
+      "path": "trading_bot/strategies/stocks/base/stocks_base_strategy.py",
+      "class_name": "StocksBaseStrategy",
+      "registered": false,
+      "methods_found": [
+        "generate_signals"
+      ],
+      "missing_methods": [
+        "define_universe",
+        "on_exit_signal"
+      ],
+      "important_found": [],
+      "exit_strategies": [
+        "stop_loss",
+        "event"
+      ],
+      "follows_pattern": false,
+      "has_position_tracking": false,
+      "has_risk_management": true,
+      "has_parameters": false,
+      "score": 23,
+      "valid": false
+    }
+  ],
+  "timestamp": "2025-05-12T00:24:08.311778"
+}

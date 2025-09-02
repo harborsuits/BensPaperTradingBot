@@ -1,0 +1,14 @@
+{
+  "id": "a31ff6553fde98b8a6ecbd5d103688a7",
+  "type": "MovingAverageCrossoverStrategy",
+  "parameters": {
+    "fast_period": 5,
+    "slow_period": 29,
+    "signal_threshold": 0.04694836964026179
+  },
+  "registered_at": "2025-04-30T02:37:16.789500",
+  "generation": 19,
+  "parent_ids": [],
+  "lineage": [],
+  "mutation_history": []
+}

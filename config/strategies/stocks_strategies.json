@@ -1,0 +1,72 @@
+{
+  "strategies": [
+    {
+      "strategy_id": "stocks_trend_1",
+      "name": "Tech Sector Trend Following",
+      "description": "Trend following strategy for technology stocks",
+      "class_path": "trading_bot.strategies.stocks.StocksTrendFollowingStrategy",
+      "symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA"],
+      "asset_type": "stocks",
+      "timeframe": "1d",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "ma_period": 50,
+        "ma_type": "SMA",
+        "volume_filter": true,
+        "min_volume_percentile": 60,
+        "risk_per_trade": 0.02
+      },
+      "risk_limits": {
+        "max_drawdown": 0.08,
+        "max_consecutive_losses": 4,
+        "max_positions": 3
+      }
+    },
+    {
+      "strategy_id": "gap_trading_1",
+      "name": "Morning Gap Trading",
+      "description": "Trade significant overnight price gaps",
+      "class_path": "trading_bot.strategies.stocks.GapTradingStrategy",
+      "symbols": ["SPY", "QQQ", "IWM", "DIA"],
+      "asset_type": "stocks",
+      "timeframe": "15m",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "min_gap_percent": 1.0,
+        "max_gap_percent": 5.0,
+        "gap_direction": "both",
+        "entry_time_window": "09:30-10:30",
+        "exit_time_window": "15:30-16:00",
+        "risk_per_trade": 0.01
+      },
+      "risk_limits": {
+        "max_daily_trades": 2,
+        "max_drawdown": 0.05
+      }
+    },
+    {
+      "strategy_id": "earnings_announcement_1", 
+      "name": "Earnings Announcement Strategy",
+      "description": "Trade stocks post earnings announcements",
+      "class_path": "trading_bot.strategies.stocks.EarningsAnnouncementStrategy",
+      "symbols": [],  // Dynamically determined based on earnings calendar
+      "asset_type": "stocks",
+      "timeframe": "1d",
+      "broker_id": "alpaca",
+      "enabled": true,
+      "parameters": {
+        "lookback_days": 3,
+        "lookahead_days": 5,
+        "min_surprise_percent": 10,
+        "volume_increase_threshold": 200,
+        "risk_per_trade": 0.015
+      },
+      "risk_limits": {
+        "max_positions": 5,
+        "max_allocation_per_sector": 0.20
+      }
+    }
+  ]
+}

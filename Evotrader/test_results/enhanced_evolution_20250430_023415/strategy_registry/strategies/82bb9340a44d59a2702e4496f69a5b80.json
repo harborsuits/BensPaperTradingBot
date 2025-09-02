@@ -1,0 +1,14 @@
+{
+  "id": "82bb9340a44d59a2702e4496f69a5b80",
+  "type": "BollingerBandsStrategy",
+  "parameters": {
+    "period": 10,
+    "std_dev": 1.781099448412267,
+    "signal_threshold": 0.03839396107941173
+  },
+  "registered_at": "2025-04-30T02:34:15.935099",
+  "generation": 4,
+  "parent_ids": [],
+  "lineage": [],
+  "mutation_history": []
+}

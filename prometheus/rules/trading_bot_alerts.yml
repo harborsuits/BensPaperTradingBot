@@ -1,0 +1,84 @@
+groups:
+- name: trading-bot-alerts
+  rules:
+  # System-level alerts
+  - alert: HighCPUUsage
+    expr: avg by(pod) (rate(container_cpu_usage_seconds_total{pod=~"trading-bot-.*"}[5m])) / avg by(pod) (kube_pod_container_resource_limits_cpu_cores{pod=~"trading-bot-.*"}) > 0.8
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage on {{ $labels.pod }}"
+      description: "Pod {{ $labels.pod }} has been using more than 80% of its CPU limit for more than 5 minutes."
+
+  - alert: HighMemoryUsage
+    expr: avg by(pod) (container_memory_usage_bytes{pod=~"trading-bot-.*"}) / avg by(pod) (kube_pod_container_resource_limits_memory_bytes{pod=~"trading-bot-.*"}) > 0.8
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High memory usage on {{ $labels.pod }}"
+      description: "Pod {{ $labels.pod }} has been using more than 80% of its memory limit for more than 5 minutes."
+
+  - alert: PodRestarting
+    expr: increase(kube_pod_container_status_restarts_total{pod=~"trading-bot-.*"}[1h]) > 2
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Pod {{ $labels.pod }} restarting frequently"
+      description: "Pod {{ $labels.pod }} has restarted {{ $value }} times in the last hour"
+
+  # Trading bot specific alerts
+  - alert: HighErrorRate
+    expr: sum(rate(trading_bot_errors_total[5m])) / sum(rate(trading_bot_requests_total[5m])) > 0.05
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate in trading bot"
+      description: "Trading bot is experiencing more than 5% error rate in the last 5 minutes."
+
+  - alert: DataCollectionLag
+    expr: time() - max(trading_bot_last_data_collection_timestamp) > 300
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Data collection lag detected"
+      description: "Trading bot has not collected data in the last 5 minutes."
+
+  - alert: OrderExecutionFailure
+    expr: increase(trading_bot_order_execution_failure_total[15m]) > 3
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Multiple order execution failures"
+      description: "Trading bot has experienced {{ $value }} order execution failures in the last 15 minutes."
+
+  - alert: AccountBalanceDecline
+    expr: (trading_bot_account_balance / trading_bot_account_balance offset 1d) < 0.95
+    labels:
+      severity: critical
+    annotations:
+      summary: "Significant account balance decline"
+      description: "Trading bot account balance has decreased by more than 5% in the last 24 hours."
+
+  - alert: PositionRiskThresholdExceeded
+    expr: trading_bot_position_risk > trading_bot_risk_threshold
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Position risk threshold exceeded"
+      description: "Current position risk ({{ $value }}) exceeds the configured risk threshold."
+
+  - alert: OptionsGreekRiskExceeded
+    expr: abs(trading_bot_options_delta_exposure) > 100 or abs(trading_bot_options_gamma_exposure) > 10 or trading_bot_options_theta_exposure < -1000 or abs(trading_bot_options_vega_exposure) > 1000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Options Greek risk limits exceeded"
+      description: "Trading bot's options Greek exposure exceeds safety limits. Delta: {{ $labels.delta_exposure }}, Gamma: {{ $labels.gamma_exposure }}, Theta: {{ $labels.theta_exposure }}, Vega: {{ $labels.vega_exposure }}" 

@@ -1,0 +1,38 @@
+{
+    "enabled": true,
+    "notification_levels": {
+        "circuit_breaker_tripped": "high",
+        "circuit_breaker_reset": "normal",
+        "broker_health_update": "normal",
+        "broker_failover_recommended": "high" 
+    },
+    "providers": {
+        "email": {
+            "enabled": true,
+            "credential_key": "notification_email",
+            "smtp_host": "smtp.gmail.com",
+            "smtp_port": 587,
+            "use_tls": true,
+            "from_email": "alerts@bensbot.com",
+            "to_emails": ["trader@example.com", "operations@example.com"]
+        },
+        "telegram": {
+            "enabled": true,
+            "credential_key": "telegram_bot",
+            "chat_ids": ["-1001234567890"]
+        },
+        "sms": {
+            "enabled": false,
+            "credential_key": "twilio_sms",
+            "from_number": "+15551234567",
+            "to_numbers": ["+15559876543"],
+            "send_all_priorities": false
+        }
+    },
+    "throttling": {
+        "enabled": true,
+        "max_notifications_per_minute": 5,
+        "rate_limit_period_seconds": 60,
+        "suppress_duplicates_seconds": 300
+    }
+}

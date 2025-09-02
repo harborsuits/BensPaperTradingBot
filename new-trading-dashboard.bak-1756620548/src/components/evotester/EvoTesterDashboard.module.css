@@ -1,0 +1,31 @@
+.dashboardProgressBar {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: #3b82f6; /* bg-blue-500 */
+  transition-property: all;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Progress percentages */
+.progress0 { width: 0%; }
+.progress5 { width: 5%; }
+.progress10 { width: 10%; }
+.progress15 { width: 15%; }
+.progress20 { width: 20%; }
+.progress25 { width: 25%; }
+.progress30 { width: 30%; }
+.progress35 { width: 35%; }
+.progress40 { width: 40%; }
+.progress45 { width: 45%; }
+.progress50 { width: 50%; }
+.progress55 { width: 55%; }
+.progress60 { width: 60%; }
+.progress65 { width: 65%; }
+.progress70 { width: 70%; }
+.progress75 { width: 75%; }
+.progress80 { width: 80%; }
+.progress85 { width: 85%; }
+.progress90 { width: 90%; }
+.progress95 { width: 95%; }
+.progress100 { width: 100%; }

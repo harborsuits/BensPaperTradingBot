@@ -1,0 +1,19 @@
+{
+  "folders": [
+    { "path": "new-trading-dashboard" },
+    { "path": "live-api" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/node_modules": true,
+      "archive": true
+    },
+    "search.exclude": {
+      "**/node_modules": true
+    },
+    "terminal.integrated.cwd": "new-trading-dashboard"
+  }
+}
+
+

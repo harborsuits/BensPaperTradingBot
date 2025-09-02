@@ -1,0 +1,44 @@
+{
+    "strategies": [
+        "momentum", 
+        "mean_reversion", 
+        "trend_following", 
+        "breakout_swing", 
+        "volatility_breakout", 
+        "option_spreads"
+    ],
+    "initial_allocations": {
+        "momentum": 20.0,
+        "mean_reversion": 15.0,
+        "trend_following": 25.0,
+        "breakout_swing": 20.0,
+        "volatility_breakout": 10.0,
+        "option_spreads": 10.0
+    },
+    "constraints": {
+        "min_allocation": {
+            "momentum": 5.0,
+            "mean_reversion": 5.0,
+            "trend_following": 5.0,
+            "breakout_swing": 5.0,
+            "volatility_breakout": 3.0,
+            "option_spreads": 3.0
+        },
+        "max_allocation": {
+            "momentum": 40.0,
+            "mean_reversion": 40.0,
+            "trend_following": 40.0,
+            "breakout_swing": 40.0,
+            "volatility_breakout": 30.0,
+            "option_spreads": 30.0
+        },
+        "max_change": {
+            "momentum": 15.0,
+            "mean_reversion": 15.0,
+            "trend_following": 15.0,
+            "breakout_swing": 15.0,
+            "volatility_breakout": 10.0,
+            "option_spreads": 10.0
+        }
+    }
+} 

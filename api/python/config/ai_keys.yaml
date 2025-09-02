@@ -1,0 +1,6 @@
+# AI Service API Keys - KEEP SECURE
+# Do not commit this file to version control
+
+openai: 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
+anthropic: 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
+mistral: ""  # Add your Mistral key if you have one

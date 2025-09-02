@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/markets/quotes?greeks=false&symbols=AAPL
+  response:
+    body:
+      string: '{"quotes":{"quote":{"symbol":"AAPL","description":"Apple Inc","exch":"Q","type":"stock","last":204.6,"change":4.86,"volume":52865248,"open":206.0,"high":208.0,"low":202.799,"close":204.6,"bid":203.34,"ask":203.8,"change_percentage":2.44,"average_volume":61572504,"last_volume":0,"trade_date":1745439300014,"prevclose":199.74,"week_52_high":260.1,"week_52_low":166.21,"bidsize":2,"bidexch":"K","bid_date":1745446812000,"asksize":2,"askexch":"P","ask_date":1745446746000,"root_symbols":"AAPL"}}}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:22 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Ratelimit-Allowed:
+      - '200'
+      X-Ratelimit-Available:
+      - '199'
+      X-Ratelimit-Expiry:
+      - '1745447760000'
+      X-Ratelimit-Used:
+      - '1'
+    status:
+      code: 200
+      message: ''
+version: 1

@@ -1,0 +1,89 @@
+{
+  "default_broker": "tradier",
+  "credential_path": "config/credentials",
+  "audit_log": {
+    "enabled": true,
+    "type": "sqlite",
+    "path": "data/trading_audit.db"
+  },
+  "brokers": {
+    "tradier": {
+      "broker_type": "tradier",
+      "enabled": true,
+      "priority": 1,
+      "description": "Tradier primary broker",
+      "mode": "paper",
+      "connection": {
+        "api_url": "https://sandbox.tradier.com/v1",
+        "timeout_seconds": 30,
+        "retry_attempts": 3,
+        "retry_delay_seconds": 2
+      },
+      "rate_limits": {
+        "max_requests_per_minute": 60,
+        "max_requests_per_second": 2
+      },
+      "trading_limits": {
+        "max_positions": 10,
+        "max_order_value": 25000,
+        "max_daily_orders": 100
+      },
+      "asset_classes": ["equity", "option"],
+      "symbols": []
+    },
+    "alpaca": {
+      "broker_type": "alpaca",
+      "enabled": false,
+      "priority": 2,
+      "description": "Alpaca secondary broker",
+      "mode": "paper",
+      "connection": {
+        "api_url": "https://paper-api.alpaca.markets",
+        "websocket_url": "wss://stream.data.alpaca.markets/v1beta1",
+        "timeout_seconds": 30,
+        "retry_attempts": 3,
+        "retry_delay_seconds": 2
+      },
+      "rate_limits": {
+        "max_requests_per_minute": 200,
+        "max_requests_per_second": 5
+      },
+      "trading_limits": {
+        "max_positions": 10,
+        "max_order_value": 25000,
+        "max_daily_orders": 100
+      },
+      "asset_classes": ["equity", "crypto"],
+      "symbols": []
+    },
+    "paper_simulator": {
+      "broker_type": "paper",
+      "enabled": true,
+      "priority": 100,
+      "description": "Paper trading simulator (fallback)",
+      "mode": "paper",
+      "connection": {
+        "timeout_seconds": 5,
+        "retry_attempts": 1,
+        "retry_delay_seconds": 1
+      },
+      "rate_limits": {
+        "max_requests_per_minute": 1000,
+        "max_requests_per_second": 50
+      },
+      "trading_limits": {
+        "max_positions": 100,
+        "max_order_value": 1000000,
+        "max_daily_orders": 1000
+      },
+      "asset_classes": ["equity", "option", "forex", "crypto"],
+      "symbols": []
+    }
+  },
+  "asset_routing": {
+    "equity": "tradier",
+    "option": "tradier",
+    "forex": "paper_simulator",
+    "crypto": "alpaca"
+  }
+}

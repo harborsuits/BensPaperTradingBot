@@ -1,0 +1,11 @@
+{
+    "strategies": ["volatility_breakout"],
+    "initial_allocations": {
+        "volatility_breakout": 100.0
+    },
+    "initial_capital": 100000.0,
+    "commission_rate": 0.001,
+    "slippage": 0.001,
+    "rebalance_frequency": "weekly",
+    "use_mock": true
+} 

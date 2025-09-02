@@ -1,0 +1,83 @@
+{
+  "generations": 1,
+  "total_bots": 5,
+  "config": {
+    "simulation": {
+      "seed": 5682,
+      "bots": 5,
+      "duration_days": 180,
+      "initial_balance": 10000.0,
+      "data_provider": "sequential",
+      "data_lookback_days": 500,
+      "debug_mode": true,
+      "symbols": [
+        "BTC/USD",
+        "ETH/USD",
+        "XRP/USD",
+        "LTC/USD"
+      ]
+    },
+    "logging": {
+      "level": "DEBUG",
+      "file": "logs/evotrader_trading.log"
+    },
+    "evolution": {
+      "population_size": 20,
+      "selection_method": "tournament",
+      "tournament_size": 3,
+      "mutation_rate": 0.15,
+      "elite_percent": 0.2,
+      "enable_crossover": true,
+      "crossover_rate": 0.4,
+      "crossover_percent": 0.3
+    },
+    "fitness": {
+      "balance_weight": 0.4,
+      "sharpe_weight": 0.3,
+      "drawdown_weight": 0.2,
+      "consistency_weight": 0.1,
+      "severe_drawdown": 0.4,
+      "medium_drawdown": 0.25
+    },
+    "strategy": {
+      "default": {
+        "type": "trend_following",
+        "parameters": {
+          "risk_percent": 0.03
+        }
+      },
+      "MovingAverageCrossover": {
+        "parameters": {
+          "fast_period": 8,
+          "slow_period": 20,
+          "debug_mode": true
+        }
+      },
+      "RSIStrategy": {
+        "parameters": {
+          "oversold": 35,
+          "overbought": 65,
+          "debug_mode": true
+        }
+      },
+      "BollingerBandsStrategy": {
+        "parameters": {
+          "band_period": 15,
+          "std_dev": 1.8,
+          "debug_mode": true
+        }
+      }
+    },
+    "data_provider": {
+      "lookback_window": 500,
+      "calculate_indicators": true,
+      "market_volatility": 1.5,
+      "debug_mode": true
+    },
+    "output": {
+      "directory": "results"
+    }
+  },
+  "timestamp": "2025-04-26T12:03:56.858988",
+  "duration_seconds": 1.29591703414917
+}

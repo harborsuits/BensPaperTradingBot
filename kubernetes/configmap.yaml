@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trading-bot-config
+data:
+  config.yaml: |-
+    strategy_rotator:
+      update_frequency: 86400
+      minimum_performance_data: 5
+      adaptive_weight_strength: 0.5
+      enable_rl_strategies: true
+      rl_training:
+        enabled: true
+        train_frequency: 604800
+        train_epochs: 100
+        min_training_data: 1000
+        save_model_interval: 10
+    
+    market_data:
+      providers:
+        - alpha_vantage
+        - yahoo_finance
+      update_interval: 60  # seconds
+      cache_duration: 3600  # seconds
+    
+    execution:
+      paper_trading: true
+      max_position_size: 0.1  # fraction of portfolio
+      max_trades_per_day: 10
+      risk_management:
+        max_drawdown: 0.05
+        stop_loss: 0.02
+        take_profit: 0.05 

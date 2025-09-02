@@ -1,0 +1,30 @@
+/* Strategy Monitor component styles */
+/* Generate classes for suitability percentages */
+.market-suitability-0 { width: 0; }
+.market-suitability-10 { width: 10%; }
+.market-suitability-20 { width: 20%; }
+.market-suitability-30 { width: 30%; }
+.market-suitability-40 { width: 40%; }
+.market-suitability-50 { width: 50%; }
+.market-suitability-60 { width: 60%; }
+.market-suitability-70 { width: 70%; }
+.market-suitability-80 { width: 80%; }
+.market-suitability-90 { width: 90%; }
+.market-suitability-100 { width: 100%; }
+
+/* Status indicators */
+.strategy-status-active .status-indicator {
+  color: #22c55e; /* green-500 */
+}
+
+.strategy-status-paused .status-indicator {
+  color: #f59e0b; /* amber-500 */
+}
+
+.strategy-status-error .status-indicator {
+  color: #ef4444; /* red-500 */
+}
+
+.strategy-status-idle .status-indicator {
+  color: #64748b; /* slate-500 */
+}

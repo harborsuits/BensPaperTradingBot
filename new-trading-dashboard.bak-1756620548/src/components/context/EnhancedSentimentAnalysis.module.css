@@ -1,0 +1,71 @@
+.sentimentBar {
+  width: 100%;
+  height: 0.5rem;
+  background-color: rgba(var(--muted), 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.sentimentBarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sentimentFill {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 500ms;
+}
+
+/* Sentiment fill percentages */
+.fillPercent0 { width: 0%; }
+.fillPercent5 { width: 5%; }
+.fillPercent10 { width: 10%; }
+.fillPercent15 { width: 15%; }
+.fillPercent20 { width: 20%; }
+.fillPercent25 { width: 25%; }
+.fillPercent30 { width: 30%; }
+.fillPercent35 { width: 35%; }
+.fillPercent40 { width: 40%; }
+.fillPercent45 { width: 45%; }
+.fillPercent50 { width: 50%; }
+.fillPercent55 { width: 55%; }
+.fillPercent60 { width: 60%; }
+.fillPercent65 { width: 65%; }
+.fillPercent70 { width: 70%; }
+.fillPercent75 { width: 75%; }
+.fillPercent80 { width: 80%; }
+.fillPercent85 { width: 85%; }
+.fillPercent90 { width: 90%; }
+.fillPercent95 { width: 95%; }
+.fillPercent100 { width: 100%; }
+
+.historyBar {
+  width: 1.25rem; /* w-5 in Tailwind */
+  border-radius: 0.125rem; /* rounded-sm in Tailwind */
+}
+
+/* History bar heights */
+.barHeight5 { height: 5%; }
+.barHeight10 { height: 10%; }
+.barHeight15 { height: 15%; }
+.barHeight20 { height: 20%; }
+.barHeight25 { height: 25%; }
+.barHeight30 { height: 30%; }
+.barHeight35 { height: 35%; }
+.barHeight40 { height: 40%; }
+.barHeight45 { height: 45%; }
+.barHeight50 { height: 50%; }
+.barHeight55 { height: 55%; }
+.barHeight60 { height: 60%; }
+.barHeight65 { height: 65%; }
+.barHeight70 { height: 70%; }
+.barHeight75 { height: 75%; }
+.barHeight80 { height: 80%; }
+.barHeight85 { height: 85%; }
+.barHeight90 { height: 90%; }
+.barHeight95 { height: 95%; }
+.barHeight100 { height: 100%; }

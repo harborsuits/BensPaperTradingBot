@@ -1,0 +1,66 @@
+{
+    "name": "RSI_Reversal",
+    "strategy_type": "indicator",
+    "symbol": "AAPL",
+    "timeframe": "1h",
+    "indicators": {
+        "rsi": {
+            "type": "RSI",
+            "timeperiod": 14
+        },
+        "sma50": {
+            "type": "SMA",
+            "timeperiod": 50
+        },
+        "sma200": {
+            "type": "SMA",
+            "timeperiod": 200
+        },
+        "bb": {
+            "type": "BBANDS",
+            "timeperiod": 20,
+            "nbdevup": 2,
+            "nbdevdn": 2
+        }
+    },
+    "entry_rules": [
+        {
+            "condition": "rsi < 30",
+            "entry_signal": "buy",
+            "description": "RSI oversold condition"
+        },
+        {
+            "condition": "rsi > 70",
+            "entry_signal": "sell",
+            "description": "RSI overbought condition"
+        },
+        {
+            "condition": "close < bb_lower",
+            "entry_signal": "buy",
+            "description": "Price below lower Bollinger Band"
+        }
+    ],
+    "exit_rules": [
+        {
+            "condition": "rsi > 50",
+            "description": "Exit long when RSI returns to neutral"
+        },
+        {
+            "condition": "rsi < 50",
+            "description": "Exit short when RSI returns to neutral"
+        },
+        {
+            "condition": "close > bb_upper",
+            "description": "Exit long when price above upper Bollinger Band"
+        }
+    ],
+    "position_sizing": {
+        "type": "percent",
+        "value": 5.0
+    },
+    "risk_management": {
+        "stop_loss_pct": 2.0,
+        "take_profit_pct": 4.0,
+        "trailing_stop_pct": 1.0
+    }
+}

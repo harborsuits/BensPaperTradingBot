@@ -1,0 +1,273 @@
+# Forex Pair Universe Configuration
+# Contains definitions for forex pairs used in the EvoTrader system
+# This configuration feeds into BenBot for dynamic pair selection
+
+# Main settings for pair selection
+settings:
+  default_account_currency: "USD"
+  preferred_categories: ["major", "minor"]
+  max_correlated_pairs: 3  # Maximum number of highly correlated pairs to trade simultaneously
+  correlation_threshold: 0.85  # Pairs above this correlation are considered highly correlated
+  benbot_integration: true  # Whether to allow BenBot to dynamically modify pair selection
+  benbot_priority_override: true  # Whether BenBot can override priority settings
+
+# Pair categories
+categories:
+  major:
+    description: "Major currency pairs (most liquid)"
+    default_priority: 10
+    max_spread_pips: 2.0
+    typical_volatility: "medium"
+  minor:
+    description: "Minor or cross currency pairs"
+    default_priority: 7
+    max_spread_pips: 3.0
+    typical_volatility: "medium-high"
+  exotic:
+    description: "Exotic currency pairs (less liquid)"
+    default_priority: 4
+    max_spread_pips: 6.0
+    typical_volatility: "high"
+
+# Pair definitions
+pairs:
+  # ===== MAJOR PAIRS =====
+  EURUSD:
+    category: "major"
+    base_currency: "EUR"
+    quote_currency: "USD"
+    description: "Euro / US Dollar"
+    pip_decimal: 4  # Pip is at 4th decimal
+    pip_value_per_lot: 10.0  # USD per pip for 1 standard lot (100k units)
+    avg_spread_pips: 0.8
+    optimal_sessions: ["London", "NewYork", "London-NewYork"]
+    priority: 10
+    
+  GBPUSD:
+    category: "major"
+    base_currency: "GBP"
+    quote_currency: "USD"
+    description: "British Pound / US Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 1.2
+    optimal_sessions: ["London", "London-NewYork"]
+    priority: 9
+    
+  USDJPY:
+    category: "major"
+    base_currency: "USD"
+    quote_currency: "JPY"
+    description: "US Dollar / Japanese Yen"
+    pip_decimal: 2  # JPY pairs have pip at 2nd decimal
+    pip_value_per_lot: 8.3  # Approximate; varies with exchange rate
+    avg_spread_pips: 1.0
+    optimal_sessions: ["Tokyo", "NewYork"]
+    priority: 9
+    
+  USDCHF:
+    category: "major"
+    base_currency: "USD"
+    quote_currency: "CHF"
+    description: "US Dollar / Swiss Franc" 
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 1.5
+    optimal_sessions: ["London", "NewYork"]
+    priority: 8
+    
+  AUDUSD:
+    category: "major"
+    base_currency: "AUD"
+    quote_currency: "USD"
+    description: "Australian Dollar / US Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 1.2
+    optimal_sessions: ["Sydney", "Tokyo", "Sydney-Tokyo"]
+    priority: 8
+    
+  USDCAD:
+    category: "major"
+    base_currency: "USD"
+    quote_currency: "CAD"
+    description: "US Dollar / Canadian Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 1.5
+    optimal_sessions: ["NewYork"]
+    priority: 8
+    
+  NZDUSD:
+    category: "major"
+    base_currency: "NZD"
+    quote_currency: "USD"
+    description: "New Zealand Dollar / US Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 1.8
+    optimal_sessions: ["Sydney", "Tokyo", "Sydney-Tokyo"]
+    priority: 7
+    
+  # ===== MINOR PAIRS =====
+  EURGBP:
+    category: "minor"
+    base_currency: "EUR"
+    quote_currency: "GBP"
+    description: "Euro / British Pound"
+    pip_decimal: 4
+    pip_value_per_lot: 12.5  # Approximate; varies with exchange rate
+    avg_spread_pips: 1.3
+    optimal_sessions: ["London"]
+    priority: 7
+    
+  EURJPY:
+    category: "minor"
+    base_currency: "EUR"
+    quote_currency: "JPY"
+    description: "Euro / Japanese Yen"
+    pip_decimal: 2
+    pip_value_per_lot: 8.3  # Approximate; varies with exchange rate
+    avg_spread_pips: 1.5
+    optimal_sessions: ["London", "Tokyo", "London-Tokyo"]
+    priority: 7
+    
+  GBPJPY:
+    category: "minor"
+    base_currency: "GBP"
+    quote_currency: "JPY"
+    description: "British Pound / Japanese Yen"
+    pip_decimal: 2
+    pip_value_per_lot: 8.3  # Approximate; varies with exchange rate
+    avg_spread_pips: 2.0
+    optimal_sessions: ["London", "Tokyo", "London-Tokyo"]
+    priority: 6
+    
+  EURCHF:
+    category: "minor"
+    base_currency: "EUR"
+    quote_currency: "CHF"
+    description: "Euro / Swiss Franc"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 2.0
+    optimal_sessions: ["London"]
+    priority: 6
+    
+  EURAUD:
+    category: "minor"
+    base_currency: "EUR"
+    quote_currency: "AUD"
+    description: "Euro / Australian Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 2.2
+    optimal_sessions: ["London", "Sydney", "London-Sydney"]
+    priority: 5
+    
+  AUDNZD:
+    category: "minor"
+    base_currency: "AUD"
+    quote_currency: "NZD"
+    description: "Australian Dollar / New Zealand Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 2.5
+    optimal_sessions: ["Sydney"]
+    priority: 5
+    
+  AUDCAD:
+    category: "minor"
+    base_currency: "AUD"
+    quote_currency: "CAD"
+    description: "Australian Dollar / Canadian Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 2.8
+    optimal_sessions: ["Sydney", "NewYork"]
+    priority: 4
+    
+  # ===== EXOTIC PAIRS =====
+  USDSGD:
+    category: "exotic"
+    base_currency: "USD"
+    quote_currency: "SGD"
+    description: "US Dollar / Singapore Dollar"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 3.5
+    optimal_sessions: ["Sydney", "Tokyo"]
+    priority: 4
+    
+  USDZAR:
+    category: "exotic"
+    base_currency: "USD"
+    quote_currency: "ZAR"
+    description: "US Dollar / South African Rand"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 6.0
+    optimal_sessions: ["London"]
+    priority: 3
+    
+  USDMXN:
+    category: "exotic"
+    base_currency: "USD"
+    quote_currency: "MXN"
+    description: "US Dollar / Mexican Peso"
+    pip_decimal: 4
+    pip_value_per_lot: 10.0
+    avg_spread_pips: 8.0
+    optimal_sessions: ["NewYork"]
+    priority: 3
+    
+# Pair correlations (historical average)
+correlations:
+  EURUSD:
+    GBPUSD: 0.92
+    AUDUSD: 0.65
+    NZDUSD: 0.58
+    USDCHF: -0.95
+    USDCAD: -0.60
+    USDJPY: -0.30
+    
+  GBPUSD:
+    EURUSD: 0.92
+    AUDUSD: 0.58
+    NZDUSD: 0.52
+    USDCHF: -0.85
+    USDCAD: -0.55
+    
+  AUDUSD:
+    EURUSD: 0.65
+    GBPUSD: 0.58
+    NZDUSD: 0.86
+    USDCAD: -0.48
+    
+  NZDUSD:
+    EURUSD: 0.58
+    GBPUSD: 0.52
+    AUDUSD: 0.86
+    
+  USDJPY:
+    EURUSD: -0.30
+    EURJPY: 0.65
+    GBPJPY: 0.60
+    
+  USDCHF:
+    EURUSD: -0.95
+    GBPUSD: -0.85
+    EURCHF: -0.60
+    
+  USDCAD:
+    EURUSD: -0.60
+    GBPUSD: -0.55
+    AUDUSD: -0.48
+
+# BenBot configuration for pair selection
+benbot:
+  endpoint: "http://localhost:8080/benbot/api/forex"
+  request_preferred_pairs: true  # Whether to request preferred pairs from BenBot
+  report_performance: true  # Whether to report pair performance back to BenBot
+  update_frequency_hours: 12  # How often to update pair preferences from BenBot
+  fallback_to_config: true  # Use config values if BenBot is unavailable

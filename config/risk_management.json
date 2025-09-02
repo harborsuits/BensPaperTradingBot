@@ -1,0 +1,48 @@
+{
+  "risk": {
+    "max_margin_ratio": 0.5,
+    "margin_call_buffer": 0.05,
+    "margin_check_interval": 60,
+    "breakers": {
+      "intraday_drawdown_threshold": 0.05,
+      "overall_drawdown_threshold": 0.10,
+      "volatility_threshold": 0.025
+    },
+    "broker_specific": {
+      "tradier": {
+        "max_margin_ratio": 0.45,
+        "margin_call_buffer": 0.07
+      },
+      "alpaca": {
+        "max_margin_ratio": 0.5,
+        "margin_call_buffer": 0.05
+      },
+      "etrade": {
+        "max_margin_ratio": 0.55,
+        "margin_call_buffer": 0.08
+      }
+    },
+    "forced_deleveraging": {
+      "max_positions_per_step": 5,
+      "priority_order": "largest_notional",
+      "pause_seconds_between_steps": 30
+    },
+    "notifications": {
+      "margin_buffer_warning": {
+        "level": "warning",
+        "channels": ["dashboard", "email"],
+        "throttle_seconds": 600
+      },
+      "margin_call": {
+        "level": "critical",
+        "channels": ["dashboard", "email", "sms"],
+        "throttle_seconds": 300
+      },
+      "circuit_breaker": {
+        "level": "critical",
+        "channels": ["dashboard", "email", "sms"],
+        "throttle_seconds": 300
+      }
+    }
+  }
+}

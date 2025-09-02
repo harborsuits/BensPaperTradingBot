@@ -1,0 +1,34 @@
+.sentimentBar {
+  width: 100%;
+  height: 0.5rem;
+  background-color: rgba(var(--muted), 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.sentimentBarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sentimentFill {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 500ms;
+}
+
+/* Sentiment level classes */
+.sentiment0 { width: 0%; }
+.sentiment10 { width: 10%; }
+.sentiment20 { width: 20%; }
+.sentiment30 { width: 30%; }
+.sentiment40 { width: 40%; }
+.sentiment50 { width: 50%; }
+.sentiment60 { width: 60%; }
+.sentiment70 { width: 70%; }
+.sentiment80 { width: 80%; }
+.sentiment90 { width: 90%; }
+.sentiment100 { width: 100%; }

@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  meta_learning:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    image: evotrader/meta_learning:latest
+    container_name: evotrader_meta_learning
+    restart: unless-stopped
+    environment:
+      - BENBOT_API_ENDPOINT=http://benbot:8080/benbot/api
+      - META_DB_PATH=/app/meta_learning/meta_db.sqlite
+      - REGISTRY_PATH=/app/forex_prop_strategies.db
+      - LOG_LEVEL=INFO
+    volumes:
+      - ../meta_learning:/app/meta_learning
+      - ../logs:/app/logs
+      - ../configs:/app/configs
+      - ../forex_prop_strategies.db:/app/forex_prop_strategies.db
+    command: python -m benbot.evotrader_bridge.meta_learning_orchestrator
+    depends_on:
+      - benbot
+    networks:
+      - evotrader_network
+
+  meta_learning_dashboard:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    image: evotrader/meta_dashboard:latest
+    container_name: evotrader_meta_dashboard
+    restart: unless-stopped
+    environment:
+      - META_DB_PATH=/app/meta_learning/meta_db.sqlite
+      - REGISTRY_PATH=/app/forex_prop_strategies.db
+    volumes:
+      - ../meta_learning:/app/meta_learning
+      - ../logs:/app/logs
+      - ../forex_prop_strategies.db:/app/forex_prop_strategies.db
+    ports:
+      - "8501:8501"
+    command: streamlit run meta_learning_dashboard.py
+    depends_on:
+      - meta_learning
+    networks:
+      - evotrader_network
+
+  ci_cd_pipeline:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    image: evotrader/ci_cd_pipeline:latest
+    container_name: evotrader_ci_cd_pipeline
+    restart: unless-stopped
+    environment:
+      - BENBOT_API_ENDPOINT=http://benbot:8080/benbot/api
+      - REGISTRY_PATH=/app/forex_prop_strategies.db
+    volumes:
+      - ../deployments:/app/deployments
+      - ../logs:/app/logs
+      - ../forex_prop_strategies.db:/app/forex_prop_strategies.db
+      - ../backups:/app/backups
+    command: python -m deployment.ci_cd_pipeline
+    depends_on:
+      - benbot
+    networks:
+      - evotrader_network
+
+  # Include an external reference to BensBot
+  # This assumes BensBot is running in another Docker container or as a service
+  benbot:
+    image: benbot/api:latest
+    container_name: benbot
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - evotrader_network
+    volumes:
+      - benbot_data:/app/data
+    # This is a reference only - the actual BensBot service would need to be configured separately
+    # Comment out this service if BensBot is running separately
+
+networks:
+  evotrader_network:
+    driver: bridge
+
+volumes:
+  benbot_data:
+    driver: local

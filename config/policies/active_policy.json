@@ -1,0 +1,66 @@
+{
+  "version": "v1.0.0",
+  "risk": {
+    "max_daily_loss_pct": 2.0,
+    "max_gross_exposure_pct": 80.0,
+    "per_instrument_max_pct": {
+      "ETF": 60.0,
+      "CRYPTO": 20.0,
+      "OPTIONS": 10.0
+    },
+    "options": {
+      "max_iv_pctile": 90.0,
+      "max_dte_days": 21,
+      "greek_caps": {
+        "net_delta": 0.4,
+        "net_gamma": 0.2,
+        "net_vega": 0.5
+      }
+    },
+    "crypto": {
+      "max_slippage_bps": 15.0,
+      "max_dwell_ms": 2500,
+      "venue_whitelist": [
+        "Coinbase",
+        "Kraken"
+      ]
+    },
+    "etf": {
+      "min_adv_usd": 10000000,
+      "max_spread_bps": 5.0
+    }
+  },
+  "compliance": {
+    "insider_trade_sources": "forbidden",
+    "public_disclosures": "allowed_lagged",
+    "venue_whitelist": {
+      "ETF": [
+        "NYSE",
+        "NASDAQ"
+      ],
+      "CRYPTO": [
+        "Coinbase",
+        "Kraken"
+      ],
+      "OPTIONS": [
+        "OCC"
+      ]
+    },
+    "jurisdictions": [
+      "US"
+    ]
+  },
+  "weights": {
+    "alpha": 0.5,
+    "regime": 0.2,
+    "sentiment": 0.2,
+    "cost": 0.05,
+    "risk": 0.05
+  },
+  "toggles": {
+    "enable_crypto_burst": true,
+    "enable_options_events": true,
+    "enable_etf_trend": true
+  },
+  "stale_after_ms": 15000
+}

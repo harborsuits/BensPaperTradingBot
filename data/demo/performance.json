@@ -1,0 +1,32 @@
+{
+  "momentum": {
+    "annualized_return": 0.12397426706503681,
+    "volatility": 0.15,
+    "sharpe_ratio": 0.8264951137669121,
+    "sortino_ratio": 0.5509967425112747,
+    "calmar_ratio": 0.6887459281390934,
+    "win_rate": 0.55,
+    "max_drawdown": -0.18,
+    "last_updated": "2025-04-15T23:28:33.737300"
+  },
+  "trend_following": {
+    "annualized_return": 0.10830783560453659,
+    "volatility": 0.12,
+    "sharpe_ratio": 0.9025652967044716,
+    "sortino_ratio": 0.6017101978029811,
+    "calmar_ratio": 0.7220522373635773,
+    "win_rate": 0.48,
+    "max_drawdown": -0.15,
+    "last_updated": "2025-04-15T23:28:33.737309"
+  },
+  "mean_reversion": {
+    "annualized_return": 0.09593068129832337,
+    "volatility": 0.09,
+    "sharpe_ratio": 1.0658964588702597,
+    "sortino_ratio": 0.7105976392468397,
+    "calmar_ratio": 0.7994223441526948,
+    "win_rate": 0.65,
+    "max_drawdown": -0.12,
+    "last_updated": "2025-04-15T23:28:33.737312"
+  }
+}

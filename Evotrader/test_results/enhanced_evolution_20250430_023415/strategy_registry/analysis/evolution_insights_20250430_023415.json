@@ -1,0 +1,252 @@
+{
+  "total_strategies": 6,
+  "generations": 3,
+  "type_distribution": {
+    "0": {
+      "MovingAverageCrossoverStrategy": 4
+    },
+    "4": {
+      "BollingerBandsStrategy": 1
+    },
+    "2": {
+      "BollingerBandsStrategy": 1
+    }
+  },
+  "parameter_evolution": {
+    "BollingerBandsStrategy": {
+      "2": {
+        "period": {
+          "mean": 9.0,
+          "std": 0.0,
+          "min": 9,
+          "max": 9
+        },
+        "std_dev": {
+          "mean": 2.2708441204774723,
+          "std": 0.0,
+          "min": 2.2708441204774723,
+          "max": 2.2708441204774723
+        },
+        "signal_threshold": {
+          "mean": 0.010268693591801213,
+          "std": 0.0,
+          "min": 0.010268693591801213,
+          "max": 0.010268693591801213
+        }
+      },
+      "4": {
+        "period": {
+          "mean": 10.0,
+          "std": 0.0,
+          "min": 10,
+          "max": 10
+        },
+        "std_dev": {
+          "mean": 1.781099448412267,
+          "std": 0.0,
+          "min": 1.781099448412267,
+          "max": 1.781099448412267
+        },
+        "signal_threshold": {
+          "mean": 0.03839396107941173,
+          "std": 0.0,
+          "min": 0.03839396107941173,
+          "max": 0.03839396107941173
+        }
+      }
+    },
+    "MovingAverageCrossoverStrategy": {
+      "0": {
+        "fast_period": {
+          "mean": 13.5,
+          "std": 3.3541019662496847,
+          "min": 10,
+          "max": 19
+        },
+        "slow_period": {
+          "mean": 27.25,
+          "std": 9.67923034130297,
+          "min": 21,
+          "max": 44
+        },
+        "signal_threshold": {
+          "mean": 0.026063429462469152,
+          "std": 0.012021399975336255,
+          "min": 0.010691917216188345,
+          "max": 0.03839396107941173
+        }
+      }
+    }
+  },
+  "performance_evolution": {
+    "0": {
+      "avg_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "return_std": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "min_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "max_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_win_rate": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "avg_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "max_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_sharpe": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "robustness_score": {
+        "mean": 0.8,
+        "std": 0.0,
+        "min": 0.8,
+        "max": 0.8
+      }
+    },
+    "2": {
+      "avg_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "return_std": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "min_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "max_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_win_rate": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "avg_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "max_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_sharpe": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "robustness_score": {
+        "mean": 0.8,
+        "std": 0.0,
+        "min": 0.8,
+        "max": 0.8
+      }
+    },
+    "4": {
+      "avg_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "return_std": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "min_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "max_return": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_win_rate": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "avg_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "max_drawdown": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "avg_sharpe": {
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "robustness_score": {
+        "mean": 0.8,
+        "std": 0.0,
+        "min": 0.8,
+        "max": 0.8
+      }
+    }
+  },
+  "timestamp": "2025-04-30T02:34:15.938587"
+}

@@ -1,0 +1,105 @@
+{
+  "general": {
+    "bot_name": "TradingBot",
+    "log_level": "INFO",
+    "data_dir": "~/.trading_bot/data"
+  },
+  "tradier": {
+    "api_key": "YOUR_TRADIER_API_KEY_HERE",
+    "account_id": "YOUR_TRADIER_ACCOUNT_ID_HERE",
+    "use_sandbox": true,
+    "timeout": 10,
+    "max_retries": 3
+  },
+  "webhook": {
+    "verify_webhook_signatures": true,
+    "webhook_secret": "YOUR_WEBHOOK_SECRET_HERE",
+    "max_signal_history": 100,
+    "min_shares": 1
+  },
+  "market_context": {
+    "update_interval": 300,
+    "strategy_risk_map": {
+      "rsi_oversold": 1.0,
+      "macd_crossover": 0.8,
+      "breakout": 0.7,
+      "divergence": 0.6,
+      "vwap_bounce": 0.9
+    },
+    "market_regime_thresholds": {
+      "volatile_atr_pct": 2.0,
+      "normal_atr_pct": 1.5,
+      "high_vix": 30,
+      "medium_vix": 20
+    }
+  },
+  "tradingview": {
+    "webhook_url": "https://your-server.com/api/webhook/tradingview",
+    "alert_templates": {
+      "long_entry": {
+        "symbol": "{{ticker}}",
+        "strategy": "{{strategy.order.comment}}",
+        "signal": "buy",
+        "timeframe": "{{interval}}",
+        "price": "{{close}}",
+        "stop_loss": "{{strategy.order.stop_price}}",
+        "take_profit": "{{strategy.order.limit_price}}",
+        "risk": 1.0,
+        "entry_type": "market"
+      },
+      "short_entry": {
+        "symbol": "{{ticker}}",
+        "strategy": "{{strategy.order.comment}}",
+        "signal": "short",
+        "timeframe": "{{interval}}",
+        "price": "{{close}}",
+        "stop_loss": "{{strategy.order.stop_price}}",
+        "take_profit": "{{strategy.order.limit_price}}",
+        "risk": 1.0,
+        "entry_type": "market"
+      },
+      "long_exit": {
+        "symbol": "{{ticker}}",
+        "strategy": "{{strategy.order.comment}}",
+        "signal": "close_long",
+        "timeframe": "{{interval}}",
+        "price": "{{close}}"
+      },
+      "short_exit": {
+        "symbol": "{{ticker}}",
+        "strategy": "{{strategy.order.comment}}",
+        "signal": "close_short",
+        "timeframe": "{{interval}}",
+        "price": "{{close}}"
+      }
+    }
+  },
+  "risk_management": {
+    "max_daily_loss_pct": 3.0,
+    "max_position_size_pct": 5.0,
+    "max_positions": 5,
+    "max_positions_per_sector": 2,
+    "min_risk_reward_ratio": 2.0,
+    "default_risk_per_trade_pct": 1.0
+  },
+  "position_sizing": {
+    "sizing_method": "risk_based",
+    "fixed_dollar_amount": 1000,
+    "fixed_pct_account": 2.0,
+    "atr_multiplier": 2.0
+  },
+  "scheduling": {
+    "trading_hours": {
+      "start": "09:30",
+      "end": "16:00"
+    },
+    "timezone": "America/New_York",
+    "no_new_trades_before_close_minutes": 30
+  },
+  "journal": {
+    "enabled": true,
+    "journal_path": "~/.trading_bot/journal",
+    "auto_screenshot": true,
+    "performance_metrics": true
+  }
+} 

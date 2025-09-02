@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BensBot Broker Configuration Schema",
+  "description": "Configuration schema for broker connections in BensBot",
+  "type": "object",
+  "required": ["default_broker", "brokers"],
+  "properties": {
+    "default_broker": {
+      "type": "string",
+      "description": "ID of the default broker to use when no specific broker is specified"
+    },
+    "credential_path": {
+      "type": "string",
+      "description": "Path to the directory containing broker credentials files",
+      "default": "config/credentials"
+    },
+    "brokers": {
+      "type": "object",
+      "description": "Configuration for each broker",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["broker_type", "enabled"],
+        "properties": {
+          "broker_type": {
+            "type": "string",
+            "enum": ["alpaca", "interactive_brokers", "tradier", "paper"],
+            "description": "Type of broker"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this broker is enabled"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Priority for this broker (lower values = higher priority)",
+            "minimum": 1,
+            "default": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of this broker"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["live", "paper"],
+            "description": "Trading mode for this broker",
+            "default": "paper"
+          },
+          "connection": {
+            "type": "object",
+            "description": "Connection settings for this broker",
+            "properties": {
+              "api_url": {
+                "type": "string",
+                "description": "API URL for this broker"
+              },
+              "websocket_url": {
+                "type": "string",
+                "description": "WebSocket URL for this broker"
+              },
+              "timeout_seconds": {
+                "type": "integer",
+                "description": "Timeout for API requests in seconds",
+                "default": 30,
+                "minimum": 1
+              },
+              "retry_attempts": {
+                "type": "integer",
+                "description": "Number of retry attempts for failed requests",
+                "default": 3,
+                "minimum": 0
+              },
+              "retry_delay_seconds": {
+                "type": "integer",
+                "description": "Delay between retry attempts in seconds",
+                "default": 1,
+                "minimum": 0
+              }
+            }
+          },
+          "rate_limits": {
+            "type": "object",
+            "description": "Rate limiting settings for this broker",
+            "properties": {
+              "max_requests_per_minute": {
+                "type": "integer",
+                "description": "Maximum number of requests per minute",
+                "minimum": 1,
+                "default": 100
+              },
+              "max_requests_per_second": {
+                "type": "integer",
+                "description": "Maximum number of requests per second",
+                "minimum": 1,
+                "default": 5
+              }
+            }
+          },
+          "trading_limits": {
+            "type": "object",
+            "description": "Trading limits for this broker",
+            "properties": {
+              "max_positions": {
+                "type": "integer",
+                "description": "Maximum number of positions",
+                "minimum": 1,
+                "default": 10
+              },
+              "max_order_value": {
+                "type": "number",
+                "description": "Maximum value of a single order",
+                "minimum": 0,
+                "default": 25000
+              },
+              "max_daily_orders": {
+                "type": "integer",
+                "description": "Maximum number of orders per day",
+                "minimum": 1,
+                "default": 100
+              }
+            }
+          },
+          "asset_classes": {
+            "type": "array",
+            "description": "Asset classes supported by this broker",
+            "items": {
+              "type": "string",
+              "enum": ["equity", "option", "future", "forex", "crypto"]
+            },
+            "default": ["equity"]
+          },
+          "symbols": {
+            "type": "array",
+            "description": "Specific symbols to trade through this broker (if empty, all configured symbols are tradeable)",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          }
+        }
+      }
+    }
+  }
+}

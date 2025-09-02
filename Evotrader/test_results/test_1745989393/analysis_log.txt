@@ -1,0 +1,19 @@
+Added /Users/bendickinson/Desktop/Evotrader to Python path
+Successfully imported evotrader module from /Users/bendickinson/Desktop/Evotrader/evotrader/__init__.py
+Analyzing results in directory: test_results/test_1745989393
+Initialized analyzer for test directory: test_results/test_1745989393
+Not enough data to plot fitness progression
+No strategy distribution data available
+No generation data available
+Generated performance charts in test_results/test_1745989393/analysis/charts
+No convergence data available
+No optimal parameter ranges available
+Generated parameter analysis in test_results/test_1745989393/analysis/parameters
+Analysis complete!
+
+
+ERRORS:
+2025-04-30 01:03:15,418 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989393/performance.db
+2025-04-30 01:03:15,418 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989393/simulations/performance.db
+2025-04-30 01:03:15,418 - benbot.evotrader_bridge.performance_tracker.performance_tracker - INFO - Performance tracker initialized with database at test_results/test_1745989393/simulations/performance.db
+2025-04-30 01:03:15,418 - evotrader_bridge - INFO - EvoTraderBridge initialized successfully

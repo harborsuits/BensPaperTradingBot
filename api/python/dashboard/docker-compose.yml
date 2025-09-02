@@ -1,0 +1,21 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      # Mount the entire project at the root of the container
+      - type: bind
+        source: /Users/bendickinson/Desktop/TradingBenBot
+        target: /trading_bot
+      # Mount the dashboard directory separately to ensure app.py is accessible
+      - type: bind
+        source: /Users/bendickinson/Desktop/TradingBenBot/trading_bot/dashboard
+        target: /app
+    environment:
+      - API_BASE_URL=http://localhost:8000
+      - PYTHONPATH=/:/trading_bot
+    restart: unless-stopped
+    container_name: trading_dashboard

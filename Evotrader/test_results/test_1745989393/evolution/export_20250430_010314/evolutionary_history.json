@@ -1,0 +1,140 @@
+{
+  "generations": 5,
+  "total_strategies": 20,
+  "generation_stats": {
+    "1": {
+      "generation": 1,
+      "start_time": 1745989394.066018,
+      "end_time": 1745989394.066025,
+      "duration_seconds": 6.9141387939453125e-06,
+      "strategy_count": 0,
+      "surviving_strategies": 0,
+      "extinct_strategies": 0,
+      "avg_performance": 0.0,
+      "max_performance": 0.0,
+      "min_performance": Infinity,
+      "best_strategy_id": null,
+      "worst_strategy_id": null,
+      "avg_trades_per_strategy": 0.0,
+      "total_trades": 0,
+      "win_rate": 0.0,
+      "avg_fitness": 0.0,
+      "strategy_distribution": {}
+    },
+    "2": {
+      "generation": 2,
+      "start_time": 1745989394.159061,
+      "end_time": 1745989394.159064,
+      "duration_seconds": 3.0994415283203125e-06,
+      "strategy_count": 0,
+      "surviving_strategies": 0,
+      "extinct_strategies": 0,
+      "avg_performance": 0.0,
+      "max_performance": 0.0,
+      "min_performance": Infinity,
+      "best_strategy_id": null,
+      "worst_strategy_id": null,
+      "avg_trades_per_strategy": 0.0,
+      "total_trades": 0,
+      "win_rate": 0.0,
+      "avg_fitness": 0.0,
+      "strategy_distribution": {}
+    },
+    "3": {
+      "generation": 3,
+      "start_time": 1745989394.25365,
+      "end_time": 1745989394.2536519,
+      "duration_seconds": 1.9073486328125e-06,
+      "strategy_count": 0,
+      "surviving_strategies": 0,
+      "extinct_strategies": 0,
+      "avg_performance": 0.0,
+      "max_performance": 0.0,
+      "min_performance": Infinity,
+      "best_strategy_id": null,
+      "worst_strategy_id": null,
+      "avg_trades_per_strategy": 0.0,
+      "total_trades": 0,
+      "win_rate": 0.0,
+      "avg_fitness": 0.0,
+      "strategy_distribution": {}
+    },
+    "4": {
+      "generation": 4,
+      "start_time": 1745989394.348683,
+      "end_time": 1745989394.348685,
+      "duration_seconds": 1.9073486328125e-06,
+      "strategy_count": 0,
+      "surviving_strategies": 0,
+      "extinct_strategies": 0,
+      "avg_performance": 0.0,
+      "max_performance": 0.0,
+      "min_performance": Infinity,
+      "best_strategy_id": null,
+      "worst_strategy_id": null,
+      "avg_trades_per_strategy": 0.0,
+      "total_trades": 0,
+      "win_rate": 0.0,
+      "avg_fitness": 0.0,
+      "strategy_distribution": {}
+    },
+    "5": {
+      "generation": 5,
+      "start_time": 1745989394.437526,
+      "end_time": 1745989394.4375281,
+      "duration_seconds": 2.1457672119140625e-06,
+      "strategy_count": 0,
+      "surviving_strategies": 0,
+      "extinct_strategies": 0,
+      "avg_performance": 0.0,
+      "max_performance": 0.0,
+      "min_performance": Infinity,
+      "best_strategy_id": null,
+      "worst_strategy_id": null,
+      "avg_trades_per_strategy": 0.0,
+      "total_trades": 0,
+      "win_rate": 0.0,
+      "avg_fitness": 0.0,
+      "strategy_distribution": {}
+    }
+  },
+  "performance_trends": {
+    "avg_performance": [
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max_performance": [
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_fitness": [
+      0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "diversity_trends": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.23442919002939638
+  ],
+  "current_generation_distribution": {
+    "IronCondor": 12,
+    "VerticalSpread": 7,
+    "MovingAverageCrossover": 1
+  }
+}

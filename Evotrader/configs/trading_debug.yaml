@@ -1,0 +1,68 @@
+# EvoTrader Trading Debug Configuration
+
+simulation:
+  seed: 42
+  bots: 20  # Reduced number for debugging
+  duration_days: 180  # Increased to give more trading opportunities
+  initial_balance: 10000.0
+  data_provider: sequential
+  data_lookback_days: 500
+  debug_mode: true
+  symbols: ["BTC/USD", "ETH/USD", "XRP/USD", "LTC/USD"]
+
+logging:
+  level: DEBUG
+  file: logs/evotrader_trading.log
+
+# Enhanced evolution settings
+evolution:
+  population_size: 20
+  selection_method: tournament
+  tournament_size: 3
+  mutation_rate: 0.15  # Slightly increased to encourage exploration
+  elite_percent: 0.2
+  # Strategy crossover settings
+  enable_crossover: true
+  crossover_rate: 0.4  # Increased from 0.3
+  crossover_percent: 0.3
+
+# Advanced fitness settings
+fitness:
+  balance_weight: 0.4
+  sharpe_weight: 0.3
+  drawdown_weight: 0.2
+  consistency_weight: 0.1
+  severe_drawdown: 0.4
+  medium_drawdown: 0.25
+
+# Strategy-specific settings to ensure we generate trades
+strategy:
+  default:
+    type: trend_following
+    parameters:
+      risk_percent: 0.03  # Increased risk taking
+  MovingAverageCrossover:
+    parameters:
+      fast_period: 8  # Reduced from default 10
+      slow_period: 20  # Reduced from default 50
+      debug_mode: true
+  RSIStrategy:
+    parameters:
+      oversold: 35  # Increased from 30
+      overbought: 65  # Decreased from 70
+      debug_mode: true
+  BollingerBandsStrategy:
+    parameters:
+      band_period: 15  # Reduced from 20
+      std_dev: 1.8  # Reduced from 2.0
+      debug_mode: true
+
+# Data provider settings - extended history
+data_provider:
+  lookback_window: 500  # Significantly increased lookback window
+  calculate_indicators: true
+  market_volatility: 1.5  # Increased market volatility to generate more signals
+  debug_mode: true
+
+output:
+  directory: trading_results

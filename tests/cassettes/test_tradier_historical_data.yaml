@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://sandbox.tradier.com/v1/markets/history?end=2025-04-23&interval=daily&start=2025-04-13&symbol=AAPL
+  response:
+    body:
+      string: '{"history":{"day":[{"date":"2025-04-14","open":211.44,"high":212.94,"low":201.1621,"close":202.52,"volume":101352911},{"date":"2025-04-15","open":201.855,"high":203.51,"low":199.8,"close":202.14,"volume":51343872},{"date":"2025-04-16","open":198.36,"high":200.7,"low":192.37,"close":194.27,"volume":59732423},{"date":"2025-04-17","open":197.2,"high":198.8335,"low":194.42,"close":196.98,"volume":52164675},{"date":"2025-04-21","open":193.265,"high":193.8,"low":189.8112,"close":193.16,"volume":46742537},{"date":"2025-04-22","open":196.12,"high":201.59,"low":195.97,"close":199.74,"volume":52976371},{"date":"2025-04-23","open":206.0,"high":208.0,"low":202.799,"close":204.6,"volume":52865248}]}}'
+    headers:
+      Access-Control-Allow-Headers:
+      - accept, authorization
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Wed, 23 Apr 2025 22:35:22 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Ratelimit-Allowed:
+      - '200'
+      X-Ratelimit-Available:
+      - '199'
+      X-Ratelimit-Expiry:
+      - '1745447760000'
+      X-Ratelimit-Used:
+      - '1'
+    status:
+      code: 200
+      message: ''
+version: 1

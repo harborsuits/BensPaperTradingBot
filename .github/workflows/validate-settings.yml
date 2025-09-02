@@ -1,0 +1,105 @@
+name: Validate Typed Settings
+on: 
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'config/**'
+      - 'configs/**'
+      - '**.yaml'
+      - '**.yml'
+      - 'trading_bot/config/**'
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - 'config/**'
+      - 'configs/**'
+      - '**.yaml'
+      - '**.yml'
+      - 'trading_bot/config/**'
+
+jobs:
+  validate-settings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pydantic<2.0.0  # Ensure we use Pydantic v1 for compatibility with existing code
+        pip install PyYAML
+        if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+        fi
+
+    - name: Validate all YAML config files
+      run: |
+        python - <<'EOF'
+import sys
+import yaml
+import glob
+import os
+from pathlib import Path
+
+# Add project root to Python path
+sys.path.insert(0, os.getcwd())
+
+try:
+    # Import the settings module
+    from trading_bot.config.typed_settings import TradingBotSettings
+    
+    # Find all YAML config files
+    config_paths = []
+    for pattern in ['configs/*.yaml', 'configs/*.yml', 'config/*.yaml', 'config/*.yml']:
+        config_paths.extend(glob.glob(pattern))
+    
+    # Print what we found
+    print(f"Found {len(config_paths)} config files to validate:")
+    for path in config_paths:
+        print(f" - {path}")
+    
+    if not config_paths:
+        print("No config files found to validate.")
+        sys.exit(0)
+    
+    # Validate each config file
+    for config_path in config_paths:
+        print(f"\nValidating {config_path}...")
+        try:
+            # Load YAML content
+            with open(config_path, 'r') as f:
+                yaml_content = f.read()
+            
+            # Validate with Pydantic
+            settings = TradingBotSettings.model_validate_yaml(yaml_content)
+            print(f"✅ {config_path} is valid!")
+            
+            # Show key settings for verification
+            if hasattr(settings, 'broker') and hasattr(settings.broker, 'name'):
+                print(f"  - Broker: {settings.broker.name}")
+            if hasattr(settings, 'risk'):
+                risk_info = []
+                if hasattr(settings.risk, 'max_position_pct'):
+                    risk_info.append(f"max_position_pct: {settings.risk.max_position_pct}")
+                if hasattr(settings.risk, 'max_risk_pct'):
+                    risk_info.append(f"max_risk_pct: {settings.risk.max_risk_pct}")
+                if risk_info:
+                    print(f"  - Risk: {', '.join(risk_info)}")
+            
+        except Exception as e:
+            print(f"❌ Error validating {config_path}: {str(e)}")
+            sys.exit(1)
+    
+    print("\n✅ All config files are valid!")
+    
+except ImportError as e:
+    print(f"❌ Failed to import typed settings module: {str(e)}")
+    sys.exit(1)
+except Exception as e:
+    print(f"❌ Unexpected error: {str(e)}")
+    sys.exit(1)
+EOF

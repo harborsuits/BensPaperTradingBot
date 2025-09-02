@@ -1,0 +1,51 @@
+{
+  "strategy_id": "strategy_42eebecf",
+  "parameters": {
+    "call_spread_width": 23,
+    "put_spread_width": 17,
+    "call_distance": 1,
+    "put_distance": 38,
+    "volatility_min": 0.564666365586375,
+    "volatility_max": 0.045270793813590414,
+    "days_to_expiry": 4,
+    "take_profit_pct": 77,
+    "stop_loss_pct": 200,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 5,
+    "parent_ids": [
+      "strategy_02b0ef2b"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_0ee407e1",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_9b6ccdab",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_0aab650b",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_9e814d8e",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_02b0ef2b",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "IronCondor"
+}

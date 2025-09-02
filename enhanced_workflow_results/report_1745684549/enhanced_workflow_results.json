@@ -1,0 +1,572 @@
+[
+  {
+    "strategy_id": "strategy_18e7e00a",
+    "request_id": "d53f187d-5127-4082-aa30-932f41138c4e",
+    "status": "approved",
+    "params": {
+      "trend_period": 45,
+      "entry_threshold": 0.8772216537472723,
+      "exit_threshold": -0.9703823796565212,
+      "stop_loss": 7.715213184634037,
+      "position_size": 0.23227825727530685
+    },
+    "accuracy": 0.6190603207563256,
+    "expected_performance": {
+      "bullish": {
+        "return": 27.031708532578968,
+        "max_drawdown": 4.41536531231104,
+        "sharpe": 1.2626562411088713
+      },
+      "bearish": {
+        "return": -9.645641447949094,
+        "max_drawdown": 9.645641447949092,
+        "sharpe": -1.4266243611994882
+      },
+      "sideways": {
+        "return": -10.540633111695186,
+        "max_drawdown": 10.852387115820465,
+        "sharpe": -1.8408755962897738
+      },
+      "volatile": {
+        "return": -15.248582223386709,
+        "max_drawdown": 19.754702510806254,
+        "sharpe": -0.9356664557346851
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 87.70290283316295,
+        "max_drawdown": 4.170345024737113,
+        "sharpe": 3.2033221715665463
+      },
+      "bearish": {
+        "return": -5.141413214622026,
+        "max_drawdown": 5.816680213302834,
+        "sharpe": -0.8380604596467582
+      },
+      "sideways": {
+        "return": -11.692512098926999,
+        "max_drawdown": 12.457488632536496,
+        "sharpe": -1.5235749644572583
+      },
+      "volatile": {
+        "return": -11.503652171073774,
+        "max_drawdown": 17.522066736342403,
+        "sharpe": -0.48453000816042946
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_f1083c79",
+    "request_id": "68d803bb-fe62-4297-9308-c6275d4276f3",
+    "status": "approved",
+    "params": {
+      "trend_period": 45,
+      "entry_threshold": 0.5190026011308608,
+      "exit_threshold": -1.5685937066274729,
+      "stop_loss": 7.754519754181981,
+      "position_size": 0.5665920609509277
+    },
+    "accuracy": 0.49343775402818124,
+    "expected_performance": {
+      "bullish": {
+        "return": 74.98857685261704,
+        "max_drawdown": 8.699911004321404,
+        "sharpe": 1.522676262238084
+      },
+      "bearish": {
+        "return": -30.169333375402374,
+        "max_drawdown": 32.51280160693469,
+        "sharpe": -1.5103081682176511
+      },
+      "sideways": {
+        "return": -4.868850783064516,
+        "max_drawdown": 12.69975447816331,
+        "sharpe": -0.1390003072883659
+      },
+      "volatile": {
+        "return": -48.34220238981428,
+        "max_drawdown": 53.042024020222165,
+        "sharpe": -1.1429691321075632
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 242.62341825145572,
+        "max_drawdown": 6.24577775954322,
+        "sharpe": 3.29161279254255
+      },
+      "bearish": {
+        "return": -24.422656942453848,
+        "max_drawdown": 24.42265694245384,
+        "sharpe": -1.8069813415492175
+      },
+      "sideways": {
+        "return": -14.993896537119223,
+        "max_drawdown": 15.580392250616887,
+        "sharpe": -0.803985278853353
+      },
+      "volatile": {
+        "return": -27.384105773114587,
+        "max_drawdown": 40.018093167086626,
+        "sharpe": -0.46858303976508253
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_7de27c23",
+    "request_id": "5da90f60-5e02-4e47-815a-88e10ae1ab28",
+    "status": "approved",
+    "params": {
+      "trend_period": 46,
+      "entry_threshold": 0.29231733697109696,
+      "exit_threshold": -1.5680526131399284,
+      "stop_loss": 4.549266057949475,
+      "position_size": 0.8393349482425263
+    },
+    "accuracy": 0.4086289958156185,
+    "expected_performance": {
+      "bullish": {
+        "return": 213.30312435880802,
+        "max_drawdown": 9.096041049561682,
+        "sharpe": 2.2123805090055884
+      },
+      "bearish": {
+        "return": -9.883371328902758,
+        "max_drawdown": 13.480680251201067,
+        "sharpe": -0.5557703576582985
+      },
+      "sideways": {
+        "return": -38.580840011863216,
+        "max_drawdown": 40.084849055851954,
+        "sharpe": -1.140784787280575
+      },
+      "volatile": {
+        "return": 20.89045590380183,
+        "max_drawdown": 46.48807893295172,
+        "sharpe": 0.45982827416051525
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 268.1023070860296,
+        "max_drawdown": 10.48592250049304,
+        "sharpe": 2.7175193098090333
+      },
+      "bearish": {
+        "return": -51.0715598433064,
+        "max_drawdown": 51.0715598433064,
+        "sharpe": -1.9591767022235576
+      },
+      "sideways": {
+        "return": -11.359454809809556,
+        "max_drawdown": 17.39516975484844,
+        "sharpe": -0.29168580910779746
+      },
+      "volatile": {
+        "return": -12.775584148120355,
+        "max_drawdown": 50.61969722487919,
+        "sharpe": 0.10620293018862166
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_366ac410",
+    "request_id": "408b3630-06d6-426d-9954-d6b32e4ff71a",
+    "status": "approved",
+    "params": {
+      "trend_period": 40,
+      "entry_threshold": 1.7273443308376952,
+      "exit_threshold": -1.2167564175751855,
+      "stop_loss": 8.42004519401403,
+      "position_size": 0.4248609956393193
+    },
+    "accuracy": 0.5499113734000951,
+    "expected_performance": {
+      "bullish": {
+        "return": 142.90809157076808,
+        "max_drawdown": 6.285196661061273,
+        "sharpe": 2.5957648464585565
+      },
+      "bearish": {
+        "return": -28.35688627253239,
+        "max_drawdown": 29.160901909626364,
+        "sharpe": -1.7481481372063705
+      },
+      "sideways": {
+        "return": -15.100702100852192,
+        "max_drawdown": 15.100702100852196,
+        "sharpe": -1.385154928014436
+      },
+      "volatile": {
+        "return": -13.148159670635506,
+        "max_drawdown": 22.458212747611107,
+        "sharpe": -0.27343775471934717
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 103.39284423476039,
+        "max_drawdown": 6.460927425424077,
+        "sharpe": 2.7364902859111013
+      },
+      "bearish": {
+        "return": -6.997680772545934,
+        "max_drawdown": 8.810408238674796,
+        "sharpe": -0.7430956686536152
+      },
+      "sideways": {
+        "return": -4.2521357078723625,
+        "max_drawdown": 5.603060024948336,
+        "sharpe": -0.2846292218473876
+      },
+      "volatile": {
+        "return": -9.336508074768057,
+        "max_drawdown": 31.42402033205497,
+        "sharpe": -0.08808138080652142
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_c6dad0a7",
+    "request_id": "1e052f17-cf11-49cc-9302-81051acedbbc",
+    "status": "approved",
+    "params": {
+      "trend_period": 47,
+      "entry_threshold": 1.6801427865218788,
+      "exit_threshold": -1.1849506505054477,
+      "stop_loss": 3.683527501007183,
+      "position_size": 0.3057021962469099
+    },
+    "accuracy": 0.5553020926650396,
+    "expected_performance": {
+      "bullish": {
+        "return": 107.7882671054701,
+        "max_drawdown": 7.8849638635650185,
+        "sharpe": 2.345953189748223
+      },
+      "bearish": {
+        "return": -8.557451933872395,
+        "max_drawdown": 11.414143294242592,
+        "sharpe": -1.3101961312742885
+      },
+      "sideways": {
+        "return": -9.431246051547094,
+        "max_drawdown": 10.56872185674696,
+        "sharpe": -0.9285003899945554
+      },
+      "volatile": {
+        "return": -15.64527337945707,
+        "max_drawdown": 23.301432761437006,
+        "sharpe": -0.38706291992031266
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 144.6761499212646,
+        "max_drawdown": 7.394710416484996,
+        "sharpe": 3.4926060284119274
+      },
+      "bearish": {
+        "return": -17.857531539101778,
+        "max_drawdown": 18.55705731751632,
+        "sharpe": -1.9518490075609263
+      },
+      "sideways": {
+        "return": -9.854507665190793,
+        "max_drawdown": 9.854507665190795,
+        "sharpe": -1.615735385251595
+      },
+      "volatile": {
+        "return": -25.251017038701484,
+        "max_drawdown": 33.040163876062074,
+        "sharpe": -0.8831162253192417
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_797951c6",
+    "request_id": "b0a304ea-0c07-4d3c-8123-a896fd7db062",
+    "status": "approved",
+    "params": {
+      "trend_period": 47,
+      "entry_threshold": 1.6943746852196182,
+      "exit_threshold": -1.2868391939720702,
+      "stop_loss": 1.4606644327103602,
+      "position_size": 0.33367406817383377
+    },
+    "accuracy": 0.5354359754204252,
+    "expected_performance": {
+      "bullish": {
+        "return": 99.61126935661872,
+        "max_drawdown": 5.489020409616868,
+        "sharpe": 2.3560217618095907
+      },
+      "bearish": {
+        "return": -12.218980323572637,
+        "max_drawdown": 12.802362010825199,
+        "sharpe": -1.464681545754978
+      },
+      "sideways": {
+        "return": -15.998222869768853,
+        "max_drawdown": 16.16792733051582,
+        "sharpe": -2.6344339897468765
+      },
+      "volatile": {
+        "return": -46.37642350753293,
+        "max_drawdown": 46.45459482431545,
+        "sharpe": -1.8704425529176736
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 140.63204348595644,
+        "max_drawdown": 4.849622810783824,
+        "sharpe": 3.128964117233638
+      },
+      "bearish": {
+        "return": -1.3949006060205882,
+        "max_drawdown": 1.394900606020583,
+        "sharpe": -0.7466740412615169
+      },
+      "sideways": {
+        "return": -15.908238153743003,
+        "max_drawdown": 15.908238153743003,
+        "sharpe": -2.968537113591603
+      },
+      "volatile": {
+        "return": -9.817463387855463,
+        "max_drawdown": 16.9459697533595,
+        "sharpe": -0.2258161631135105
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_bb3e7252",
+    "request_id": "21226cfc-b201-4b78-9374-a71975f0fb6a",
+    "status": "approved",
+    "params": {
+      "trend_period": 41,
+      "entry_threshold": 1.9251958175245847,
+      "exit_threshold": -1.7604560180418773,
+      "stop_loss": 1.0450437212962944,
+      "position_size": 0.7142967327139944
+    },
+    "accuracy": 0.5545675182399885,
+    "expected_performance": {
+      "bullish": {
+        "return": 284.9977237928695,
+        "max_drawdown": 8.193314879088948,
+        "sharpe": 2.802019248113532
+      },
+      "bearish": {
+        "return": -5.326992601506775,
+        "max_drawdown": 7.085341370231553,
+        "sharpe": -0.7866714540272005
+      },
+      "sideways": {
+        "return": -23.041628719362595,
+        "max_drawdown": 23.0416287193626,
+        "sharpe": -2.2874373986854564
+      },
+      "volatile": {
+        "return": -15.790171708868073,
+        "max_drawdown": 28.884380134078487,
+        "sharpe": -0.11657827825536826
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 241.35871282938038,
+        "max_drawdown": 8.949095293034697,
+        "sharpe": 2.9213895560663525
+      },
+      "bearish": {
+        "return": -21.75924765660241,
+        "max_drawdown": 21.75924765660241,
+        "sharpe": -1.9745696312208867
+      },
+      "sideways": {
+        "return": -9.40746104643091,
+        "max_drawdown": 9.407461046430909,
+        "sharpe": -1.4798194776033389
+      },
+      "volatile": {
+        "return": -14.753435512103207,
+        "max_drawdown": 40.70762848590106,
+        "sharpe": -0.0708458813457105
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_21ea31c5",
+    "request_id": "7cf9648a-b024-4e1e-b124-eb0957a88d24",
+    "status": "approved",
+    "params": {
+      "trend_period": 41,
+      "entry_threshold": 1.9470621517065179,
+      "exit_threshold": -0.12433529890318562,
+      "stop_loss": 2.5401196942946447,
+      "position_size": 0.7675394254926982
+    },
+    "accuracy": 0.47346198837739584,
+    "expected_performance": {
+      "bullish": {
+        "return": 285.81729448533565,
+        "max_drawdown": 10.483551564944111,
+        "sharpe": 2.7852629508809934
+      },
+      "bearish": {
+        "return": -2.6663813119211177,
+        "max_drawdown": 3.2784477911649996,
+        "sharpe": -0.5875021775221678
+      },
+      "sideways": {
+        "return": -15.368108172439898,
+        "max_drawdown": 16.072491544456398,
+        "sharpe": -1.6245751752229671
+      },
+      "volatile": {
+        "return": -38.79367349061723,
+        "max_drawdown": 45.93568869552539,
+        "sharpe": -0.5225103950364072
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 371.2751924546674,
+        "max_drawdown": 9.692070462869552,
+        "sharpe": 3.4188158338877943
+      },
+      "bearish": {
+        "return": -27.36095102901296,
+        "max_drawdown": 27.36095102901296,
+        "sharpe": -1.8518818722231476
+      },
+      "sideways": {
+        "return": -12.360513034651666,
+        "max_drawdown": 12.360513034651667,
+        "sharpe": -1.6894378415391453
+      },
+      "volatile": {
+        "return": -66.20937838638423,
+        "max_drawdown": 70.88843005920845,
+        "sharpe": -1.5481505247056135
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_f9d0cab9",
+    "request_id": "f78451f4-37ac-43f2-a8e7-cd73d7229cd6",
+    "status": "approved",
+    "params": {
+      "trend_period": 28,
+      "entry_threshold": 1.6676280622601891,
+      "exit_threshold": -1.7052147599626226,
+      "stop_loss": 8.539075601522619,
+      "position_size": 0.8250545685721533
+    },
+    "accuracy": 0.4503947945921542,
+    "expected_performance": {
+      "bullish": {
+        "return": 329.112255321634,
+        "max_drawdown": 8.787648807039675,
+        "sharpe": 2.7922801935700576
+      },
+      "bearish": {
+        "return": 209.28547673079652,
+        "max_drawdown": 28.099474243685368,
+        "sharpe": 1.3147558343893573
+      },
+      "sideways": {
+        "return": -3.502058659626983,
+        "max_drawdown": 6.465229715460631,
+        "sharpe": -0.054481612312347744
+      },
+      "volatile": {
+        "return": -73.27918557360746,
+        "max_drawdown": 75.46143947076791,
+        "sharpe": -1.2222433287071484
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 317.09310254777733,
+        "max_drawdown": 7.536761792246545,
+        "sharpe": 2.9205483041636517
+      },
+      "bearish": {
+        "return": -58.78550913696697,
+        "max_drawdown": 58.78550913696697,
+        "sharpe": -2.976208478672474
+      },
+      "sideways": {
+        "return": -11.387736886729305,
+        "max_drawdown": 14.93552018728875,
+        "sharpe": -0.36042525196227976
+      },
+      "volatile": {
+        "return": -76.35131704688493,
+        "max_drawdown": 79.21872522277151,
+        "sharpe": -2.411243733840824
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_ec0f0003",
+    "request_id": "8be8cd7a-6992-4f09-a2f3-b8d8a5f2c99c",
+    "status": "approved",
+    "params": {
+      "trend_period": 46,
+      "entry_threshold": 0.3147015559603654,
+      "exit_threshold": -1.9626904200853914,
+      "stop_loss": 3.837047429378361,
+      "position_size": 0.526084995601921
+    },
+    "accuracy": 0.7058140767525515,
+    "expected_performance": {
+      "bullish": {
+        "return": 224.62758839415247,
+        "max_drawdown": 6.635142334793341,
+        "sharpe": 3.101452455420557
+      },
+      "bearish": {
+        "return": -33.00419598442112,
+        "max_drawdown": 41.847146848562424,
+        "sharpe": -0.6936966141252248
+      },
+      "sideways": {
+        "return": -14.080637639874006,
+        "max_drawdown": 16.609238922062687,
+        "sharpe": -0.5909126291221931
+      },
+      "volatile": {
+        "return": -20.068881924055027,
+        "max_drawdown": 48.1968448463019,
+        "sharpe": -0.1531429953418362
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 153.36954147502914,
+        "max_drawdown": 7.305902581165441,
+        "sharpe": 2.6067035737349165
+      },
+      "bearish": {
+        "return": -24.54051239850844,
+        "max_drawdown": 25.08158449713828,
+        "sharpe": -1.2158139642157586
+      },
+      "sideways": {
+        "return": -10.752279190890224,
+        "max_drawdown": 12.863729948867789,
+        "sharpe": -0.5029298179332535
+      },
+      "volatile": {
+        "return": -31.539401831081836,
+        "max_drawdown": 40.9010040027277,
+        "sharpe": -0.6535325559118821
+      }
+    }
+  }
+]

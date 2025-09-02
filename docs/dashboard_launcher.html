@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BensBot Pro Trading Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #14191f;
+            --sidebar-bg: #0d1117;
+            --card-bg: #1c2128;
+            --accent-color: #2d81ff;
+            --text-color: #e6e6e6;
+            --border-color: #30363d;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-2">BensBot Pro Trading Dashboard</h1>
+            <p class="text-gray-400">Professional trading platform for strategy development, monitoring, and execution</p>
+        </header>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Portfolio Overview -->
+            <a href="portfolio_overview_prototype.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-blue-600/20 text-blue-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Portfolio Overview</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Monitor your portfolio performance, strategy allocation, and market context at a glance.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Portfolio performance chart</li>
+                        <li>Strategy allocation breakdown</li>
+                        <li>Market indices and indicators</li>
+                        <li>Recent notifications and alerts</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Dashboard →</div>
+                </div>
+            </a>
+            
+            <!-- Strategy Pipeline -->
+            <a href="strategy_pipeline_prototype.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-green-600/20 text-green-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Strategy Pipeline</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Manage your strategy lifecycle from backtesting through paper trading to live deployment.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Backtest strategy management</li>
+                        <li>Paper trading evaluation</li>
+                        <li>Live strategy monitoring</li>
+                        <li>Strategy promotion workflow</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Pipeline →</div>
+                </div>
+            </a>
+            
+            <!-- Signals & Approvals -->
+            <a href="signals_approvals_prototype.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-purple-600/20 text-purple-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Signals & Approvals</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Review, analyze, and approve trading signals and manage open positions.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Trade signal analysis</li>
+                        <li>Technical & fundamental indicators</li>
+                        <li>Position management</li>
+                        <li>Trade approval workflow</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Signals →</div>
+                </div>
+            </a>
+            
+            <!-- Analytics: Performance -->
+            <a href="analytics_performance_metrics.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-yellow-600/20 text-yellow-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Performance Analytics</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Compare strategy performance metrics across backtest, paper trading, and live environments.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Strategy performance comparison</li>
+                        <li>Detailed metrics breakdown</li>
+                        <li>Win rates & profit factors</li>
+                        <li>Drawdown analysis</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Performance Analytics →</div>
+                </div>
+            </a>
+            
+            <!-- Analytics: Feature Importance -->
+            <a href="analytics_feature_importance.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-red-600/20 text-red-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Feature Analytics</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Understand which factors drive strategy performance and how strategies perform in different market regimes.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Feature importance breakdown</li>
+                        <li>Market regime analysis</li>
+                        <li>Strategy-specific drivers</li>
+                        <li>Comparative performance</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Feature Analytics →</div>
+                </div>
+            </a>
+            
+            <!-- Market Scanner -->
+            <a href="market_scanner_prototype.html" class="block">
+                <div class="dashboard-card p-6 h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="card-icon bg-cyan-600/20 text-cyan-400 mr-4">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold">Market Scanner</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">Discover new trading opportunities matching your strategy criteria and market conditions.</p>
+                    <ul class="text-sm text-gray-400 list-disc pl-5 mb-4">
+                        <li>Strategy-based scanning</li>
+                        <li>Market regime filters</li>
+                        <li>Technical indicator matching</li>
+                        <li>Symbol scoring and ranking</li>
+                    </ul>
+                    <div class="text-blue-400 text-sm font-medium">Open Scanner →</div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="mt-12 p-6 dashboard-card">
+            <h2 class="text-xl font-bold mb-4">MongoDB Integration Guide</h2>
+            <p class="mb-4">These prototype components are designed to connect to your MongoDB database through API routes. The general integration approach is:</p>
+            
+            <ol class="list-decimal pl-5 space-y-2 mb-6">
+                <li>Create API routes for each data type (portfolios, strategies, signals, etc.)</li>
+                <li>Establish MongoDB connection in your Next.js/React project</li>
+                <li>Replace mock data with API calls using fetch or SWR</li>
+                <li>Implement real-time updates for critical components</li>
+            </ol>
+            
+            <div class="bg-blue-900/20 border border-blue-800 rounded-md p-4 mt-4">
+                <h3 class="font-bold text-blue-400 mb-2">Next Steps for Integration</h3>
+                <p class="mb-2">To implement these components in a full React/Next.js application:</p>
+                <ol class="list-decimal pl-5 space-y-1">
+                    <li>Initialize a complete Next.js project with TypeScript</li>
+                    <li>Install dependencies: recharts, lucide-react, tailwindcss, mongodb, swr</li>
+                    <li>Create API routes in /app/api/ folder to connect to MongoDB</li>
+                    <li>Convert these UI components into React components</li>
+                    <li>Replace mock data with data fetching hooks</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

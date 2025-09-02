@@ -1,0 +1,249 @@
+{
+  "core_to_options": {
+    "day_trading": {
+      "gap_fill_daytrade": [
+        {"options_strategy": "weekly_options_momentum", "integration_method": "shadow_strategy", "market_condition": "any"},
+        {"options_strategy": "earnings_strangle", "integration_method": "hedge_strategy", "market_condition": "high_volatility"}
+      ],
+      "vwap_bounce": [
+        {"options_strategy": "rsi_ema_reversal", "integration_method": "confirmation_system", "market_condition": "trending"},
+        {"options_strategy": "weekly_options_momentum", "integration_method": "leverage_tool", "market_condition": "trending"}
+      ],
+      "opening_range_breakout": [
+        {"options_strategy": "weekly_options_momentum", "integration_method": "alternative_execution", "market_condition": "volatile"},
+        {"options_strategy": "long_call_vertical", "integration_method": "risk_defined_alternative", "market_condition": "any"}
+      ]
+    },
+    "swing_trading": {
+      "breakout_swing": [
+        {"options_strategy": "bull_call_spread", "integration_method": "leveraged_alternative", "market_condition": "bullish"},
+        {"options_strategy": "bull_put_spread", "integration_method": "income_generator", "market_condition": "bullish"}
+      ],
+      "pullback_to_moving_average": [
+        {"options_strategy": "bull_put_spread", "integration_method": "primary_strategy", "market_condition": "bullish"},
+        {"options_strategy": "calendar_spread", "integration_method": "enhanced_income", "market_condition": "sideways_to_bullish"}
+      ],
+      "oversold_bounce": [
+        {"options_strategy": "long_call", "integration_method": "maximum_leverage", "market_condition": "bottoming"},
+        {"options_strategy": "bull_call_spread", "integration_method": "defined_risk", "market_condition": "bottoming"}
+      ]
+    },
+    "options_strategies": {
+      "theta_spread": [
+        {"options_strategy": "iron_condor", "integration_method": "width_adjustment", "market_condition": "sideways"},
+        {"options_strategy": "calendar_spread", "integration_method": "time_exploitation", "market_condition": "sideways"}
+      ],
+      "volatility_squeeze": [
+        {"options_strategy": "long_straddle", "integration_method": "core_execution", "market_condition": "transitioning"},
+        {"options_strategy": "diagonal_spread", "integration_method": "cost_reduction", "market_condition": "low_volatility"}
+      ],
+      "iron_condor": [
+        {"options_strategy": "butterfly_spread", "integration_method": "adjustment_mechanism", "market_condition": "sideways"},
+        {"options_strategy": "jade_lizard", "integration_method": "directional_tilt", "market_condition": "bullish"}
+      ]
+    }
+  },
+  "integration_frameworks": {
+    "confirmation_framework": {
+      "intraday_confirmation": {
+        "primary": "gap_fill_daytrade",
+        "confirmation": "rsi_ema_reversal",
+        "execution": [
+          "confirm primary setup first",
+          "require minimum 2 confirmation indicators from secondary strategy",
+          "take position size: 125% of standard if both aligned",
+          "prefer options strategy for execution when confirmed"
+        ]
+      },
+      "swing_confirmation": {
+        "primary": "breakout_swing",
+        "confirmation": "options_chain_analysis",
+        "execution": [
+          "confirm price action in equity first",
+          "verify option chain shows supporting flow (increasing call volume/OI)",
+          "use bull call spreads when confirmed",
+          "sizing: standard for partial confirmation, 125% for full confirmation"
+        ]
+      }
+    },
+    "conversion_pathways": {
+      "equity_to_options": {
+        "trigger_conditions": [
+          "profit target 50% reached in equity position",
+          "increasing implied volatility",
+          "technical resistance approaching"
+        ],
+        "conversion_rules": [
+          "replace equity with vertical spreads to lock in partial gains",
+          "roll portion (50%) to further OTM options for continued upside",
+          "maintain delta exposure but reduce capital commitment"
+        ]
+      },
+      "options_to_equity": {
+        "trigger_conditions": [
+          "implied volatility contraction",
+          "options approaching 21 DTE",
+          "technical consolidation pattern forming"
+        ],
+        "conversion_rules": [
+          "close in-the-money options positions",
+          "establish equity position at 75% of original delta exposure",
+          "implement covered call strategy if applicable"
+        ]
+      }
+    },
+    "volatility_integration": {
+      "high_iv_environment": {
+        "emphasis": "premium_selling",
+        "primary_strategies": [
+          "theta_spread",
+          "iron_condor",
+          "bull_put_spread"
+        ],
+        "equity_adjustment": [
+          "reduce equity position sizing by 30%",
+          "prefer mean-reversion setups",
+          "implement covered call/collar strategies on existing positions"
+        ]
+      },
+      "low_iv_environment": {
+        "emphasis": "long_options",
+        "primary_strategies": [
+          "long_call",
+          "bull_call_spread",
+          "volatility_squeeze"
+        ],
+        "equity_adjustment": [
+          "standard equity position sizing",
+          "favor momentum and breakout strategies",
+          "use options as leverage for highest conviction setups"
+        ]
+      },
+      "neutral_iv_environment": {
+        "emphasis": "balanced_approach",
+        "strategy_blend": [
+          "50% standard equity strategies",
+          "30% premium collection strategies",
+          "20% long options strategies"
+        ]
+      }
+    }
+  },
+  "capital_allocation": {
+    "bullish_market": {
+      "equity_allocation": 0.6,
+      "options_allocation": {
+        "directional_calls": 0.2,
+        "bull_put_spreads": 0.15,
+        "other_strategies": 0.05
+      },
+      "strategy_weighting": {
+        "highest_weighting": ["breakout_swing", "bull_call_spread"],
+        "secondary_weighting": ["pullback_to_moving_average", "bull_put_spread"]
+      }
+    },
+    "bearish_market": {
+      "equity_allocation": 0.3,
+      "options_allocation": {
+        "directional_puts": 0.15,
+        "bear_call_spreads": 0.15,
+        "hedging_strategies": 0.1,
+        "cash_reserve": 0.3
+      },
+      "strategy_weighting": {
+        "highest_weighting": ["gap_fill_daytrade", "bear_put_spread"],
+        "secondary_weighting": ["volatility_squeeze", "protective_puts"]
+      }
+    },
+    "sideways_market": {
+      "equity_allocation": 0.4,
+      "options_allocation": {
+        "premium_selling": 0.35,
+        "volatility_strategies": 0.1,
+        "cash_reserve": 0.15
+      },
+      "strategy_weighting": {
+        "highest_weighting": ["vwap_bounce", "iron_condor"],
+        "secondary_weighting": ["theta_spread", "calendar_spread"]
+      }
+    }
+  },
+  "unified_risk_framework": {
+    "position_correlation": {
+      "max_strategy_correlation": 0.7,
+      "calculation": "equity beta + options delta",
+      "sector_limits": "25% maximum exposure to any sector"
+    },
+    "drawdown_management": {
+      "equity_drawdown_response": [
+        {"threshold": 0.03, "action": "reduce position size by 25%"},
+        {"threshold": 0.05, "action": "pause new equity entries"}
+      ],
+      "options_drawdown_response": [
+        {"threshold": 0.02, "action": "reduce position size by 35%"},
+        {"threshold": 0.04, "action": "close speculative options positions"}
+      ],
+      "combined_response": [
+        "reduce highest delta positions first",
+        "maintain hedged positions longer",
+        "convert directional options to spreads"
+      ]
+    },
+    "volatility_adjustment": [
+      {"vix_range": [0, 15], "action": "standard position sizing"},
+      {"vix_range": [15, 25], "action": "reduce size by 10%, favor premium selling"},
+      {"vix_range": [25, 100], "action": "reduce size by 25%, favor defined-risk strategies"}
+    ]
+  },
+  "advanced_techniques": {
+    "synthetic_positions": {
+      "synthetic_long_stock": {
+        "construction": "long call + short put (same strike, expiration)",
+        "use_case": "when replacing equity position in high IV environment",
+        "advantage": "reduced capital requirement vs. stock position",
+        "risk_management": "defined downside exposure via put strike"
+      },
+      "synthetic_covered_call": {
+        "construction": "bull call spread + bull put spread (same short strikes)",
+        "use_case": "income generation with defined risk",
+        "advantage": "significantly lower capital requirement than covered call",
+        "risk_management": "max loss defined by spread widths"
+      }
+    },
+    "strategy_stacking": {
+      "diagonal_calendar_stack": {
+        "components": [
+          "sell 30-delta put at 30 DTE",
+          "buy 30-delta put at 60 DTE one strike lower",
+          "sell 30-delta call at 30 DTE",
+          "buy 30-delta call at 60 DTE one strike higher"
+        ],
+        "advantage": "positive theta, vega, reduced cost basis",
+        "application": "when bullish but expecting initial consolidation"
+      },
+      "ratio_vertical_stack": {
+        "components": [
+          "buy 1 ATM call at 45 DTE",
+          "sell 2 OTM calls at 30 DTE",
+          "sell 1 OTM put at 30 DTE"
+        ],
+        "advantage": "reduces cost basis while maintaining upside potential",
+        "application": "for strong breakout setups with clear resistance level"
+      }
+    },
+    "multi_timeframe_correlation": {
+      "daily_trigger": {
+        "setup": "pullback_to_moving_average (daily chart)",
+        "confirmation": "rsi_oversold_recovery (daily)"
+      },
+      "intraday_execution": {
+        "setup": "vwap_bounce (15-minute chart)",
+        "confirmation": "opening_range_breakout support"
+      },
+      "options_integration": {
+        "setup": "bull_put_spread below support",
+        "timing": "enter after intraday confirmation"
+      }
+    }
+  }
+} 

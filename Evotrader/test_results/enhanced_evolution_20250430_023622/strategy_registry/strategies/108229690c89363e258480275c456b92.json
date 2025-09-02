@@ -1,0 +1,14 @@
+{
+  "id": "108229690c89363e258480275c456b92",
+  "type": "RSIStrategy",
+  "parameters": {
+    "period": 19,
+    "overbought": 67,
+    "oversold": 23
+  },
+  "registered_at": "2025-04-30T02:36:58.662920",
+  "generation": 20,
+  "parent_ids": [],
+  "lineage": [],
+  "mutation_history": []
+}

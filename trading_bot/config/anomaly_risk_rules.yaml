@@ -1,0 +1,60 @@
+# Anomaly Risk Configuration
+# Defines thresholds and reactions to market anomalies
+
+# Anomaly score thresholds
+thresholds:
+  minimal: 0.3    # Score below this is considered normal market behavior
+  moderate: 0.5   # Moderate anomaly - increase caution
+  high: 0.7       # High anomaly - significant risk adjustment
+  critical: 0.85  # Critical anomaly - most aggressive risk measures
+
+# Risk adjustment actions based on anomaly score
+risk_adjustments:
+  minimal:
+    risk_mode: "normal"
+    position_size_modifier: 1.0  # No reduction in position size
+    cooldown_minutes: 0
+    stop_loss_modifier: 1.0
+    new_trades_allowed: true
+    
+  moderate:
+    risk_mode: "cautious"
+    position_size_modifier: 0.7  # Reduce position sizes to 70%
+    cooldown_minutes: 10
+    stop_loss_modifier: 0.8      # Tighter stop losses (80% of normal distance)
+    new_trades_allowed: true
+    
+  high:
+    risk_mode: "defensive"
+    position_size_modifier: 0.4  # Reduce position sizes to 40%
+    cooldown_minutes: 20
+    stop_loss_modifier: 0.6      # Much tighter stop losses
+    new_trades_allowed: true     # Still allow trades but with significant adjustments
+    
+  critical:
+    risk_mode: "lockdown"
+    position_size_modifier: 0.0  # No new positions
+    cooldown_minutes: 30
+    stop_loss_modifier: 0.5      # Extremely tight stops on existing positions
+    new_trades_allowed: false    # Block all new trades
+
+# Duration of impact after anomaly is no longer detected
+recovery:
+  monitor_periods: 5  # Number of normal periods before stepping down risk level
+  gradual: true       # Gradually reduce risk or immediately return to normal
+
+# Anomaly types and specific reactions
+# These can override the default reactions based on anomaly type
+anomaly_type_overrides:
+  price_spike:
+    cooldown_minutes: 15  # Price spikes may resolve faster
+    
+  spread_widening:
+    stop_loss_modifier: 0.4  # Wider spreads need tighter stops
+    
+  volume_spike:
+    position_size_modifier: 0.5  # Unusual volume requires more caution
+    
+  flash_crash:
+    risk_mode: "lockdown"  # Flash crashes always trigger lockdown regardless of score
+    cooldown_minutes: 60   # Longer cooldown for flash crashes 

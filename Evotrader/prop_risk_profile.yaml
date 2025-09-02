@@ -1,0 +1,74 @@
+# Proprietary Trading Firm Risk Profile
+# Configuration for strategy evaluation, compliance, and risk management
+
+# Prop firm compliance thresholds
+criteria:
+  max_drawdown: 5.0        # Maximum drawdown percentage
+  profit_target: 8.0       # Minimum profit target percentage
+  daily_loss_limit: 3.0    # Maximum daily loss percentage
+  min_trading_days: 10     # Minimum number of active trading days
+  min_profitable_days: 0.6 # Minimum percentage of profitable days
+  min_trades: 15           # Minimum number of trades
+  min_reward_risk: 1.5     # Minimum reward-to-risk ratio
+  min_sharpe: 1.0          # Minimum Sharpe ratio
+
+# Symbol whitelist/blacklist
+symbol_whitelist: ["ES", "NQ", "RTY", "CL", "GC", "SI", "6E", "6J", "ZB", "ZN", "ZF"]
+symbol_blacklist: []
+
+# Position sizing and leverage controls
+position_controls:
+  max_position_size_pct: 5.0
+  max_leverage: 10.0
+  default_size_atr_multiple: 1.0
+
+# Trading schedule restrictions
+restricted_hours:
+  - start: "16:00"
+    end: "17:00"
+    reason: "Market close volatility"
+
+# Maximum consecutive losses allowed
+max_consecutive_losses: 5
+
+# Evolution parameters for prop strategies
+evolution:
+  population_size: 100
+  generations: 30
+  early_stopping_generations: 10
+  tournament_size: 5
+  crossover_rate: 0.3
+  mutation_rate: 0.2
+  elite_percentage: 0.1
+
+# Forward testing parameters
+forward_testing:
+  min_days: 5
+  target_days: 10
+  required_passing_days: 4
+  daily_profit_target: 0.8
+  alert_thresholds:
+    drawdown_warning: 3.0
+    drawdown_critical: 4.0
+    daily_loss_warning: 2.0
+    daily_loss_critical: 2.5
+
+# Deployment criteria
+deployment:
+  min_backtest_score: 80
+  min_forward_test_days: 5
+  max_correlation_live: 0.7
+  promotion_waiting_period: 2  # days between status changes
+  retirement_thresholds:
+    consecutive_losing_days: 3
+    max_drawdown: 4.0
+    sharpe_below: 0.8
+    
+# Reporting configuration
+reporting:
+  generate_html: true
+  generate_pdf: false
+  include_trade_details: true
+  include_equity_chart: true
+  include_drawdown_chart: true
+  include_monthly_breakdown: true

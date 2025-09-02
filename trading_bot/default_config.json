@@ -1,0 +1,77 @@
+{
+  "general": {
+    "bot_name": "TradingBot",
+    "log_level": "INFO",
+    "data_dir": "~/.trading_bot/data",
+    "timezone": "America/New_York"
+  },
+  "brokers": {
+    "tradier": {
+      "api_key": "YOUR_API_KEY_HERE",
+      "account_id": "YOUR_ACCOUNT_ID_HERE",
+      "use_sandbox": true,
+      "timeout": 10,
+      "max_retries": 3,
+      "retry_delay": 1
+    }
+  },
+  "dashboard": {
+    "refresh_interval": 30,
+    "theme": "dark",
+    "chart_period": "1d",
+    "default_view": "summary"
+  },
+  "trading": {
+    "default_order_type": "limit",
+    "default_position_size": 100,
+    "max_positions": 5,
+    "max_position_size": 1000,
+    "max_drawdown_percent": 5,
+    "daily_loss_limit_percent": 3,
+    "trading_hours": {
+      "start": "09:30",
+      "end": "16:00"
+    },
+    "risk_per_trade_percent": 1,
+    "default_stop_loss_percent": 2,
+    "default_take_profit_percent": 3
+  },
+  "alerts": {
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "username": "your_email@gmail.com",
+      "password": "",
+      "recipients": []
+    },
+    "sms": {
+      "enabled": false,
+      "provider": "twilio",
+      "account_sid": "",
+      "auth_token": "",
+      "from_number": "",
+      "to_numbers": []
+    },
+    "notify_on": {
+      "trade_executed": true,
+      "order_filled": true,
+      "stop_loss_hit": true,
+      "take_profit_hit": true,
+      "error": true,
+      "daily_summary": true
+    }
+  },
+  "security": {
+    "enable_2fa": false,
+    "api_key_expiry_days": 30,
+    "max_login_attempts": 5,
+    "lockout_period_minutes": 30
+  },
+  "reports": {
+    "generate_daily_report": true,
+    "generate_weekly_report": true,
+    "generate_monthly_report": true,
+    "report_email_recipients": []
+  }
+} 

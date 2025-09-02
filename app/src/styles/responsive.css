@@ -1,0 +1,64 @@
+/* Auto-fit grid */
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(.75rem, .5rem + .8vw, 1rem);
+  width: 100%;
+}
+
+/* Card base styles */
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Table utilities */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.5rem;
+}
+
+.table td {
+  padding: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive text utilities */
+.text-clamp-xs {
+  font-size: clamp(0.7rem, 0.6rem + 0.5vw, 0.875rem);
+}
+
+.text-clamp-sm {
+  font-size: clamp(0.875rem, 0.8rem + 0.5vw, 1rem);
+}
+
+.text-clamp-base {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+}
+
+/* Responsive height utilities */
+.h-clamp-sm {
+  height: clamp(150px, 25vh, 250px);
+}
+
+.h-clamp-md {
+  height: clamp(200px, 30vh, 300px);
+}
+
+.h-clamp-lg {
+  height: clamp(250px, 40vh, 400px);
+}

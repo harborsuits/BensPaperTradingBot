@@ -1,0 +1,147 @@
+name: BensBot Continuous Deployment
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag to build and push (e.g. v1.0.0)'
+        required: true
+        type: string
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for bot image
+        id: meta-bot
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/bensbot
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=sha,format=long
+      
+      - name: Extract metadata for dashboard image
+        id: meta-dashboard
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/bensbot-dashboard
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=sha,format=long
+      
+      - name: Set release version from input
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "RELEASE_VERSION=${{ github.event.inputs.version_tag }}" >> $GITHUB_ENV
+      
+      - name: Set release version from tag
+        if: github.event_name == 'release'
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      
+      - name: Build and push trading bot image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta-bot.outputs.tags }}
+          labels: ${{ steps.meta-bot.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ env.RELEASE_VERSION }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            GIT_COMMIT=${{ github.sha }}
+      
+      - name: Build and push dashboard image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.dashboard
+          push: true
+          tags: ${{ steps.meta-dashboard.outputs.tags }}
+          labels: ${{ steps.meta-dashboard.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VERSION=${{ env.RELEASE_VERSION }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            GIT_COMMIT=${{ github.sha }}
+      
+      - name: Notify build completion
+        run: |
+          echo "Successfully built and pushed version ${{ env.RELEASE_VERSION }}"
+          echo "Images available at:"
+          echo "  - ghcr.io/${{ github.repository }}/bensbot:${{ env.RELEASE_VERSION }}"
+          echo "  - ghcr.io/${{ github.repository }}/bensbot-dashboard:${{ env.RELEASE_VERSION }}"
+
+  deploy-to-environment:
+    needs: build-and-push
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Generate deployment configuration
+        run: |
+          mkdir -p deploy
+          cat > deploy/docker-compose.override.yml <<EOF
+          version: '3.8'
+          
+          services:
+            trading-bot:
+              image: ghcr.io/${{ github.repository }}/bensbot:${{ github.event.inputs.version_tag }}
+            
+            dashboard:
+              image: ghcr.io/${{ github.repository }}/bensbot-dashboard:${{ github.event.inputs.version_tag }}
+          EOF
+          
+          echo "Created deployment configuration for ${{ github.event.inputs.environment }}"
+      
+      # This is a placeholder for a deploy step - in a real scenario,
+      # you would use something like SSH to deploy to your server(s)
+      # or a cloud provider's deployment tool
+      - name: Deploy to ${{ github.event.inputs.environment }}
+        run: |
+          echo "Deploying to ${{ github.event.inputs.environment }}..."
+          echo "In a real scenario, this would deploy to your server(s)"
+          echo "For example, you could run: scp -r deploy/* user@your-server:/path/to/bensbot/"
+          echo "Then: ssh user@your-server 'cd /path/to/bensbot && docker-compose pull && docker-compose up -d'"
+      
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-config-${{ github.event.inputs.environment }}
+          path: deploy/

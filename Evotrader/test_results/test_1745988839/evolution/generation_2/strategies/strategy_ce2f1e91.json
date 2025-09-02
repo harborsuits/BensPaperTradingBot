@@ -1,0 +1,30 @@
+{
+  "strategy_id": "strategy_ce2f1e91",
+  "parameters": {
+    "rsi_period": 19,
+    "overbought": 70,
+    "oversold": 27,
+    "symbol": "BTC/USD"
+  },
+  "metadata": {
+    "generation": 2,
+    "parent_ids": [
+      "strategy_2da60153"
+    ],
+    "creation_timestamp": null,
+    "performance_history": [],
+    "mutation_history": [
+      {
+        "timestamp": null,
+        "parent_id": "strategy_34ce1d4a",
+        "mutation_rate": 0.2
+      },
+      {
+        "timestamp": null,
+        "parent_id": "strategy_2da60153",
+        "mutation_rate": 0.2
+      }
+    ]
+  },
+  "strategy_type": "RSIStrategy"
+}

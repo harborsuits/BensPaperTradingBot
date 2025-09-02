@@ -1,0 +1,240 @@
+{
+  "date": "2025-04-17",
+  "apis": {
+    "mediastack": {
+      "api_key": "3ff958493e0f1d8cf9af5e8425c8f5a3",
+      "base_url": "http://api.mediastack.com/v1/news",
+      "daily_limit": 20,
+      "current_usage": 1,
+      "cooldown_minutes": 240,
+      "priority": 1,
+      "last_used": 1744916200.112412,
+      "error_count": 0,
+      "enabled": true
+    },
+    "finnhub": {
+      "api_key": "pcIfIzF_AiAd2Ps0ifLTXRtuA2BbBVtS",
+      "base_url": "https://finnhub.io/api/v1/company-news",
+      "daily_limit": 30,
+      "current_usage": 0,
+      "cooldown_minutes": 1,
+      "priority": 4,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "marketaux": {
+      "api_key": "7PgROm6BE4m6ejBW8unmZnnYS6kIygu5lwzpfd9K",
+      "base_url": "https://api.marketaux.com/v1/news/all",
+      "daily_limit": 10,
+      "current_usage": 0,
+      "cooldown_minutes": 1440,
+      "priority": 5,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "newsdata": {
+      "api_key": "pub_81036c20e73907398317875951d4569722f2a",
+      "base_url": "https://newsdata.io/api/1/news",
+      "daily_limit": 10,
+      "current_usage": 0,
+      "cooldown_minutes": 1440,
+      "priority": 3,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "gnews": {
+      "api_key": "00c755186577632fbf651fc38e39858b",
+      "base_url": "https://gnews.io/api/v4/search",
+      "daily_limit": 5,
+      "current_usage": 0,
+      "cooldown_minutes": 1440,
+      "priority": 6,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "nytimes": {
+      "api_key": "NosApZGLGvPusEz30Fk4lQban19z9PTo",
+      "base_url": "https://api.nytimes.com/svc/search/v2/articlesearch.json",
+      "daily_limit": 10,
+      "current_usage": 0,
+      "cooldown_minutes": 60,
+      "priority": 7,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "currents": {
+      "api_key": "O5_JjrWdlLN2v93iuKbhEhA9OSIYfChf4Cx9XE9xXgW1oYTC",
+      "base_url": "https://api.currentsapi.services/v1/search",
+      "daily_limit": 10,
+      "current_usage": 0,
+      "cooldown_minutes": 1440,
+      "priority": 2,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    },
+    "alpha_vantage": {
+      "api_key": "",
+      "base_url": "https://www.alphavantage.co/query",
+      "daily_limit": 5,
+      "current_usage": 0,
+      "cooldown_minutes": 1440,
+      "priority": 8,
+      "last_used": 0,
+      "error_count": 0,
+      "enabled": false
+    }
+  },
+  "cache": {
+    "max_age_minutes": 2880,
+    "entries": {
+      "aapl": {
+        "timestamp": 1744916200.11301,
+        "results": [
+          {
+            "title": "Most Active Equity Options For Mid-Day, April 17, 2025 \u2013 NVDA, TSLA, AAPL, PLTR, MSTR, HTZ, AMZN, META, INTC, AMD, UNH, GOOGL, TSM, F, KMI, MU, BABA, GME, NFLX, MSFT",
+            "description": "Data Courtesy Of Trade Alert\u00a0\u00a0",
+            "url": "https://theoptionsinsider.com/news/most-active-options/most-active-equity-options-for-mid-day-april-17-2025-nvda-tsla-aapl-pltr-mstr-htz-amzn-meta-intc-amd-unh-googl-tsm-f-kmi-mu-baba-gme-nflx-msft/",
+            "source": "theoptionsinsider",
+            "published_at": "2025-04-17T16:11:36+00:00",
+            "image_url": null,
+            "sentiment": 0.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Direxion Daily AAPL Bull 2X Shares (NASDAQ:AAPU) Short Interest Down 58.8% in March",
+            "description": "Direxion Daily AAPL Bull 2X Shares (NASDAQ:AAPU - Get Free Report) was the recipient of a significant decline in short interest during the month of March. As of March 31st, there was short interest totalling 255,600 shares, a decline of 58.8% from the March 15th total of 620,300 shares. Based on an average trading volume of 1,483,300 shares, the short-interest ratio is currently 0.2 days. Currently, 7.4% of the shares of the stock are short sold.",
+            "url": "https://www.marketbeat.com/instant-alerts/direxion-daily-aapl-bull-2x-shares-nasdaqaapu-short-interest-down-588-in-march-2025-04-16/",
+            "source": "lulegacy",
+            "published_at": "2025-04-17T07:09:57+00:00",
+            "image_url": null,
+            "sentiment": -0.5555555555555556,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Most Active Equity Options For Mid-Day, April 16, 2025 \u2013 NVDA, TSLA, AAPL, PLTR, AMZN, AMD, META, MSTR, INTC, HOOD, GOOGL, TSM, BABA, SMCI, MSFT, MU, BAC, AVGO, GME, NKE",
+            "description": "Data Courtesy Of Trade Alert\u00a0\u00a0",
+            "url": "https://theoptionsinsider.com/news/most-active-options/most-active-equity-options-for-mid-day-april-16-2025-nvda-tsla-aapl-pltr-amzn-amd-meta-mstr-intc-hood-googl-tsm-baba-smci-msft-mu-bac-avgo-gme-nke/",
+            "source": "theoptionsinsider",
+            "published_at": "2025-04-16T16:08:37+00:00",
+            "image_url": null,
+            "sentiment": 0.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "The simple power of asking obvious questions\u2026",
+            "description": "I love this story about Steve Jobs from Adam Lashinsky in Fortune: Apple doesn\u2019t often fail, and when it does, it isn\u2019t a pretty sight at 1 Infinite Loop. In the summer of 2008, when Apple (AAPL) launched the first version of its iPhone that worked on third-generation mobile networks, it also debuted MobileMe, an e-mail system that was supposed to provide the seamless synchronization features that corporate users love about their BlackBerry smartphones. MobileMe was a dud. Users complained ... Read more...",
+            "url": "https://sluggerotoole.com/2025/04/16/the-simple-power-of-asking-obvious-questions/",
+            "source": "sluggerotoole",
+            "published_at": "2025-04-16T14:54:40+00:00",
+            "image_url": null,
+            "sentiment": 0.0,
+            "relevance": 0.5555555555555556,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Apple (NASDAQ:AAPL) Shares Gap Up After Analyst Upgrade",
+            "description": "Apple Inc. (NASDAQ:AAPL &#8211; Get Free Report)&#8217;s share price gapped up before the market opened on Monday after KeyCorp upgraded the stock from an underweight rating to a sector weight rating. The stock had previously closed at $198.15, but opened at $211.44. Apple shares last traded at $204.75, with a volume of 30,885,025 shares. AAPL [&#8230;]",
+            "url": "https://www.americanbankingnews.com/2025/04/16/apple-nasdaqaapl-shares-gap-up-after-analyst-upgrade.html",
+            "source": "americanbankingnews",
+            "published_at": "2025-04-16T06:00:51+00:00",
+            "image_url": null,
+            "sentiment": 1.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "#HotOptions Report For End Of Day, April 15, 2025 \u2013 NVDA, TSLA, PLTR, AAPL, INTC, AMZN, META, BAC, AMD, MSTR, GOOGL, APLD, HOOD, MSFT, GME, WFC, C, NFLX, F, TSM",
+            "description": "Data Courtesy Of Trade Alert\u00a0\u00a0",
+            "url": "https://theoptionsinsider.com/news/most-active-options/hotoptions-report-for-end-of-day-april-15-2025-nvda-tsla-pltr-aapl-intc-amzn-meta-bac-amd-mstr-googl-apld-hood-msft-gme-wfc-c-nflx-f-tsm/",
+            "source": "theoptionsinsider",
+            "published_at": "2025-04-15T20:19:22+00:00",
+            "image_url": null,
+            "sentiment": 0.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Most Active Equity Options For Mid-Day, April 15, 2025 \u2013 NVDA, TSLA, AAPL, PLTR, AMZN, BAC, META, AMD, MSTR, WFC, APLD, GOOGL, KEY, INTC, GME, MSFT, HOOD, BABA, NFLX, PFE",
+            "description": "Data Courtesy Of Trade Alert\u00a0\u00a0",
+            "url": "https://theoptionsinsider.com/news/most-active-options/most-active-equity-options-for-mid-day-april-15-2025-nvda-tsla-aapl-pltr-amzn-bac-meta-amd-mstr-wfc-apld-googl-key-intc-gme-msft-hood-baba-nflx-pfe/",
+            "source": "theoptionsinsider",
+            "published_at": "2025-04-15T16:10:46+00:00",
+            "image_url": null,
+            "sentiment": 0.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Needham & Company LLC Reiterates Buy Rating for Apple (NASDAQ:AAPL)",
+            "description": "Needham & Company LLC restated their buy rating on shares of Apple (NASDAQ:AAPL &#8211; Free Report) in a report released on Monday,Benzinga reports. They currently have a $225.00 price target on the iPhone maker&#8217;s stock. Several other equities research analysts have also recently commented on AAPL. Sanford C. Bernstein increased their price target on Apple [&#8230;]",
+            "url": "https://www.etfdailynews.com/2025/04/15/needham-company-llc-reiterates-buy-rating-for-apple-nasdaqaapl/",
+            "source": "etfdailynews",
+            "published_at": "2025-04-15T09:44:57+00:00",
+            "image_url": null,
+            "sentiment": 1.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Apple (NASDAQ:AAPL) Given New $230.00 Price Target at DA Davidson",
+            "description": "Apple (NASDAQ:AAPL &#8211; Free Report) had its target price lowered by DA Davidson from $290.00 to $230.00 in a research note released on Monday morning,Benzinga reports. The firm currently has a buy rating on the iPhone maker&#8217;s stock. Several other research firms have also issued reports on AAPL. Needham & Company LLC reissued a &#8220;buy&#8221; [&#8230;]",
+            "url": "https://www.etfdailynews.com/2025/04/15/apple-nasdaqaapl-given-new-230-00-price-target-at-da-davidson/",
+            "source": "etfdailynews",
+            "published_at": "2025-04-15T09:44:52+00:00",
+            "image_url": null,
+            "sentiment": 1.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          },
+          {
+            "title": "Apple (NASDAQ:AAPL) Raised to \u201cSector Weight\u201d at KeyCorp",
+            "description": "KeyCorp upgraded shares of Apple (NASDAQ:AAPL &#8211; Free Report) from an underweight rating to a sector weight rating in a research report sent to investors on Monday, MarketBeat.com reports. Several other research analysts have also commented on AAPL. JPMorgan Chase & Co. raised their price objective on shares of Apple from $260.00 to $270.00 and [&#8230;]",
+            "url": "https://www.etfdailynews.com/2025/04/15/apple-nasdaqaapl-raised-to-sector-weight-at-keycorp/",
+            "source": "etfdailynews",
+            "published_at": "2025-04-15T07:46:49+00:00",
+            "image_url": null,
+            "sentiment": 1.0,
+            "relevance": 1.0,
+            "categories": [
+              "general"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "settings": {
+    "use_cache": true,
+    "max_retries": 3,
+    "timeout_seconds": 10,
+    "auto_disable_on_error": true,
+    "error_threshold": 3
+  }
+}

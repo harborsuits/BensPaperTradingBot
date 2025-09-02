@@ -1,0 +1,233 @@
+{
+  "initial_cash": 100000.0,
+  "current_cash": 1771.440144779257,
+  "positions": {
+    "AAPL": {
+      "quantity": 45,
+      "avg_price": 187.91534389932463,
+      "current_price": 194.27,
+      "current_value": 8742.15,
+      "unrealized_pnl": 285.9595245303923,
+      "unrealized_pnl_pct": 3.381658979417823
+    },
+    "MSFT": {
+      "quantity": 27,
+      "avg_price": 390.77471312558686,
+      "current_price": 371.61,
+      "current_value": 10033.470000000001,
+      "unrealized_pnl": -517.4472543908448,
+      "unrealized_pnl_pct": -4.904286915675559
+    },
+    "GOOGL": {
+      "quantity": 69,
+      "avg_price": 150.2891295638364,
+      "current_price": 153.33,
+      "current_value": 10579.77,
+      "unrealized_pnl": 209.82006009528848,
+      "unrealized_pnl_pct": 2.0233468947412847
+    },
+    "AMZN": {
+      "quantity": 68,
+      "avg_price": 160.36906832435497,
+      "current_price": 174.33,
+      "current_value": 11854.44,
+      "unrealized_pnl": 949.3433539438629,
+      "unrealized_pnl_pct": 8.705501516918668
+    },
+    "TSLA": {
+      "quantity": 56,
+      "avg_price": 240.53796190167495,
+      "current_price": 241.55,
+      "current_value": 13526.800000000001,
+      "unrealized_pnl": 56.67413350620359,
+      "unrealized_pnl_pct": 0.42073945015745906
+    },
+    "NVDA": {
+      "quantity": 107,
+      "avg_price": 101.83212674311814,
+      "current_price": 104.49,
+      "current_value": 11180.43,
+      "unrealized_pnl": 284.3924384863586,
+      "unrealized_pnl_pct": 2.6100537638643395
+    },
+    "SPY": {
+      "quantity": 20,
+      "avg_price": 501.80431054458893,
+      "current_price": 525.66,
+      "current_value": 10513.199999999999,
+      "unrealized_pnl": 477.1137891082208,
+      "unrealized_pnl_pct": 4.753982569324955
+    },
+    "QQQ": {
+      "quantity": 24,
+      "avg_price": 484.74139815277186,
+      "current_price": 444.18,
+      "current_value": 10660.32,
+      "unrealized_pnl": -973.4735556665246,
+      "unrealized_pnl_pct": -8.36763649800516
+    },
+    "GLD": {
+      "quantity": 38,
+      "avg_price": 313.4305880219391,
+      "current_price": 307.47,
+      "current_value": 11683.86,
+      "unrealized_pnl": -226.50234483368536,
+      "unrealized_pnl_pct": -1.9017250548379327
+    }
+  },
+  "trades": [
+    {
+      "timestamp": "2025-02-11T17:25:56.144778",
+      "symbol": "AAPL",
+      "action": "BUY",
+      "quantity": 45,
+      "price": 187.91534389932463,
+      "value": 8456.190475469608
+    },
+    {
+      "timestamp": "2025-03-23T17:25:56.144778",
+      "symbol": "MSFT",
+      "action": "BUY",
+      "quantity": 27,
+      "price": 390.77471312558686,
+      "value": 10550.917254390844
+    },
+    {
+      "timestamp": "2025-02-10T17:25:56.144778",
+      "symbol": "GOOGL",
+      "action": "BUY",
+      "quantity": 69,
+      "price": 150.2891295638364,
+      "value": 10369.949939904713
+    },
+    {
+      "timestamp": "2025-01-23T17:25:56.144778",
+      "symbol": "AMZN",
+      "action": "BUY",
+      "quantity": 68,
+      "price": 160.36906832435497,
+      "value": 10905.096646056138
+    },
+    {
+      "timestamp": "2025-02-24T17:25:56.144778",
+      "symbol": "TSLA",
+      "action": "BUY",
+      "quantity": 56,
+      "price": 240.53796190167495,
+      "value": 13470.125866493798
+    },
+    {
+      "timestamp": "2025-03-26T17:25:56.144778",
+      "symbol": "NVDA",
+      "action": "BUY",
+      "quantity": 107,
+      "price": 101.83212674311814,
+      "value": 10896.03756151364
+    },
+    {
+      "timestamp": "2025-04-09T17:25:56.144778",
+      "symbol": "SPY",
+      "action": "BUY",
+      "quantity": 20,
+      "price": 501.80431054458893,
+      "value": 10036.086210891779
+    },
+    {
+      "timestamp": "2025-02-14T17:25:56.144778",
+      "symbol": "QQQ",
+      "action": "BUY",
+      "quantity": 24,
+      "price": 484.74139815277186,
+      "value": 11633.793555666525
+    },
+    {
+      "timestamp": "2025-03-30T17:25:56.144778",
+      "symbol": "GLD",
+      "action": "BUY",
+      "quantity": 38,
+      "price": 313.4305880219391,
+      "value": 11910.362344833686
+    }
+  ],
+  "performance_history": {
+    "timestamp": [
+      "2025-04-16T17:25:52.636563",
+      "2025-02-11T17:25:56.144778",
+      "2025-03-23T17:25:56.144778",
+      "2025-02-10T17:25:56.144778",
+      "2025-01-23T17:25:56.144778",
+      "2025-02-24T17:25:56.144778",
+      "2025-03-26T17:25:56.144778",
+      "2025-04-09T17:25:56.144778",
+      "2025-02-14T17:25:56.144778",
+      "2025-03-30T17:25:56.144778",
+      "2025-04-16T17:25:56.145149"
+    ],
+    "portfolio_value": [
+      100000.0,
+      100000.0,
+      100000.0,
+      100000.0,
+      100000.0,
+      100000.0,
+      99999.99999999999,
+      99999.99999999999,
+      100000.0,
+      99999.99999999999,
+      100545.88014477926
+    ],
+    "cash": [
+      100000.0,
+      91543.8095245304,
+      80992.89227013955,
+      70622.94233023483,
+      59717.84568417869,
+      46247.71981768489,
+      35351.68225617125,
+      25315.596045279468,
+      13681.802489612943,
+      1771.440144779257,
+      1771.440144779257
+    ]
+  },
+  "strategy_allocations": {
+    "Momentum": 35.0,
+    "MeanReversion": 25.0,
+    "Trend": 20.0,
+    "VolatilityBreakout": 15.0,
+    "MacroRegime": 5.0
+  },
+  "strategy_performance": {
+    "Momentum": {
+      "return": 12.5,
+      "sharpe": 1.4,
+      "drawdown": -8.3,
+      "win_rate": 62.0
+    },
+    "MeanReversion": {
+      "return": 8.2,
+      "sharpe": 1.1,
+      "drawdown": -5.7,
+      "win_rate": 58.0
+    },
+    "Trend": {
+      "return": 15.8,
+      "sharpe": 1.7,
+      "drawdown": -12.4,
+      "win_rate": 55.0
+    },
+    "VolatilityBreakout": {
+      "return": 10.3,
+      "sharpe": 1.2,
+      "drawdown": -9.6,
+      "win_rate": 51.0
+    },
+    "MacroRegime": {
+      "return": 7.1,
+      "sharpe": 1.0,
+      "drawdown": -6.2,
+      "win_rate": 53.0
+    }
+  },
+  "last_updated": "2025-04-16T17:25:56.145298"
+}

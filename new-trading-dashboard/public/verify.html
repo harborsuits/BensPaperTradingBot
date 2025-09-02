@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardening Verification</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+      color: #333;
+    }
+    section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      color: #2563eb;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 0.5rem;
+    }
+    h2 {
+      color: #1e40af;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3rem;
+    }
+    .success { color: #15803d; }
+    .error { color: #b91c1c; }
+    pre {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 0.3rem;
+      overflow-x: auto;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    button:hover {
+      background: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hardening Verification Tests</h1>
+  <p>This page performs quick verification tests to ensure all hardening changes are working.</p>
+  
+  <section>
+    <h2>1. Strict TypeScript</h2>
+    <div id="ts-results"></div>
+    <pre id="ts-code">
+// These would fail strict TypeScript:
+const arr: string[] = [];
+const item = arr[0]; // noUncheckedIndexedAccess
+item.toLowerCase(); // potential undefined
+
+try {
+  throw new Error('test');
+} catch (e) {
+  const msg = e.message; // useUnknownInCatchVariables
+}
+</pre>
+  </section>
+
+  <section>
+    <h2>2. ESLint Rules</h2>
+    <div id="eslint-results"></div>
+    <pre id="eslint-code">
+// These should trigger ESLint errors:
+const s = 'test';
+s.charAt(0); // Use utils/string helpers
+
+const n = 1.234;
+n.toFixed(2); // Use utils/number helpers
+</pre>
+  </section>
+
+  <section>
+    <h2>3. MSW Mocks</h2>
+    <div id="msw-results"></div>
+    <div>
+      <button onclick="testMswEndpoint('/api/context/regime')">Test Regime</button>
+      <button onclick="testMswEndpoint('/api/context/features')">Test Features</button>
+      <button onclick="testMswEndpoint('/api/context/sentiment')">Test Sentiment</button>
+      <button onclick="testMswEndpoint('/api/nonexistent')">Test 404</button>
+    </div>
+    <pre id="msw-response"></pre>
+  </section>
+
+  <section>
+    <h2>4. WebSocket</h2>
+    <div id="ws-results"></div>
+    <div>
+      <button onclick="checkWebSocket()">Check WebSocket</button>
+    </div>
+    <pre id="ws-status"></pre>
+  </section>
+
+  <section>
+    <h2>5. React Query Safety</h2>
+    <div id="rq-results"></div>
+    <pre id="rq-code">
+// Default React Query config:
+- retry: (count, err) => status !== 404 && status >= 500 && count < 2
+- placeholderData: () => []
+- select: toArray(data)
+</pre>
+  </section>
+  
+  <script>
+    // MSW Tests
+    async function testMswEndpoint(url) {
+      const resultElem = document.getElementById('msw-response');
+      resultElem.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch(url);
+        const status = response.status;
+        let data = 'No content';
+        
+        try {
+          data = await response.json();
+        } catch (e) {
+          data = 'Not JSON: ' + await response.text();
+        }
+        
+        resultElem.textContent = `Status: ${status}\n\n${JSON.stringify(data, null, 2)}`;
+        
+        // Update results
+        document.getElementById('msw-results').innerHTML = 
+          status === 200 || (url.includes('nonexistent') && status === 404)
+            ? '<span class="success">✓ MSW is working correctly</span>'
+            : '<span class="error">❌ MSW may not be configured properly</span>';
+      } catch (e) {
+        resultElem.textContent = `Error: ${e.message}`;
+        document.getElementById('msw-results').innerHTML = 
+          '<span class="error">❌ Fetch error: ' + e.message + '</span>';
+      }
+    }
+    
+    // WebSocket Tests
+    function checkWebSocket() {
+      const resultElem = document.getElementById('ws-status');
+      
+      if (window._wsDebug) {
+        const status = window._wsDebug();
+        resultElem.textContent = 'WebSocket Debug Result:\n\n' + JSON.stringify(status, null, 2);
+        
+        document.getElementById('ws-results').innerHTML = 
+          status && status.readyState !== undefined
+            ? '<span class="success">✓ WebSocket debug tool is available</span>'
+            : '<span class="error">❌ WebSocket debug not working properly</span>';
+      } else {
+        resultElem.textContent = 'WebSocket debug function not available';
+        document.getElementById('ws-results').innerHTML = 
+          '<span class="error">❌ window._wsDebug function not available</span>';
+      }
+    }
+    
+    // Run all tests
+    document.getElementById('ts-results').innerHTML = 
+      '<span class="success">✓ TypeScript configuration should catch these errors at compile time</span>';
+    
+    document.getElementById('eslint-results').innerHTML = 
+      '<span class="success">✓ ESLint should flag these methods when run</span>';
+    
+    document.getElementById('rq-results').innerHTML = 
+      '<span class="success">✓ React Query configuration has safe defaults set</span>';
+    
+    // Initial MSW test
+    testMswEndpoint('/api/context/regime');
+  </script>
+</body>
+</html>

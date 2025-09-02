@@ -1,0 +1,9 @@
+.progressBar {
+  width: var(--progress-width, 0%);
+  height: 0.625rem; /* h-2.5 */
+  border-radius: 9999px;
+  background-color: #2563eb; /* bg-blue-600 */
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}

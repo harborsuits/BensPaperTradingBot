@@ -1,0 +1,725 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2023-09-12",
+  "description": "Comprehensive strategy selection matrix based on market conditions",
+  "strategy_matrix": [
+    {
+      "id": "high_volatility",
+      "condition": "VIX > 25",
+      "condition_type": "technical",
+      "indicator": "vix",
+      "operator": ">",
+      "threshold": 25,
+      "market_regime": "high_volatility",
+      "preferred_strategies": [
+        {
+          "name": "volatility_squeeze",
+          "weight": 0.40,
+          "trade_type": "options",
+          "time_frame": "1-4 weeks",
+          "optimal_market": "high volatility with clear direction",
+          "implementation": {
+            "entry_trigger": "Bollinger Bands squeezing + ATR expansion",
+            "option_structure": "Calls or puts based on direction",
+            "expiration": "30-45 DTE",
+            "strike_selection": "ATM to slightly OTM",
+            "position_sizing": "1-2% account risk per trade"
+          }
+        },
+        {
+          "name": "long_straddle",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "1-2 weeks",
+          "optimal_market": "high uncertainty before major events",
+          "implementation": {
+            "entry_trigger": "IV percentile < 60% before anticipated move",
+            "option_structure": "ATM calls and puts, same expiration",
+            "expiration": "30-45 DTE",
+            "strike_selection": "At-the-money",
+            "position_sizing": "1-1.5% account risk, equal weighting calls/puts"
+          }
+        },
+        {
+          "name": "long_strangle",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "1-3 weeks",
+          "optimal_market": "volatile with less certainty on timing",
+          "implementation": {
+            "entry_trigger": "Low IV + expected catalyst",
+            "option_structure": "OTM calls and puts, same expiration",
+            "expiration": "30-60 DTE",
+            "strike_selection": "10-15% OTM on both sides",
+            "position_sizing": "1-1.5% account risk, equal weighting"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "credit_spreads",
+          "reason": "High volatility increases tail risk, undefined risk strategies vulnerable"
+        },
+        {
+          "name": "iron_condor",
+          "reason": "Increased chance of breaching wings in volatile conditions"
+        }
+      ],
+      "notes": "Market is volatile. Favor long volatility plays and defined-risk directional bets.",
+      "risk_adjustment": "Reduce position size by 25-30% from baseline",
+      "sector_bias": ["Utilities", "Consumer Staples", "Healthcare"],
+      "time_of_day_preference": "Avoid first and last 30 minutes of sessions",
+      "success_metrics": {
+        "win_rate_target": 0.40,
+        "profit_factor_target": 1.8,
+        "risk_reward_target": 2.5
+      }
+    },
+    {
+      "id": "low_volatility",
+      "condition": "VIX < 15",
+      "condition_type": "technical",
+      "indicator": "vix",
+      "operator": "<",
+      "threshold": 15,
+      "market_regime": "low_volatility",
+      "preferred_strategies": [
+        {
+          "name": "theta_spread",
+          "weight": 0.40,
+          "trade_type": "options",
+          "time_frame": "1-3 weeks",
+          "optimal_market": "rangebound with high IV rank",
+          "implementation": {
+            "entry_trigger": "IV Rank > 50%, price within defined range",
+            "option_structure": "Credit spread or iron condor",
+            "expiration": "21-45 DTE",
+            "strike_selection": "30-45 delta short options",
+            "position_sizing": "Max loss limited to 1-2% of account"
+          }
+        },
+        {
+          "name": "iron_condor",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "2-4 weeks",
+          "optimal_market": "rangebound markets with elevated IV",
+          "implementation": {
+            "entry_trigger": "RSI between 40-60, price between major MAs",
+            "option_structure": "OTM put spread + OTM call spread",
+            "expiration": "30-45 DTE",
+            "strike_selection": "Short strikes at 0.16-0.30 delta, wings 5-10 points wide",
+            "position_sizing": "Max risk 1-2% of account"
+          }
+        },
+        {
+          "name": "calendar_spread",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "2-6 weeks",
+          "optimal_market": "low volatility expected to increase",
+          "implementation": {
+            "entry_trigger": "Low IV environment, price near technical support/resistance",
+            "option_structure": "Sell near-term, buy longer-term at same strike",
+            "expiration": "Front month 20-30 DTE, back month 50-60 DTE",
+            "strike_selection": "At-the-money or slightly OTM in direction of bias",
+            "position_sizing": "Risk 0.5-1% of account per calendar"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "long_straddle",
+          "reason": "Excessive premium cost relative to expected movement"
+        },
+        {
+          "name": "strangle",
+          "reason": "Theta decay typically exceeds value of directional move"
+        },
+        {
+          "name": "breakout_swing",
+          "reason": "False breakouts common in low volatility environment"
+        }
+      ],
+      "notes": "Calm markets favor premium collection and non-directional trades.",
+      "risk_adjustment": "Standard position sizing",
+      "sector_bias": ["Technology", "Financials", "Consumer Discretionary"],
+      "time_of_day_preference": "Enter positions mid-session when volatility typically lowest",
+      "success_metrics": {
+        "win_rate_target": 0.65,
+        "profit_factor_target": 1.5,
+        "risk_reward_target": 1.2
+      }
+    },
+    {
+      "id": "inflation_surprise",
+      "condition": "CPI > forecast",
+      "condition_type": "fundamental",
+      "indicator": "cpi",
+      "operator": ">",
+      "threshold": "forecast",
+      "market_regime": "macro_driven",
+      "preferred_strategies": [
+        {
+          "name": "bear_call_spread",
+          "weight": 0.60,
+          "trade_type": "options",
+          "time_frame": "1-3 weeks",
+          "optimal_market": "bearish with elevated IV",
+          "implementation": {
+            "entry_trigger": "First bearish candle after CPI release",
+            "option_structure": "Sell lower strike call, buy higher strike call",
+            "expiration": "21-45 DTE",
+            "strike_selection": "Sell at resistance level, buy 5-10 points higher",
+            "position_sizing": "Risk 1-2% of account"
+          }
+        },
+        {
+          "name": "short_equity",
+          "weight": 0.40,
+          "trade_type": "equity",
+          "time_frame": "1-5 days",
+          "optimal_market": "clear bearish price action with volume confirmation",
+          "implementation": {
+            "entry_trigger": "Break below key support with increasing volume",
+            "exit_strategy": "Technical bounce or predetermined price target",
+            "stop_placement": "Above recent swing high or VWAP",
+            "position_sizing": "0.5-1% account risk based on stop distance"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "bull_call_spread",
+          "reason": "Inflation surprises typically create downward pressure on equities"
+        },
+        {
+          "name": "breakout_swing",
+          "reason": "False upside breakouts likely during risk-off reactions"
+        }
+      ],
+      "notes": "Inflation surprise—expect risk-off behavior.",
+      "risk_adjustment": "Increase position size by 20% for first 48 hours after report",
+      "sector_bias": ["Energy", "Materials", "TIPS ETFs"],
+      "sector_avoid": ["Consumer Discretionary", "Technology"],
+      "time_of_day_preference": "Enter within first 2 hours after data release",
+      "success_metrics": {
+        "win_rate_target": 0.55,
+        "profit_factor_target": 1.7,
+        "risk_reward_target": 1.8
+      }
+    },
+    {
+      "id": "weak_growth",
+      "condition": "GDP < 1.5%",
+      "condition_type": "fundamental",
+      "indicator": "gdp",
+      "operator": "<",
+      "threshold": 1.5,
+      "market_regime": "bearish",
+      "preferred_strategies": [
+        {
+          "name": "pullback_to_moving_average",
+          "weight": 0.55,
+          "trade_type": "equity",
+          "time_frame": "3-10 days",
+          "optimal_market": "overall downtrend with countertrend bounces",
+          "implementation": {
+            "entry_trigger": "Price pullback to 10-20 EMA in downtrend",
+            "exit_strategy": "First sign of momentum returning to primary trend",
+            "stop_placement": "Above recent swing high",
+            "position_sizing": "0.75-1.25% account risk per trade"
+          }
+        },
+        {
+          "name": "defensive_sector_rotation",
+          "weight": 0.45,
+          "trade_type": "equity",
+          "time_frame": "2-8 weeks",
+          "optimal_market": "weak economy with flight to safety",
+          "implementation": {
+            "entry_trigger": "Relative strength breakout in defensive sectors",
+            "instruments": "Sector ETFs - XLP, XLU, XLV",
+            "exit_strategy": "Break of relative strength or economic improvement",
+            "position_sizing": "2-3% account per sector position"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "breakout_swing",
+          "reason": "Weak growth environments rarely support sustained breakouts"
+        },
+        {
+          "name": "weekly_momentum",
+          "reason": "Momentum difficult to maintain without economic tailwinds"
+        }
+      ],
+      "notes": "Weak growth—expect rangebound or choppy trend reversals.",
+      "risk_adjustment": "Reduce position size by 15-20% from baseline",
+      "sector_bias": ["Utilities", "Healthcare", "Consumer Staples"],
+      "sector_avoid": ["Financials", "Industrials", "Small Caps"],
+      "time_of_day_preference": "Favor afternoon entries when morning volatility settles",
+      "success_metrics": {
+        "win_rate_target": 0.45,
+        "profit_factor_target": 1.4,
+        "risk_reward_target": 1.6
+      }
+    },
+    {
+      "id": "goldilocks_economy",
+      "condition": "Jobs report beats + wage growth low",
+      "condition_type": "fundamental",
+      "indicator": "Jobs & Wages",
+      "operator": "complex",
+      "threshold": "mixed",
+      "market_regime": "bullish",
+      "preferred_strategies": [
+        {
+          "name": "bull_put_spread",
+          "weight": 0.60,
+          "trade_type": "options",
+          "time_frame": "2-3 weeks",
+          "optimal_market": "bullish, moderate IV",
+          "implementation": {
+            "entry_trigger": "Price pullback to support in bullish regime",
+            "option_structure": "Sell higher strike put, buy lower strike put",
+            "expiration": "30-45 DTE",
+            "strike_selection": "Sell at support level (0.30 delta), buy 5-10 points lower",
+            "position_sizing": "Risk 1-2% of account"
+          }
+        },
+        {
+          "name": "breakout_swing",
+          "weight": 0.40,
+          "trade_type": "equity",
+          "time_frame": "3-10 days",
+          "optimal_market": "bullish trend with volume confirmation",
+          "implementation": {
+            "entry_trigger": "Break above resistance with increasing volume",
+            "exit_strategy": "Trailing stop or target at next resistance level",
+            "stop_placement": "Below recent swing low or key support",
+            "position_sizing": "1-2% account risk based on stop distance"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "short_volatility",
+          "reason": "Good economic data can rapidly change market dynamics"
+        },
+        {
+          "name": "short_equity",
+          "reason": "Strong jobs without wage pressure is bullish for stocks"
+        }
+      ],
+      "notes": "Goldilocks macro — pro-risk environment.",
+      "risk_adjustment": "Increase position size by 15-20% from baseline",
+      "sector_bias": ["Technology", "Consumer Discretionary", "Industrials"],
+      "sector_avoid": ["Utilities", "Staples"],
+      "time_of_day_preference": "Enter within first 90 minutes after data release",
+      "success_metrics": {
+        "win_rate_target": 0.60,
+        "profit_factor_target": 1.9,
+        "risk_reward_target": 1.6
+      }
+    },
+    {
+      "id": "earnings_season",
+      "condition": "Earnings season active",
+      "condition_type": "calendar",
+      "indicator": "Earnings Calendar",
+      "operator": "=",
+      "threshold": "active",
+      "market_regime": "earnings_driven",
+      "preferred_strategies": [
+        {
+          "name": "earnings_strangle",
+          "weight": 0.40,
+          "trade_type": "options",
+          "time_frame": "1-5 days",
+          "optimal_market": "pre-earnings volatility expansion",
+          "implementation": {
+            "entry_trigger": "1-3 days before earnings",
+            "option_structure": "OTM call and put, same expiration",
+            "expiration": "Weekly containing earnings date",
+            "strike_selection": "10-15% OTM both sides",
+            "position_sizing": "0.5-1% account risk, equal weighting",
+            "exit_timing": "Before earnings or immediately after announcement"
+          }
+        },
+        {
+          "name": "calendar_spread",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "1-2 weeks",
+          "optimal_market": "IV rise into earnings",
+          "implementation": {
+            "entry_trigger": "7-10 days pre-earnings",
+            "option_structure": "Buy post-earnings expiration, sell pre-earnings expiration",
+            "strike_selection": "ATM or slightly OTM in direction of bias",
+            "position_sizing": "0.75-1% account risk",
+            "exit_timing": "Day before earnings"
+          }
+        },
+        {
+          "name": "theta_spread",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "3-10 days",
+          "optimal_market": "post-earnings IV crush",
+          "implementation": {
+            "entry_trigger": "Day after earnings release, once IV begins dropping",
+            "option_structure": "Credit spread or iron condor",
+            "expiration": "14-30 DTE",
+            "strike_selection": "Based on post-earnings expected range",
+            "position_sizing": "Max risk 1-1.5% of account"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "swing_trend",
+          "reason": "Earnings surprises can invalidate technical setups quickly"
+        },
+        {
+          "name": "macro setups",
+          "reason": "Company-specific news dominates macro factors during earnings"
+        }
+      ],
+      "notes": "Favor event-driven options plays. Monitor IV crush risk.",
+      "risk_adjustment": "Reduce position size by 25% for earnings-driven trades",
+      "sector_bias": ["Focus on sectors early in reporting cycle"],
+      "time_of_day_preference": "Enter earnings trades after 11:00 AM when morning volatility stabilizes",
+      "success_metrics": {
+        "win_rate_target": 0.45,
+        "profit_factor_target": 1.6,
+        "risk_reward_target": 2.0
+      }
+    },
+    {
+      "id": "tech_leadership",
+      "condition": "Sector rotation: tech leading",
+      "condition_type": "relative_strength",
+      "indicator": "xlk_performance",
+      "operator": ">",
+      "threshold": "1-month relative performance",
+      "market_regime": "sector_rotation",
+      "preferred_strategies": [
+        {
+          "name": "breakout_swing",
+          "weight": 0.40,
+          "trade_type": "equity",
+          "time_frame": "5-15 days",
+          "optimal_market": "trending with relative strength",
+          "implementation": {
+            "entry_trigger": "Break above prior resistance with volume confirmation",
+            "sector_focus": "Technology leaders, semiconductor stocks",
+            "exit_strategy": "Trailing stop or measured move target",
+            "stop_placement": "Below prior consolidation",
+            "position_sizing": "1-2% account risk"
+          }
+        },
+        {
+          "name": "bull_call_spread",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "2-4 weeks",
+          "optimal_market": "bullish trend with clear technical setup",
+          "implementation": {
+            "entry_trigger": "Pullback to key support in uptrend",
+            "option_structure": "Buy lower strike call, sell higher strike call",
+            "expiration": "30-60 DTE",
+            "strike_selection": "Buy ATM, sell at next resistance (5-15 points higher)",
+            "position_sizing": "Risk 1-2% of account per spread"
+          }
+        },
+        {
+          "name": "VCP_style_entries",
+          "weight": 0.25,
+          "trade_type": "equity",
+          "time_frame": "10-30 days",
+          "optimal_market": "strong stocks building bases",
+          "implementation": {
+            "entry_trigger": "Tight consolidation after uptrend, then volume breakout",
+            "focus": "Leading tech stocks with strong earnings",
+            "exit_strategy": "Trailing stop at 7-10%",
+            "stop_placement": "Below lowest point of consolidation",
+            "position_sizing": "0.75-1.5% account risk"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "energy_long",
+          "reason": "Sector rotation typically pulls capital away from lagging sectors"
+        },
+        {
+          "name": "value_sectors",
+          "reason": "Growth outperforms value during tech leadership phases"
+        }
+      ],
+      "notes": "Risk-on behavior; use growth strategies with momentum.",
+      "risk_adjustment": "Standard position sizing",
+      "sector_bias": ["Technology", "Communication Services", "Semiconductors"],
+      "sector_avoid": ["Energy", "Utilities", "Basic Materials"],
+      "time_of_day_preference": "Enter on morning pullbacks in overall bullish days",
+      "success_metrics": {
+        "win_rate_target": 0.55,
+        "profit_factor_target": 1.8,
+        "risk_reward_target": 1.7
+      }
+    },
+    {
+      "id": "defensive_rotation",
+      "condition": "Sector rotation: staples leading",
+      "condition_type": "relative_strength",
+      "indicator": "xlp_performance",
+      "operator": ">",
+      "threshold": "1-month relative performance",
+      "market_regime": "bearish",
+      "preferred_strategies": [
+        {
+          "name": "pullback_to_moving_average",
+          "weight": 0.45,
+          "trade_type": "equity",
+          "time_frame": "3-8 days",
+          "optimal_market": "bearish with countertrend rallies",
+          "implementation": {
+            "entry_trigger": "Retracement to declining 10/20 EMA",
+            "focus": "Weak stocks/ETFs showing relative weakness",
+            "exit_strategy": "First sign of downtrend resuming",
+            "stop_placement": "Above recent swing high or declining 50 EMA",
+            "position_sizing": "0.75-1.25% account risk"
+          }
+        },
+        {
+          "name": "theta_spread",
+          "weight": 0.30,
+          "trade_type": "options",
+          "time_frame": "2-3 weeks",
+          "optimal_market": "slow grinding market with elevated IV",
+          "implementation": {
+            "entry_trigger": "Price consolidation with IV > 50th percentile",
+            "option_structure": "Credit spread in direction of market bias",
+            "expiration": "21-45 DTE",
+            "strike_selection": "30-40 delta short options",
+            "position_sizing": "Risk 1% of account per spread"
+          }
+        },
+        {
+          "name": "protective_puts",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "1-3 months",
+          "optimal_market": "early signs of market weakness",
+          "implementation": {
+            "entry_trigger": "Deteriorating breadth, defensive leadership",
+            "option_structure": "Long puts on indexes or weak sectors",
+            "expiration": "60-90 DTE",
+            "strike_selection": "5-10% OTM puts",
+            "position_sizing": "0.5-1% of portfolio value in premium"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "momentum_breakout",
+          "reason": "Defensive rotations signal caution on aggressive bullish strategies"
+        },
+        {
+          "name": "high_beta_calls",
+          "reason": "Low-volatility stocks outperform during defensive rotations"
+        }
+      ],
+      "notes": "Risk-off rotation; shift to conservative setups.",
+      "risk_adjustment": "Reduce position size by 15% from baseline",
+      "sector_bias": ["Consumer Staples", "Utilities", "Healthcare"],
+      "sector_avoid": ["Technology", "Consumer Discretionary", "Communications"],
+      "time_of_day_preference": "Enter defensive trades in afternoon sessions",
+      "success_metrics": {
+        "win_rate_target": 0.60,
+        "profit_factor_target": 1.4,
+        "risk_reward_target": 1.3
+      }
+    },
+    {
+      "id": "fomc_week",
+      "condition": "Fed meeting week",
+      "condition_type": "calendar",
+      "indicator": "Economic Calendar",
+      "operator": "=",
+      "threshold": "FOMC meeting",
+      "market_regime": "macro_driven",
+      "preferred_strategies": [
+        {
+          "name": "iron_condor",
+          "weight": 0.40,
+          "trade_type": "options",
+          "time_frame": "1-5 days",
+          "optimal_market": "pre-FOMC compression",
+          "implementation": {
+            "entry_trigger": "1-2 days before FOMC announcement",
+            "option_structure": "OTM put spread + OTM call spread",
+            "expiration": "7-14 DTE",
+            "strike_selection": "Short strikes beyond expected move",
+            "position_sizing": "Max risk 0.75-1% of account",
+            "exit_timing": "Before FOMC announcement"
+          }
+        },
+        {
+          "name": "calendar_spread",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "2-10 days",
+          "optimal_market": "volatility expansion after FOMC",
+          "implementation": {
+            "entry_trigger": "1-2 days before FOMC",
+            "option_structure": "Sell front week, buy back week at same strike",
+            "strike_selection": "ATM or match expected directional bias",
+            "position_sizing": "0.5-0.75% account risk",
+            "exit_timing": "After FOMC volatility spike"
+          }
+        },
+        {
+          "name": "neutral_options",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "1-5 days",
+          "optimal_market": "market indecision pre-FOMC",
+          "implementation": {
+            "entry_trigger": "1-3 days before FOMC announcement",
+            "option_structure": "Butterfly spreads or condors",
+            "expiration": "7-14 DTE",
+            "strike_selection": "Centered around current price",
+            "position_sizing": "0.5-1% account risk"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "large_directional_equity_bets",
+          "reason": "Heightened uncertainty and potential for rapid market shifts"
+        }
+      ],
+      "notes": "Expect pre-FOMC compression, post-FOMC volatility.",
+      "risk_adjustment": "Reduce position size by 30% from baseline",
+      "sector_bias": ["Financials for rate sensitivity", "Defensive sectors for safety"],
+      "time_of_day_preference": "Avoid day of FOMC until after announcement",
+      "success_metrics": {
+        "win_rate_target": 0.50,
+        "profit_factor_target": 1.5,
+        "risk_reward_target": 1.4
+      }
+    },
+    {
+      "id": "new_ath_breakout",
+      "condition": "SPY breaking new ATHs",
+      "condition_type": "technical",
+      "indicator": "spy_price",
+      "operator": ">",
+      "threshold": "all-time high",
+      "market_regime": "bullish",
+      "preferred_strategies": [
+        {
+          "name": "breakout_swing",
+          "weight": 0.40,
+          "trade_type": "equity",
+          "time_frame": "5-15 days",
+          "optimal_market": "strong trend with broad participation",
+          "implementation": {
+            "entry_trigger": "Breakout above resistance with volume confirmation",
+            "focus": "Leading stocks in top sectors",
+            "exit_strategy": "Trailing stop or measured move target",
+            "stop_placement": "Below breakout point",
+            "position_sizing": "1-2% account risk"
+          }
+        },
+        {
+          "name": "bull_put_spread",
+          "weight": 0.35,
+          "trade_type": "options",
+          "time_frame": "2-4 weeks",
+          "optimal_market": "bullish trend with elevated IV",
+          "implementation": {
+            "entry_trigger": "Pullback to key support level",
+            "option_structure": "Sell higher strike put, buy lower strike put",
+            "expiration": "30-45 DTE",
+            "strike_selection": "Sell at support level, buy 5-10 points lower",
+            "position_sizing": "Risk 1-2% of account"
+          }
+        },
+        {
+          "name": "weekly_options_momentum",
+          "weight": 0.25,
+          "trade_type": "options",
+          "time_frame": "1-5 days",
+          "optimal_market": "strong momentum during breakout phase",
+          "implementation": {
+            "entry_trigger": "Relative strength breakout with volume confirmation",
+            "option_structure": "Long calls, slightly OTM",
+            "expiration": "7-14 DTE",
+            "strike_selection": "5-7% OTM",
+            "position_sizing": "0.5-1% account risk in premium"
+          }
+        }
+      ],
+      "avoid_strategies": [
+        {
+          "name": "iron_condor",
+          "reason": "Breakouts can continue far beyond expected ranges"
+        },
+        {
+          "name": "credit_spreads_above_market",
+          "reason": "Momentum can carry prices through anticipated resistance"
+        }
+      ],
+      "notes": "Momentum regimes reward trend continuation setups.",
+      "risk_adjustment": "Increase position size by 15-20% from baseline",
+      "sector_bias": ["Leading sectors with strongest relative strength"],
+      "sector_avoid": ["Lagging defensive sectors"],
+      "time_of_day_preference": "Enter on morning strength, add on afternoon consolidation",
+      "success_metrics": {
+        "win_rate_target": 0.65,
+        "profit_factor_target": 2.0,
+        "risk_reward_target": 1.5
+      }
+    }
+  ],
+  "meta": {
+    "strategy_definitions": {
+      "volatility_squeeze": "Strategy that capitalizes on volatility expansion after periods of contraction, often using options to benefit from the subsequent directional move",
+      "long_straddle": "Option strategy involving buying both a call and put at the same strike price, profiting from large price moves in either direction",
+      "long_strangle": "Similar to straddle but using OTM options, cheaper with higher breakeven requirement",
+      "theta_spread": "Option strategies that primarily benefit from time decay, including credit spreads and iron condors",
+      "iron_condor": "Option strategy that sells an OTM put spread and OTM call spread simultaneously, profiting from a range-bound market",
+      "calendar_spread": "Option strategy that sells near-term options and buys longer-term options at the same strike, profiting from time decay and/or volatility increases",
+      "bear_call_spread": "Bearish option strategy that sells a lower strike call and buys a higher strike call, profiting from price decline or stability",
+      "short_equity": "Directly shorting shares of stock or ETF, profiting from price declines",
+      "pullback_to_moving_average": "Strategy that enters counter to short-term price movement but in the direction of the overall trend",
+      "defensive_sector_rotation": "Strategy that shifts capital to defensive sectors (utilities, staples, healthcare) during periods of market stress",
+      "bull_put_spread": "Bullish option strategy that sells a higher strike put and buys a lower strike put, profiting from price increases or stability",
+      "breakout_swing": "Trading strategy that enters when price breaks above resistance with increased volume",
+      "earnings_strangle": "Option strategy specifically targeting earnings announcements, using OTM calls and puts to profit from large moves",
+      "VCP_style_entries": "Volatility Contraction Pattern entry method popularized by Mark Minervini, looking for tight price consolidation before breakout",
+      "weekly_options_momentum": "Strategy using short-term options to capitalize on strong price momentum"
+    },
+    "implementation_notes": {
+      "position_sizing": "All percentage references are to total account value unless otherwise specified",
+      "risk_per_trade": "Always defined as the maximum possible loss on the position",
+      "stop_placement": "Technical stop locations should be adjusted for volatility using ATR multipliers",
+      "DTE": "Days To Expiration for option contracts",
+      "entry_timing": "Consider market internals (breadth, TICK) for optimal entry timing",
+      "profit_targets": "Scale out approach recommended for most strategies: 1/3 at 1R, 1/3 at 2R, 1/3 at 3R or trail",
+      "correlation_limits": "Avoid having more than 3 positions with correlation > 0.7 simultaneously",
+      "sector_exposure": "Maximum 30% of portfolio in any single sector",
+      "delta_exposure": "Track net portfolio delta and avoid extremes (>70% or <-30%)"
+    },
+    "success_metric_definitions": {
+      "win_rate": "Percentage of trades that result in profit",
+      "profit_factor": "Gross profits divided by gross losses",
+      "risk_reward": "Average win size divided by average loss size",
+      "expectancy": "(Win Rate × Average Win) - (Loss Rate × Average Loss)"
+    }
+  }
+} 

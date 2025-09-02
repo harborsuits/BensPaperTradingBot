@@ -1,0 +1,72 @@
+{
+    "feature_engineering": {
+        "include_technicals": true,
+        "lookback_periods": [5, 10, 20, 50],
+        "ta_feature_sets": ["momentum", "trend", "volatility", "volume"],
+        "include_time_features": true,
+        "include_price_patterns": true,
+        "include_lags": true,
+        "lags": [1, 3, 5],
+        "detect_market_regime": true,
+        "normalize_features": true
+    },
+    
+    "target": {
+        "horizons": [1, 5, 10],
+        "thresholds": [0.0, 0.005, 0.01]
+    },
+    
+    "rl": {
+        "agent_type": "ppo",
+        "initial_balance": 100000.0,
+        "trading_cost": 0.001,
+        "slippage": 0.0005,
+        "window_size": 50,
+        "reward_type": "sharpe",
+        "reward_scale": 1.0,
+        "allow_short": false,
+        
+        "training_timesteps": 500000,
+        "eval_freq": 10000,
+        "save_freq": 50000,
+        
+        "model_params": {
+            "learning_rate": 0.0003,
+            "n_steps": 2048,
+            "batch_size": 64,
+            "n_epochs": 10,
+            "gamma": 0.99,
+            "gae_lambda": 0.95,
+            "clip_range": 0.2,
+            "ent_coef": 0.01,
+            "vf_coef": 0.5,
+            "max_grad_norm": 0.5,
+            "use_sde": false,
+            "policy_kwargs": {
+                "net_arch": [
+                    {
+                        "pi": [128, 64],
+                        "vf": [128, 64]
+                    }
+                ],
+                "activation_fn": "tanh"
+            }
+        }
+    },
+    
+    "evaluation": {
+        "benchmark": "equal_weight",
+        "metrics": [
+            "sharpe_ratio",
+            "sortino_ratio", 
+            "max_drawdown",
+            "total_return",
+            "volatility"
+        ],
+        "backtest_params": {
+            "initial_balance": 100000.0,
+            "portfolio_rebalance_frequency": "daily",
+            "include_transaction_costs": true
+        }
+    }
+} 

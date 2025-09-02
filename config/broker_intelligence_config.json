@@ -1,0 +1,44 @@
+{
+    "enable_intelligence": true,
+    "monitor_interval_seconds": 15,
+    "advisor": {
+        "factor_weights": {
+            "latency": 0.20,
+            "reliability": 0.40,
+            "execution_quality": 0.25,
+            "cost": 0.15
+        },
+        "circuit_breaker_thresholds": {
+            "error_count": 5,
+            "error_rate": 0.3,
+            "availability_min": 90.0,
+            "reset_after_seconds": 300
+        },
+        "asset_class_weights": {
+            "equities": {
+                "latency": 0.15,
+                "reliability": 0.45,
+                "execution_quality": 0.30,
+                "cost": 0.10
+            },
+            "forex": {
+                "latency": 0.30,
+                "reliability": 0.40,
+                "execution_quality": 0.20,
+                "cost": 0.10
+            },
+            "options": {
+                "latency": 0.15,
+                "reliability": 0.30,
+                "execution_quality": 0.40,
+                "cost": 0.15
+            }
+        }
+    },
+    "risk_thresholds": {
+        "drawdown_warning": 3.0,
+        "drawdown_critical": 4.0,
+        "error_rate_warning": 0.1,
+        "error_rate_critical": 0.3
+    }
+}

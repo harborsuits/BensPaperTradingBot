@@ -1,0 +1,20 @@
+.entryColoredText {
+  color: #ffffff;
+}
+
+/* Common chart colors */
+.colorBlue { color: #3182CE; }
+.colorPurple { color: #805AD5; }
+.colorTeal { color: #38B2AC; }
+.colorGreen { color: #48BB78; }
+.colorOrange { color: #ED8936; }
+.colorRed { color: #E53E3E; }
+.colorPink { color: #D53F8C; }
+.colorGray { color: #A0AEC0; }
+
+.tooltipItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+}

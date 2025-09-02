@@ -1,0 +1,37 @@
+{
+  "summary": {
+    "initial_capital": 100000.0,
+    "final_capital": 100000.0,
+    "total_return_pct": 0.0,
+    "annual_return_pct": 0.0,
+    "volatility_pct": 0.0,
+    "sharpe_ratio": -Infinity,
+    "max_drawdown_pct": -1.1102230246251565e-14,
+    "win_rate_pct": 0.0,
+    "backtest_days": 365,
+    "rebalance_frequency": "monthly",
+    "strategies": [
+      "trend_following",
+      "momentum",
+      "mean_reversion",
+      "breakout_swing",
+      "volatility_breakout",
+      "option_spreads"
+    ]
+  },
+  "config": {
+    "start_date": "2024-04-14",
+    "end_date": "2025-04-14",
+    "initial_capital": 100000.0,
+    "strategies": [
+      "trend_following",
+      "momentum",
+      "mean_reversion",
+      "breakout_swing",
+      "volatility_breakout",
+      "option_spreads"
+    ],
+    "rebalance_frequency": "monthly",
+    "benchmark": "SPY"
+  }
+}

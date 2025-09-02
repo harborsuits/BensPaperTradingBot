@@ -1,0 +1,31 @@
+{
+    "email": {
+        "enabled": true,
+        "server": "smtp.gmail.com",
+        "port": 587,
+        "username": "your-email@gmail.com",
+        "password": "your-app-password",
+        "recipients": [
+            "your-email@gmail.com"
+        ]
+    },
+    "benchmarks": [
+        "SPY",
+        "VIX"
+    ],
+    "thresholds": {
+        "sharpe_ratio": 0.5,
+        "win_rate": 45.0,
+        "max_drawdown": -10.0,
+        "rolling_windows": [
+            5,
+            10,
+            20,
+            60
+        ]
+    },
+    "optimization": {
+        "auto_optimize": false,
+        "optimization_threshold": -20.0
+    }
+}

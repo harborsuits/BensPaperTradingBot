@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BensBot Pro - Simple Portfolio Overview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #141b2d;
+            color: #edf0f7;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #2e3951;
+            padding-bottom: 15px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .card {
+            background-color: #1c2536;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-box {
+            padding: 15px;
+            background-color: #242e45;
+            border-radius: 6px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .positive {
+            color: #4ade80;
+        }
+        
+        .negative {
+            color: #f87171;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background-color: #242e45;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .positions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .positions-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #2e3951;
+            color: #94a3b8;
+        }
+        
+        .positions-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #242e45;
+        }
+        
+        .positions-table tr:hover {
+            background-color: #242e45;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Portfolio Overview</h1>
+        </div>
+        
+        <!-- Portfolio Summary Card -->
+        <div class="card">
+            <h2 class="card-title">Portfolio Summary</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Portfolio Value</div>
+                    <div class="stat-value">$137,250.82</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Today's Change</div>
+                    <div class="stat-value positive">+$1,824.63 (+1.34%)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Cash Balance</div>
+                    <div class="stat-value">$42,320.45</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Invested Value</div>
+                    <div class="stat-value">$94,930.37</div>
+                </div>
+            </div>
+            
+            <div class="chart-placeholder">
+                Portfolio Performance Chart Would Appear Here
+            </div>
+        </div>
+        
+        <!-- Asset Allocation Card -->
+        <div class="card">
+            <h2 class="card-title">Asset Allocation</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Stocks</div>
+                    <div class="stat-value">68.47%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Options</div>
+                    <div class="stat-value">16.33%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Forex</div>
+                    <div class="stat-value">8.88%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Crypto</div>
+                    <div class="stat-value">6.32%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Positions Card -->
+        <div class="card">
+            <h2 class="card-title">Top Positions</h2>
+            <table class="positions-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Value</th>
+                        <th>Change</th>
+                        <th>Strategy</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AAPL</td>
+                        <td>Apple Inc</td>
+                        <td>$22,150.00</td>
+                        <td class="positive">+2.3%</td>
+                        <td>Momentum</td>
+                        <td>Profitable</td>
+                    </tr>
+                    <tr>
+                        <td>MSFT</td>
+                        <td>Microsoft Corp</td>
+                        <td>$19,750.00</td>
+                        <td class="positive">+1.8%</td>
+                        <td>Momentum</td>
+                        <td>Profitable</td>
+                    </tr>
+                    <tr>
+                        <td>AMD</td>
+                        <td>Advanced Micro Devices</td>
+                        <td>$12,800.00</td>
+                        <td class="negative">-0.7%</td>
+                        <td>Momentum</td>
+                        <td>At Risk</td>
+                    </tr>
+                    <tr>
+                        <td>SPY Call Spread</td>
+                        <td>S&P 500 ETF Options</td>
+                        <td>$8,500.00</td>
+                        <td class="positive">+5.2%</td>
+                        <td>Options Spread</td>
+                        <td>Profitable</td>
+                    </tr>
+                    <tr>
+                        <td>NVDA</td>
+                        <td>NVIDIA Corp</td>
+                        <td>$10,350.00</td>
+                        <td class="positive">+2.7%</td>
+                        <td>Breakout</td>
+                        <td>Profitable</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "market_conditions": {
+    "scenario_1": {
+      "total_return": 149.60455789748661,
+      "max_drawdown": 0.5681202845019979,
+      "win_rate": 68.42105263157895,
+      "trades": 152,
+      "sharpe_ratio": 0.4588463592678169,
+      "timestamp": "2025-04-30T02:36:34.078759"
+    },
+    "scenario_2": {
+      "total_return": 109.63101149272309,
+      "max_drawdown": 0.5011326293160331,
+      "win_rate": 65.13157894736842,
+      "trades": 152,
+      "sharpe_ratio": 0.3420381905953292,
+      "timestamp": "2025-04-30T02:38:04.701843"
+    },
+    "scenario_3": {
+      "total_return": 194.66794956455763,
+      "max_drawdown": 2.7159206706429955,
+      "win_rate": 70.39473684210526,
+      "trades": 152,
+      "sharpe_ratio": 0.6245039404592518,
+      "timestamp": "2025-04-30T02:38:04.715239"
+    },
+    "scenario_4": {
+      "total_return": 141.1802322583318,
+      "max_drawdown": 2.327962260847751,
+      "win_rate": 63.1578947368421,
+      "trades": 152,
+      "sharpe_ratio": 0.42173310778320716,
+      "timestamp": "2025-04-30T02:38:04.729065"
+    },
+    "scenario_5": {
+      "total_return": 124.09540665442876,
+      "max_drawdown": 0.8700399972760043,
+      "win_rate": 70.39473684210526,
+      "trades": 152,
+      "sharpe_ratio": 0.5084620161526607,
+      "timestamp": "2025-04-30T02:38:04.741803"
+    }
+  },
+  "overall": {
+    "avg_return": 143.83583157350557,
+    "return_std": 28.927110893846248,
+    "min_return": 109.63101149272309,
+    "max_return": 194.66794956455763,
+    "avg_win_rate": 67.5,
+    "avg_drawdown": 1.3966351685169562,
+    "max_drawdown": 2.7159206706429955,
+    "avg_sharpe": 0.4711167228516532,
+    "robustness_score": 0.9354762700727632
+  }
+}

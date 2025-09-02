@@ -1,0 +1,345 @@
+[
+  {
+    "strategy_id": "strategy_8cee1706",
+    "request_id": "aa8c4b01-538e-480a-8528-7c89f91116a2",
+    "accuracy": 0.2625903793350872,
+    "expected_performance": {
+      "bullish": {
+        "return": 81.9001339588125,
+        "max_drawdown": 6.701980666247508,
+        "sharpe": 1.7742441133251474
+      },
+      "bearish": {
+        "return": -29.053792964681048,
+        "max_drawdown": 33.63355599835803,
+        "sharpe": -1.302497254234494
+      },
+      "sideways": {
+        "return": 0.07164538282398158,
+        "max_drawdown": 6.132253453556306,
+        "sharpe": 0.05870333807938629
+      },
+      "volatile": {
+        "return": 0.2763797419763625,
+        "max_drawdown": 30.516047674580204,
+        "sharpe": 0.1488990446633712
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 315.213026270396,
+        "max_drawdown": 8.771544243625595,
+        "sharpe": 3.2336426325212457
+      },
+      "bearish": {
+        "return": -20.450024774063014,
+        "max_drawdown": 22.642188871134962,
+        "sharpe": -1.9022179851921643
+      },
+      "sideways": {
+        "return": -11.512264029950636,
+        "max_drawdown": 13.72018139378817,
+        "sharpe": -0.5754975189470006
+      },
+      "volatile": {
+        "return": -61.509183260883425,
+        "max_drawdown": 68.09176635647725,
+        "sharpe": -1.268898180512829
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_d069f771",
+    "request_id": "c50f0e1f-950d-49ee-a7a6-35392a155fe9",
+    "accuracy": 0.3308347193260558,
+    "expected_performance": {
+      "bullish": {
+        "return": 240.47367850026845,
+        "max_drawdown": 6.757175127753865,
+        "sharpe": 3.157235798573797
+      },
+      "bearish": {
+        "return": -37.37157134946224,
+        "max_drawdown": 37.912469121384085,
+        "sharpe": -2.0661228404556806
+      },
+      "sideways": {
+        "return": 0.0,
+        "max_drawdown": 0,
+        "sharpe": 0
+      },
+      "volatile": {
+        "return": -16.797456370301333,
+        "max_drawdown": 16.797456370301333,
+        "sharpe": -0.8873714743007879
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 314.074998639263,
+        "max_drawdown": 9.277555412157092,
+        "sharpe": 3.1132992774378367
+      },
+      "bearish": {
+        "return": -8.078641008450793,
+        "max_drawdown": 9.983178085358906,
+        "sharpe": -0.656152718759978
+      },
+      "sideways": {
+        "return": -22.40281647567589,
+        "max_drawdown": 22.40281647567589,
+        "sharpe": -2.3993263869837587
+      },
+      "volatile": {
+        "return": -22.67363518811377,
+        "max_drawdown": 52.150521394161686,
+        "sharpe": -0.10312169657151629
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_a0886928",
+    "request_id": "7465a0ef-47ac-497f-ade2-da1e2fdec833",
+    "accuracy": 0.35885195569674005,
+    "expected_performance": {
+      "bullish": {
+        "return": 276.3941134972878,
+        "max_drawdown": 8.142447056174694,
+        "sharpe": 2.924505706349047
+      },
+      "bearish": {
+        "return": -6.139068611886323,
+        "max_drawdown": 10.216930242871294,
+        "sharpe": -0.4624930048512374
+      },
+      "sideways": {
+        "return": -10.375760591725847,
+        "max_drawdown": 19.304025151740856,
+        "sharpe": -0.14313244558156446
+      },
+      "volatile": {
+        "return": 355.14176355707485,
+        "max_drawdown": 43.817898487472,
+        "sharpe": 1.5874276922563315
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 221.60183387944002,
+        "max_drawdown": 8.760954609744747,
+        "sharpe": 2.5038232617851763
+      },
+      "bearish": {
+        "return": -30.68083249550305,
+        "max_drawdown": 34.179864249323714,
+        "sharpe": -0.8890878775541227
+      },
+      "sideways": {
+        "return": -31.227017526354107,
+        "max_drawdown": 31.978538901243148,
+        "sharpe": -1.5495832153666498
+      },
+      "volatile": {
+        "return": -31.217952464922504,
+        "max_drawdown": 35.380319637409755,
+        "sharpe": -0.5300991867671818
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_87cf6626",
+    "request_id": "08bd2db3-bbfd-4e9c-ac45-ab78691f5708",
+    "accuracy": 0.4493950196631461,
+    "expected_performance": {
+      "bullish": {
+        "return": 135.00887521176077,
+        "max_drawdown": 4.95410072898392,
+        "sharpe": 2.9130105042677252
+      },
+      "bearish": {
+        "return": -30.63458092440481,
+        "max_drawdown": 33.08431800758685,
+        "sharpe": -1.5646431998220978
+      },
+      "sideways": {
+        "return": 11.304689086945906,
+        "max_drawdown": 3.2053222239139374,
+        "sharpe": 0.49351469193017516
+      },
+      "volatile": {
+        "return": -31.156182349301677,
+        "max_drawdown": 37.96143707616884,
+        "sharpe": -1.5159809286161672
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 115.45476666249223,
+        "max_drawdown": 6.634685784133352,
+        "sharpe": 2.7328414447613336
+      },
+      "bearish": {
+        "return": -2.078516424531296,
+        "max_drawdown": 5.146909753449978,
+        "sharpe": -0.25903971534207226
+      },
+      "sideways": {
+        "return": -8.814389586957061,
+        "max_drawdown": 8.814389586957057,
+        "sharpe": -2.6568441699795153
+      },
+      "volatile": {
+        "return": -26.95320949682517,
+        "max_drawdown": 26.953209496825163,
+        "sharpe": -1.477421883015353
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_969332e2",
+    "request_id": "c23284ee-3b44-4c02-af56-6a4c55b2652f",
+    "accuracy": 0.45634300033840347,
+    "expected_performance": {
+      "bullish": {
+        "return": 114.722481025498,
+        "max_drawdown": 5.735987082824501,
+        "sharpe": 2.6560872355547587
+      },
+      "bearish": {
+        "return": -18.18894595917118,
+        "max_drawdown": 21.179845046957926,
+        "sharpe": -1.0403237397245946
+      },
+      "sideways": {
+        "return": -40.216742975021944,
+        "max_drawdown": 40.235974834465,
+        "sharpe": -1.8352199844976258
+      },
+      "volatile": {
+        "return": 1.880342844263172,
+        "max_drawdown": 25.82742163581039,
+        "sharpe": 0.16485108757213135
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 109.69577827763048,
+        "max_drawdown": 4.815510778101775,
+        "sharpe": 2.8317912273995463
+      },
+      "bearish": {
+        "return": -7.130117097792277,
+        "max_drawdown": 8.504962595201416,
+        "sharpe": -0.681788999558453
+      },
+      "sideways": {
+        "return": -7.636472340572819,
+        "max_drawdown": 7.916741425177043,
+        "sharpe": -0.6494045132387845
+      },
+      "volatile": {
+        "return": -36.90986218421048,
+        "max_drawdown": 37.265456714211645,
+        "sharpe": -1.4914740355276497
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_c908f2cf",
+    "request_id": "d9e4f22f-011e-40a8-aec3-8c170ae22532",
+    "accuracy": 0.4636706137013726,
+    "expected_performance": {
+      "bullish": {
+        "return": 213.34115151647387,
+        "max_drawdown": 6.694056483710656,
+        "sharpe": 2.746124167019299
+      },
+      "bearish": {
+        "return": -27.731892475422327,
+        "max_drawdown": 29.361162536970227,
+        "sharpe": -1.1794007371364388
+      },
+      "sideways": {
+        "return": -39.28593415452758,
+        "max_drawdown": 40.177403670211824,
+        "sharpe": -1.1220973026232783
+      },
+      "volatile": {
+        "return": -22.850977287422015,
+        "max_drawdown": 22.95828635414238,
+        "sharpe": -1.1785266247899935
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 342.3044980538781,
+        "max_drawdown": 8.451954799601415,
+        "sharpe": 3.569729967479718
+      },
+      "bearish": {
+        "return": -16.378638935610102,
+        "max_drawdown": 16.378638935610105,
+        "sharpe": -1.04293630514047
+      },
+      "sideways": {
+        "return": -9.93583083803211,
+        "max_drawdown": 10.676830077193172,
+        "sharpe": -0.40201219128382915
+      },
+      "volatile": {
+        "return": -49.435090362679816,
+        "max_drawdown": 52.27648928228235,
+        "sharpe": -0.9680507278634405
+      }
+    }
+  },
+  {
+    "strategy_id": "strategy_d05b58c9",
+    "request_id": "131ac4fe-b852-4a77-8909-87c399dd7180",
+    "accuracy": 0.750163692176899,
+    "expected_performance": {
+      "bullish": {
+        "return": 101.40319631365475,
+        "max_drawdown": 4.987462877491669,
+        "sharpe": 2.3666605718833416
+      },
+      "bearish": {
+        "return": -12.522532516064999,
+        "max_drawdown": 13.067719359609633,
+        "sharpe": -1.0975919975568011
+      },
+      "sideways": {
+        "return": -7.2832812665856395,
+        "max_drawdown": 10.025539142271105,
+        "sharpe": -0.32547871490532737
+      },
+      "volatile": {
+        "return": -18.44943165999544,
+        "max_drawdown": 18.95023138270588,
+        "sharpe": -1.3619085572078804
+      }
+    },
+    "actual_performance": {
+      "bullish": {
+        "return": 67.07987980514822,
+        "max_drawdown": 5.496600793874526,
+        "sharpe": 2.2629492282661148
+      },
+      "bearish": {
+        "return": -11.128601154245333,
+        "max_drawdown": 11.49894942465352,
+        "sharpe": -1.0502066288058778
+      },
+      "sideways": {
+        "return": -5.647995400823924,
+        "max_drawdown": 7.48528920647111,
+        "sharpe": -0.43018354557344834
+      },
+      "volatile": {
+        "return": -26.65615913425652,
+        "max_drawdown": 35.206745617340545,
+        "sharpe": -0.8800285572224612
+      }
+    }
+  }
+]
