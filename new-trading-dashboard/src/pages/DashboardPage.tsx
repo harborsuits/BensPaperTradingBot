@@ -13,6 +13,11 @@ import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
 import ActiveStrategiesCard from '@/components/cards/ActiveStrategiesCard';
 import CardFrame from '@/components/CardFrame';
+import PortfolioSummaryCard from '@/components/dashboard/PortfolioSummaryCard';
+import RecentTradeDecisionsCard from '@/components/dashboard/RecentTradeDecisionsCard';
+import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
+import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
+import RecentAlertsCard from '@/components/dashboard/RecentAlertsCard';
 import { formatAsOf } from '@/lib/staleness';
 import { toPortfolio, toArray } from '@/services/normalize';
 import UniverseSwitcher from '@/components/UniverseSwitcher';
@@ -204,105 +209,10 @@ const DashboardPage: React.FC = () => {
       {/* Stacked full-width cards */}
       <ErrorBoundary>
       <div className="space-y-6">
-        {/* Portfolio Summary first */}
-        <SimpleCard title="Portfolio Summary" action={<Link to="/portfolio" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
-          <div className="space-y-4">
-            {/* Paper Trading Account */}
-            <div className="border border-border rounded-md p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium flex items-center gap-2">
-                  Paper Trading
-                  <span className="text-xs bg-blue-800/30 text-blue-300 px-2 py-0.5 rounded-full">
-                    Simulated
-                  </span>
-                </span>
-              </div>
-              {portfolioData?.success && portfolioData.data ? (
-                <>
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <div className="text-sm">
-                      <div className="text-muted-foreground">Total Equity</div>
-                      <div className="font-medium">
-                        ${paperPortfolio.equity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                    </div>
-                    <div className="text-sm">
-                      <div className="text-muted-foreground">Cash Balance</div>
-                      <div className="font-medium">
-                        ${paperPortfolio.cash.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1">
-                      <span className="text-muted-foreground">Daily P/L:</span>
-                      <span className={(portfolioData as any)?.data?.summary?.daily_pl >= 0 ? 'text-bull' : 'text-bear'}>
-                        {((portfolioData as any)?.data?.summary?.daily_pl ?? 0) >= 0 ? '+' : ''}
-                        ${Math.abs(((portfolioData as any)?.data?.summary?.daily_pl ?? 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        ({(((portfolioData as any)?.data?.summary?.daily_pl_percent ?? 0) as number) >= 0 ? '+' : ''}
-                        {Number(((portfolioData as any)?.data?.summary?.daily_pl_percent ?? 0)).toFixed(2)}%)
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">{paperPortfolio.positions.length} positions</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="h-16 flex items-center justify-center">
-                  <p className="text-muted-foreground">Loading...</p>
-                </div>
-              )}
-            </div>
-            {/* Live Trading Account */}
-            <div className="border border-border rounded-md p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium flex items-center gap-2">
-                  Live Trading
-                  <span className="text-xs bg-green-800/30 text-green-300 px-2 py-0.5 rounded-full">
-                    Real Money
-                  </span>
-                </span>
-              </div>
-              {livePortfolioData?.success && livePortfolioData.data ? (
-                <>
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <div className="text-sm">
-                      <div className="text-muted-foreground">Total Equity</div>
-                      <div className="font-medium">
-                        ${livePortfolio.equity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                    </div>
-                    <div className="text-sm">
-                      <div className="text-muted-foreground">Cash Balance</div>
-                      <div className="font-medium">
-                        ${livePortfolio.cash.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1">
-                      <span className="text-muted-foreground">Daily P/L:</span>
-                      <span className={(livePortfolioData as any)?.data?.summary?.daily_pl >= 0 ? 'text-bull' : 'text-bear'}>
-                        {((livePortfolioData as any)?.data?.summary?.daily_pl ?? 0) >= 0 ? '+' : ''}
-                        ${Math.abs(((livePortfolioData as any)?.data?.summary?.daily_pl ?? 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        ({(((livePortfolioData as any)?.data?.summary?.daily_pl_percent ?? 0) as number) >= 0 ? '+' : ''}
-                        {Number(((livePortfolioData as any)?.data?.summary?.daily_pl_percent ?? 0)).toFixed(2)}%)
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">{livePortfolio.positions.length} positions</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="h-16 flex items-center justify-center">
-                  <p className="text-muted-foreground">Loading...</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </SimpleCard>
+        <PortfolioSummaryCard />
+        <RecentTradeDecisionsCard />
+        <BrainFlowNowCard />
+        <TickerHighlightsCard />
 
         {/* Recent Trade Decisions overview */}
         <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
@@ -445,48 +355,7 @@ const DashboardPage: React.FC = () => {
         <TradeCandidates />
       </div>
 
-      {/* Recent Alerts full width */}
-      <SimpleCard title="Recent Alerts" action={<Link to="/logs" className="text-sm text-primary flex items-center">View all logs <ChevronRight size={16} /></Link>}>
-        <div className="max-h-[360px] min-h-[240px] overflow-auto space-y-2" role="log" aria-live="polite" aria-relevant="additions">
-          {asArray(recentAlerts).length > 0 ? (
-            asArray(recentAlerts).filter(Boolean).map((alert: any, idx: number) => (
-              <div key={String(alert?.id ?? idx)} className="border border-border rounded-md p-3">
-                <div className="flex items-start gap-3">
-                  <div className={`mt-0.5 rounded-full p-1
-                    ${alert?.level === 'ERROR' ? 'bg-bear/10 text-bear' : 
-                      alert?.level === 'WARNING' ? 'bg-highImpact/10 text-highImpact' : 
-                      'bg-info/10 text-info'}`}
-                  >
-                    <AlertTriangle size={16} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`text-sm font-medium
-                        ${alert?.level === 'ERROR' ? 'text-bear' : 
-                          alert?.level === 'WARNING' ? 'text-highImpact' : 
-                          'text-info'}`}
-                      >
-                        {alert?.level ?? 'INFO'}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {alert?.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : '—'}
-                      </span>
-                    </div>
-                    <p className="text-sm truncate">{alert?.message ?? ''}</p>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Source: {alert?.source ?? '—'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="h-40 flex items-center justify-center">
-              <p className="text-muted-foreground">No recent alerts</p>
-            </div>
-          )}
-        </div>
-      </SimpleCard>
+      <RecentAlertsCard />
     </div>
   );
 };
