@@ -7,7 +7,7 @@ const ActivityTicker = () => {
     queryKey: ['ingestion', 'events'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/ingestion/events?limit=50');
+        const res = await fetch('/api/ingestion/events?limit=30');
         if (!res.ok) return [];
         return await res.json();
       } catch (error) {
@@ -15,10 +15,19 @@ const ActivityTicker = () => {
         return [];
       }
     },
-    refetchInterval: 4000,
+    refetchInterval: 8000,
   });
 
-  const tickerEvents = events || [];
+  // Relevance filtering: only recent, ok events, and sample to reduce noise
+  const tickerEvents = (events || [])
+    .filter((e: any) => e && e.status === 'ok')
+    .filter((e: any) => {
+      try {
+        const t = new Date(e.timestamp).getTime();
+        return Date.now() - t < 5 * 60 * 1000; // last 5 minutes
+      } catch { return true; }
+    })
+    .filter((_, i: number) => i % 2 === 0); // sample every other item
 
   return (
     <div className="bg-card border border-border rounded-md p-2 overflow-hidden relative h-10">

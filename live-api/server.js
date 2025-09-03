@@ -119,6 +119,21 @@ app.get('/metrics/prom', (req, res) => {
     );
 });
 
+// --- Minimal auth for UI: return access_token ---
+app.post('/auth/token', (req, res) => {
+  try {
+    const { username, password } = req.body || {};
+    const u = process.env.ADMIN_USERNAME || 'admin';
+    const p = process.env.ADMIN_PASSWORD || 'changeme';
+    if (username && password && (username !== u || password !== p)) {
+      return res.status(401).json({ error: 'invalid_credentials' });
+    }
+    return res.json({ access_token: 'dev-token', token_type: 'bearer', expires_in: 60 * 60 * 8 });
+  } catch {
+    return res.json({ access_token: 'dev-token', token_type: 'bearer', expires_in: 60 * 60 * 8 });
+  }
+});
+
 // Market Context & News
 app.get('/api/context', (req, res) => {
   res.json({
@@ -598,6 +613,43 @@ app.get('/api/events/logs', (req, res) => {
   res.json({ items });
 });
 
+// Ingestion activity events (for UI ticker and data timeline)
+app.get('/api/ingestion/events', (req, res) => {
+  const limit = Math.min(Number(req.query.limit || 50), 500);
+  const now = dayjs();
+  const stages = ['INGEST', 'CONTEXT', 'CANDIDATES', 'GATES', 'PLAN', 'ROUTE', 'MANAGE', 'LEARN'];
+  const symbols = ['AAPL', 'SPY', 'MSFT', 'NVDA', 'AMD', 'TSLA'];
+
+  const items = Array.from({ length: limit }).map((_, i) => {
+    const t = now.subtract(i * 3, 'second');
+    const ts = t.valueOf();
+    const stage = stages[i % stages.length];
+    const symbol = symbols[i % symbols.length];
+    const latency = 20 + Math.floor(Math.random() * 400);
+    const ok = Math.random() > 0.08; // ~8% errors
+    return {
+      id: nanoid(),
+      // fields used by ActivityTicker
+      timestamp: t.toISOString(),
+      stage,
+      symbol,
+      note: ok ? 'processed' : 'retrying',
+      latency_ms: latency,
+      status: ok ? 'ok' : 'err',
+      trace_id: nanoid(),
+      // fields used by DataIngestionCard
+      ts,
+      strategy_id: 'news_momo_v2',
+      step: ok ? 'ok' : 'error',
+      message: ok ? `Stage ${stage} completed` : `Stage ${stage} failed`,
+      ms: latency,
+      level: ok ? 'ok' : 'err',
+    };
+  });
+
+  res.json(items);
+});
+
 // Backtests stubs
 const backtests = {};
 app.post('/api/backtests', (req, res) => {
@@ -658,6 +710,46 @@ app.get('/api/paper/account', (req, res) => {
   const equity = 50000 + paperPositions.reduce((s, p) => s + (p.last_price * p.quantity), 0);
   const cash = 20000;
   res.json({ equity, cash, buyingPower: cash * 5, asOf: asOf() });
+});
+
+// --- Portfolio allocations (equity/options + top symbols)
+app.get('/api/portfolio/allocations', (req, res) => {
+  try {
+    const positions = paperPositions || [];
+    const totalMV = positions.reduce((s, p) => s + (Number(p.last_price) * Number(p.quantity)), 0);
+    const cash = 20000;
+
+    const byType = new Map();
+    const bySymbol = new Map();
+
+    for (const p of positions) {
+      const mv = (Number(p.last_price) || 0) * (Number(p.quantity) || 0);
+      const assetClass = 'equity'; // paper stub; extend for options later
+      byType.set(assetClass, (byType.get(assetClass) || 0) + mv);
+      bySymbol.set(p.symbol, (bySymbol.get(p.symbol) || 0) + mv);
+    }
+
+    const toList = (m) => Array.from(m.entries()).map(([name, value]) => ({
+      name,
+      value,
+      pct: totalMV > 0 ? +(100 * (value / totalMV)).toFixed(2) : 0,
+    }));
+
+    const typeAlloc = toList(byType);
+    const symbolAlloc = toList(bySymbol).sort((a,b)=>b.value-a.value).slice(0, 8);
+
+    res.json({ data: {
+      equity: 50000 + totalMV,
+      cash,
+      buying_power: cash * 5,
+      pl_day: 180,
+      totalMV,
+      typeAlloc,
+      symbolAlloc,
+    }});
+  } catch (e) {
+    res.status(500).json({ error: 'allocations_failed', message: e?.message || 'unknown' });
+  }
 });
 
 app.get('/api/autoloop/status', (req, res) => {

@@ -18,6 +18,7 @@ import { toPortfolio, toArray } from '@/services/normalize';
 import UniverseSwitcher from '@/components/UniverseSwitcher';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
+import LoopStripBanner from '@/components/trading/LoopStripBanner';
 import CandidateCard from '@/components/trading/CandidateCard';
 import TradeCandidates from '@/components/strategy/TradeCandidates';
 
@@ -200,71 +201,10 @@ const DashboardPage: React.FC = () => {
         <ActivityTicker />
       </div>
       
-      {/* Market Context Card */}
+      {/* Stacked full-width cards */}
       <ErrorBoundary>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 auto-rows-fr">
-        <CardFrame title="Market Context" asOf={marketContext?.timestamp} right={<Link to="/context" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
-          {marketContext ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Regime</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium px-2 py-1 rounded-full text-sm
-                    ${marketContext?.regime?.type === 'Bullish' ? 'bg-bull/20 text-bull' : 
-                      marketContext?.regime?.type === 'Bearish' ? 'bg-bear/20 text-bear' : 
-                      'bg-neutral/20 text-neutral'}`}
-                  >
-                    {marketContext?.regime?.type ?? 'Unknown'}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {Math.round(numberOr(marketContext?.regime?.confidence, 0) * 100)}%
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Volatility</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium text-sm
-                    ${marketContext?.volatility?.classification === 'High' || marketContext?.volatility?.classification === 'Extreme' 
-                      ? 'text-bear' : 'text-foreground'}`}
-                  >
-                    {numberOr(marketContext?.volatility?.value, 0).toFixed(2)}
-                  </span>
-                  <span className={`text-sm flex items-center
-                    ${numberOr(marketContext?.volatility?.change, 0) > 0 ? 'text-bear' : 'text-bull'}`}
-                  >
-                    {numberOr(marketContext?.volatility?.change, 0) > 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                    {Math.abs(numberOr(marketContext?.volatility?.change, 0)).toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Sentiment</span>
-                <span className={`font-medium text-sm
-                  ${numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'text-bull' : 
-                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'text-bear' : 'text-neutral'}`}
-                >
-                  {numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'Positive' : 
-                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'Negative' : 'Neutral'} 
-                  ({numberOr(marketContext?.sentiment?.score, 0.5).toFixed(2)})
-                </span>
-              </div>
-              
-              <div className="text-xs text-muted-foreground">Source timestamp: {formatAsOf(marketContext?.timestamp)}</div>
-            </div>
-          ) : (
-            <div className="h-32 flex items-center justify-center">
-              <p className="text-muted-foreground">Loading market context...</p>
-            </div>
-          )}
-        </CardFrame>
-        
-        {/* Active Strategies Card */}
-        <ActiveStrategiesCard />
-        
-        {/* Portfolio Summary Card */}
+      <div className="space-y-6">
+        {/* Portfolio Summary first */}
         <SimpleCard title="Portfolio Summary" action={<Link to="/portfolio" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
           <div className="space-y-4">
             {/* Paper Trading Account */}
@@ -277,7 +217,6 @@ const DashboardPage: React.FC = () => {
                   </span>
                 </span>
               </div>
-              
               {portfolioData?.success && portfolioData.data ? (
                 <>
                   <div className="grid grid-cols-2 gap-2 mb-2">
@@ -294,7 +233,6 @@ const DashboardPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-1">
                       <span className="text-muted-foreground">Daily P/L:</span>
@@ -316,7 +254,6 @@ const DashboardPage: React.FC = () => {
                 </div>
               )}
             </div>
-            
             {/* Live Trading Account */}
             <div className="border border-border rounded-md p-3">
               <div className="flex items-center justify-between mb-2">
@@ -327,7 +264,6 @@ const DashboardPage: React.FC = () => {
                   </span>
                 </span>
               </div>
-              
               {livePortfolioData?.success && livePortfolioData.data ? (
                 <>
                   <div className="grid grid-cols-2 gap-2 mb-2">
@@ -344,7 +280,6 @@ const DashboardPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-1">
                       <span className="text-muted-foreground">Daily P/L:</span>
@@ -369,55 +304,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </SimpleCard>
 
-        {/* Safety Controls Card */}
-        <SimpleCard title="Safety Controls">
-          <SafetyControls />
-        </SimpleCard>
-        
-        {/* Data Ingestion Card */}
-        <SimpleCard title="Data Ingestion" action={<Link to="/logs" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
-          {dataStatus ? (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isDataConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                <span className="text-sm text-muted-foreground">
-                  {isDataConnected ? 'Connected' : 'Disconnected'}
-                </span>
-              </div>
-              <div>Last updated: {dataStatus?.timestamp ? new Date(dataStatus.timestamp).toLocaleTimeString() : '—'}</div>
-              <div className="grid grid-cols-1 gap-2">
-                {asArray<DataSourceStatusModel>(dataStatus?.sources as any).map((src: DataSourceStatusModel, idx) => (
-                  <div key={String((src as any)?.id ?? idx)} className="flex justify-between">
-                    <span>{(src as any)?.name ?? 'Source'}</span>
-                    <StatusBadge status={(src as any)?.status ?? 'unknown'}>{(src as any)?.status ?? 'unknown'}</StatusBadge>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>Total symbols: {numberOr((dataStatus as any)?.metrics?.totalSymbolsTracked, 0)}</div>
-                <div>Error rate: {numberOr((dataStatus as any)?.metrics?.errorRate, 0) * 100}%</div>
-                <div>Requests/hr: {numberOr((dataStatus as any)?.metrics?.requestsLastHour, 0)}</div>
-                <div>Avg latency: {numberOr((dataStatus as any)?.metrics?.averageLatency, 0).toFixed(2)} ms</div>
-              </div>
-        </div>
-          ) : (
-            <div className="h-32 flex items-center justify-center">
-              <p className="text-muted-foreground">Loading data status...</p>
-        </div>
-          )}
-        </SimpleCard>
-      </div>
-      </ErrorBoundary>
-      
-      {/* Candidate card and live trade candidates list */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <CandidateCard />
-        <TradeCandidates />
-      </div>
-
-      {/* Recent Trade Decisions and Alert Logs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Trade Decisions */}
+        {/* Recent Trade Decisions overview */}
         <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
           <div className="min-h-[240px] space-y-3">
             {(() => {
@@ -428,7 +315,7 @@ const DashboardPage: React.FC = () => {
                     const d = decision as any;
                     if (!d?.symbol) return null;
                     return (
-                      <div key={`${d.symbol}-${d.timestamp || d.decidedAt || idx}`} className="border border-border rounded-md p-3">
+                      <div key={String(d.id || `${d.symbol}-${d.timestamp || d.created_at || d.decidedAt || (d.asOf) || idx}-${d.direction || d.action || ''}`)} className="border border-border rounded-md p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{d.symbol}</span>
@@ -478,50 +365,128 @@ const DashboardPage: React.FC = () => {
             })()}
           </div>
         </SimpleCard>
-        
-        {/* Alert Logs */}
-        <SimpleCard title="Recent Alerts" action={<Link to="/logs" className="text-sm text-primary flex items-center">View all logs <ChevronRight size={16} /></Link>}>
-          <div className="max-h-[360px] min-h-[240px] overflow-auto space-y-2" role="log" aria-live="polite" aria-relevant="additions">
-            {asArray(recentAlerts).length > 0 ? (
-              asArray(recentAlerts).filter(Boolean).map((alert: any, idx: number) => (
-                <div key={String(alert?.id ?? idx)} className="border border-border rounded-md p-3">
-                  <div className="flex items-start gap-3">
-                    <div className={`mt-0.5 rounded-full p-1
-                      ${alert?.level === 'ERROR' ? 'bg-bear/10 text-bear' : 
-                        alert?.level === 'WARNING' ? 'bg-highImpact/10 text-highImpact' : 
-                        'bg-info/10 text-info'}`}
-                    >
-                      <AlertTriangle size={16} />
+
+        {/* Brain Flow pipeline (arrow chart) */}
+        <SimpleCard title="Brain Flow">
+          <LoopStripBanner />
+        </SimpleCard>
+
+        {/* Market Context */}
+        <CardFrame title="Market Context" asOf={marketContext?.timestamp} right={<Link to="/context" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
+          {marketContext ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <span className="text-muted-foreground">Regime</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-medium px-2 py-1 rounded-full text-sm
+                    ${marketContext?.regime?.type === 'Bullish' ? 'bg-bull/20 text-bull' : 
+                      marketContext?.regime?.type === 'Bearish' ? 'bg-bear/20 text-bear' : 
+                      'bg-neutral/20 text-neutral'}`}
+                  >
+                    {marketContext?.regime?.type ?? 'Unknown'}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {Math.round(numberOr(marketContext?.regime?.confidence, 0) * 100)}%
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <span className="text-muted-foreground">Volatility</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-medium text-sm
+                    ${marketContext?.volatility?.classification === 'High' || marketContext?.volatility?.classification === 'Extreme' 
+                      ? 'text-bear' : 'text-foreground'}`}
+                  >
+                    {numberOr(marketContext?.volatility?.value, 0).toFixed(2)}
+                  </span>
+                  <span className={`text-sm flex items-center
+                    ${numberOr(marketContext?.volatility?.change, 0) > 0 ? 'text-bear' : 'text-bull'}`}
+                  >
+                    {numberOr(marketContext?.volatility?.change, 0) > 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                    {Math.abs(numberOr(marketContext?.volatility?.change, 0)).toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <span className="text-muted-foreground">Sentiment</span>
+                <span className={`font-medium text-sm
+                  ${numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'text-bull' : 
+                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'text-bear' : 'text-neutral'}`}
+                >
+                  {numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'Positive' : 
+                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'Negative' : 'Neutral'} 
+                  ({numberOr(marketContext?.sentiment?.score, 0.5).toFixed(2)})
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">Source timestamp: {formatAsOf(marketContext?.timestamp)}</div>
+            </div>
+          ) : (
+            <div className="h-32 flex items-center justify-center">
+              <p className="text-muted-foreground">Loading market context...</p>
+            </div>
+          )}
+        </CardFrame>
+
+        {/* Active Strategies */}
+        <ActiveStrategiesCard />
+
+        {/* Ticker Highlights (to be implemented next) */}
+
+        {/* Safety Controls */}
+        <SimpleCard title="Safety Controls">
+          <SafetyControls />
+        </SimpleCard>
+      </div>
+      </ErrorBoundary>
+
+      {/* Candidate card and trade candidates stacked */}
+      <div className="space-y-6 mb-6">
+        <CandidateCard />
+        <TradeCandidates />
+      </div>
+
+      {/* Recent Alerts full width */}
+      <SimpleCard title="Recent Alerts" action={<Link to="/logs" className="text-sm text-primary flex items-center">View all logs <ChevronRight size={16} /></Link>}>
+        <div className="max-h-[360px] min-h-[240px] overflow-auto space-y-2" role="log" aria-live="polite" aria-relevant="additions">
+          {asArray(recentAlerts).length > 0 ? (
+            asArray(recentAlerts).filter(Boolean).map((alert: any, idx: number) => (
+              <div key={String(alert?.id ?? idx)} className="border border-border rounded-md p-3">
+                <div className="flex items-start gap-3">
+                  <div className={`mt-0.5 rounded-full p-1
+                    ${alert?.level === 'ERROR' ? 'bg-bear/10 text-bear' : 
+                      alert?.level === 'WARNING' ? 'bg-highImpact/10 text-highImpact' : 
+                      'bg-info/10 text-info'}`}
+                  >
+                    <AlertTriangle size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`text-sm font-medium
+                        ${alert?.level === 'ERROR' ? 'text-bear' : 
+                          alert?.level === 'WARNING' ? 'text-highImpact' : 
+                          'text-info'}`}
+                      >
+                        {alert?.level ?? 'INFO'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {alert?.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : '—'}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className={`text-sm font-medium
-                          ${alert?.level === 'ERROR' ? 'text-bear' : 
-                            alert?.level === 'WARNING' ? 'text-highImpact' : 
-                            'text-info'}`}
-                        >
-                          {alert?.level ?? 'INFO'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {alert?.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : '—'}
-                        </span>
-                      </div>
-                      <p className="text-sm truncate">{alert?.message ?? ''}</p>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Source: {alert?.source ?? '—'}
-                      </div>
+                    <p className="text-sm truncate">{alert?.message ?? ''}</p>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Source: {alert?.source ?? '—'}
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="h-40 flex items-center justify-center">
-                <p className="text-muted-foreground">No recent alerts</p>
               </div>
-            )}
+            ))
+          ) : (
+            <div className="h-40 flex items-center justify-center">
+              <p className="text-muted-foreground">No recent alerts</p>
+            </div>
+          )}
         </div>
-        </SimpleCard>
-      </div>
+      </SimpleCard>
     </div>
   );
 };

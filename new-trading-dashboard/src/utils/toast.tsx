@@ -98,3 +98,6 @@ export const showActionToast = (message: string, actionText: string, onAction: (
     options
   );
 };
+
+// Named export for modules that expect `{ toast }` from this utility
+export { toast };

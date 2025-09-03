@@ -44,8 +44,14 @@ interface TradeCandidatesProps {
 // This would ideally be in our tradeApi module
 const getTradeCandidates = async () => {
   try {
-    const resp = await api.get('/decisions/candidates');
-    return { success: true as const, data: resp.data as TradeCandidate[] };
+    // Use existing backend contract: /api/decisions/recent
+    const resp = await api.get('/decisions/recent');
+    const data = Array.isArray(resp.data)
+      ? resp.data
+      : Array.isArray((resp.data as any)?.items)
+        ? (resp.data as any).items
+        : [];
+    return { success: true as const, data: data as TradeCandidate[] };
   } catch (e: any) {
     return { success: false as const, error: e?.message ?? 'error' };
   }

@@ -13,11 +13,11 @@
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 55s linear infinite;
 }
 
 .animate-marquee2 {
-  animation: marquee2 30s linear infinite;
+  animation: marquee2 55s linear infinite;
   position: absolute;
   top: 0;
 }
