@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BenBot API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>BenBot API Test</h1>
+    <p>This page tests connectivity to the BenBot API endpoints.</p>
+    
+    <div>
+        <button onclick="testHealth()">Test Health</button>
+        <button onclick="testAccount()">Test Account</button>
+        <button onclick="testPositions()">Test Positions</button>
+        <button onclick="testOrders()">Test Orders</button>
+        <button onclick="testStrategies()">Test Strategies</button>
+        <button onclick="testAuth()">Test Auth</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        // Helper function to add a result to the page
+        function addResult(endpoint, success, data) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${success ? 'success' : 'error'}`;
+            
+            const heading = document.createElement('h3');
+            heading.textContent = `${endpoint} - ${success ? 'Success' : 'Error'}`;
+            resultDiv.appendChild(heading);
+            
+            const pre = document.createElement('pre');
+            pre.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+            resultDiv.appendChild(pre);
+            
+            resultsDiv.prepend(resultDiv);
+        }
+        
+        // Helper function to make API requests
+        async function fetchAPI(endpoint) {
+            try {
+                const timestamp = new Date().getTime();
+                const response = await fetch(`http://localhost:3000${endpoint}?_=${timestamp}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                addResult(endpoint, true, data);
+                return data;
+            } catch (error) {
+                addResult(endpoint, false, error.message);
+                console.error(`Error fetching ${endpoint}:`, error);
+                return null;
+            }
+        }
+        
+        // Test functions
+        async function testHealth() {
+            await fetchAPI('/api/v1/health');
+        }
+        
+        async function testAccount() {
+            await fetchAPI('/api/v1/account/balance');
+        }
+        
+        async function testPositions() {
+            await fetchAPI('/api/v1/positions');
+        }
+        
+        async function testOrders() {
+            await fetchAPI('/api/v1/orders/open');
+        }
+        
+        async function testStrategies() {
+            await fetchAPI('/api/v1/strategies');
+        }
+        
+        async function testAuth() {
+            try {
+                const timestamp = new Date().getTime();
+                const response = await fetch(`http://localhost:3000/auth/token?_=${timestamp}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json'
+                    },
+                    body: 'username=admin&password=changeme'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                addResult('/auth/token', true, data);
+                return data;
+            } catch (error) {
+                addResult('/auth/token', false, error.message);
+                console.error('Error testing auth:', error);
+                return null;
+            }
+        }
+        
+        // Run a health check on page load
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BenBot Trading Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0e17;
+            color: #e1e6f0;
+        }
+        .header {
+            background-color: #0f1724;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1a2235;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .status-bar {
+            display: flex;
+            gap: 1rem;
+        }
+        .status-pill {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status-up {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .status-down {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .card {
+            background-color: #0f1724;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            border-bottom: 1px solid #1a2235;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .metric {
+            background-color: #1a2235;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .metric-label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #1a2235;
+        }
+        th {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        .positive {
+            color: #10b981;
+        }
+        .negative {
+            color: #ef4444;
+        }
+        .trade-form {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        input, select, button {
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid #1a2235;
+            background-color: #0a0e17;
+            color: #e1e6f0;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            background-color: #1a2235;
+            display: none;
+        }
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BenBot Trading Dashboard</h1>
+        <div class="status-bar">
+            <div id="broker-status" class="status-pill">Broker: <span id="broker-status-value">Checking...</span></div>
+            <div id="api-status" class="status-pill">API: <span id="api-status-value">Checking...</span></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alert" id="alert"></div>
+
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-label">Equity</div>
+                <div class="metric-value" id="equity">$0.00</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Cash</div>
+                <div class="metric-value" id="cash">$0.00</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Day P/L</div>
+                <div class="metric-value" id="day-pl">$0.00 (0.00%)</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Positions</h2>
+                <table id="positions-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Qty</th>
+                            <th>Avg Price</th>
+                            <th>Last</th>
+                            <th>P/L</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positions-body">
+                        <tr>
+                            <td colspan="5">Loading positions...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Open Orders</h2>
+                <table id="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Side</th>
+                            <th>Qty</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-body">
+                        <tr>
+                            <td colspan="7">Loading orders...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Strategies</h2>
+                <table id="strategies-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Exposure</th>
+                            <th>P/L (30d)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategies-body">
+                        <tr>
+                            <td colspan="5">Loading strategies...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Live Signals</h2>
+                <table id="signals-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Strategy</th>
+                            <th>Symbol</th>
+                            <th>Action</th>
+                            <th>Size</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signals-body">
+                        <tr>
+                            <td colspan="6">No signals yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Quick Trade</h2>
+            <div class="trade-form">
+                <input type="text" id="trade-symbol" placeholder="Symbol" value="AAPL">
+                <input type="number" id="trade-qty" placeholder="Quantity" value="1" min="1">
+                <select id="trade-type">
+                    <option value="market">Market</option>
+                    <option value="limit">Limit</option>
+                </select>
+                <input type="number" id="trade-price" placeholder="Price" step="0.01" disabled>
+                <select id="trade-side">
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                </select>
+            </div>
+            <button id="place-order-btn" style="margin-top: 0.5rem;">Place Order</button>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = 'http://localhost:3001';
+        
+        // Helper function to format currency
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(value);
+        }
+        
+        // Helper function to format percentage
+        function formatPercent(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'percent',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value / 100);
+        }
+        
+        // Helper function to show alerts
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Helper function to make API requests
+        async function fetchAPI(endpoint, options = {}) {
+            try {
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${API_BASE}${endpoint}?_=${timestamp}`, {
+                    ...options,
+                    headers: {
+                        'Accept': 'application/json',
+                        ...(options.headers || {})
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching ${endpoint}:`, error);
+                return null;
+            }
+        }
+        
+        // Function to update health status
+        async function updateHealth() {
+            const health = await fetchAPI('/api/v1/health');
+            const brokerStatus = document.getElementById('broker-status');
+            const brokerValue = document.getElementById('broker-status-value');
+            const apiStatus = document.getElementById('api-status');
+            const apiValue = document.getElementById('api-status-value');
+            
+            if (health) {
+                brokerValue.textContent = health.broker;
+                brokerStatus.className = `status-pill status-${health.broker === 'UP' ? 'up' : 'down'}`;
+                
+                apiValue.textContent = health.data;
+                apiStatus.className = `status-pill status-${health.data === 'UP' ? 'up' : 'down'}`;
+            } else {
+                brokerValue.textContent = 'DOWN';
+                brokerStatus.className = 'status-pill status-down';
+                
+                apiValue.textContent = 'DOWN';
+                apiStatus.className = 'status-pill status-down';
+            }
+        }
+        
+        // Function to update account balance
+        async function updateAccount() {
+            const account = await fetchAPI('/api/v1/account/balance');
+            
+            if (account) {
+                document.getElementById('equity').textContent = formatCurrency(account.equity);
+                document.getElementById('cash').textContent = formatCurrency(account.cash);
+                document.getElementById('day-pl').textContent = `${formatCurrency(account.day_pl_dollar)} (${account.day_pl_pct.toFixed(2)}%)`;
+                
+                if (account.day_pl_dollar > 0) {
+                    document.getElementById('day-pl').className = 'metric-value positive';
+                } else if (account.day_pl_dollar < 0) {
+                    document.getElementById('day-pl').className = 'metric-value negative';
+                } else {
+                    document.getElementById('day-pl').className = 'metric-value';
+                }
+            }
+        }
+        
+        // Function to update positions
+        async function updatePositions() {
+            const positions = await fetchAPI('/api/v1/positions');
+            const tbody = document.getElementById('positions-body');
+            
+            if (positions && positions.length > 0) {
+                tbody.innerHTML = '';
+                
+                positions.forEach(position => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${position.symbol}</td>
+                        <td>${position.qty}</td>
+                        <td>${formatCurrency(position.avg_price)}</td>
+                        <td>${formatCurrency(position.last)}</td>
+                        <td class="${position.pl_dollar > 0 ? 'positive' : position.pl_dollar < 0 ? 'negative' : ''}">${formatCurrency(position.pl_dollar)} (${position.pl_pct.toFixed(2)}%)</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5">No open positions</td></tr>';
+            }
+        }
+        
+        // Function to update orders
+        async function updateOrders() {
+            const orders = await fetchAPI('/api/v1/orders/open');
+            const tbody = document.getElementById('orders-body');
+            
+            if (orders && orders.length > 0) {
+                tbody.innerHTML = '';
+                
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${order.symbol}</td>
+                        <td>${order.side}</td>
+                        <td>${order.qty}</td>
+                        <td>${order.type}</td>
+                        <td>${order.limit_price ? formatCurrency(order.limit_price) : '-'}</td>
+                        <td>${order.status}</td>
+                        <td><button class="cancel-order-btn" data-id="${order.id}">Cancel</button></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Add event listeners to cancel buttons
+                document.querySelectorAll('.cancel-order-btn').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const orderId = button.dataset.id;
+                        button.disabled = true;
+                        button.innerHTML = '<div class="loading"></div>';
+                        
+                        const result = await fetchAPI(`/api/v1/orders/${orderId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-API-Key': 'localdev-123456'
+                            }
+                        });
+                        
+                        if (result && result.ok) {
+                            showAlert(`Order ${orderId} cancelled successfully`);
+                            updateOrders();
+                        } else {
+                            showAlert(`Failed to cancel order ${orderId}`, 'error');
+                            button.disabled = false;
+                            button.textContent = 'Cancel';
+                        }
+                    });
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7">No open orders</td></tr>';
+            }
+        }
+        
+        // Function to update strategies
+        async function updateStrategies() {
+            const strategies = await fetchAPI('/api/v1/strategies');
+            const tbody = document.getElementById('strategies-body');
+            
+            if (strategies && strategies.length > 0) {
+                tbody.innerHTML = '';
+                
+                strategies.forEach(strategy => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${strategy.name}</td>
+                        <td>${strategy.active ? '🟢 Active' : '⚪ Inactive'}</td>
+                        <td>${(strategy.exposure_pct * 100).toFixed(1)}%</td>
+                        <td class="${strategy.p_l_30d > 0 ? 'positive' : strategy.p_l_30d < 0 ? 'negative' : ''}">${formatCurrency(strategy.p_l_30d)}</td>
+                        <td><button class="strategy-toggle-btn" data-id="${strategy.id}" data-active="${strategy.active}">${strategy.active ? 'Deactivate' : 'Activate'}</button></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Add event listeners to toggle buttons
+                document.querySelectorAll('.strategy-toggle-btn').forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const strategyId = button.dataset.id;
+                        const isActive = button.dataset.active === 'true';
+                        button.disabled = true;
+                        button.innerHTML = '<div class="loading"></div>';
+                        
+                        const endpoint = isActive ? `/api/v1/strategies/${strategyId}/deactivate` : `/api/v1/strategies/${strategyId}/activate`;
+                        const result = await fetchAPI(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-API-Key': 'localdev-123456'
+                            }
+                        });
+                        
+                        if (result && result.ok) {
+                            showAlert(`Strategy ${isActive ? 'deactivated' : 'activated'} successfully`);
+                            updateStrategies();
+                        } else {
+                            showAlert(`Failed to ${isActive ? 'deactivate' : 'activate'} strategy`, 'error');
+                            button.disabled = false;
+                            button.textContent = isActive ? 'Deactivate' : 'Activate';
+                        }
+                    });
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5">No strategies available</td></tr>';
+            }
+        }
+        
+        // Function to update signals
+        async function updateSignals() {
+            const signals = await fetchAPI('/api/v1/signals/live');
+            const tbody = document.getElementById('signals-body');
+            
+            if (signals && signals.length > 0) {
+                tbody.innerHTML = '';
+                
+                signals.forEach(signal => {
+                    const row = document.createElement('tr');
+                    const time = new Date(signal.ts);
+                    
+                    row.innerHTML = `
+                        <td>${time.toLocaleTimeString()}</td>
+                        <td>${signal.strategy}</td>
+                        <td>${signal.symbol}</td>
+                        <td>${signal.action}</td>
+                        <td>${signal.size}</td>
+                        <td>${signal.reason}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6">No signals yet</td></tr>';
+            }
+        }
+        
+        // Function to update all data
+        async function updateAllData() {
+            await updateHealth();
+            await updateAccount();
+            await updatePositions();
+            await updateOrders();
+            await updateStrategies();
+            await updateSignals();
+        }
+        
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update all data on page load
+            updateAllData();
+            
+            // Set up polling for data updates
+            setInterval(updateHealth, 10000);
+            setInterval(updateAccount, 5000);
+            setInterval(updatePositions, 5000);
+            setInterval(updateOrders, 5000);
+            setInterval(updateStrategies, 10000);
+            setInterval(updateSignals, 2000);
+            
+            // Set up trade form
+            const tradeType = document.getElementById('trade-type');
+            const tradePrice = document.getElementById('trade-price');
+            
+            tradeType.addEventListener('change', () => {
+                tradePrice.disabled = tradeType.value === 'market';
+            });
+            
+            // Set up place order button
+            document.getElementById('place-order-btn').addEventListener('click', async () => {
+                const symbol = document.getElementById('trade-symbol').value;
+                const qty = parseInt(document.getElementById('trade-qty').value);
+                const type = document.getElementById('trade-type').value;
+                const price = parseFloat(document.getElementById('trade-price').value);
+                const side = document.getElementById('trade-side').value;
+                
+                if (!symbol) {
+                    showAlert('Please enter a symbol', 'error');
+                    return;
+                }
+                
+                if (!qty || qty <= 0) {
+                    showAlert('Please enter a valid quantity', 'error');
+                    return;
+                }
+                
+                if (type === 'limit' && (!price || price <= 0)) {
+                    showAlert('Please enter a valid price for limit order', 'error');
+                    return;
+                }
+                
+                const orderData = {
+                    symbol,
+                    qty,
+                    side,
+                    type,
+                    limit_price: type === 'limit' ? price : null
+                };
+                
+                const placeOrderBtn = document.getElementById('place-order-btn');
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.innerHTML = '<div class="loading"></div> Placing Order...';
+                
+                const result = await fetchAPI('/api/v1/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': 'localdev-123456'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                if (result && result.order_id) {
+                    showAlert(`Order placed successfully: ${result.order_id}`);
+                    updateOrders();
+                    updatePositions();
+                } else {
+                    showAlert('Failed to place order', 'error');
+                }
+                
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Place Order';
+            });
+        });
+    </script>
+</body>
+</html>

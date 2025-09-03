@@ -152,6 +152,13 @@ export function getDecision(candidate: Candidate, cashAvailable: number): {
 }
 
 /**
+ * Build a complete candidate narrative object (alias for formatCandidateNarrative)
+ */
+export function buildCandidateNarrative(candidate) {
+  return formatCandidateNarrative(candidate);
+}
+
+/**
  * Format a complete candidate narrative object
  */
 export function formatCandidateNarrative(candidate) {
