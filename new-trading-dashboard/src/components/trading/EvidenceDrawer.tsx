@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { usePortfolioAllocations } from "@/hooks/usePortfolioAllocations";
-import { makeNarrative } from "@/lib/evidence/humanize";
+import { makeNarrative, confidenceLabel } from "@/lib/evidence/humanize";
 import { Badge } from "@/components/ui/Badge";
 import type { EvidencePacket } from "@/contracts/evidence";
 
@@ -60,6 +60,21 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
             <div className="text-xs text-muted-foreground">
               Regime {data.context.regime} • VIX {data.context.vix ?? "—"}
             </div>
+            <div className="text-xs text-muted-foreground">
+              Confidence {confidenceLabel(data.confidence)} (~{Math.round((data.confidence??0)*100)}%) • Cross-confirmations {data.crossConfirmations}
+            </div>
+            <div className="mt-2">
+              <div className="text-xs font-medium mb-1">Gates</div>
+              <ul className="text-xs space-y-1">
+                {data.gates.map((g)=> (
+                  <li key={g.name} className="flex items-center gap-2">
+                    <span className={`px-1.5 py-0.5 rounded ${g.passed? 'bg-green-700/40':'bg-red-700/50'}`}>{g.passed? 'ok':'blocked'}</span>
+                    <span className="uppercase tracking-wide text-[10px] text-muted-foreground">{g.name.replaceAll('_',' ')}</span>
+                    {g.details && <span className="text-[11px]">• {g.details}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </TabsContent>
 
           <TabsContent value="sources" className="space-y-2">
@@ -78,9 +93,26 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
                 <div className="text-xs text-muted-foreground mt-1">
                   pub {new Date(s.publishedAt).toLocaleString()} • captured {new Date(s.capturedAt).toLocaleString()}
                 </div>
+                <div className="flex gap-2 mt-1 text-[11px]">
+                  <span className="px-1.5 py-0.5 rounded bg-slate-800">sent {Math.round((s.sentiment ?? 0)*100)/100}</span>
+                  <span className="px-1.5 py-0.5 rounded bg-slate-800">rel {Math.round((s.relevance ?? 0)*100)/100}</span>
+                </div>
                 {s.keyClaims?.length > 0 && (
                   <ul className="list-disc pl-5 mt-1 text-sm">{s.keyClaims.map((k, i) => (<li key={i}>{typeof k === "string" ? k : JSON.stringify(k)}</li>))}</ul>
                 )}
+                {s.passages?.length ? (
+                  <div className="mt-2 space-y-1">
+                    {s.passages.map((p)=> (
+                      <div key={p.id} className="text-sm bg-slate-800/60 border border-slate-700/50 rounded p-2">
+                        <span className="mr-2 text-[10px] uppercase tracking-wide text-slate-400">Evidence</span>
+                        <span>{p.text}</span>
+                        {p.labels?.length>0 && (
+                          <div className="mt-1 flex flex-wrap gap-1">{p.labels.map((l)=> <span key={l} className="px-1.5 py-0.5 bg-slate-700 rounded text-[10px]">{l}</span>)}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ): null}
               </div>
             ))}
           </TabsContent>
@@ -110,7 +142,7 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
           <TabsContent value="prediction" className="space-y-1 text-sm">
             <div>{data.prediction.thesis}</div>
             <div>Expected move {data.prediction.expectedMovePct}% • Horizon {data.prediction.horizonHours}h</div>
-            <div>Prob {Math.round(data.prediction.prob * 100)}% • p10/p50/p90 {data.prediction.bandsPct.p10}/{data.prediction.bandsPct.p50}/{data.prediction.bandsPct.p90}%</div>
+            <div>Prob {Math.round(data.prediction.prob * 100)}% ({confidenceLabel(data.prediction.prob)}) • p10/p50/p90 {data.prediction.bandsPct.p10}/{data.prediction.bandsPct.p50}/{data.prediction.bandsPct.p90}%</div>
             <div className="text-muted-foreground">Invalidation: {data.prediction.invalidation}</div>
           </TabsContent>
 
@@ -130,6 +162,9 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
             ))}
             <div className="font-medium">Risk</div>
             <div>Max loss ${data.risk.maxLossUsd} • Heat after {Math.round(data.risk.maxPortfolioHeatAfter * 100)}%</div>
+            {data.risk.stopPlan && (
+              <div className="text-xs text-muted-foreground">Exit: {data.risk.stopPlan}</div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
