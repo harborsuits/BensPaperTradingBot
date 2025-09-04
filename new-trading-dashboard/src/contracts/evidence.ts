@@ -9,6 +9,7 @@ export interface SourceDoc {
   publishedAt: string; capturedAt: string;
   biasLean: BiasLean; credibility: CredScore;
   sentiment: number; relevance: number; keyClaims: string[];
+  passages?: Array<{ id:string; text:string; start?:number; end?:number; labels?:string[]; weight?:number }>;
 }
 
 export interface Prediction {
@@ -43,6 +44,9 @@ export interface EvidencePacket {
   execution?:{ status:"pending"|"live"|"filled"|"rejected"|"cancelled"|"closed"; brokerOrderIds?:string[]; avgFill?:number; slippagePct?:number; };
   monitoring?: Array<{ at:string; note:string }>;
   outcome?: { closedAt:string; pnlUsd:number; lessons:string[]; };
+  whyTree?: string[];
+  featureContribs?: Array<{ key:string; value:number|string; weight:number; rationale?:string }>;
+  ruleAudit?: Array<{ name:string; passed:boolean; actual?: string|number; threshold?: string|number; note?: string }>;
 }
 
 

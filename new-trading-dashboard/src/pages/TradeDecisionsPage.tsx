@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Lock, CheckCircle, XCircle } from "lucide-react";
 import { fmtContextBar, fmtTimeAgo } from "@/utils/formatters";
 import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
-import { buildEvidenceFromUi } from "@/lib/evidence/builders";
+import { buildEvidenceFromUi, enrichWithWhy } from "@/lib/evidence/builders";
+import DecisionCard from "@/components/decisions/DecisionCard";
 import type { IngestEvent, DecisionRow } from "@/contracts/types";
 import { enrichDecisionsWithStage } from "@/lib/flow/utils";
 
@@ -107,7 +108,8 @@ export default function TradeDecisionsPage(){
         // Open Evidence automatically
         try {
           // @ts-ignore
-          setPacket(buildEvidenceFromUi({ decision: targetDecision, context: undefined }));
+          const base = buildEvidenceFromUi({ decision: targetDecision, context: undefined });
+          setPacket(enrichWithWhy(base));
           setOpen(true);
         } catch {}
       }
@@ -156,84 +158,14 @@ export default function TradeDecisionsPage(){
         ) : (
           filteredDecisions
             .sort((a:any,b:any)=> new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())
-            .map((d: any) => (
-            <Card
-              key={d.id || d.symbol}
-              ref={highlightedId === d.id ? highlightRef : null}
-              className={`card transition-all duration-500 ${
-                highlightedId === d.id ? 'ring-2 ring-primary shadow-lg bg-primary/5' : ''
-              }`}
-            >
-              <div className="card-header">
-                <div className="card-title flex items-center gap-2">
-                  {d.symbol} · {d.strategy} · {d.account ?? "paper"}
-                  {d.id === traceFilter && (
-                    <Badge variant="default" className="text-xs">
-                      <CheckCircle size={12} className="mr-1" />
-                      Highlighted
-                    </Badge>
-                  )}
+            .map((d: any) => {
+              const key = d.id || d.symbol;
+              return (
+                <div key={key} ref={highlightedId === d.id ? highlightRef : null} className={`transition-all duration-500 ${highlightedId === d.id ? 'ring-2 ring-primary shadow-lg bg-primary/5' : ''}`}>
+                  <DecisionCard d={d} context={undefined as any} onOpenEvidence={(p:any)=> { setPacket(enrichWithWhy(p)); setOpen(true); }} />
                 </div>
-                <div className="card-subtle flex items-center gap-2">
-                  {formatDecisionTime(d.decidedAt)}
-                  <span className="text-xs text-muted-foreground">
-                    {fmtTimeAgo(d.decidedAt)}
-                  </span>
-                </div>
-              </div>
-              <div className="card-content space-y-2">
-                {/* Stage chips (Brain Flow) */}
-                {typeof (d as any).stageIndex === 'number' && (
-                  <div className="mt-1">
-                    {/* Lazy import to avoid circulars would be overkill; simple inline chips */}
-                    <div className="flex flex-wrap gap-2">
-                      {["INGEST","CONTEXT","CANDIDATES","GATES","PLAN","ROUTE","MANAGE","LEARN"].map((s,i)=>{
-                        const color = i < (d as any).stageIndex
-                          ? 'bg-green-600 text-white'
-                          : i === (d as any).stageIndex
-                          ? ((d as any).stageStatus === 'ok' ? 'bg-amber-500 text-white' : 'bg-red-600 text-white')
-                          : 'bg-slate-200 text-slate-700';
-                        return <span key={s} className={`px-2 py-0.5 rounded text-[10px] ${color}`}>{s}</span>;
-                      })}
-                    </div>
-                  </div>
-                )}
-                <div className="flex gap-2 flex-wrap">
-                  {(d.reasons ?? []).slice(0,3).map((r: string) => (
-                    <Badge key={r} variant="secondary" className="text-xs">
-                      {r}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Plan: Size {d.plan?.sizePct}% · SL {d.plan?.slPct}% · TP {d.plan?.tpPct}%
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    disabled={isLoading || !isHealthy || (d.gates ?? []).some((g:any)=> !g?.passed)}
-                    onClick={() => place({ symbol: d.symbol, side: "buy", qty: 5, type: "market" })}
-                  >
-                    {isLoading ? "Placing..." : "Paper Order"}
-                  </Button>
-                  {!isHealthy && (
-                    <Badge variant="outline" className="text-xs">
-                      <Lock size={10} className="mr-1" />
-                      Blocked
-                    </Badge>
-                  )}
-                </div>
-                {d?.id && (
-                  <div className="flex items-center gap-2">
-                    <TraceLinks id={d.id} />
-                    <Badge variant="outline" className="text-xs">
-                      #{String(d.id).slice(0,6)}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-            </Card>
-          ))
+              );
+            })
         )}
       </div>
       <EvidenceDrawer open={open} onOpenChange={setOpen} data={packet} />

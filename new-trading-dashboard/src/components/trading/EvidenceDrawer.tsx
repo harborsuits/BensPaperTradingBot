@@ -34,9 +34,10 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
         </div>
 
         <Tabs defaultValue="summary" className="mt-4">
-          <TabsList className="grid grid-cols-4 w-full">
+          <TabsList className="grid grid-cols-5 w-full">
             <TabsTrigger value="summary">Summary</TabsTrigger>
             <TabsTrigger value="sources">Sources</TabsTrigger>
+            <TabsTrigger value="why">Why</TabsTrigger>
             <TabsTrigger value="prediction">Prediction</TabsTrigger>
             <TabsTrigger value="plan">Plan & Risk</TabsTrigger>
           </TabsList>
@@ -69,6 +70,28 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
                 )}
               </div>
             ))}
+          </TabsContent>
+
+          <TabsContent value="why" className="space-y-3">
+            <div>
+              <div className="text-sm font-medium mb-1">Why this decision</div>
+              <ul className="list-disc pl-5">{data.whyTree?.map((w,i)=>(<li key={i}>{w}</li>))}</ul>
+            </div>
+
+            {data.featureContribs?.length ? (
+              <div>
+                <div className="text-sm font-medium mb-1">Feature contributions</div>
+                <div className="space-y-1">
+                  {data.featureContribs.map(fc=> (
+                    <div key={fc.key} className="text-xs">
+                      <div className="flex justify-between"><span className="font-medium">{fc.key}</span><span>{typeof fc.value==="number"?fc.value.toFixed(2):String(fc.value)}</span></div>
+                      <div className="h-1.5 bg-slate-800 rounded"><div className="h-1.5 bg-blue-600 rounded" style={{width: `${Math.max(0, Math.min(1, Number(fc.weight)||0))*100}%`}}/></div>
+                      {fc.rationale && <div className="text-[11px] text-slate-400 mt-0.5">{fc.rationale}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ):null}
           </TabsContent>
 
           <TabsContent value="prediction" className="space-y-1 text-sm">
