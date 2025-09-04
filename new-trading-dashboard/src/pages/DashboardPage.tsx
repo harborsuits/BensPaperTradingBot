@@ -11,13 +11,11 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import SafetyControls from '@/components/trading/SafetyControls';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
-import CardFrame from '@/components/CardFrame';
 import PortfolioSummaryCard from '@/components/dashboard/PortfolioSummaryCard';
 import RecentTradeDecisionsCard from '@/components/dashboard/RecentTradeDecisionsCard';
 import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
 import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
 import RecentAlertsCard from '@/components/dashboard/RecentAlertsCard';
-import { formatAsOf } from '@/lib/staleness';
 import { toPortfolio, toArray } from '@/services/normalize';
 import UniverseSwitcher from '@/components/UniverseSwitcher';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
@@ -276,61 +274,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Removed extra Brain Flow card (kept BrainFlowNowCard above) */}
 
-        {/* Market Context */}
-        <CardFrame title="Market Context" asOf={marketContext?.timestamp} right={<Link to="/context" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
-          {marketContext ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Regime</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium px-2 py-1 rounded-full text-sm
-                    ${marketContext?.regime?.type === 'Bullish' ? 'bg-bull/20 text-bull' : 
-                      marketContext?.regime?.type === 'Bearish' ? 'bg-bear/20 text-bear' : 
-                      'bg-neutral/20 text-neutral'}`}
-                  >
-                    {marketContext?.regime?.type ?? 'Unknown'}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {Math.round(numberOr(marketContext?.regime?.confidence, 0) * 100)}%
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Volatility</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium text-sm
-                    ${marketContext?.volatility?.classification === 'High' || marketContext?.volatility?.classification === 'Extreme' 
-                      ? 'text-bear' : 'text-foreground'}`}
-                  >
-                    {numberOr(marketContext?.volatility?.value, 0).toFixed(2)}
-                  </span>
-                  <span className={`text-sm flex items-center
-                    ${numberOr(marketContext?.volatility?.change, 0) > 0 ? 'text-bear' : 'text-bull'}`}
-                  >
-                    {numberOr(marketContext?.volatility?.change, 0) > 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                    {Math.abs(numberOr(marketContext?.volatility?.change, 0)).toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between border-b border-border pb-2">
-                <span className="text-muted-foreground">Sentiment</span>
-                <span className={`font-medium text-sm
-                  ${numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'text-bull' : 
-                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'text-bear' : 'text-neutral'}`}
-                >
-                  {numberOr(marketContext?.sentiment?.score, 0.5) > 0.6 ? 'Positive' : 
-                    numberOr(marketContext?.sentiment?.score, 0.5) < 0.4 ? 'Negative' : 'Neutral'} 
-                  ({numberOr(marketContext?.sentiment?.score, 0.5).toFixed(2)})
-                </span>
-              </div>
-              <div className="text-xs text-muted-foreground">Source timestamp: {formatAsOf(marketContext?.timestamp)}</div>
-            </div>
-          ) : (
-            <div className="h-32 flex items-center justify-center">
-              <p className="text-muted-foreground">Loading market context...</p>
-            </div>
-          )}
-        </CardFrame>
+        {/* Removed Market Context per request */}
 
         {/* Removed Active Strategies per request */}
 
