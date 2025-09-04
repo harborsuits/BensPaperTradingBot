@@ -11,7 +11,6 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import SafetyControls from '@/components/trading/SafetyControls';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
-import ActiveStrategiesCard from '@/components/cards/ActiveStrategiesCard';
 import CardFrame from '@/components/CardFrame';
 import PortfolioSummaryCard from '@/components/dashboard/PortfolioSummaryCard';
 import RecentTradeDecisionsCard from '@/components/dashboard/RecentTradeDecisionsCard';
@@ -23,7 +22,6 @@ import { toPortfolio, toArray } from '@/services/normalize';
 import UniverseSwitcher from '@/components/UniverseSwitcher';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
-import LoopStripBanner from '@/components/trading/LoopStripBanner';
 import CandidateCard from '@/components/trading/CandidateCard';
 import TradeCandidates from '@/components/strategy/TradeCandidates';
 
@@ -276,10 +274,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </SimpleCard>
 
-        {/* Brain Flow pipeline (arrow chart) */}
-        <SimpleCard title="Brain Flow">
-          <LoopStripBanner />
-        </SimpleCard>
+        {/* Removed extra Brain Flow card (kept BrainFlowNowCard above) */}
 
         {/* Market Context */}
         <CardFrame title="Market Context" asOf={marketContext?.timestamp} right={<Link to="/context" className="text-sm text-primary flex items-center">View details <ChevronRight size={16} /></Link>}>
@@ -337,8 +332,7 @@ const DashboardPage: React.FC = () => {
           )}
         </CardFrame>
 
-        {/* Active Strategies */}
-        <ActiveStrategiesCard />
+        {/* Removed Active Strategies per request */}
 
         {/* Ticker Highlights (to be implemented next) */}
 
