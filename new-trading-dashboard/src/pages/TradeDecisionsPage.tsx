@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useDecisionsRecent } from "@/hooks/useDecisionsRecent";
@@ -9,6 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Lock, CheckCircle, XCircle } from "lucide-react";
 import { fmtContextBar, fmtTimeAgo } from "@/utils/formatters";
+import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
+import { buildEvidenceFromUi } from "@/lib/evidence/builders";
+import type { IngestEvent, DecisionRow } from "@/contracts/types";
+import { enrichDecisionsWithStage } from "@/lib/flow/utils";
 
 function TraceLinks({ id }: { id: string }) {
   async function openTrace() {
@@ -51,6 +55,8 @@ export default function TradeDecisionsPage(){
   const [searchParams, setSearchParams] = useSearchParams();
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [packet, setPacket] = useState<any>(null);
 
   const symbolFilter = searchParams.get("symbol");
   const traceFilter = searchParams.get("trace");
@@ -58,6 +64,12 @@ export default function TradeDecisionsPage(){
   const { data: decisions } = useDecisionsRecent(50);
   const { data: health } = useHealth();
   const { mutate: place, isLoading } = usePlacePaperOrder();
+
+  const { data: events } = useQuery<IngestEvent[]>({
+    queryKey:["ingestion","events"],
+    queryFn: async ()=> (await fetch("/api/ingestion/events?limit=30")).json(),
+    refetchInterval: 8000, staleTime: 5000,
+  });
 
   // Fetch open orders for context bar
   const { data: openOrders } = useQuery({
@@ -70,18 +82,19 @@ export default function TradeDecisionsPage(){
     refetchInterval: 10000,
   });
 
-  // Filter decisions based on symbol
-  const filteredDecisions = decisions?.filter((d: any) =>
-    !symbolFilter || d.symbol === symbolFilter
-  ) || [];
+  // Enrich with latest stage and filter by symbol
+  const enriched = useMemo(()=> enrichDecisionsWithStage(decisions ?? [], events ?? []), [decisions, events]);
+  const filteredDecisions = useMemo(()=> (
+    enriched.filter((d: any)=> !symbolFilter || d.symbol?.toUpperCase() === symbolFilter)
+  ), [enriched, symbolFilter]);
 
   // Find last decision for context bar
   const lastDecision = filteredDecisions[0];
 
-  // Auto-scroll and highlight on mount
+  // Auto-scroll & highlight; open Evidence if trace matches
   useEffect(() => {
     if (traceFilter && filteredDecisions.length > 0) {
-      const targetDecision = filteredDecisions.find((d: any) => d.id === traceFilter);
+      const targetDecision = filteredDecisions.find((d: any) => (d.trace_id ?? d.id) === traceFilter);
       if (targetDecision) {
         setHighlightedId(targetDecision.id);
         setTimeout(() => {
@@ -90,6 +103,13 @@ export default function TradeDecisionsPage(){
 
         // Remove highlight after 3 seconds
         setTimeout(() => setHighlightedId(null), 3000);
+
+        // Open Evidence automatically
+        try {
+          // @ts-ignore
+          setPacket(buildEvidenceFromUi({ decision: targetDecision, context: undefined }));
+          setOpen(true);
+        } catch {}
       }
     }
   }, [traceFilter, filteredDecisions]);
@@ -134,7 +154,9 @@ export default function TradeDecisionsPage(){
             <p>No decisions found {symbolFilter ? `for ${symbolFilter}` : 'yet'}</p>
           </div>
         ) : (
-          filteredDecisions.map((d: any) => (
+          filteredDecisions
+            .sort((a:any,b:any)=> new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())
+            .map((d: any) => (
             <Card
               key={d.id || d.symbol}
               ref={highlightedId === d.id ? highlightRef : null}
@@ -160,6 +182,22 @@ export default function TradeDecisionsPage(){
                 </div>
               </div>
               <div className="card-content space-y-2">
+                {/* Stage chips (Brain Flow) */}
+                {typeof (d as any).stageIndex === 'number' && (
+                  <div className="mt-1">
+                    {/* Lazy import to avoid circulars would be overkill; simple inline chips */}
+                    <div className="flex flex-wrap gap-2">
+                      {["INGEST","CONTEXT","CANDIDATES","GATES","PLAN","ROUTE","MANAGE","LEARN"].map((s,i)=>{
+                        const color = i < (d as any).stageIndex
+                          ? 'bg-green-600 text-white'
+                          : i === (d as any).stageIndex
+                          ? ((d as any).stageStatus === 'ok' ? 'bg-amber-500 text-white' : 'bg-red-600 text-white')
+                          : 'bg-slate-200 text-slate-700';
+                        return <span key={s} className={`px-2 py-0.5 rounded text-[10px] ${color}`}>{s}</span>;
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-2 flex-wrap">
                   {(d.reasons ?? []).slice(0,3).map((r: string) => (
                     <Badge key={r} variant="secondary" className="text-xs">
@@ -173,7 +211,7 @@ export default function TradeDecisionsPage(){
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    disabled={isLoading || !isHealthy}
+                    disabled={isLoading || !isHealthy || (d.gates ?? []).some((g:any)=> !g?.passed)}
                     onClick={() => place({ symbol: d.symbol, side: "buy", qty: 5, type: "market" })}
                   >
                     {isLoading ? "Placing..." : "Paper Order"}
@@ -198,6 +236,7 @@ export default function TradeDecisionsPage(){
           ))
         )}
       </div>
+      <EvidenceDrawer open={open} onOpenChange={setOpen} data={packet} />
     </div>
   );
 }
