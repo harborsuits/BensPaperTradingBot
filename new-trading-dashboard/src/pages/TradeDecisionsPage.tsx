@@ -12,6 +12,7 @@ import { fmtContextBar, fmtTimeAgo } from "@/utils/formatters";
 import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
 import { buildEvidenceFromUi, enrichWithWhy } from "@/lib/evidence/builders";
 import DecisionCard from "@/components/decisions/DecisionCard";
+import DecisionStoryCard from "@/components/decisions/DecisionStoryCard";
 import type { IngestEvent, DecisionRow } from "@/contracts/types";
 import { enrichDecisionsWithStage } from "@/lib/flow/utils";
 
@@ -167,7 +168,15 @@ export default function TradeDecisionsPage(){
         </div>
       </div>
 
-      {/* Decisions Grid */}
+      {/* View toggle */}
+      <div className="flex items-center justify-end">
+        <div className="flex gap-2 text-xs">
+          <button className="px-2 py-1 rounded bg-slate-700 text-white">Story</button>
+          <button className="px-2 py-1 rounded bg-slate-800/40">Compact</button>
+        </div>
+      </div>
+
+      {/* Decisions Grid (Story Mode) */}
       <div className="grid gap-3 md:grid-cols-2">
         {filteredDecisions.length === 0 ? (
           <div className="col-span-full text-center py-12 text-muted-foreground">
@@ -181,7 +190,7 @@ export default function TradeDecisionsPage(){
               const key = d.id || d.symbol;
               return (
                 <div key={key} ref={highlightedId === d.id ? highlightRef : null} className={`transition-all duration-500 ${highlightedId === d.id ? 'ring-2 ring-primary shadow-lg bg-primary/5' : ''}`}>
-                  <DecisionCard d={d} context={undefined as any} onOpenEvidence={(p:any)=> { setPacket(enrichWithWhy(p)); setOpen(true); }} />
+                  <DecisionStoryCard decision={d} context={undefined as any} onOpenEvidence={(p:any)=> { setPacket(enrichWithWhy(p)); setOpen(true); }} />
                 </div>
               );
             })
