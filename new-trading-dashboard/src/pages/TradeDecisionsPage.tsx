@@ -76,9 +76,28 @@ export default function TradeDecisionsPage(){
   const { data: openOrders } = useQuery({
     queryKey: ['paper', 'orders', 'open'],
     queryFn: async () => {
-      const res = await fetch('/api/paper/orders/open');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
+      // Prefer dedicated endpoint; gracefully fall back to /api/paper/orders
+      const tryFetch = async (path: string) => {
+        const r = await fetch(path);
+        if (!r.ok) {
+          const err: any = new Error(`HTTP ${r.status}`);
+          err.status = r.status;
+          throw err;
+        }
+        return r.json();
+      };
+      try {
+        return await tryFetch('/api/paper/orders/open');
+      } catch (e: any) {
+        if (e?.status === 404) {
+          // Fallback: fetch all and filter
+          const all = await tryFetch('/api/paper/orders');
+          const list = Array.isArray(all) ? all : (all?.items ?? []);
+          const isOpen = (s: string) => ['open','pending','working','live'].includes((s||'').toLowerCase());
+          return list.filter((o: any) => isOpen(o?.status));
+        }
+        throw e;
+      }
     },
     refetchInterval: 10000,
   });
