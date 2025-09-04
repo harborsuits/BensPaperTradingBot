@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { buildEvidenceFromUi, enrichWithWhy } from "@/lib/evidence/builders";
-import StageChips from "@/components/common/StageChips";
+import { STAGES } from "@/lib/flow/utils";
 import { headline as mkHeadline, whyBullets, contribs, risks, makeNarrative } from "@/lib/evidence/humanize";
 import { usePortfolioAllocations } from "@/hooks/usePortfolioAllocations";
 import type { DecisionRow, ContextRow } from "@/contracts/types";
@@ -35,6 +35,15 @@ export default function DecisionStoryCard({ decision, context, onOpenEvidence }:
   const riskChips = risks(packet);
   const narrative = makeNarrative({ symbol: decision.symbol, packet, decision, accountEquity: equity });
 
+  const MiniStages = ({ idx, status }:{ idx?: number; status?: string }) => (
+    <div className="flex items-center gap-1">
+      {STAGES.map((_, i)=>{
+        const color = i < (idx ?? -1) ? "bg-green-600" : i === (idx ?? -1) ? (status==="ok"?"bg-amber-500":"bg-red-600") : "bg-slate-500/40";
+        return <span key={i} className={`h-2 w-2 rounded-full ${color}`} />;
+      })}
+    </div>
+  );
+
   return (
     <div className="border rounded-2xl p-4 bg-slate-900/40">
       <div className="flex items-center justify-between">
@@ -47,7 +56,7 @@ export default function DecisionStoryCard({ decision, context, onOpenEvidence }:
       </div>
 
       {typeof decision.stageIndex === "number" && (
-        <div className="mt-2"><StageChips currentIndex={decision.stageIndex!} currentStatus={decision.stageStatus as any} /></div>
+        <div className="mt-2"><MiniStages idx={decision.stageIndex} status={decision.stageStatus as any} /></div>
       )}
 
       <div className="mt-3">
