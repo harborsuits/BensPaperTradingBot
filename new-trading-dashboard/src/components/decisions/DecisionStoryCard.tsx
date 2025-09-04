@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { buildEvidenceFromUi, enrichWithWhy } from "@/lib/evidence/builders";
 import StageChips from "@/components/common/StageChips";
-import { headline as mkHeadline, whyBullets, contribs, risks } from "@/lib/evidence/humanize";
+import { headline as mkHeadline, whyBullets, contribs, risks, makeNarrative } from "@/lib/evidence/humanize";
+import { usePortfolioAllocations } from "@/hooks/usePortfolioAllocations";
 import type { DecisionRow, ContextRow } from "@/contracts/types";
 
 function ContribBar({ label, value, note }:{ label:string; value:number; note?:string }){
@@ -26,10 +27,13 @@ export default function DecisionStoryCard({ decision, context, onOpenEvidence }:
 
   const packet = useMemo(()=> enrichWithWhy(buildEvidenceFromUi({ decision, context })), [decision, context]);
 
+  const { data: alloc } = usePortfolioAllocations();
+  const equity = alloc?.data?.equity;
   const head = mkHeadline(packet);
   const bullets = whyBullets(packet);
   const contributions = contribs(packet);
   const riskChips = risks(packet);
+  const narrative = makeNarrative({ symbol: decision.symbol, packet, decision, accountEquity: equity });
 
   return (
     <div className="border rounded-2xl p-4 bg-slate-900/40">
@@ -51,6 +55,10 @@ export default function DecisionStoryCard({ decision, context, onOpenEvidence }:
         <ul className="list-disc pl-5 mt-1 space-y-1 text-sm">
           {bullets.slice(0,3).map((b,i)=>(<li key={i}>{b}</li>))}
         </ul>
+      </div>
+
+      <div className="mt-3 space-y-1 text-sm">
+        {narrative.map((line, i)=>(<div key={i}>{line}</div>))}
       </div>
 
       {contributions.length>0 && (

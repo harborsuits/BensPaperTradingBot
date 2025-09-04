@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
+import { usePortfolioAllocations } from "@/hooks/usePortfolioAllocations";
+import { makeNarrative } from "@/lib/evidence/humanize";
 import { Badge } from "@/components/ui/Badge";
 import type { EvidencePacket } from "@/contracts/evidence";
 
@@ -34,13 +36,28 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
         </div>
 
         <Tabs defaultValue="summary" className="mt-4">
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="summary">Summary</TabsTrigger>
+            <TabsTrigger value="story">Story</TabsTrigger>
             <TabsTrigger value="sources">Sources</TabsTrigger>
             <TabsTrigger value="why">Why</TabsTrigger>
             <TabsTrigger value="prediction">Prediction</TabsTrigger>
             <TabsTrigger value="plan">Plan & Risk</TabsTrigger>
           </TabsList>
+          <TabsContent value="story" className="space-y-4">
+            {(() => {
+              const { data: alloc } = usePortfolioAllocations();
+              const equity = alloc?.data?.equity;
+              const lines = makeNarrative({ symbol: data.symbol, packet: data, accountEquity: equity });
+              return (
+                <div className="rounded-2xl border p-3 bg-slate-900/40">
+                  <div className="text-sm leading-relaxed space-y-1">
+                    {lines.map((t,i)=>(<p key={i}>{t}</p>))}
+                  </div>
+                </div>
+              );
+            })()}
+          </TabsContent>
 
           <TabsContent value="summary" className="space-y-2">
             <ul className="list-disc pl-5">{data.interpretation.map((b, i) => (<li key={i}>{typeof b === "string" ? b : JSON.stringify(b)}</li>))}</ul>
