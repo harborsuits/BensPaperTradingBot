@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import type { IngestEvent, DecisionRow, ContextRow } from "@/contracts/types";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
 import { buildEvidenceFromUi } from "@/lib/evidence/builders";
 
 const STAGES = ["INGEST","CONTEXT","CANDIDATES","GATES","PLAN","ROUTE","MANAGE","LEARN"] as const;
 
 export default function BrainFlowNowCard(){
+  const navigate = useNavigate();
   const { data: events } = useQuery<IngestEvent[]>({
     queryKey:["ingestion","events"],
     queryFn: async ()=> (await fetch("/api/ingestion/events?limit=30")).json(),
@@ -34,8 +36,19 @@ export default function BrainFlowNowCard(){
   const [open, setOpen] = useState(false);
   const [packet, setPacket] = useState<any>(null);
   const openEvidence = (ev:IngestEvent)=>{
+    const d = (decisions ?? []).find(x=> (x.trace_id && ev.trace_id && x.trace_id===ev.trace_id) || x.symbol===ev.symbol);
+    // Prefer routing to Decisions page per UX
+    const symbol = ev.symbol || d?.symbol;
+    const trace = d?.trace_id || d?.id || ev.trace_id;
+    if (symbol || trace) {
+      const params = new URLSearchParams();
+      if (symbol) params.set("symbol", symbol);
+      if (trace) params.set("trace", String(trace));
+      navigate(`/decisions?${params.toString()}`);
+      return;
+    }
+    // Fallback: try local drawer
     try {
-      const d = (decisions ?? []).find(x=> (x.trace_id && ev.trace_id && x.trace_id===ev.trace_id) || x.symbol===ev.symbol);
       if (!d) { setPacket(null); setOpen(false); return; }
       const p = buildEvidenceFromUi({ decision: d, context });
       setPacket(p);
