@@ -34,8 +34,17 @@ export default function BrainFlowNowCard(){
   const [open, setOpen] = useState(false);
   const [packet, setPacket] = useState<any>(null);
   const openEvidence = (ev:IngestEvent)=>{
-    const d = (decisions ?? []).find(x=> (x.trace_id && ev.trace_id && x.trace_id===ev.trace_id) || x.symbol===ev.symbol);
-    if (d){ setPacket(buildEvidenceFromUi({ decision: d, context })); setOpen(true); }
+    try {
+      const d = (decisions ?? []).find(x=> (x.trace_id && ev.trace_id && x.trace_id===ev.trace_id) || x.symbol===ev.symbol);
+      if (!d) { setPacket(null); setOpen(false); return; }
+      const p = buildEvidenceFromUi({ decision: d, context });
+      setPacket(p);
+      setOpen(true);
+    } catch (e) {
+      console.error("Failed to build evidence", e);
+      setPacket(null);
+      setOpen(false);
+    }
   };
 
   return (

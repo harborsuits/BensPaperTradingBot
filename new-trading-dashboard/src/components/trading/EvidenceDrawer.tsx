@@ -42,7 +42,7 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
           </TabsList>
 
           <TabsContent value="summary" className="space-y-2">
-            <ul className="list-disc pl-5">{data.interpretation.map((b, i) => (<li key={i}>{b}</li>))}</ul>
+            <ul className="list-disc pl-5">{data.interpretation.map((b, i) => (<li key={i}>{typeof b === "string" ? b : JSON.stringify(b)}</li>))}</ul>
             <div className="text-xs text-muted-foreground">
               Regime {data.context.regime} • VIX {data.context.vix ?? "—"}
             </div>
@@ -53,7 +53,7 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
               <div key={s.id} className="border rounded-xl p-3">
                 <div className="flex justify-between gap-2">
                   <a href={s.url} target="_blank" rel="noreferrer" className="font-medium hover:underline">
-                    {s.title}
+                    {typeof s.title === "string" ? s.title : JSON.stringify(s.title)}
                   </a>
                   <div className="flex gap-2">
                     <Badge variant="outline">{s.publisher}</Badge>
@@ -65,7 +65,7 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
                   pub {new Date(s.publishedAt).toLocaleString()} • captured {new Date(s.capturedAt).toLocaleString()}
                 </div>
                 {s.keyClaims?.length > 0 && (
-                  <ul className="list-disc pl-5 mt-1 text-sm">{s.keyClaims.map((k, i) => (<li key={i}>{k}</li>))}</ul>
+                  <ul className="list-disc pl-5 mt-1 text-sm">{s.keyClaims.map((k, i) => (<li key={i}>{typeof k === "string" ? k : JSON.stringify(k)}</li>))}</ul>
                 )}
               </div>
             ))}
