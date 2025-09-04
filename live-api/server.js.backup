@@ -1,13 +1,68 @@
 const express = require('express');
 const cors = require('cors');
 const dayjs = require('dayjs');
+const fs = require('fs');
+const path = require('path');
 const { nanoid } = require('nanoid');
+const { CONFIG } = require('./lib/config');
+const { noteRequest, setQuoteTouch, setBrokerTouch, currentHealth } = require('./lib/health');
+const { wrapResponse, errorResponse } = require('./lib/watermark');
+const { loadOrders, saveOrders, loadPositions, savePositions } = require('./lib/persistence');
+const { placeOrderAdapter } = require('./lib/brokerPaper');
+const { preTradeGate } = require('./lib/gate');
+const { saveBundle, getBundle, replayBundle } = require('./lib/trace');
+const { AutoRefresh } = require('./lib/autoRefresh');
+const { AutoLoop } = require('./lib/autoLoop');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Initialize auto-refresh for quotes to keep health GREEN
+const quoteRefresher = new AutoRefresh({
+  interval: 30_000, // 30 seconds
+  symbols: ['SPY', 'AAPL', 'QQQ'], // Common symbols
+  enabled: true
+});
+quoteRefresher.start();
+
+// Initialize auto-loop for paper orders (disabled by default)
+const autoLoop = new AutoLoop({
+  interval: parseInt(process.env.AUTOLOOP_INTERVAL_MS || '30000', 10),
+  symbols: (process.env.AUTOLOOP_SYMBOLS || 'SPY').split(','),
+  quantity: parseFloat(process.env.AUTOLOOP_QTY || '1'),
+  enabled: process.env.AUTOLOOP_ENABLED === '1'
+});
+autoLoop.start();
+
 app.use((req, res, next) => {
   res.set('x-api-origin', 'live-api:4000');
+  next();
+});
+
+// Response watermark: add meta on objects, headers for all
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (body) => {
+    const trace = nanoid();
+    const asOf = new Date().toISOString();
+    res.set('x-meta-trace', trace);
+    res.set('x-meta-asof', asOf);
+    res.set('x-meta-source', 'paper');
+    res.set('x-meta-schema', 'v1');
+    if (body && typeof body === 'object' && !Array.isArray(body)) {
+      if (!body.meta) body.meta = { asOf, source: 'paper', schema_version: 'v1', trace_id: trace };
+    }
+    return originalJson(body);
+  };
+  next();
+});
+
+// Request outcome tracking for health/error budget
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    noteRequest(res.statusCode < 400);
+  });
   next();
 });
 
@@ -18,13 +73,22 @@ const asOf = () => new Date().toISOString();
 
 // Health & Metrics
 app.get('/api/health', (req, res) => {
+  const h = currentHealth();
   res.json({
     env: process.env.NODE_ENV || 'dev',
     gitSha: process.env.GIT_SHA || 'local-dev',
     region: 'local',
-    services: { api: { status: 'up', lastUpdated: asOf() } },
+    services: { api: { status: h.ok ? 'up' : 'degraded', lastUpdated: asOf() } },
+    ok: h.ok,
+    breaker: h.breaker,
+    quote_age_s: h.quote_age_s,
+    broker_age_s: h.broker_age_s,
+    slo_error_budget: h.slo_error_budget,
     asOf: asOf(),
   });
+});
+app.get('/health', (req, res) => {
+  res.json(currentHealth());
 });
 
 app.get('/metrics', (req, res) => {
@@ -53,6 +117,21 @@ app.get('/metrics/prom', (req, res) => {
         '\n# HELP benbot_data_fresh_seconds Seconds since last data\n# TYPE benbot_data_fresh_seconds gauge\nbenbot_data_fresh_seconds 12\n' +
         '# HELP benbot_ws_connected Connected flag\n# TYPE benbot_ws_connected gauge\nbenbot_ws_connected 1\n'
     );
+});
+
+// --- Minimal auth for UI: return access_token ---
+app.post('/auth/token', (req, res) => {
+  try {
+    const { username, password } = req.body || {};
+    const u = process.env.ADMIN_USERNAME || 'admin';
+    const p = process.env.ADMIN_PASSWORD || 'changeme';
+    if (username && password && (username !== u || password !== p)) {
+      return res.status(401).json({ error: 'invalid_credentials' });
+    }
+    return res.json({ access_token: 'dev-token', token_type: 'bearer', expires_in: 60 * 60 * 8 });
+  } catch {
+    return res.json({ access_token: 'dev-token', token_type: 'bearer', expires_in: 60 * 60 * 8 });
+  }
 });
 
 // Market Context & News
@@ -221,6 +300,18 @@ app.get('/api/decisions', (req, res) => res.json([makeDecision(), makeDecision()
 app.get('/api/decisions/latest', (req, res) => res.json([makeDecision()]));
 app.get('/api/decisions/recent', (req, res) => res.json([makeDecision(), makeDecision()]));
 
+// Trace endpoints
+app.get('/trace/:id', (req, res) => {
+  const rec = getBundle(req.params.id);
+  if (!rec) return res.status(404).json({ error: 'not found' });
+  res.json(rec);
+});
+app.post('/trace/:id/replay', (req, res) => {
+  const out = replayBundle(req.params.id);
+  if (!out.ok) return res.status(404).json({ error: 'not found' });
+  res.json(out);
+});
+
 app.get('/api/trades', (req, res) => {
   const limit = Math.min(Number(req.query.limit || 20), 200);
   const items = (paperOrders.length ? paperOrders : []).slice(0, limit).map(o => ({
@@ -232,7 +323,11 @@ app.get('/api/trades', (req, res) => {
     status: o.status,
     ts: o.submittedAt,
   }));
-  // If no orders yet, synthesize from decisions
+  if (!items.length && CONFIG.FAIL_CLOSE && !CONFIG.FALLBACKS_ENABLED) {
+    const err = errorResponse('STALE_DATA', 503);
+    return res.status(err.status).json(err.body);
+  }
+  // If no orders yet and fallbacks permitted, synthesize from decisions
   const fallback = items.length ? items : strategies.slice(0, 1).map((s, i) => ({
     id: nanoid(), symbol: i % 2 ? 'SPY' : 'AAPL', side: i % 2 ? 'sell' : 'buy', qty: 10, price: 100, status: 'filled', ts: asOf(),
   }));
@@ -297,58 +392,186 @@ app.get('/api/portfolio/paper', (req, res) => res.json(buildPortfolio('paper')))
 app.get('/api/portfolio/live', (req, res) => res.json(buildPortfolio('live')));
 
 // Paper trading order/positions endpoints (aliases for quick smoke tests)
-const paperPositions = [];
-const paperTrades = [];
-const paperOrders = [];
-app.post('/api/paper/orders', (req, res) => {
+let paperPositions = loadPositions();
+let paperTrades = loadOrders();
+let paperOrders = loadOrders();
+function persistAll() {
+  savePositions(paperPositions);
+  saveOrders(paperOrders);
+}
+app.post('/api/paper/orders/dry-run', async (req, res) => {
+  const idempotencyKey = req.get('Idempotency-Key') || '';
   const { symbol = 'AAPL', side = 'buy', qty = 1, type = 'market' } = req.body || {};
-  const price = 100;
-  const trade = {
-    id: nanoid(),
-    status: 'filled',
-    symbol,
-    side,
-    qty,
-    type,
-    submittedAt: asOf(),
-    filledAvgPrice: price,
-    // legacy keys for other views
-    action: side,
-    quantity: qty,
-    price,
-    total_value: price * qty,
-    timestamp: asOf(),
-    strategy_id: 'manual',
-    strategy_name: 'Manual',
-    account: 'paper',
-  };
-  paperTrades.unshift(trade);
-  paperOrders.unshift({
-    id: trade.id,
-    symbol: trade.symbol,
-    side: trade.side,
-    qty: trade.qty,
-    type: trade.type,
-    price: trade.filledAvgPrice,
-    status: trade.status,
-    submittedAt: trade.submittedAt,
-    filledAt: trade.timestamp,
+  const h = currentHealth();
+  const quote = await getQuote(symbol);
+  const paperAccount = { cash: 20000 }; // mock account fetch
+
+  const gate = preTradeGate({
+    nav: 50_000,
+    portfolio_heat: 0.05,
+    strategy_heat: 0.03,
+    dd_mult: Math.max(CONFIG.DD_MIN_MULT, 1 - CONFIG.DD_FLOOR),
+    requested_qty: qty,
+    price: quote.price,
+    available_cash: paperAccount.cash,
+    quote_age_s: h.quote_age_s,
+    broker_age_s: h.broker_age_s,
+    stale: !h.ok,
   });
-  // naive position update
-  const posIdx = paperPositions.findIndex(p => p.symbol === symbol);
-  if (posIdx >= 0) {
-    const p = paperPositions[posIdx];
-    const newQty = p.quantity + (side === 'buy' ? qty : -qty);
-    paperPositions[posIdx] = { ...p, quantity: newQty, last_price: price, current_value: newQty * price };
-  } else if (side === 'buy') {
-    paperPositions.push({ symbol, quantity: qty, avg_cost: price, last_price: price, current_value: qty * price, unrealized_pl: 0, unrealized_pl_percent: 0, realized_pl: 0, account: 'paper', strategy_id: 'manual', entry_time: asOf() });
+  return res.json({
+    ok: true,
+    symbol, side, qty, type,
+    gate,
+    idempotencyKey: idempotencyKey || null,
+  });
+});
+app.post('/api/paper/orders', async (req, res) => {
+  const idempotencyKey = req.get('Idempotency-Key') || '';
+  const { symbol = 'AAPL', side = 'buy', qty = 1, type = 'market' } = req.body || {};
+  const health = currentHealth();
+  if (!health.ok && CONFIG.FAIL_CLOSE) {
+    const err = errorResponse('BREAKER_RED', 503, { details: health });
+    return res.status(err.status).json(err.body);
   }
-  res.json({ success: true, trade });
+  const quote = await getQuote(symbol);
+  const paperAccount = { cash: 20000 }; // mock account fetch
+
+  const gate = preTradeGate({
+    nav: 50_000,
+    portfolio_heat: 0.05,
+    strategy_heat: 0.03,
+    dd_mult: Math.max(CONFIG.DD_MIN_MULT, 1 - CONFIG.DD_FLOOR),
+    requested_qty: qty,
+    price: quote.price,
+    available_cash: paperAccount.cash,
+    quote_age_s: health.quote_age_s,
+    broker_age_s: health.broker_age_s,
+    stale: !health.ok,
+  });
+  if (gate.decision !== 'ACCEPT') {
+    const err = errorResponse(gate.reason || 'REJECTED', 400, { gate });
+    return res.status(err.status).json(err.body);
+  }
+  try {
+    const price = quote.price; // Use the fetched quote price
+    const broker = await placeOrderAdapter({ request: { symbol, side, qty: gate.routed_qty, type, price }, idempotencyKey });
+    setBrokerTouch();
+    // If order with this broker id already exists, return existing without mutating state
+    const existingOrder = paperOrders.find(o => o.id === broker.id);
+    if (existingOrder) {
+      const existingTrade = paperTrades.find(t => t.id === broker.id);
+      return res.json({ success: true, trade: existingTrade || existingOrder, gate, traceId: broker.id, meta: { asOf: asOf(), source: 'paper', schema_version: 'v1', trace_id: broker.id } });
+    }
+    const trade = {
+      id: broker.id,
+      status: broker.status,
+      symbol,
+      side,
+      qty: broker.filledQty,
+      type,
+      submittedAt: asOf(),
+      filledAvgPrice: broker.avgPrice,
+      action: side,
+      quantity: broker.filledQty,
+      price: broker.avgPrice,
+      total_value: broker.avgPrice * broker.filledQty,
+      timestamp: asOf(),
+      strategy_id: 'manual',
+      strategy_name: 'Manual',
+      account: 'paper',
+    };
+    paperTrades.unshift(trade);
+    paperOrders.unshift({
+      id: trade.id,
+      symbol: trade.symbol,
+      side: trade.side,
+      qty: trade.qty,
+      type: trade.type,
+      price: trade.filledAvgPrice,
+      status: trade.status,
+      submittedAt: trade.submittedAt,
+      filledAt: trade.timestamp,
+    });
+    // position update with avg cost & realized PnL
+    const priceFill = broker.avgPrice;
+    const idx = paperPositions.findIndex(p => p.symbol === symbol);
+    if (idx >= 0) {
+      const p = paperPositions[idx];
+      let quantity = p.quantity;
+      let avg_cost = p.avg_cost;
+      let realized_pl = p.realized_pl || 0;
+      if (side === 'buy') {
+        const newQty = quantity + broker.filledQty;
+        avg_cost = (quantity * avg_cost + broker.filledQty * priceFill) / (newQty || 1);
+        quantity = newQty;
+      } else {
+        // sell: realize PnL on sold qty
+        realized_pl += (priceFill - avg_cost) * broker.filledQty;
+        quantity = quantity - broker.filledQty;
+      }
+      const last_price = priceFill;
+      paperPositions[idx] = {
+        ...p,
+        quantity,
+        avg_cost: +avg_cost.toFixed(4),
+        last_price,
+        current_value: quantity * last_price,
+        unrealized_pl: (last_price - avg_cost) * quantity,
+        unrealized_pl_percent: quantity ? ((last_price - avg_cost) / avg_cost) * 100 : 0,
+        realized_pl,
+      };
+    } else if (side === 'buy') {
+      paperPositions.push({ symbol, quantity: broker.filledQty, avg_cost: priceFill, last_price: priceFill, current_value: broker.filledQty * priceFill, unrealized_pl: 0, unrealized_pl_percent: 0, realized_pl: 0, account: 'paper', strategy_id: 'manual', entry_time: asOf() });
+    }
+    persistAll();
+    // Save trace bundle
+    const traceId = saveBundle({
+      id: trade.id,
+      order: { symbol, side, qty: broker.filledQty, type, price: priceFill },
+      risk_config: {
+        PER_TRADE_CAP: CONFIG.PER_TRADE_CAP,
+        MAX_PORTFOLIO_HEAT: CONFIG.MAX_PORTFOLIO_HEAT,
+        MAX_STRATEGY_HEAT: CONFIG.MAX_STRATEGY_HEAT,
+        DD_FLOOR: CONFIG.DD_FLOOR,
+        DD_MIN_MULT: CONFIG.DD_MIN_MULT,
+      },
+      context: {},
+      quotes_snapshot: [],
+      venue_priors: {},
+    });
+    return res.json({ success: true, trade, gate, traceId, meta: { asOf: asOf(), source: 'paper', schema_version: 'v1', trace_id: traceId } });
+  } catch (e) {
+    if (e && (e.code === 'RATE_LIMIT')) {
+      const err = errorResponse('RATE_LIMIT', 429);
+      return res.status(err.status).json(err.body);
+    }
+    const err = errorResponse('BROKER_DOWN', 502);
+    return res.status(err.status).json(err.body);
+  }
 });
 app.get('/api/paper/orders/:id', (req, res) => {
   const ord = paperOrders.find(o => o.id === req.params.id);
   if (!ord) return res.status(404).json({ error: 'not found' });
   res.json(ord);
+});
+
+// All orders
+app.get('/api/paper/orders', (req, res) => {
+  res.json({ items: paperOrders });
+});
+
+// Open orders (simple: those not filled/canceled)
+app.get('/api/paper/orders/open', (req, res) => {
+  const open = paperOrders.filter(o => !['filled', 'canceled', 'rejected'].includes(String(o.status || '').toLowerCase()));
+  res.json(open.map(o => ({
+    order_id: o.id,
+    symbol: o.symbol,
+    side: String(o.side || '').toUpperCase(),
+    qty: o.qty,
+    status: o.status,
+    created_ts: Math.floor(new Date(o.submittedAt || asOf()).getTime() / 1000),
+    limit_price: o.price,
+  })));
 });
 
 // Decision explain stub
@@ -393,6 +616,43 @@ app.get('/api/events/logs', (req, res) => {
     source: 'system',
   }));
   res.json({ items });
+});
+
+// Ingestion activity events (for UI ticker and data timeline)
+app.get('/api/ingestion/events', (req, res) => {
+  const limit = Math.min(Number(req.query.limit || 50), 500);
+  const now = dayjs();
+  const stages = ['INGEST', 'CONTEXT', 'CANDIDATES', 'GATES', 'PLAN', 'ROUTE', 'MANAGE', 'LEARN'];
+  const symbols = ['AAPL', 'SPY', 'MSFT', 'NVDA', 'AMD', 'TSLA'];
+
+  const items = Array.from({ length: limit }).map((_, i) => {
+    const t = now.subtract(i * 3, 'second');
+    const ts = t.valueOf();
+    const stage = stages[i % stages.length];
+    const symbol = symbols[i % symbols.length];
+    const latency = 20 + Math.floor(Math.random() * 400);
+    const ok = Math.random() > 0.08; // ~8% errors
+    return {
+      id: nanoid(),
+      // fields used by ActivityTicker
+      timestamp: t.toISOString(),
+      stage,
+      symbol,
+      note: ok ? 'processed' : 'retrying',
+      latency_ms: latency,
+      status: ok ? 'ok' : 'err',
+      trace_id: nanoid(),
+      // fields used by DataIngestionCard
+      ts,
+      strategy_id: 'news_momo_v2',
+      step: ok ? 'ok' : 'error',
+      message: ok ? `Stage ${stage} completed` : `Stage ${stage} failed`,
+      ms: latency,
+      level: ok ? 'ok' : 'err',
+    };
+  });
+
+  res.json(items);
 });
 
 // Backtests stubs
@@ -457,6 +717,56 @@ app.get('/api/paper/account', (req, res) => {
   res.json({ equity, cash, buyingPower: cash * 5, asOf: asOf() });
 });
 
+// --- Portfolio allocations (equity/options + top symbols)
+app.get('/api/portfolio/allocations', (req, res) => {
+  try {
+    const positions = paperPositions || [];
+    const totalMV = positions.reduce((s, p) => s + (Number(p.last_price) * Number(p.quantity)), 0);
+    const cash = 20000;
+
+    const byType = new Map();
+    const bySymbol = new Map();
+
+    for (const p of positions) {
+      const mv = (Number(p.last_price) || 0) * (Number(p.quantity) || 0);
+      const assetClass = 'equity'; // paper stub; extend for options later
+      byType.set(assetClass, (byType.get(assetClass) || 0) + mv);
+      bySymbol.set(p.symbol, (bySymbol.get(p.symbol) || 0) + mv);
+    }
+
+    const toList = (m) => Array.from(m.entries()).map(([name, value]) => ({
+      name,
+      value,
+      pct: totalMV > 0 ? +(100 * (value / totalMV)).toFixed(2) : 0,
+    }));
+
+    const typeAlloc = toList(byType);
+    const symbolAlloc = toList(bySymbol).sort((a,b)=>b.value-a.value).slice(0, 8);
+
+    res.json({ data: {
+      equity: 50000 + totalMV,
+      cash,
+      buying_power: cash * 5,
+      pl_day: 180,
+      totalMV,
+      typeAlloc,
+      symbolAlloc,
+    }});
+  } catch (e) {
+    res.status(500).json({ error: 'allocations_failed', message: e?.message || 'unknown' });
+  }
+});
+
+app.get('/api/autoloop/status', (req, res) => {
+  res.json({
+    enabled: autoLoop.enabled,
+    isRunning: autoLoop.isRunning,
+    status: autoLoop.status,
+    lastRun: autoLoop.lastRun,
+    interval: autoLoop.interval,
+  });
+});
+
 // Safety
 app.get('/api/safety/status', (req, res) => {
   const payload = {
@@ -473,6 +783,13 @@ app.get('/api/safety/status', (req, res) => {
     asOf: asOf(),
   };
   res.json(payload);
+});
+app.post('/api/admin/reconcile', (req, res) => {
+  // For this stub, reconciliation just reloads persisted data
+  paperPositions = loadPositions();
+  paperOrders = loadOrders();
+  paperTrades = loadOrders();
+  res.json({ ok: true, positions: paperPositions.length, orders: paperOrders.length });
 });
 app.post('/api/safety/emergency-stop', (req, res) => {
   emergencyStopActive = !!(req.body && req.body.active);
@@ -595,6 +912,7 @@ app.get('/api/quotes', (req, res) => {
       ts: now,
     };
   });
+  setQuoteTouch();
   res.json(items);
 });
 
@@ -629,6 +947,7 @@ app.get('/api/scanner/candidates', async (req, res) => {
       if (!ax.ok) throw new Error('quotes not ok');
       return await ax.json(); // expect [{symbol,last,prevClose,spreadPct,volume}]
     } catch {
+      if (CONFIG.FAIL_CLOSE && !CONFIG.FALLBACKS_ENABLED) throw new Error('STALE_DATA');
       return syms.map(s => ({
         symbol: s,
         last: +(5 + Math.random()*30).toFixed(2),
@@ -650,6 +969,7 @@ app.get('/api/scanner/candidates', async (req, res) => {
       const atr = tr.reduce((a,b)=>a+b,0) / tr.length;
       return +atr.toFixed(2);
     } catch {
+      if (CONFIG.FAIL_CLOSE && !CONFIG.FALLBACKS_ENABLED) throw new Error('STALE_DATA');
       return +(0.2 + Math.random()*1.0).toFixed(2);
     }
   }
@@ -662,12 +982,14 @@ app.get('/api/scanner/candidates', async (req, res) => {
       const map = new Map(arr.map(x => [x.symbol, x]));
       return (s) => map.get(s) || { impact1h: 0, impact24h: 0, count24h: 0, topOutlets: [] };
     } catch {
+      if (CONFIG.FAIL_CLOSE && !CONFIG.FALLBACKS_ENABLED) throw new Error('STALE_DATA');
       return (_s) => ({ impact1h: 0, impact24h: 0, count24h: 0, topOutlets: [] });
     }
   }
 
-  const quotes = await getQuotes(symbols);
-  const sentOf = await getTickerSentiment(symbols);
+  try {
+    const quotes = await getQuotes(symbols);
+    const sentOf = await getTickerSentiment(symbols);
 
   // Compute features & score
   const rows = await Promise.all(quotes.map(async q => {
@@ -713,8 +1035,12 @@ app.get('/api/scanner/candidates', async (req, res) => {
     };
   }));
 
-  rows.sort((a,b) => b.score - a.score);
-  res.json(rows.slice(0, limit));
+    rows.sort((a,b) => b.score - a.score);
+    res.json(rows.slice(0, limit));
+  } catch (e) {
+    const err = errorResponse('STALE_DATA', 503);
+    return res.status(err.status).json(err.body);
+  }
 });
 
 app.get('/api/evotester/history', (req, res) => {
@@ -746,7 +1072,25 @@ app.post('/api/alerts/:id/acknowledge', (req, res) => {
 });
 
 const PORT = Number(process.env.PORT) || 4000;
-const server = app.listen(PORT, () => console.log(`live-api listening on http://localhost:${PORT}`));
+// Migration guard: refuse to start if pending migrations are detected
+try {
+  const migFlag = path.resolve(__dirname, 'migrations/pending.flag');
+  if (fs.existsSync(migFlag) && !CONFIG.ALLOW_UNSAFE_MIGRATIONS) {
+    console.error('Pending migrations detected. Refusing to start. Set ALLOW_UNSAFE_MIGRATIONS=true to override.');
+    process.exit(1);
+  }
+} catch {}
+const server = app.listen(PORT, () => {
+  console.log(`live-api listening on http://localhost:${PORT}`);
+  // Optional GREEN-gated paper autoloop (env toggle)
+  if (process.env.AUTOLOOP_ENABLED === '1' || process.env.AUTOLOOP_ENABLED === 'true') {
+    try {
+      require('./lib/autoLoop').start();
+    } catch (e) {
+      console.error('[autoLoop] failed to start', e?.message || e);
+    }
+  }
+});
 
 // WebSocket Support (simple upgrade handler)
 server.on('upgrade', (request, socket, head) => {

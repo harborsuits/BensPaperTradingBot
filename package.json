@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/TheClitCommander/BensTradingBotaugust21/issues"
   },
-  "homepage": "https://github.com/TheClitCommander/BensTradingBotaugust21#readme"
+  "homepage": "https://github.com/TheClitCommander/BensTradingBotaugust21#readme",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
 }

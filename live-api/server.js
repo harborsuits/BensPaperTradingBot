@@ -549,13 +549,7 @@ app.post('/api/paper/orders', async (req, res) => {
     return res.status(err.status).json(err.body);
   }
 });
-app.get('/api/paper/orders/:id', (req, res) => {
-  const ord = paperOrders.find(o => o.id === req.params.id);
-  if (!ord) return res.status(404).json({ error: 'not found' });
-  res.json(ord);
-});
-
-// Open orders (simple: those not filled/canceled)
+// Open orders (simple: those not filled/canceled) - must be before :id route
 app.get('/api/paper/orders/open', (req, res) => {
   const open = paperOrders.filter(o => !['filled', 'canceled', 'rejected'].includes(String(o.status || '').toLowerCase()));
   res.json(open.map(o => ({
@@ -567,6 +561,17 @@ app.get('/api/paper/orders/open', (req, res) => {
     created_ts: Math.floor(new Date(o.submittedAt || asOf()).getTime() / 1000),
     limit_price: o.price,
   })));
+});
+
+// All orders
+app.get('/api/paper/orders', (req, res) => {
+  res.json({ items: paperOrders });
+});
+
+app.get('/api/paper/orders/:id', (req, res) => {
+  const ord = paperOrders.find(o => o.id === req.params.id);
+  if (!ord) return res.status(404).json({ error: 'not found' });
+  res.json(ord);
 });
 
 // Decision explain stub
@@ -928,6 +933,39 @@ app.get('/api/bars', (req, res) => {
   res.json({ symbol, timeframe, bars });
 });
 
+// Helper function for single quote
+async function getQuote(symbol) {
+  try {
+    const response = await fetch(`http://localhost:4000/api/quotes?symbols=${encodeURIComponent(symbol)}`);
+    if (!response.ok) throw new Error('Quote fetch failed');
+    const quotes = await response.json();
+    return quotes.find(q => q.symbol.toUpperCase() === symbol.toUpperCase()) || {
+      symbol: symbol.toUpperCase(),
+      last: 100 + Math.random() * 100,
+      bid: 99 + Math.random() * 100,
+      ask: 101 + Math.random() * 100,
+      prevClose: 100 + Math.random() * 100,
+      change: (Math.random() - 0.5) * 10,
+      pct: (Math.random() - 0.5) * 5,
+      ts: new Date().toISOString(),
+      price: 100 + Math.random() * 100
+    };
+  } catch (e) {
+    // Fallback quote
+    return {
+      symbol: symbol.toUpperCase(),
+      last: 100 + Math.random() * 100,
+      bid: 99 + Math.random() * 100,
+      ask: 101 + Math.random() * 100,
+      prevClose: 100 + Math.random() * 100,
+      change: (Math.random() - 0.5) * 10,
+      pct: (Math.random() - 0.5) * 5,
+      ts: new Date().toISOString(),
+      price: 100 + Math.random() * 100
+    };
+  }
+}
+
 // --- SCANNER: candidates ranked by score ---
 app.get('/api/scanner/candidates', async (req, res) => {
   const list = String(req.query.list || 'small_caps_liquid');
@@ -1087,47 +1125,232 @@ const server = app.listen(PORT, () => {
   }
 });
 
-// WebSocket Support (simple upgrade handler)
+// WebSocket Support using ws library
+const WebSocket = require('ws');
+// Create ws servers in noServer mode; we will route in a single upgrade handler
+const wss = new WebSocket.Server({ noServer: true, path: '/ws' });
+
+// Handle WebSocket connections
+wss.on('connection', (ws, request) => {
+  console.log('WebSocket connection established');
+
+  // Handle ping/pong for connection keepalive
+  const pingInterval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.ping();
+    }
+  }, 30000);
+
+  ws.on('pong', () => {
+    // Connection is alive
+  });
+
+  ws.on('message', (data) => {
+    try {
+      const message = JSON.parse(data.toString());
+
+      // Handle different message types
+      if (message.action === 'ping') {
+        ws.send(JSON.stringify({ type: 'pong' }));
+      } else if (message.type === 'subscription') {
+        // Handle subscription requests
+        console.log('WebSocket subscription:', message);
+      } else {
+        // Echo back unknown messages for debugging
+        console.log('Received WebSocket message:', message);
+      }
+    } catch (error) {
+      console.error('Error parsing WebSocket message:', error);
+    }
+  });
+
+  ws.on('close', () => {
+    console.log('WebSocket connection closed');
+    clearInterval(pingInterval);
+  });
+
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+    clearInterval(pingInterval);
+  });
+
+  // Send a welcome message
+  ws.send(JSON.stringify({
+    type: 'welcome',
+    message: 'Connected to live-api WebSocket',
+    timestamp: new Date().toISOString()
+  }));
+});
+// Add this function at the end of the file, right before the server.on('upgrade') handler
+
+// WebSocket Server for decisions endpoint
+const wssDecisions = new WebSocket.Server({
+  noServer: true,
+  path: '/ws/decisions'
+});
+
+// Handle decisions WebSocket connections
+wssDecisions.on('connection', (ws) => {
+  console.log('WebSocket connection established for decisions');
+
+  // Send a sample decision trace every 10 seconds
+  const decisionInterval = setInterval(() => {
+    try {
+      const sampleDecision = {
+        trace_id: `sample-${Date.now()}`,
+        as_of: new Date().toISOString(),
+        schema_version: "1.0",
+        symbol: "AAPL",
+        instrument: { type: "equity", symbol: "AAPL" },
+        account: { mode: "paper", broker: "tradier" },
+        market_context: {
+          regime: { label: "Neutral", confidence: 0.58 },
+          volatility: { vix: 17.2, trend: "stable" },
+          sentiment: { label: "bullish", score: 0.62 }
+        },
+        signals: [
+          { source: "TA", name: "RSI_14", value: 32.1, threshold: 35, direction: "bullish" },
+          { source: "TA", name: "MA_CROSS", value: "up", direction: "bullish" }
+        ],
+        news_evidence: [
+          {
+            url: "https://example.com/news/1",
+            headline: "Apple announces new product line",
+            snippet: "Apple's new product line expected to boost revenue",
+            entities: ["AAPL", "product", "revenue"],
+            sentiment: "positive",
+            recency_min: 47,
+            credibility: "high"
+          }
+        ],
+        candidate_score: { alpha: 0.79, rank_in_universe: 1 },
+        risk_gate: {
+          position_limits_ok: true,
+          portfolio_heat_ok: true,
+          drawdown_ok: true,
+          notes: ["All risk gates passed"]
+        },
+        plan: {
+          action: "OPEN_LONG",
+          entry: { type: "limit", px: 185.2 },
+          sizing: { units: 2, notional: 37040, max_loss: 1040 },
+          exits: { stop: 180.8, take_profit: 196.0 },
+          expected_move: { days: 2, pct: 5.2, p_up: 0.65 },
+          strategyLabel: "Momentum Reversal"
+        },
+        execution: { status: "PROPOSED" },
+        explain_layman: "Buy AAPL because momentum is turning up from oversold; risk capped to stop.",
+        explain_detail: [
+          "RSI(14)=32 rising; MA cross-up in last 3 sessions.",
+          "News sentiment positive on new product line.",
+          "Risk gates OK; within per-trade cap."
+        ]
+      };
+
+      ws.send(JSON.stringify(sampleDecision));
+      console.log('Decision trace sent via WebSocket');
+    } catch (err) {
+      console.error('Error sending decision trace:', err);
+      clearInterval(decisionInterval);
+    }
+  }, 10000);
+
+  // Also send one immediately on connection
+  setTimeout(() => {
+    try {
+      const initialDecision = {
+        trace_id: `initial-${Date.now()}`,
+        as_of: new Date().toISOString(),
+        schema_version: "1.0",
+        symbol: "NVDA",
+        instrument: { type: "equity", symbol: "NVDA" },
+        account: { mode: "paper", broker: "tradier" },
+        market_context: {
+          regime: { label: "Bullish", confidence: 0.72 },
+          volatility: { vix: 16.5, trend: "falling" },
+          sentiment: { label: "bullish", score: 0.78 }
+        },
+        signals: [
+          { source: "TA", name: "MACD", value: 0.5, threshold: 0, direction: "bullish" },
+          { source: "TA", name: "VOLUME_SURGE", value: 2.3, direction: "bullish" }
+        ],
+        news_evidence: [
+          {
+            url: "https://example.com/news/2",
+            headline: "NVIDIA reports record earnings",
+            snippet: "NVIDIA's AI chip demand continues to grow",
+            entities: ["NVDA", "earnings", "AI"],
+            sentiment: "positive",
+            recency_min: 30,
+            credibility: "high"
+          }
+        ],
+        candidate_score: { alpha: 0.85, rank_in_universe: 1 },
+        risk_gate: {
+          position_limits_ok: true,
+          portfolio_heat_ok: true,
+          drawdown_ok: true,
+          notes: ["All risk gates passed"]
+        },
+        plan: {
+          action: "OPEN_LONG",
+          entry: { type: "limit", px: 950.5 },
+          sizing: { units: 1, notional: 9505, max_loss: 950 },
+          exits: { stop: 900.0, take_profit: 1050.0 },
+          expected_move: { days: 3, pct: 10.5, p_up: 0.75 },
+          strategyLabel: "Earnings Momentum"
+        },
+        execution: { status: "PROPOSED" },
+        explain_layman: "Buy NVDA due to strong earnings and AI demand growth.",
+        explain_detail: [
+          "MACD turning positive with increasing momentum.",
+          "Volume surge 2.3x average on earnings beat.",
+          "AI chip demand continues to exceed supply."
+        ]
+      };
+
+      ws.send(JSON.stringify(initialDecision));
+      console.log('Initial decision trace sent via WebSocket');
+    } catch (err) {
+      console.error('Error sending initial decision trace:', err);
+    }
+  }, 1000);
+
+  ws.on('close', () => {
+    clearInterval(decisionInterval);
+  });
+
+  ws.on('error', () => {
+    clearInterval(decisionInterval);
+  });
+});
+
+// Broadcast helper for decisions stream
+function broadcastDecision(obj) {
+  try {
+    const msg = JSON.stringify(obj);
+    for (const client of wssDecisions.clients) {
+      if (client.readyState === WebSocket.OPEN) client.send(msg);
+    }
+  } catch (e) {
+    console.error('broadcastDecision failed:', e?.message || e);
+  }
+}
+
+module.exports.broadcastDecision = broadcastDecision;
+
+// Handle WebSocket upgrades
 server.on('upgrade', (request, socket, head) => {
   const { pathname } = new URL(request.url, `http://${request.headers.host}`);
-  
-  if (pathname === '/ws') {
-    // Simple WebSocket handshake
-    const key = request.headers['sec-websocket-key'];
-    const acceptKey = require('crypto')
-      .createHash('sha1')
-      .update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')
-      .digest('base64');
-    
-    const responseHeaders = [
-      'HTTP/1.1 101 Switching Protocols',
-      'Upgrade: websocket',
-      'Connection: Upgrade',
-      `Sec-WebSocket-Accept: ${acceptKey}`,
-      '', ''
-    ].join('\r\n');
-    
-    socket.write(responseHeaders);
-    
-    // Simple ping/pong to keep connection alive
-    const pingInterval = setInterval(() => {
-      try {
-        // Send WebSocket ping frame (0x89 opcode)
-        socket.write(Buffer.from([0x89, 0x00]));
-      } catch (err) {
-        clearInterval(pingInterval);
-      }
-    }, 30000);
-    
-    socket.on('close', () => {
-      clearInterval(pingInterval);
+
+  if (pathname === '/ws/decisions') {
+    wssDecisions.handleUpgrade(request, socket, head, (ws) => {
+      wssDecisions.emit('connection', ws, request);
     });
-    
-    socket.on('error', () => {
-      clearInterval(pingInterval);
+  } else if (pathname === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
     });
-    
-    console.log('WebSocket connection established');
   } else {
     socket.destroy();
   }

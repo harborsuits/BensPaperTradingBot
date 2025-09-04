@@ -1,0 +1,248 @@
+// Add this function at the end of the file, right before the server.on('upgrade') handler
+
+// Add support for the /ws/decisions WebSocket endpoint
+server.on('upgrade', (request, socket, head) => {
+  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+  
+  if (pathname === '/ws') {
+    // Simple WebSocket handshake
+    const key = request.headers['sec-websocket-key'];
+    const acceptKey = require('crypto')
+      .createHash('sha1')
+      .update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')
+      .digest('base64');
+    
+    const responseHeaders = [
+      'HTTP/1.1 101 Switching Protocols',
+      'Upgrade: websocket',
+      'Connection: Upgrade',
+      `Sec-WebSocket-Accept: ${acceptKey}`,
+      '', ''
+    ].join('\r\n');
+    
+    socket.write(responseHeaders);
+    
+    // Simple ping/pong to keep connection alive
+    const pingInterval = setInterval(() => {
+      try {
+        // Send WebSocket ping frame (0x89 opcode)
+        socket.write(Buffer.from([0x89, 0x00]));
+      } catch (err) {
+        clearInterval(pingInterval);
+      }
+    }, 30000);
+    
+    socket.on('close', () => {
+      clearInterval(pingInterval);
+    });
+    
+    socket.on('error', () => {
+      clearInterval(pingInterval);
+    });
+    
+    console.log('WebSocket connection established');
+  } else if (pathname === '/ws/decisions') {
+    // Handle the decisions WebSocket endpoint
+    const key = request.headers['sec-websocket-key'];
+    const acceptKey = require('crypto')
+      .createHash('sha1')
+      .update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')
+      .digest('base64');
+    
+    const responseHeaders = [
+      'HTTP/1.1 101 Switching Protocols',
+      'Upgrade: websocket',
+      'Connection: Upgrade',
+      `Sec-WebSocket-Accept: ${acceptKey}`,
+      '', ''
+    ].join('\r\n');
+    
+    socket.write(responseHeaders);
+    
+    // Send a sample decision trace every 10 seconds
+    const decisionInterval = setInterval(() => {
+      try {
+        const sampleDecision = {
+          trace_id: `sample-${Date.now()}`,
+          as_of: new Date().toISOString(),
+          schema_version: "1.0",
+          symbol: "AAPL",
+          instrument: { type: "equity", symbol: "AAPL" },
+          account: { mode: "paper", broker: "tradier" },
+          market_context: {
+            regime: { label: "Neutral", confidence: 0.58 },
+            volatility: { vix: 17.2, trend: "stable" },
+            sentiment: { label: "bullish", score: 0.62 }
+          },
+          signals: [
+            { source: "TA", name: "RSI_14", value: 32.1, threshold: 35, direction: "bullish" },
+            { source: "TA", name: "MA_CROSS", value: "up", direction: "bullish" }
+          ],
+          news_evidence: [
+            {
+              url: "https://example.com/news/1",
+              headline: "Apple announces new product line",
+              snippet: "Apple's new product line expected to boost revenue",
+              entities: ["AAPL", "product", "revenue"],
+              sentiment: "positive",
+              recency_min: 47,
+              credibility: "high"
+            }
+          ],
+          candidate_score: { alpha: 0.79, rank_in_universe: 1 },
+          risk_gate: {
+            position_limits_ok: true,
+            portfolio_heat_ok: true,
+            drawdown_ok: true,
+            notes: ["All risk gates passed"]
+          },
+          plan: {
+            action: "OPEN_LONG",
+            entry: { type: "limit", px: 185.2 },
+            sizing: { units: 2, notional: 37040, max_loss: 1040 },
+            exits: { stop: 180.8, take_profit: 196.0 },
+            expected_move: { days: 2, pct: 5.2, p_up: 0.65 },
+            strategyLabel: "Momentum Reversal"
+          },
+          execution: { status: "PROPOSED" },
+          explain_layman: "Buy AAPL because momentum is turning up from oversold; risk capped to stop.",
+          explain_detail: [
+            "RSI(14)=32 rising; MA cross-up in last 3 sessions.",
+            "News sentiment positive on new product line.",
+            "Risk gates OK; within per-trade cap."
+          ]
+        };
+        
+        // Send the decision as a WebSocket frame
+        const payload = JSON.stringify(sampleDecision);
+        const payloadLength = Buffer.byteLength(payload);
+        let header;
+        
+        // Create WebSocket frame header
+        if (payloadLength < 126) {
+          header = Buffer.from([0x81, payloadLength]);
+        } else if (payloadLength < 65536) {
+          header = Buffer.from([0x81, 126, (payloadLength >> 8) & 0xFF, payloadLength & 0xFF]);
+        } else {
+          header = Buffer.alloc(10);
+          header[0] = 0x81;
+          header[1] = 127;
+          for (let i = 0; i < 8; i++) {
+            header[9 - i] = (payloadLength >> (i * 8)) & 0xFF;
+          }
+        }
+        
+        socket.write(Buffer.concat([header, Buffer.from(payload)]));
+        console.log('Decision trace sent via WebSocket');
+      } catch (err) {
+        console.error('Error sending decision trace:', err);
+        clearInterval(decisionInterval);
+      }
+    }, 10000);
+    
+    // Also send one immediately on connection
+    setTimeout(() => {
+      try {
+        const initialDecision = {
+          trace_id: `initial-${Date.now()}`,
+          as_of: new Date().toISOString(),
+          schema_version: "1.0",
+          symbol: "NVDA",
+          instrument: { type: "equity", symbol: "NVDA" },
+          account: { mode: "paper", broker: "tradier" },
+          market_context: {
+            regime: { label: "Bullish", confidence: 0.72 },
+            volatility: { vix: 16.5, trend: "falling" },
+            sentiment: { label: "bullish", score: 0.78 }
+          },
+          signals: [
+            { source: "TA", name: "MACD", value: 0.5, threshold: 0, direction: "bullish" },
+            { source: "TA", name: "VOLUME_SURGE", value: 2.3, direction: "bullish" }
+          ],
+          news_evidence: [
+            {
+              url: "https://example.com/news/2",
+              headline: "NVIDIA reports record earnings",
+              snippet: "NVIDIA's AI chip demand continues to grow",
+              entities: ["NVDA", "earnings", "AI"],
+              sentiment: "positive",
+              recency_min: 30,
+              credibility: "high"
+            }
+          ],
+          candidate_score: { alpha: 0.85, rank_in_universe: 1 },
+          risk_gate: {
+            position_limits_ok: true,
+            portfolio_heat_ok: true,
+            drawdown_ok: true,
+            notes: ["All risk gates passed"]
+          },
+          plan: {
+            action: "OPEN_LONG",
+            entry: { type: "limit", px: 950.5 },
+            sizing: { units: 1, notional: 9505, max_loss: 950 },
+            exits: { stop: 900.0, take_profit: 1050.0 },
+            expected_move: { days: 3, pct: 10.5, p_up: 0.75 },
+            strategyLabel: "Earnings Momentum"
+          },
+          execution: { status: "PROPOSED" },
+          explain_layman: "Buy NVDA due to strong earnings and AI demand growth.",
+          explain_detail: [
+            "MACD turning positive with increasing momentum.",
+            "Volume surge 2.3x average on earnings beat.",
+            "AI chip demand continues to exceed supply."
+          ]
+        };
+        
+        // Send the decision as a WebSocket frame
+        const payload = JSON.stringify(initialDecision);
+        const payloadLength = Buffer.byteLength(payload);
+        let header;
+        
+        // Create WebSocket frame header
+        if (payloadLength < 126) {
+          header = Buffer.from([0x81, payloadLength]);
+        } else if (payloadLength < 65536) {
+          header = Buffer.from([0x81, 126, (payloadLength >> 8) & 0xFF, payloadLength & 0xFF]);
+        } else {
+          header = Buffer.alloc(10);
+          header[0] = 0x81;
+          header[1] = 127;
+          for (let i = 0; i < 8; i++) {
+            header[9 - i] = (payloadLength >> (i * 8)) & 0xFF;
+          }
+        }
+        
+        socket.write(Buffer.concat([header, Buffer.from(payload)]));
+        console.log('Initial decision trace sent via WebSocket');
+      } catch (err) {
+        console.error('Error sending initial decision trace:', err);
+      }
+    }, 1000);
+    
+    // Ping/pong to keep connection alive
+    const pingInterval = setInterval(() => {
+      try {
+        socket.write(Buffer.from([0x89, 0x00]));
+      } catch (err) {
+        clearInterval(pingInterval);
+      }
+    }, 30000);
+    
+    socket.on('close', () => {
+      clearInterval(decisionInterval);
+      clearInterval(pingInterval);
+    });
+    
+    socket.on('error', () => {
+      clearInterval(decisionInterval);
+      clearInterval(pingInterval);
+    });
+    
+    console.log('WebSocket connection established for decisions');
+  } else {
+    socket.destroy();
+  }
+});
+
+

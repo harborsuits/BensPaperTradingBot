@@ -77,27 +77,29 @@ export default function TradeDecisionsPage(){
   const { data: openOrders } = useQuery({
     queryKey: ['paper', 'orders', 'open'],
     queryFn: async () => {
-      // Prefer dedicated endpoint; gracefully fall back to /api/paper/orders
-      const tryFetch = async (path: string) => {
-        const r = await fetch(path);
-        if (!r.ok) {
-          const err: any = new Error(`HTTP ${r.status}`);
-          err.status = r.status;
-          throw err;
-        }
-        return r.json();
-      };
+      // Handle both endpoints gracefully with fallbacks
       try {
-        return await tryFetch('/api/paper/orders/open');
-      } catch (e: any) {
-        if (e?.status === 404) {
-          // Fallback: fetch all and filter
-          const all = await tryFetch('/api/paper/orders');
+        // First try the dedicated open orders endpoint
+        const r = await fetch('/api/paper/orders/open');
+        if (r.ok) {
+          return await r.json();
+        }
+        
+        // If that fails, try all orders endpoint and filter
+        const allR = await fetch('/api/paper/orders');
+        if (allR.ok) {
+          const all = await allR.json();
           const list = Array.isArray(all) ? all : (all?.items ?? []);
           const isOpen = (s: string) => ['open','pending','working','live'].includes((s||'').toLowerCase());
           return list.filter((o: any) => isOpen(o?.status));
         }
-        throw e;
+        
+        // If both fail, return empty array as fallback
+        console.warn('Both paper orders endpoints failed, using empty fallback');
+        return [];
+      } catch (e) {
+        console.error('Error fetching paper orders:', e);
+        return []; // Graceful fallback
       }
     },
     refetchInterval: 10000,
