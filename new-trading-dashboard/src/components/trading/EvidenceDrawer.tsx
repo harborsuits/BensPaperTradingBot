@@ -8,6 +8,9 @@ import type { EvidencePacket } from "@/contracts/evidence";
 type Props = { open: boolean; onOpenChange: (v: boolean) => void; data: EvidencePacket | null };
 
 export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
+  const { data: alloc } = usePortfolioAllocations();
+  const equity = alloc?.data?.equity;
+  const narrativeLines = data ? makeNarrative({ symbol: data.symbol, packet: data, accountEquity: equity }) : [];
   if (!open || !data) return null;
 
   const gateChip = (g: boolean) => g ? "bg-green-600 text-white" : "bg-red-600 text-white";
@@ -45,18 +48,11 @@ export default function EvidenceDrawer({ open, onOpenChange, data }: Props) {
             <TabsTrigger value="plan">Plan & Risk</TabsTrigger>
           </TabsList>
           <TabsContent value="story" className="space-y-4">
-            {(() => {
-              const { data: alloc } = usePortfolioAllocations();
-              const equity = alloc?.data?.equity;
-              const lines = makeNarrative({ symbol: data.symbol, packet: data, accountEquity: equity });
-              return (
-                <div className="rounded-2xl border p-3 bg-slate-900/40">
-                  <div className="text-sm leading-relaxed space-y-1">
-                    {lines.map((t,i)=>(<p key={i}>{t}</p>))}
-                  </div>
-                </div>
-              );
-            })()}
+            <div className="rounded-2xl border p-3 bg-slate-900/40">
+              <div className="text-sm leading-relaxed space-y-1">
+                {narrativeLines.map((t,i)=>(<p key={i}>{t}</p>))}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="summary" className="space-y-2">
