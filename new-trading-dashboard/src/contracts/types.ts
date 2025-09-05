@@ -11,6 +11,7 @@ export interface PortfolioAllocationsResponse {
     symbolAlloc: Allocation[];
   };
   asOf?: string;
+  meta?: { asOf?: string; [k: string]: any };
 }
 
 export interface DecisionRow {

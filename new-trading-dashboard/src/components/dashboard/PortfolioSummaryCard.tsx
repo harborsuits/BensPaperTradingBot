@@ -22,7 +22,7 @@ export default function PortfolioSummaryCard(){
     <div className="border rounded-2xl p-4">
       <div className="flex items-baseline justify-between">
         <h3 className="text-lg font-semibold">Portfolio Summary</h3>
-        <div className="text-xs text-muted-foreground">as of {data?.asOf ? new Date(data.asOf).toLocaleTimeString() : new Date().toLocaleTimeString()}</div>
+        <div className="text-xs text-muted-foreground">as of {data?.meta?.asOf ? new Date(data.meta.asOf).toLocaleTimeString() : new Date().toLocaleTimeString()}</div>
       </div>
       {isLoading || !d ? (
         <div className="text-sm text-muted-foreground">Loading…</div>

@@ -1,7 +1,73 @@
+import { useEffect, useState } from 'react';
+import { Quote, QuotesPayload } from '@/types/market';
+import { pricesStream } from '@/lib/streams';
+import { apiUrl } from '@/lib/httpBase';
+
+export function useQuotes(symbols?: string[], pollMs = 5000) {
+  const [quotes, setQuotes] = useState<Record<string, Quote>>({});
+  const [asOf, setAsOf] = useState<string | undefined>();
+  const [error, setError] = useState<string | undefined>();
+
+  // HTTP seed + fallback
+  useEffect(() => {
+    let mounted = true; 
+    let t: any;
+    const tick = async () => {
+      try {
+        const res = await fetch(apiUrl('/api/quotes'));
+        const json = (await res.json()) as QuotesPayload;
+        if (!mounted) return;
+        if (json?.quotes) {
+          setQuotes(prev => ({ ...prev, ...json.quotes }));
+          setAsOf(json.asOf);
+        }
+      } catch (e: any) { 
+        setError(e?.message || 'Failed to fetch quotes'); 
+      }
+      t = setTimeout(tick, pollMs);
+    };
+    tick();
+    return () => { mounted = false; clearTimeout(t); };
+  }, [pollMs]);
+
+  // WS: subscribe once to stream singleton and request symbols
+  useEffect(() => {
+    const off = pricesStream.onMessage((msg) => {
+      if (msg?.type === 'prices' && msg?.data) {
+        setQuotes(prev => ({ ...prev, ...msg.data }));
+        if (msg.time) setAsOf(msg.time);
+      }
+    });
+    
+    // Subscribe to specific symbols if provided
+    if (symbols?.length) {
+      pricesStream.send({ 
+        type: 'subscribe', 
+        symbols: symbols.filter(Boolean), 
+        ttlSec: 120 
+      });
+    }
+    
+    return () => { off && off(); };
+  }, [symbols?.join(',')]);
+
+  // optional symbol filter
+  const filtered = symbols?.length
+    ? Object.fromEntries(
+        symbols
+          .map((s) => s.toUpperCase())
+          .filter((s) => quotes[s])
+          .map((s) => [s, quotes[s]])
+      )
+    : quotes;
+
+  return { quotes: filtered, asOf, error } as const;
+}
+
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export function useQuotes(symbols: string[]) {
+export function useQuotesQuery(symbols: string[]) {
   const validSymbols = symbols.filter(Boolean);
   const joined = validSymbols.slice().sort().join(",");
   
@@ -30,7 +96,7 @@ export function useQuotes(symbols: string[]) {
 }
 
 // Alias for compatibility
-export const usePrices = useQuotes;
+export const usePrices = useQuotesQuery;
 
 // Single quote hook
 export function useQuote(symbol: string) {

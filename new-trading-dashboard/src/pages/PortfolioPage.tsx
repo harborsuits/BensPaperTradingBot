@@ -5,7 +5,7 @@ import { usePaperPositions } from "@/hooks/usePaperPositions";
 import MetaLine from "@/components/ui/MetaLine";
 import { getMeta } from "@/lib/meta";
 import { usePortfolioHistory } from "@/hooks/usePortfolioHistory";
-import { useQuotes } from "@/hooks/useQuotes";
+import { useQuotesQuery } from "@/hooks/useQuotes";
 
 function PaperView() {
   const acct = usePaperAccount();
@@ -14,7 +14,7 @@ function PaperView() {
   
   // Get quotes for all positions to calculate live P/L
   const symbols = (pos.data ?? []).map((p:any) => p.symbol).filter(Boolean);
-  const { data: quotes } = useQuotes(symbols);
+  const { data: quotes } = useQuotesQuery(symbols);
 
   return (
     <div className="grid gap-4 md:grid-cols-2">

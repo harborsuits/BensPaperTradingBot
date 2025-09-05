@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/Card";
-import { useQuotes } from "@/hooks/useQuotes";
+import { useQuotesQuery } from "@/hooks/useQuotes";
 import { useBars } from "@/hooks/useBars";
 
 export default function MarketDataPage(){
   const [symbols, setSymbols] = useState(["SPY","QQQ","AAPL"]);
-  const { data: q, isLoading: quotesLoading, isError: quotesError, refetch: refetchQuotes } = useQuotes(symbols);
+  const { data: q, isLoading: quotesLoading, isError: quotesError, refetch: refetchQuotes } = useQuotesQuery(symbols);
   const { data: bars, isLoading: barsLoading, isError: barsError, refetch: refetchBars } = useBars(symbols[0], "1Day", 30);
 
   return (

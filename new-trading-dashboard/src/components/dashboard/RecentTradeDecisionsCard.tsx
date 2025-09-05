@@ -1,15 +1,12 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useDecisionsRecent } from "@/hooks/useDecisionsRecent";
 import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
 import { buildEvidenceFromUi } from "@/lib/evidence/builders";
 import type { DecisionRow, ContextRow } from "@/contracts/types";
 
 export default function RecentTradeDecisionsCard(){
-  const { data: decisions } = useQuery<DecisionRow[]>({
-    queryKey:["decisions","recent"],
-    queryFn: async ()=> (await fetch("/api/decisions/recent")).json(),
-    refetchInterval: 10000, staleTime: 7000,
-  });
+  const { data: decisions } = useDecisionsRecent(20);
   const { data: context } = useQuery<ContextRow>({
     queryKey:["context","now"],
     queryFn: async ()=> (await fetch("/api/context")).json(),
@@ -47,7 +44,7 @@ export default function RecentTradeDecisionsCard(){
               <div className="font-medium">{d.symbol} • {d.action ?? ""}</div>
               <div className="text-xs text-muted-foreground">{d.createdAt ? new Date(d.createdAt).toLocaleTimeString() : ""}</div>
             </div>
-            <div className="text-xs mt-1">Score: {Math.round(d.score ?? 0)} • {d.one_liner ?? d.reason ?? "—"}</div>
+            <div className="text-xs mt-1">Score: {Math.round((d.score ?? 0) * 100)} • {d.one_liner ?? d.reason ?? "—"}</div>
           </button>
         ))}
         {rows.length===0 && <div className="text-sm text-muted-foreground">No recent decisions.</div>}

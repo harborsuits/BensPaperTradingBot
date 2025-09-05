@@ -12,19 +12,15 @@ const { placeOrderAdapter } = require('./lib/brokerPaper');
 const { preTradeGate } = require('./lib/gate');
 const { saveBundle, getBundle, replayBundle } = require('./lib/trace');
 const { AutoRefresh } = require('./lib/autoRefresh');
+const EventEmitter = require('events');
 const { AutoLoop } = require('./lib/autoLoop');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Initialize auto-refresh for quotes to keep health GREEN
-const quoteRefresher = new AutoRefresh({
-  interval: 30_000, // 30 seconds
-  symbols: ['SPY', 'AAPL', 'QQQ'], // Common symbols
-  enabled: true
-});
-quoteRefresher.start();
+// --- Live Quotes service with rate governor ---
+const PRICES_WS_ENABLED = process.env.PRICES_WS_ENABLED === '1';
 
 // Initialize auto-loop for paper orders (disabled by default)
 const autoLoop = new AutoLoop({
@@ -226,19 +222,15 @@ app.get('/api/news/sentiment', (req, res) => {
 });
 
 app.get('/api/news', (req, res) => {
-  const limit = Math.min(Number(req.query.limit || 10), 50);
-  const now = dayjs();
-  const items = Array.from({ length: limit }).map((_, i) => ({
-    id: nanoid(),
-    title: `Market headline ${i + 1}`,
-    source: 'Wire',
-    url: 'https://example.com/news',
-    published_at: now.subtract(i, 'minute').toISOString(),
-    sentiment_score: 0.5,
-    symbols: ['SPY', 'AAPL', 'QQQ'],
-    summary: 'Summary...',
-  }));
-  res.json(items);
+  // Stubbed single item until provider/key is configured
+  const payload = {
+    asOf: asOf(),
+    items: [
+      { id: 'stub-1', title: 'News feed not configured — add MARKETAUX_API_KEY to enable real headlines.', source: 'system', published_at: asOf(), sentiment: 'neu' },
+    ]
+  };
+  res.set('x-as-of', payload.asOf);
+  res.json(payload);
 });
 
 // Strategies
@@ -296,9 +288,22 @@ const makeDecision = () => ({
   indicators: [{ name: 'RSI', value: 62, signal: 'bullish' }],
 });
 
-app.get('/api/decisions', (req, res) => res.json([makeDecision(), makeDecision()]));
-app.get('/api/decisions/latest', (req, res) => res.json([makeDecision()]));
-app.get('/api/decisions/recent', (req, res) => res.json([makeDecision(), makeDecision()]));
+// Return stored recent decisions; no demo synthesis unless explicitly enabled
+const DEMO_DECISIONS = process.env.DEMO_DECISIONS === '1';
+let recentDecisions = [];
+
+app.get('/api/decisions', (req, res) => {
+  return res.json(DEMO_DECISIONS ? [makeDecision(), makeDecision()] : recentDecisions);
+});
+
+app.get('/api/decisions/latest', (req, res) => {
+  const latest = DEMO_DECISIONS ? [makeDecision()] : (recentDecisions.slice(-1));
+  return res.json(latest);
+});
+
+app.get('/api/decisions/recent', (req, res) => {
+  return res.json(DEMO_DECISIONS ? [makeDecision(), makeDecision()] : recentDecisions);
+});
 
 // Trace endpoints
 app.get('/trace/:id', (req, res) => {
@@ -327,11 +332,12 @@ app.get('/api/trades', (req, res) => {
     const err = errorResponse('STALE_DATA', 503);
     return res.status(err.status).json(err.body);
   }
-  // If no orders yet and fallbacks permitted, synthesize from decisions
-  const fallback = items.length ? items : strategies.slice(0, 1).map((s, i) => ({
+  // If no orders yet and fallbacks permitted, synthesize only in demo mode
+  const fallbackEnabled = process.env.DEMO_TRADES === '1';
+  const fallback = strategies.slice(0, 1).map((s, i) => ({
     id: nanoid(), symbol: i % 2 ? 'SPY' : 'AAPL', side: i % 2 ? 'sell' : 'buy', qty: 10, price: 100, status: 'filled', ts: asOf(),
   }));
-  res.json({ items: items.length ? items : fallback });
+  res.json({ items: items.length ? items : (fallbackEnabled ? fallback : []) });
 });
 
 // Portfolio
@@ -345,7 +351,7 @@ function buildPortfolio(mode) {
       total_equity: equity,
       cash_balance: cash,
       buying_power: cash * 2,
-      daily_pl,
+      daily_pl: 0,
       daily_pl_percent,
       total_pl: 6800,
       total_pl_percent: 5.7,
@@ -392,9 +398,11 @@ app.get('/api/portfolio/paper', (req, res) => res.json(buildPortfolio('paper')))
 app.get('/api/portfolio/live', (req, res) => res.json(buildPortfolio('live')));
 
 // Paper trading order/positions endpoints (aliases for quick smoke tests)
-let paperPositions = loadPositions();
-let paperTrades = loadOrders();
-let paperOrders = loadOrders();
+// Do not seed demo data by default. Enable with PAPER_SEED=1 if desired.
+const seedPaper = !['0','false',''].includes(String(process.env.PAPER_SEED || '0').toLowerCase());
+let paperPositions = seedPaper ? loadPositions() : [];
+let paperTrades = seedPaper ? loadOrders() : [];
+let paperOrders = seedPaper ? loadOrders() : [];
 function persistAll() {
   savePositions(paperPositions);
   saveOrders(paperOrders);
@@ -747,7 +755,7 @@ app.get('/api/portfolio/allocations', (req, res) => {
       equity: 50000 + totalMV,
       cash,
       buying_power: cash * 5,
-      pl_day: 180,
+      pl_day: 0,
       totalMV,
       typeAlloc,
       symbolAlloc,
@@ -894,26 +902,13 @@ app.get('/api/news/ticker-sentiment', (req, res) => {
 
 // Quotes & Bars
 app.get('/api/quotes', (req, res) => {
-  const symbols = String(req.query.symbols || '').split(',').filter(Boolean);
-  const now = asOf();
-  const out = symbols.length ? symbols : DEFAULT_UNIVERSE.slice(0, 10); // Use first 10 from universe
-  const items = out.map((s) => {
-    const basePrice = 50 + Math.random() * 200; // Random price between 50-250
-    const change = (Math.random() * 6) - 3; // Random change between -3 and +3
-    const prevClose = basePrice - change;
-    return {
-      symbol: s.toUpperCase(),
-      last: +(basePrice).toFixed(2),
-      bid: +(basePrice - 0.05).toFixed(2),
-      ask: +(basePrice + 0.05).toFixed(2),
-      prevClose: +prevClose.toFixed(2),
-      change: +change.toFixed(2),
-      pct: +((change / prevClose) * 100).toFixed(2),
-      ts: now,
-    };
-  });
+  const symbols = String(req.query.symbols || '').split(',').filter(Boolean).map(s=>s.toUpperCase());
+  const data = symbols.length
+    ? Object.fromEntries(symbols.map(s => [s, quotesCache[s]]).filter(([,v])=>!!v))
+    : quotesCache;
   setQuoteTouch();
-  res.json(items);
+  res.set('x-as-of', quotesAsOf);
+  res.json({ asOf: quotesAsOf, quotes: data });
 });
 
 app.get('/api/bars', (req, res) => {
@@ -978,7 +973,18 @@ app.get('/api/scanner/candidates', async (req, res) => {
     try {
       const ax = await fetch(`http://localhost:4000/api/quotes?symbols=${encodeURIComponent(syms.join(','))}`);
       if (!ax.ok) throw new Error('quotes not ok');
-      return await ax.json(); // expect [{symbol,last,prevClose,spreadPct,volume}]
+      const j = await ax.json();
+      // Accept both legacy array shape and new {quotes:{SYM:{price,prevClose,...}}}
+      if (Array.isArray(j)) return j;
+      const map = j?.quotes || {};
+      const arr = Object.entries(map).map(([sym, q]) => ({
+        symbol: String(sym).toUpperCase(),
+        last: Number(q?.price ?? q?.last ?? 0),
+        prevClose: Number(q?.prevClose ?? q?.previous_close ?? q?.close ?? q?.price ?? 0),
+        spreadPct: Number(q?.spreadPct ?? 0.3),
+        volume: Number(q?.volume ?? 1_000_000),
+      }));
+      return arr;
     } catch {
       if (CONFIG.FAIL_CLOSE && !CONFIG.FALLBACKS_ENABLED) throw new Error('STALE_DATA');
       return syms.map(s => ({
@@ -1069,8 +1075,11 @@ app.get('/api/scanner/candidates', async (req, res) => {
   }));
 
     rows.sort((a,b) => b.score - a.score);
-    res.json(rows.slice(0, limit));
+    res.json({ items: rows.slice(0, limit), asOf: asOf() });
   } catch (e) {
+    if (!CONFIG.FAIL_CLOSE || CONFIG.FALLBACKS_ENABLED) {
+      return res.json({ items: [], asOf: asOf() });
+    }
     const err = errorResponse('STALE_DATA', 503);
     return res.status(err.status).json(err.body);
   }
@@ -1127,23 +1136,14 @@ const server = app.listen(PORT, () => {
 
 // WebSocket Support using ws library
 const WebSocket = require('ws');
+const { attachHeartbeat } = require('./lib/heartbeat');
+
 // Create ws servers in noServer mode; we will route in a single upgrade handler
 const wss = new WebSocket.Server({ noServer: true, path: '/ws' });
 
 // Handle WebSocket connections
 wss.on('connection', (ws, request) => {
   console.log('WebSocket connection established');
-
-  // Handle ping/pong for connection keepalive
-  const pingInterval = setInterval(() => {
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.ping();
-    }
-  }, 30000);
-
-  ws.on('pong', () => {
-    // Connection is alive
-  });
 
   ws.on('message', (data) => {
     try {
@@ -1164,16 +1164,6 @@ wss.on('connection', (ws, request) => {
     }
   });
 
-  ws.on('close', () => {
-    console.log('WebSocket connection closed');
-    clearInterval(pingInterval);
-  });
-
-  ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
-    clearInterval(pingInterval);
-  });
-
   // Send a welcome message
   ws.send(JSON.stringify({
     type: 'welcome',
@@ -1181,7 +1171,6 @@ wss.on('connection', (ws, request) => {
     timestamp: new Date().toISOString()
   }));
 });
-// Add this function at the end of the file, right before the server.on('upgrade') handler
 
 // WebSocket Server for decisions endpoint
 const wssDecisions = new WebSocket.Server({
@@ -1189,140 +1178,59 @@ const wssDecisions = new WebSocket.Server({
   path: '/ws/decisions'
 });
 
+// WS for prices
+const wssPrices = new WebSocket.Server({
+  noServer: true,
+  path: '/ws/prices'
+});
+
+// Import quote services
+const { getQuotesCache, onQuotes, startQuotesLoop, stopQuotesLoop } = require('./src/services/quotesService');
+const { roster } = require('./src/services/symbolRoster');
+
+wssPrices.on('connection', (ws) => {
+  try {
+    // send snapshot
+    const { quotes, asOf } = getQuotesCache();
+    ws.send(JSON.stringify({ type: 'prices', data: quotes, time: asOf }));
+    
+    // Handle subscription messages
+    ws.on('message', (raw) => {
+      try {
+        const msg = JSON.parse(raw.toString());
+        if (msg?.type === 'subscribe' && Array.isArray(msg.symbols)) {
+          const ttl = Number(msg.ttlSec || process.env.SUBSCRIPTION_TTL_SEC || 120);
+          roster.subscribe(msg.symbols, ttl);
+          // optional ack
+          ws.send(JSON.stringify({ type: 'subscribed', symbols: msg.symbols, ttlSec: ttl }));
+        }
+      } catch (e) {
+        console.error('Error handling price subscription:', e);
+      }
+    });
+  } catch (e) {
+    console.error('Error in price WS connection:', e);
+  }
+});
+
+if (PRICES_WS_ENABLED) {
+  // Forward quote updates to connected clients
+  onQuotes(({ quotes, time }) => {
+    const payload = JSON.stringify({ type: 'prices', data: quotes, time });
+    wssPrices.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        try { client.send(payload); } catch {}
+      }
+    });
+  });
+  
+  // Start the quotes loop
+  startQuotesLoop();
+}
+
 // Handle decisions WebSocket connections
 wssDecisions.on('connection', (ws) => {
   console.log('WebSocket connection established for decisions');
-
-  // Send a sample decision trace every 10 seconds
-  const decisionInterval = setInterval(() => {
-    try {
-      const sampleDecision = {
-        trace_id: `sample-${Date.now()}`,
-        as_of: new Date().toISOString(),
-        schema_version: "1.0",
-        symbol: "AAPL",
-        instrument: { type: "equity", symbol: "AAPL" },
-        account: { mode: "paper", broker: "tradier" },
-        market_context: {
-          regime: { label: "Neutral", confidence: 0.58 },
-          volatility: { vix: 17.2, trend: "stable" },
-          sentiment: { label: "bullish", score: 0.62 }
-        },
-        signals: [
-          { source: "TA", name: "RSI_14", value: 32.1, threshold: 35, direction: "bullish" },
-          { source: "TA", name: "MA_CROSS", value: "up", direction: "bullish" }
-        ],
-        news_evidence: [
-          {
-            url: "https://example.com/news/1",
-            headline: "Apple announces new product line",
-            snippet: "Apple's new product line expected to boost revenue",
-            entities: ["AAPL", "product", "revenue"],
-            sentiment: "positive",
-            recency_min: 47,
-            credibility: "high"
-          }
-        ],
-        candidate_score: { alpha: 0.79, rank_in_universe: 1 },
-        risk_gate: {
-          position_limits_ok: true,
-          portfolio_heat_ok: true,
-          drawdown_ok: true,
-          notes: ["All risk gates passed"]
-        },
-        plan: {
-          action: "OPEN_LONG",
-          entry: { type: "limit", px: 185.2 },
-          sizing: { units: 2, notional: 37040, max_loss: 1040 },
-          exits: { stop: 180.8, take_profit: 196.0 },
-          expected_move: { days: 2, pct: 5.2, p_up: 0.65 },
-          strategyLabel: "Momentum Reversal"
-        },
-        execution: { status: "PROPOSED" },
-        explain_layman: "Buy AAPL because momentum is turning up from oversold; risk capped to stop.",
-        explain_detail: [
-          "RSI(14)=32 rising; MA cross-up in last 3 sessions.",
-          "News sentiment positive on new product line.",
-          "Risk gates OK; within per-trade cap."
-        ]
-      };
-
-      ws.send(JSON.stringify(sampleDecision));
-      console.log('Decision trace sent via WebSocket');
-    } catch (err) {
-      console.error('Error sending decision trace:', err);
-      clearInterval(decisionInterval);
-    }
-  }, 10000);
-
-  // Also send one immediately on connection
-  setTimeout(() => {
-    try {
-      const initialDecision = {
-        trace_id: `initial-${Date.now()}`,
-        as_of: new Date().toISOString(),
-        schema_version: "1.0",
-        symbol: "NVDA",
-        instrument: { type: "equity", symbol: "NVDA" },
-        account: { mode: "paper", broker: "tradier" },
-        market_context: {
-          regime: { label: "Bullish", confidence: 0.72 },
-          volatility: { vix: 16.5, trend: "falling" },
-          sentiment: { label: "bullish", score: 0.78 }
-        },
-        signals: [
-          { source: "TA", name: "MACD", value: 0.5, threshold: 0, direction: "bullish" },
-          { source: "TA", name: "VOLUME_SURGE", value: 2.3, direction: "bullish" }
-        ],
-        news_evidence: [
-          {
-            url: "https://example.com/news/2",
-            headline: "NVIDIA reports record earnings",
-            snippet: "NVIDIA's AI chip demand continues to grow",
-            entities: ["NVDA", "earnings", "AI"],
-            sentiment: "positive",
-            recency_min: 30,
-            credibility: "high"
-          }
-        ],
-        candidate_score: { alpha: 0.85, rank_in_universe: 1 },
-        risk_gate: {
-          position_limits_ok: true,
-          portfolio_heat_ok: true,
-          drawdown_ok: true,
-          notes: ["All risk gates passed"]
-        },
-        plan: {
-          action: "OPEN_LONG",
-          entry: { type: "limit", px: 950.5 },
-          sizing: { units: 1, notional: 9505, max_loss: 950 },
-          exits: { stop: 900.0, take_profit: 1050.0 },
-          expected_move: { days: 3, pct: 10.5, p_up: 0.75 },
-          strategyLabel: "Earnings Momentum"
-        },
-        execution: { status: "PROPOSED" },
-        explain_layman: "Buy NVDA due to strong earnings and AI demand growth.",
-        explain_detail: [
-          "MACD turning positive with increasing momentum.",
-          "Volume surge 2.3x average on earnings beat.",
-          "AI chip demand continues to exceed supply."
-        ]
-      };
-
-      ws.send(JSON.stringify(initialDecision));
-      console.log('Initial decision trace sent via WebSocket');
-    } catch (err) {
-      console.error('Error sending initial decision trace:', err);
-    }
-  }, 1000);
-
-  ws.on('close', () => {
-    clearInterval(decisionInterval);
-  });
-
-  ws.on('error', () => {
-    clearInterval(decisionInterval);
-  });
 });
 
 // Broadcast helper for decisions stream
@@ -1339,6 +1247,22 @@ function broadcastDecision(obj) {
 
 module.exports.broadcastDecision = broadcastDecision;
 
+// Add heartbeat to all WebSocket servers to detect and clean up dead connections
+attachHeartbeat(wss);
+attachHeartbeat(wssDecisions);
+attachHeartbeat(wssPrices);
+
+// Store WebSocket servers in app.locals for status endpoint
+app.locals.wss = wss;
+app.locals.wssDecisions = wssDecisions;
+app.locals.wssPrices = wssPrices;
+
+// Live status endpoint
+app.use('/api/live', require('./routes/live'));
+
+// Quotes API routes
+app.use('/api/quotes', require('./routes/quotes'));
+
 // Handle WebSocket upgrades
 server.on('upgrade', (request, socket, head) => {
   const { pathname } = new URL(request.url, `http://${request.headers.host}`);
@@ -1346,6 +1270,10 @@ server.on('upgrade', (request, socket, head) => {
   if (pathname === '/ws/decisions') {
     wssDecisions.handleUpgrade(request, socket, head, (ws) => {
       wssDecisions.emit('connection', ws, request);
+    });
+  } else if (pathname === '/ws/prices') {
+    wssPrices.handleUpgrade(request, socket, head, (ws) => {
+      wssPrices.emit('connection', ws, request);
     });
   } else if (pathname === '/ws') {
     wss.handleUpgrade(request, socket, head, (ws) => {

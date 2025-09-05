@@ -5,7 +5,7 @@ import { MarketQuoteList } from '@/components/market/MarketQuoteList';
 import { PaperTradeButton } from '@/components/market/PaperTradeButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Timeframe } from '@/hooks/useBars';
-import { useQuotes } from '@/hooks/useQuotes';
+import { useQuotesQuery } from '@/hooks/useQuotes';
 import LiveMarketData from '@/components/LiveMarketData';
 
 const DEFAULT_SYMBOLS = ['SPY', 'QQQ', 'AAPL', 'MSFT', 'GOOGL', 'AMZN'];
@@ -17,7 +17,7 @@ const MarketDashboard: React.FC = () => {
   const [timeframe, setTimeframe] = useState<Timeframe>('1Day');
   
   // Fetch all quotes in a single request
-  const { data: quoteBatch } = useQuotes(symbols);
+  const { data: quoteBatch } = useQuotesQuery(symbols);
   
   const handleAddSymbol = () => {
     if (!newSymbol) return;

@@ -22,6 +22,9 @@ import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
 import CandidateCard from '@/components/trading/CandidateCard';
 import TradeCandidates from '@/components/strategy/TradeCandidates';
+import PriceTape from '@/components/cards/PriceTape';
+import ScannerCandidatesCard from '@/components/cards/ScannerCandidatesCard';
+import RealtimeBanner from '@/components/Banners/RealtimeBanner';
 
 // Helpers to make rendering resilient to undefined data
 const asArray = <T,>(v: T[] | undefined | null): T[] => (Array.isArray(v) ? v : []);
@@ -99,16 +102,11 @@ const DashboardPage: React.FC = () => {
     staleTime: 10_000,
   });
   
-  const { data: livePortfolioData } = useQuery({
-    queryKey: qk.portfolio('live'),
-    queryFn: () => portfolioApi.getPortfolio('live'),
-    refetchInterval: 60_000,
-    staleTime: 30_000,
-  });
+  // Live portfolio disabled for now; focusing on paper trading only
 
   // Normalize portfolio responses to a stable shape
   const paperPortfolio = toPortfolio(portfolioData?.data);
-  const livePortfolio = toPortfolio(livePortfolioData?.data);
+  // const livePortfolio = toPortfolio(livePortfolioData?.data);
   
   useQuery({
     queryKey: ['recentAlerts'],
@@ -191,6 +189,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="container py-6">
+      <RealtimeBanner />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <UniverseSwitcher />
@@ -202,6 +201,11 @@ const DashboardPage: React.FC = () => {
         <ActivityTicker />
       </div>
       
+      {/* Live prices */}
+      <div className="mb-6">
+        <PriceTape />
+      </div>
+
       {/* Stacked full-width cards */}
       <ErrorBoundary>
       <div className="space-y-6">
@@ -209,6 +213,7 @@ const DashboardPage: React.FC = () => {
         <RecentTradeDecisionsCard />
         <BrainFlowNowCard />
         <TickerHighlightsCard />
+        <ScannerCandidatesCard />
 
         {/* Recent Trade Decisions overview */}
         <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
