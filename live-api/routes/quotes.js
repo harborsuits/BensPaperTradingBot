@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getQuotesCache, getQuotesStatus } = require('../src/services/quotesService');
+const { getQuotesCache, getQuotesStatus } = require('../dist/src/services/quotesService');
 
 /**
  * @route GET /api/quotes
@@ -11,16 +11,17 @@ router.get('/', (req, res) => {
   const { symbols } = req.query;
   const { quotes, asOf } = getQuotesCache();
   
+  let data = quotes;
   if (symbols) {
     const symbolList = symbols.split(',').map(s => s.trim().toUpperCase());
     const filtered = {};
     symbolList.forEach(sym => {
       if (quotes[sym]) filtered[sym] = quotes[sym];
     });
-    return res.json({ quotes: filtered, asOf });
+    data = filtered;
   }
   
-  res.json({ quotes, asOf });
+  res.json({ quotes: data, asOf });
 });
 
 /**

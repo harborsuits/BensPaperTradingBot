@@ -1,0 +1,180 @@
+// Import the required modules
+const express = require('express');
+const cors = require('cors');
+const dayjs = require('dayjs');
+const { nanoid } = require('nanoid');
+
+// Import the quotes service
+const { 
+  getQuotesCache, 
+  onQuotes, 
+  startQuotesLoop,
+  stopQuotesLoop
+} = require('./dist/src/services/quotesService');
+
+// Import the symbol roster
+const { roster } = require('./dist/src/services/symbolRoster');
+
+// Create an Express app
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Create WebSocket servers in noServer mode
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ noServer: true });
+const wssDecisions = new WebSocket.Server({ noServer: true });
+const wssPrices = new WebSocket.Server({ noServer: true });
+
+// Store WebSocket servers in app.locals for access by routes
+app.locals.wss = wss;
+app.locals.wssDecisions = wssDecisions;
+app.locals.wssPrices = wssPrices;
+
+// Heartbeat function to detect and terminate dead connections
+function attachHeartbeat(wss) {
+  wss.on('connection', (ws) => {
+    ws.isAlive = true;
+    ws.on('pong', () => { ws.isAlive = true; });
+  });
+  
+  const interval = setInterval(() => {
+    wss.clients.forEach((ws) => {
+      if (ws.isAlive === false) return ws.terminate();
+      ws.isAlive = false;
+      try { ws.ping(); } catch {}
+    });
+  }, 15000); // Ping every 15 seconds
+  
+  wss.on('close', () => clearInterval(interval));
+}
+
+// Attach heartbeat to all WebSocket servers
+attachHeartbeat(wss);
+attachHeartbeat(wssDecisions);
+attachHeartbeat(wssPrices);
+
+// Handle WebSocket connection for the main channel
+wss.on('connection', (ws) => {
+  console.log('WebSocket client connected to /ws');
+  ws.send(JSON.stringify({
+    type: 'welcome',
+    message: 'Connected to live-api WebSocket',
+    timestamp: new Date().toISOString()
+  }));
+});
+
+// Handle WebSocket connection for the decisions channel
+wssDecisions.on('connection', (ws) => {
+  console.log('WebSocket client connected to /ws/decisions');
+  ws.send(JSON.stringify({
+    type: 'welcome',
+    message: 'Connected to decisions stream',
+    timestamp: new Date().toISOString()
+  }));
+});
+
+// Handle WebSocket connection for the prices channel
+wssPrices.on('connection', (ws) => {
+  console.log('WebSocket client connected to /ws/prices');
+  
+  // Send initial quotes snapshot
+  const initialQuotes = getQuotesCache();
+  ws.send(JSON.stringify({
+    type: 'prices',
+    data: initialQuotes.quotes,
+    time: initialQuotes.time
+  }));
+  
+  // Handle messages from clients (e.g., symbol subscriptions)
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw.toString());
+      if (msg?.type === 'subscribe' && Array.isArray(msg.symbols)) {
+        const ttl = Number(msg.ttlSec || process.env.SUBSCRIPTION_TTL_SEC || 120);
+        roster.subscribe(msg.symbols, ttl);
+        // Optional ack
+        ws.send(JSON.stringify({ 
+          type: 'subscribed', 
+          symbols: msg.symbols, 
+          ttlSec: ttl 
+        }));
+      }
+    } catch (err) {
+      console.error('Error processing WebSocket message:', err);
+    }
+  });
+});
+
+// Broadcast quotes to all connected clients on the prices channel
+onQuotes((payload) => {
+  const msg = JSON.stringify({
+    type: 'prices',
+    data: payload.quotes,
+    time: payload.time
+  });
+  
+  wssPrices.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(msg);
+    }
+  });
+});
+
+// Define API routes
+app.use('/api/quotes', require('./dist/routes/quotes'));
+app.use('/api/live', require('./dist/routes/live'));
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
+// Start the quotes loop
+startQuotesLoop();
+
+// Start the server
+const PORT = process.env.PORT || 4000;
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`WebSocket server available at ws://localhost:${PORT}/ws`);
+  console.log(`Decisions stream available at ws://localhost:${PORT}/ws/decisions`);
+  console.log(`Prices stream available at ws://localhost:${PORT}/ws/prices`);
+  console.log(`AUTOREFRESH_ENABLED: ${process.env.AUTOREFRESH_ENABLED}`);
+  console.log(`QUOTES_PROVIDER: ${process.env.QUOTES_PROVIDER}`);
+  
+  if (process.env.QUOTES_PROVIDER === 'synthetic') {
+    console.warn('WARNING: Using synthetic quote provider. Prices are not real!');
+  }
+});
+
+// Handle WebSocket upgrade requests
+server.on('upgrade', (request, socket, head) => {
+  const { pathname } = require('url').parse(request.url);
+  
+  if (pathname === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
+    });
+  } else if (pathname === '/ws/decisions') {
+    wssDecisions.handleUpgrade(request, socket, head, (ws) => {
+      wssDecisions.emit('connection', ws, request);
+    });
+  } else if (pathname === '/ws/prices') {
+    wssPrices.handleUpgrade(request, socket, head, (ws) => {
+      wssPrices.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down...');
+  stopQuotesLoop();
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
