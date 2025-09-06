@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { wsUrl } from '@/lib/wsUrl';
 import { showErrorToast, showInfoToast } from '../utils/toast';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -56,9 +57,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Initialize WebSocket connection
   const connect = useCallback(() => {
-    if (!isAuthenticated) {
-      return;
-    }
+    // Always connect: WS layer is public for heartbeat/telemetry and doesn't require auth
 
     try {
       // Guard against redundant connections
@@ -68,14 +67,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       setConnectionStatus('connecting');
       
-      // Build WS URL; token optional - use Vite proxy
+      // Build WS URL using centralized helper (respects VITE_WS_BASE_URL or proxy)
       const token = localStorage.getItem('auth_token');
-      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const host = location.host; // This will be localhost:3003 in dev
-      const wsUrl = `${protocol}//${host}/ws${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+      const url = wsUrl('/ws') + (token ? `?token=${encodeURIComponent(token)}` : '');
       
-      console.log('WebSocket connecting to:', wsUrl);
-      wsRef.current = new WebSocket(wsUrl);
+      console.log('WebSocket connecting to:', url);
+      wsRef.current = new WebSocket(url);
       
       wsRef.current.onopen = () => {
         setIsConnected(true);
@@ -100,16 +97,14 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       };
       
-      wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+      wsRef.current.onerror = (_error) => {
+        // In dev, StrictMode can cause transient socket errors during double-mount; keep logs quiet
         setConnectionStatus('error');
-        // Don't show error toast for expected errors (WebSocket not implemented yet)
-        console.log('WebSocket not available - using HTTP polling instead');
       };
       
       wsRef.current.onmessage = (event) => {
         try {
-          const message = JSON.parse(event.data) as WebSocketMessage;
+          const message = JSON.parse(event.data);
           setLastMessage(message);
           handleWebSocketMessage(message);
         } catch (error) {
@@ -121,7 +116,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setConnectionStatus('error');
       scheduleReconnect();
     }
-  }, [isAuthenticated]);
+  }, []);
 
   // Schedule reconnection with exponential backoff
   const scheduleReconnect = useCallback(() => {
@@ -146,7 +141,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [connect]);
 
   // Handle different types of WebSocket messages
-  const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
+  const handleWebSocketMessage = useCallback((message: any) => {
     // Reset ping timeout if we received any message
     if (pingTimeoutRef.current) {
       clearTimeout(pingTimeoutRef.current);
@@ -208,10 +203,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
         break;
         
-      case 'alert':
-        // System alert - potentially show as a toast
-        showErrorToast(message.data.message);
+      case 'alert': {
+        const a = (message as any).payload || (message as any).data || message;
+        if (a?.message) showErrorToast(a.message);
         break;
+      }
         
       case 'cycle_decision':
         // Trade decision cycle completed → update recent list and invalidate broader keys
@@ -337,10 +333,19 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const cleanup = useCallback(() => {
     stopHeartbeat();
     
-    if (wsRef.current) {
-      wsRef.current.close(1000); // Clean close
-      wsRef.current = null;
-    }
+    const ws = wsRef.current;
+    wsRef.current = null;
+    try {
+      if (ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close(1000);
+        } else {
+          // Avoid noisy errors when closing sockets that haven't opened yet (StrictMode mount/unmount)
+          try { ws.onopen = null as any; ws.onclose = null as any; ws.onerror = null as any; } catch {}
+          try { ws.close(); } catch {}
+        }
+      }
+    } catch {}
     
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -350,14 +355,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Connect when authenticated
   useEffect(() => {
-    // Guard against redundant connections
-    if (isAuthenticated) {
-      connect();
-    }
-    
-    // Return cleanup function
+    connect();
     return cleanup;
-  }, [isAuthenticated, connect, cleanup]);
+  }, [connect, cleanup]);
 
   // Expose debug helpers in dev mode
   if (import.meta.env.DEV) {

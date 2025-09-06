@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import WebSocketIndicator from '@/components/ui/WebSocketIndicator';
 import HealthPill from '@/components/HealthPill';
+import NotificationBell from '@/components/ui/NotificationBell';
 import HealthBadge from '@/components/ui/HealthBadge';
 import { useHealth } from '@/hooks/useHealth';
 
@@ -193,16 +194,12 @@ const MainLayout: React.FC = () => {
           
           <div className="flex items-center gap-4">
             <WebSocketIndicator className="mr-2" showText={false} size={20} />
-            {/* Existing HealthPill retained; add breaker-aware badge */}
-            <HealthPill />
+            {/* Hide environment chip per request */}
             {health && (
               <HealthBadge state={(health as any).breaker || 'AMBER'} asOf={(health as any)?.meta?.asOf || (health as any)?.asOf} />
             )}
             
-            <button className="p-2 rounded-full hover:bg-muted relative">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary"></span>
-            </button>
+            <NotificationBell />
             
             <div className="relative">
               <button 

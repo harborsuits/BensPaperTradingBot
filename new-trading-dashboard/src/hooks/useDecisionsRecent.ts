@@ -49,7 +49,8 @@ export function useDecisionsRecent(limit = 20) {
   // WS stream for real-time updates
   useEffect(() => {
     const proto = window.location.protocol === "https:" ? "wss" : "ws";
-    const url = `${proto}://${window.location.host}/ws/decisions`;
+    const base = (import.meta as any).env?.VITE_WS_BASE_URL;
+    const url = (base ? String(base).replace(/\/$/, '') : `${proto}://${window.location.host}`) + `/ws/decisions`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     ws.onmessage = (ev) => {
@@ -68,7 +69,19 @@ export function useDecisionsRecent(limit = 20) {
         // ignore bad frames
       }
     };
-    return () => ws.close();
+    return () => {
+      try {
+        if (wsRef.current === ws) {
+          // Avoid closing while still connecting to reduce console errors in StrictMode
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.close(1000);
+          } else {
+            ws.onclose = null as any;
+            ws.onerror = null as any;
+          }
+        }
+      } catch {}
+    };
   }, [limit]);
 
   const data = useMemo(() => live, [live]);

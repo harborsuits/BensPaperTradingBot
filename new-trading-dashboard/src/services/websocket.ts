@@ -20,8 +20,10 @@ class WebSocketService {
   private pingInterval: number | null = null;
   private url: string;
 
-  constructor(baseUrl: string = ((typeof location !== 'undefined') ? location.origin.replace(/^http/, 'ws') + '/ws' : ((import.meta as any).env?.VITE_WS_URL || 'ws://localhost:8000/ws'))) {
-    this.url = baseUrl;
+  constructor(baseUrl?: string) {
+    const envBase = (import.meta as any).env?.VITE_WS_BASE_URL as string | undefined;
+    const base = envBase ? envBase.replace(/\/$/, '') : ((typeof location !== 'undefined') ? location.origin.replace(/^http/, 'ws') : 'ws://localhost:4000');
+    this.url = (baseUrl || base + '/ws');
     // Default handler for ping responses
     this.addMessageHandler('pong', () => console.debug('Received pong from server'));
   }

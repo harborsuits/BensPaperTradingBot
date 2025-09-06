@@ -1,10 +1,12 @@
 const express = require('express');
+try { require('dotenv').config(); } catch {}
 const cors = require('cors');
 const dayjs = require('dayjs');
 const fs = require('fs');
 const path = require('path');
 const { nanoid } = require('nanoid');
 const { CONFIG } = require('./lib/config');
+const axios = require('axios');
 const { noteRequest, setQuoteTouch, setBrokerTouch, currentHealth } = require('./lib/health');
 const { wrapResponse, errorResponse } = require('./lib/watermark');
 const { loadOrders, saveOrders, loadPositions, savePositions } = require('./lib/persistence');
@@ -16,14 +18,53 @@ const { AutoLoop } = require('./lib/autoLoop');
 
 const { getQuotesCache, onQuotes, startQuotesLoop, stopQuotesLoop } = require('./dist/src/services/quotesService');
 const { roster } = require('./dist/src/services/symbolRoster');
+const decisionsBus = require('./src/decisions/bus');
+
+// Alerts store & bus
+const alertsStore = require('./src/alerts/store');
+const alertsBus = require('./src/alerts/bus');
+
+// Canonical envs with alias fallbacks
+process.env.TRADIER_API_KEY = process.env.TRADIER_API_KEY || process.env.TRADIER_TOKEN || process.env.TRADIER_API_KEY || '';
+process.env.TRADIER_TOKEN = process.env.TRADIER_TOKEN || process.env.TRADIER_API_KEY || process.env.TRADIER_TOKEN || '';
+process.env.TRADIER_BASE_URL = process.env.TRADIER_BASE_URL || process.env.TRADIER_API_URL || process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
+process.env.QUOTES_PROVIDER = process.env.QUOTES_PROVIDER || 'tradier';
+process.env.AUTOREFRESH_ENABLED = process.env.AUTOREFRESH_ENABLED || '1';
 
 const app = express();
+const PY_PAPER_BASE = process.env.PY_PAPER_BASE || 'http://localhost:8008';
 app.use(cors());
 app.use(express.json());
 
+// Trackers for producers
+let quotesLastOk = Date.now();
+let lastQuotesStaleClass = null; // null|warning|critical
+let ddBaselineEquity = null; // { date, value }
+let ddLastTrip = null; // date string when tripped
+const DD_TRIP = -2.0; // percent
+
+// Compute dynamic refresh interval: 1s during RTH (9:30-16:00 ET, Mon-Fri), 5s off-hours
+function computeQuotesInterval() {
+  try {
+    const nowParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short'
+    }).formatToParts(new Date());
+    const get = (t) => Number((nowParts.find(p => p.type === t) || {}).value || 0);
+    const wd = (nowParts.find(p => p.type === 'weekday') || {}).value || 'Mon';
+    const h = get('hour');
+    const m = get('minute');
+    const isWeekday = ['Mon','Tue','Wed','Thu','Fri'].includes(String(wd).slice(0,3));
+    const minutes = h * 60 + m;
+    const rth = isWeekday && minutes >= (9*60+30) && minutes < (16*60);
+    return rth ? 1000 : 5000;
+  } catch {
+    return 5000;
+  }
+}
+
 // Initialize auto-refresh for quotes to keep health GREEN
 const quoteRefresher = new AutoRefresh({
-  interval: 30_000, // 30 seconds
+  interval: computeQuotesInterval(),
   symbols: ['SPY', 'AAPL', 'QQQ'], // Common symbols
   enabled: true
 });
@@ -92,6 +133,22 @@ app.get('/api/health', (req, res) => {
 });
 app.get('/health', (req, res) => {
   res.json(currentHealth());
+});
+
+// Pipeline health (brain state summary)
+app.get('/api/pipeline/health', (req, res) => {
+  try {
+    const rosterItems = computeActiveRosterItems();
+    const decisionsRecent = decisionsBus.recent(10);
+    res.json({
+      rosterSize: Array.isArray(rosterItems) ? rosterItems.length : 0,
+      decisionsRecent: Array.isArray(decisionsRecent) ? decisionsRecent.length : 0,
+      quotesFreshSec: currentHealth().quote_age_s,
+      asOf: new Date().toISOString()
+    });
+  } catch (e) {
+    res.json({ rosterSize: 0, decisionsRecent: 0, quotesFreshSec: currentHealth().quote_age_s, asOf: new Date().toISOString() });
+  }
 });
 
 app.get('/metrics', (req, res) => {
@@ -299,9 +356,9 @@ const makeDecision = () => ({
   indicators: [{ name: 'RSI', value: 62, signal: 'bullish' }],
 });
 
-app.get('/api/decisions', (req, res) => res.json([makeDecision(), makeDecision()]));
-app.get('/api/decisions/latest', (req, res) => res.json([makeDecision()]));
-app.get('/api/decisions/recent', (req, res) => res.json([makeDecision(), makeDecision()]));
+app.get('/api/decisions', (req, res) => res.json(decisionsBus.recent(Number(req.query.limit || 50))));
+app.get('/api/decisions/latest', (req, res) => res.json(decisionsBus.recent(1)));
+app.get('/api/decisions/recent', (req, res) => res.json(decisionsBus.recent(Number(req.query.limit || 50))));
 
 // Trace endpoints
 app.get('/trace/:id', (req, res) => {
@@ -406,7 +463,10 @@ app.post('/api/paper/orders/dry-run', async (req, res) => {
   const idempotencyKey = req.get('Idempotency-Key') || '';
   const { symbol = 'AAPL', side = 'buy', qty = 1, type = 'market' } = req.body || {};
   const h = currentHealth();
-  const quote = await getQuote(symbol);
+  const { quotes } = getQuotesCache();
+  const s = String(symbol || '').toUpperCase();
+  const q = (quotes || []).find(x => String(x.symbol || '').toUpperCase() === s) || {};
+  const price = Number(q.last || q.bid || q.ask || 0);
   const paperAccount = { cash: 20000 }; // mock account fetch
 
   const gate = preTradeGate({
@@ -415,7 +475,7 @@ app.post('/api/paper/orders/dry-run', async (req, res) => {
     strategy_heat: 0.03,
     dd_mult: Math.max(CONFIG.DD_MIN_MULT, 1 - CONFIG.DD_FLOOR),
     requested_qty: qty,
-    price: quote.price,
+    price,
     available_cash: paperAccount.cash,
     quote_age_s: h.quote_age_s,
     broker_age_s: h.broker_age_s,
@@ -429,133 +489,45 @@ app.post('/api/paper/orders/dry-run', async (req, res) => {
   });
 });
 app.post('/api/paper/orders', async (req, res) => {
-  const idempotencyKey = req.get('Idempotency-Key') || '';
-  const { symbol = 'AAPL', side = 'buy', qty = 1, type = 'market' } = req.body || {};
-  const health = currentHealth();
-  if (!health.ok && CONFIG.FAIL_CLOSE) {
-    const err = errorResponse('BREAKER_RED', 503, { details: health });
-    return res.status(err.status).json(err.body);
-  }
-  const quote = await getQuote(symbol);
-  const paperAccount = { cash: 20000 }; // mock account fetch
-
-  const gate = preTradeGate({
-    nav: 50_000,
-    portfolio_heat: 0.05,
-    strategy_heat: 0.03,
-    dd_mult: Math.max(CONFIG.DD_MIN_MULT, 1 - CONFIG.DD_FLOOR),
-    requested_qty: qty,
-    price: quote.price,
-    available_cash: paperAccount.cash,
-    quote_age_s: health.quote_age_s,
-    broker_age_s: health.broker_age_s,
-    stale: !health.ok,
-  });
-  if (gate.decision !== 'ACCEPT') {
-    const err = errorResponse(gate.reason || 'REJECTED', 400, { gate });
-    return res.status(err.status).json(err.body);
-  }
   try {
-    const price = quote.price; // Use the fetched quote price
-    const broker = await placeOrderAdapter({ request: { symbol, side, qty: gate.routed_qty, type, price }, idempotencyKey });
-    setBrokerTouch();
-    // If order with this broker id already exists, return existing without mutating state
-    const existingOrder = paperOrders.find(o => o.id === broker.id);
-    if (existingOrder) {
-      const existingTrade = paperTrades.find(t => t.id === broker.id);
-      return res.json({ success: true, trade: existingTrade || existingOrder, gate, traceId: broker.id, meta: { asOf: asOf(), source: 'paper', schema_version: 'v1', trace_id: broker.id } });
-    }
-    const trade = {
-      id: broker.id,
-      status: broker.status,
-      symbol,
-      side,
-      qty: broker.filledQty,
-      type,
-      submittedAt: asOf(),
-      filledAvgPrice: broker.avgPrice,
-      action: side,
-      quantity: broker.filledQty,
-      price: broker.avgPrice,
-      total_value: broker.avgPrice * broker.filledQty,
-      timestamp: asOf(),
-      strategy_id: 'manual',
-      strategy_name: 'Manual',
-      account: 'paper',
-    };
-    paperTrades.unshift(trade);
-    paperOrders.unshift({
-      id: trade.id,
-      symbol: trade.symbol,
-      side: trade.side,
-      qty: trade.qty,
-      type: trade.type,
-      price: trade.filledAvgPrice,
-      status: trade.status,
-      submittedAt: trade.submittedAt,
-      filledAt: trade.timestamp,
+    const idempotencyKey = req.get('Idempotency-Key') || '';
+    const body = req.body || {};
+    const r = await axios.post(`${PY_PAPER_BASE}/paper/orders`, body, {
+      headers: { 'Idempotency-Key': idempotencyKey }
     });
-    // position update with avg cost & realized PnL
-    const priceFill = broker.avgPrice;
-    const idx = paperPositions.findIndex(p => p.symbol === symbol);
-    if (idx >= 0) {
-      const p = paperPositions[idx];
-      let quantity = p.quantity;
-      let avg_cost = p.avg_cost;
-      let realized_pl = p.realized_pl || 0;
-      if (side === 'buy') {
-        const newQty = quantity + broker.filledQty;
-        avg_cost = (quantity * avg_cost + broker.filledQty * priceFill) / (newQty || 1);
-        quantity = newQty;
-      } else {
-        // sell: realize PnL on sold qty
-        realized_pl += (priceFill - avg_cost) * broker.filledQty;
-        quantity = quantity - broker.filledQty;
-      }
-      const last_price = priceFill;
-      paperPositions[idx] = {
-        ...p,
-        quantity,
-        avg_cost: +avg_cost.toFixed(4),
-        last_price,
-        current_value: quantity * last_price,
-        unrealized_pl: (last_price - avg_cost) * quantity,
-        unrealized_pl_percent: quantity ? ((last_price - avg_cost) / avg_cost) * 100 : 0,
-        realized_pl,
-      };
-    } else if (side === 'buy') {
-      paperPositions.push({ symbol, quantity: broker.filledQty, avg_cost: priceFill, last_price: priceFill, current_value: broker.filledQty * priceFill, unrealized_pl: 0, unrealized_pl_percent: 0, realized_pl: 0, account: 'paper', strategy_id: 'manual', entry_time: asOf() });
-    }
-    persistAll();
-    // Save trace bundle
-    const traceId = saveBundle({
-      id: trade.id,
-      order: { symbol, side, qty: broker.filledQty, type, price: priceFill },
-      risk_config: {
-        PER_TRADE_CAP: CONFIG.PER_TRADE_CAP,
-        MAX_PORTFOLIO_HEAT: CONFIG.MAX_PORTFOLIO_HEAT,
-        MAX_STRATEGY_HEAT: CONFIG.MAX_STRATEGY_HEAT,
-        DD_FLOOR: CONFIG.DD_FLOOR,
-        DD_MIN_MULT: CONFIG.DD_MIN_MULT,
-      },
-      context: {},
-      quotes_snapshot: [],
-      venue_priors: {},
-    });
-    return res.json({ success: true, trade, gate, traceId, meta: { asOf: asOf(), source: 'paper', schema_version: 'v1', trace_id: traceId } });
+    try {
+      alertsBus.createAlert({
+        severity: 'info',
+        source: 'broker',
+        message: `Order accepted: ${String(body.symbol || '')} ${String(body.side || '')} x${String(body.qty || body.quantity || '')} (${String(body.type || 'market')})`,
+        trace_id: idempotencyKey || null,
+      });
+    } catch {}
+    return res.status(r.status).json(r.data);
   } catch (e) {
-    if (e && (e.code === 'RATE_LIMIT')) {
-      const err = errorResponse('RATE_LIMIT', 429);
-      return res.status(err.status).json(err.body);
-    }
-    const err = errorResponse('BROKER_DOWN', 502);
-    return res.status(err.status).json(err.body);
+    const status = e?.response?.status || 502;
+    const data = e?.response?.data || { error: 'BROKER_DOWN' };
+    const body = req.body || {};
+    try {
+      alertsBus.createAlert({
+        severity: 'critical',
+        source: 'broker',
+        message: `Order failed (${status}): ${String(body.symbol || '')} ${String(body.side || '')} x${String(body.qty || body.quantity || '')} — ${JSON.stringify(data).slice(0,200)}`,
+        trace_id: req.get('Idempotency-Key') || null,
+      });
+    } catch {}
+    return res.status(status).json(data);
   }
 });
-app.get('/api/paper/orders/:id', (req, res) => {
-  const ord = paperOrders.find(o => o.id === req.params.id);
-  if (!ord) return res.status(404).json({ error: 'not found' });
-  res.json(ord);
+app.get('/api/paper/orders/:id', async (req, res) => {
+  try {
+    const r = await axios.get(`${PY_PAPER_BASE}/paper/orders/${req.params.id}`);
+    return res.status(r.status).json(r.data);
+  } catch (e) {
+    const status = e?.response?.status || 502;
+    const data = e?.response?.data || { error: 'BROKER_DOWN' };
+    return res.status(status).json(data);
+  }
 });
 
 // All orders
@@ -623,39 +595,56 @@ app.get('/api/events/logs', (req, res) => {
 
 // Ingestion activity events (for UI ticker and data timeline)
 app.get('/api/ingestion/events', (req, res) => {
-  const limit = Math.min(Number(req.query.limit || 50), 500);
-  const now = dayjs();
-  const stages = ['INGEST', 'CONTEXT', 'CANDIDATES', 'GATES', 'PLAN', 'ROUTE', 'MANAGE', 'LEARN'];
-  const symbols = ['AAPL', 'SPY', 'MSFT', 'NVDA', 'AMD', 'TSLA'];
+  try {
+    const limit = Math.min(Number(req.query.limit || 50), 500);
+    const now = Date.now();
 
-  const items = Array.from({ length: limit }).map((_, i) => {
-    const t = now.subtract(i * 3, 'second');
-    const ts = t.valueOf();
-    const stage = stages[i % stages.length];
-    const symbol = symbols[i % symbols.length];
-    const latency = 20 + Math.floor(Math.random() * 400);
-    const ok = Math.random() > 0.08; // ~8% errors
-    return {
-      id: nanoid(),
-      // fields used by ActivityTicker
-      timestamp: t.toISOString(),
-      stage,
-      symbol,
-      note: ok ? 'processed' : 'retrying',
-      latency_ms: latency,
-      status: ok ? 'ok' : 'err',
-      trace_id: nanoid(),
-      // fields used by DataIngestionCard
-      ts,
-      strategy_id: 'news_momo_v2',
-      step: ok ? 'ok' : 'error',
-      message: ok ? `Stage ${stage} completed` : `Stage ${stage} failed`,
-      ms: latency,
-      level: ok ? 'ok' : 'err',
-    };
-  });
+    // Build events from active roster so ticker reflects dynamic focus
+    const items = (() => {
+      try {
+        const active = computeActiveRosterItems();
+        const mapReasonToStage = (k) => ({
+          news: 'INGEST',
+          earnings: 'INGEST',
+          subscription: 'CANDIDATES',
+          scanner: 'GATES',
+          tier1: 'PLAN',
+          tier2: 'GATES',
+          tier3: 'LEARN',
+          pin: 'MANAGE',
+        }[k] || 'CONTEXT');
 
-  res.json(items);
+        return active.slice(0, limit).map((a, i) => {
+          const reasonEntries = Object.entries(a.reasons || {}).sort((x, y) => y[1] - x[1]);
+          const top = reasonEntries[0]?.[0] || 'context';
+          const stage = mapReasonToStage(top);
+          const note = reasonEntries.slice(0, 3).map(([k, v]) => {
+            const num = Number(v);
+            const val = Number.isFinite(num) ? num.toFixed(2) : String(v);
+            return `${k}:${val}`;
+          }).join(' ');
+          const latency = 20 + Math.floor(Math.random() * 400);
+          return {
+            id: nanoid(),
+            timestamp: new Date(now - i * 3000).toISOString(),
+            stage,
+            symbol: a.symbol,
+            note: note || 'active',
+            latency_ms: latency,
+            status: 'ok',
+            trace_id: nanoid(),
+            ts: now - i * 3000,
+          };
+        });
+      } catch {
+        return [];
+      }
+    })();
+
+    return res.json(items);
+  } catch (e) {
+    res.status(500).json({ error: 'ingestion_events_failed' });
+  }
 });
 
 // Backtests stubs
@@ -688,18 +677,117 @@ app.get('/api/backtests/:id/results', (req, res) => {
     trades: Array.from({ length: 10 }).map((_, i) => ({ id: nanoid(), symbol: i % 2 ? 'AAPL' : 'SPY', pnl: (i - 5) * 25 })),
   });
 });
-app.get('/api/paper/positions', (req, res) => {
-  // map to minimal UI shape while keeping fields
-  const items = paperPositions.map(p => ({
-    symbol: p.symbol,
-    qty: p.quantity,
-    avgPrice: p.avg_cost,
-    marketPrice: p.last_price,
-    unrealizedPnl: (p.last_price - p.avg_cost) * p.quantity,
-    // preserve original keys as passthrough
-    ...p,
-  }));
-  res.json(items);
+
+// Provider-backed quotes endpoint that returns an array shape expected by the UI/scanner
+app.get('/api/quotes', (req, res) => {
+  try {
+    const cache = getQuotesCache() || {};
+    const raw = cache.quotes;
+    const syms = String(req.query.symbols || '')
+      .split(',')
+      .map((s) => s.trim().toUpperCase())
+      .filter(Boolean);
+    const arr = Array.isArray(raw)
+      ? raw
+      : raw && typeof raw === 'object'
+        ? Object.values(raw)
+        : [];
+
+    // Normalize minimal shape expected by scanner/UI
+    const norm = arr.map((q) => ({
+      symbol: String(q.symbol || q.ticker || '').toUpperCase(),
+      last: Number(q.last || q.price || q.close || 0),
+      prevClose: Number(q.prevClose || q.previousClose || 0),
+      bid: Number(q.bid || 0),
+      ask: Number(q.ask || 0),
+      spreadPct: (() => {
+        const b = Number(q.bid || 0), a = Number(q.ask || 0), mid = (a + b) / 2;
+        return mid > 0 ? +(((a - b) / mid) * 100).toFixed(3) : 0;
+      })(),
+      volume: Number(q.volume || q.total_volume || 0),
+    })).filter((x) => x.symbol);
+
+    let out = syms.length ? norm.filter((q) => syms.includes(q.symbol)) : norm;
+
+    // If cache is empty, do a direct provider fetch to avoid empty ticker
+    if ((!out || out.length === 0) && syms.length) {
+      const BASE = process.env.TRADIER_BASE_URL || process.env.TRADIER_API_URL || 'https://sandbox.tradier.com/v1';
+      const KEY = process.env.TRADIER_API_KEY || process.env.TRADIER_TOKEN || '';
+      if (KEY) {
+        try {
+          const url = `${BASE}/markets/quotes?symbols=${encodeURIComponent(syms.join(','))}`;
+          const r = require('axios').get(url, { headers: { Authorization: `Bearer ${KEY}`, Accept: 'application/json' } });
+          return r.then((resp) => {
+            const data = resp?.data || {};
+            const quoteNode = data?.quotes?.quote || data?.quote || data?.quotes || [];
+            const list = Array.isArray(quoteNode) ? quoteNode : quoteNode ? [quoteNode] : [];
+            const mapped = list.map((q) => ({
+              symbol: String(q.symbol || q.ticker || '').toUpperCase(),
+              last: Number(q.last || q.close || q.price || 0),
+              prevClose: Number(q.prev_close || q.previous_close || q.previousClose || 0),
+              bid: Number(q.bid || 0),
+              ask: Number(q.ask || 0),
+              spreadPct: (() => {
+                const b = Number(q.bid || 0), a = Number(q.ask || 0), mid = (a + b) / 2;
+                return mid > 0 ? +(((a - b) / mid) * 100).toFixed(3) : 0;
+              })(),
+              volume: Number(q.volume || 0),
+            })).filter((x) => x.symbol);
+            setQuoteTouch();
+            return res.json(mapped);
+          }).catch(() => {
+            setQuoteTouch();
+            return res.json([]);
+          });
+        } catch {
+          // ignore and fall through
+        }
+      }
+    }
+
+    setQuoteTouch();
+    quotesLastOk = Date.now();
+    return res.json(out);
+  } catch (e) {
+    // Emit warning and return empty array instead of 503 to allow fallbacks upstream
+    try {
+      alertsBus.createAlert({
+        severity: 'warning',
+        source: 'system',
+        message: `Quotes provider failed: ${e?.response?.status || e?.code || e?.message || 'unknown'}`,
+      });
+    } catch {}
+    return res.json([]);
+  }
+});
+
+// Background staleness watcher
+setInterval(() => {
+  try {
+    const now = Date.now();
+    const ageSec = (now - (quotesLastOk || 0)) / 1000;
+    const sev = ageSec > 30 ? 'critical' : ageSec > 10 ? 'warning' : null;
+    if (sev && sev !== lastQuotesStaleClass) {
+      lastQuotesStaleClass = sev;
+      alertsBus.createAlert({
+        severity: sev,
+        source: 'system',
+        message: `Quotes stale for ${Math.round(ageSec)}s`,
+      });
+    }
+    if (!sev) lastQuotesStaleClass = null;
+  } catch {}
+}, 5000);
+app.get('/api/paper/positions', async (req, res) => {
+  try {
+    const r = await axios.get(`${PY_PAPER_BASE}/paper/positions`);
+    const body = r.data && Array.isArray(r.data) ? r.data : (r.data?.positions || []);
+    return res.status(200).json(body);
+  } catch (e) {
+    const status = e?.response?.status || 502;
+    const data = e?.response?.data || { error: 'BROKER_DOWN' };
+    return res.status(status).json(data);
+  }
 });
 
 // Portfolio history for paper (basic time series)
@@ -714,10 +802,38 @@ app.get('/api/portfolio/paper/history', (req, res) => {
 });
 
 // Paper account summary
-app.get('/api/paper/account', (req, res) => {
-  const equity = 50000 + paperPositions.reduce((s, p) => s + (p.last_price * p.quantity), 0);
-  const cash = 20000;
-  res.json({ equity, cash, buyingPower: cash * 5, asOf: asOf() });
+app.get('/api/paper/account', async (req, res) => {
+  try {
+    const r = await axios.get(`${PY_PAPER_BASE}/paper/account`);
+    // Drawdown baseline & checks
+    try {
+      const equity = Number(r.data?.balances?.equity) || Number(r.data?.equity) || Number(r.data?.total_equity) || NaN;
+      if (isFinite(equity)) {
+        const today = new Date().toISOString().slice(0,10);
+        if (!ddBaselineEquity || ddBaselineEquity.date !== today) {
+          ddBaselineEquity = { date: today, value: equity };
+          ddLastTrip = null;
+        } else {
+          const ddPct = ((equity / ddBaselineEquity.value) - 1) * 100;
+          if (ddPct <= DD_TRIP && ddLastTrip !== today) {
+            ddLastTrip = today;
+            alertsBus.createAlert({
+              severity: 'critical',
+              source: 'risk',
+              message: `Daily drawdown breached: ${ddPct.toFixed(2)}% ≤ ${DD_TRIP}% — new orders should be blocked`,
+            });
+          } else if (ddPct <= (DD_TRIP / 2) && !ddLastTrip) {
+            alertsBus.createAlert({ severity: 'warning', source: 'risk', message: `Drawdown warning: ${ddPct.toFixed(2)}%` });
+          }
+        }
+      }
+    } catch {}
+    return res.status(r.status).json(r.data);
+  } catch (e) {
+    const status = e?.response?.status || 502;
+    const data = e?.response?.data || { error: 'BROKER_DOWN' };
+    return res.status(status).json(data);
+  }
 });
 
 // --- Portfolio allocations (equity/options + top symbols)
@@ -861,10 +977,50 @@ const WATCHLISTS = {
 
 app.get('/api/watchlists', (req, res) => res.json(WATCHLISTS));
 
+// Track current universe selection
+let currentUniverse = 'default';
+
 app.get('/api/universe', (req, res) => {
-  const list = String(req.query.list || 'default');
+  const list = String(req.query.list || currentUniverse);
   const symbols = WATCHLISTS[list] || WATCHLISTS.default;
-  res.json({ symbols, asOf: new Date().toISOString() });
+  res.json({ 
+    id: list,
+    symbols, 
+    asOf: new Date().toISOString() 
+  });
+});
+
+// Add POST endpoint for switching universe
+app.post('/api/universe', (req, res) => {
+  try {
+    const { id } = req.body || {};
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ error: 'Missing id parameter' });
+    }
+    
+    // Check if watchlist exists
+    const symbols = WATCHLISTS[id];
+    if (!symbols) {
+      return res.status(404).json({ error: 'Watchlist not found' });
+    }
+    
+    // Update the current universe
+    currentUniverse = id;
+    console.log(`Universe switched to ${id} with ${symbols.length} symbols`);
+    
+    // Return success with the new universe
+    return res.json({ 
+      id, 
+      symbols, 
+      success: true,
+      message: `Universe switched to ${id}`,
+      count: symbols.length,
+      asOf: new Date().toISOString() 
+    });
+  } catch (err) {
+    console.error('Error switching universe:', err);
+    return res.status(500).json({ error: 'Failed to switch universe' });
+  }
 });
 
 // Legacy support for individual watchlist lookup
@@ -896,28 +1052,7 @@ app.get('/api/news/ticker-sentiment', (req, res) => {
 });
 
 // Quotes & Bars
-app.get('/api/quotes', (req, res) => {
-  const symbols = String(req.query.symbols || '').split(',').filter(Boolean);
-  const now = asOf();
-  const out = symbols.length ? symbols : DEFAULT_UNIVERSE.slice(0, 10); // Use first 10 from universe
-  const items = out.map((s) => {
-    const basePrice = 50 + Math.random() * 200; // Random price between 50-250
-    const change = (Math.random() * 6) - 3; // Random change between -3 and +3
-    const prevClose = basePrice - change;
-    return {
-      symbol: s.toUpperCase(),
-      last: +(basePrice).toFixed(2),
-      bid: +(basePrice - 0.05).toFixed(2),
-      ask: +(basePrice + 0.05).toFixed(2),
-      prevClose: +prevClose.toFixed(2),
-      change: +change.toFixed(2),
-      pct: +((change / prevClose) * 100).toFixed(2),
-      ts: now,
-    };
-  });
-  setQuoteTouch();
-  res.json(items);
-});
+// Removed synthetic /api/quotes handler so provider-backed router owns the route
 
 app.get('/api/bars', (req, res) => {
   const symbol = String(req.query.symbol || 'AAPL');
@@ -1041,8 +1176,8 @@ app.get('/api/scanner/candidates', async (req, res) => {
     rows.sort((a,b) => b.score - a.score);
     res.json(rows.slice(0, limit));
   } catch (e) {
-    const err = errorResponse('STALE_DATA', 503);
-    return res.status(err.status).json(err.body);
+    // Return empty list instead of 503 to keep UI panels alive
+    return res.json({ items: [] });
   }
 });
 
@@ -1051,28 +1186,123 @@ app.get('/api/evotester/history', (req, res) => {
   res.json([]);
 });
 
-// Alerts & Logs
+// Alerts API
 app.get('/api/alerts', (req, res) => {
-  const limit = Math.min(Number(req.query.limit || 20), 100);
-  const sevParam = String(req.query.severity || '').toLowerCase();
-  const sevLabels = ['info', 'warning', 'critical'];
-  const items = Array.from({ length: limit }).map((_, i) => ({
-    id: nanoid(),
-    timestamp: asOf(),
-    severity: sevLabels[i % sevLabels.length],
-    source: 'system',
-    message: `Alert ${i + 1}`,
-    acknowledged: false,
-  }));
-  const filtered = sevLabels.includes(sevParam)
-    ? items.filter((a) => a.severity === sevParam)
-    : items; // ignore numeric/unknown values
-  res.json(filtered);
+  try {
+    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 10));
+    return res.json(alertsStore.list(limit));
+  } catch (e) {
+    return res.json([]);
+  }
 });
 
 app.post('/api/alerts/:id/acknowledge', (req, res) => {
-  res.json({ status: 'ok', message: `Alert ${req.params.id} acknowledged` });
+  try {
+    const row = alertsStore.ack(req.params.id);
+    if (!row) return res.status(404).json({ error: 'not_found' });
+    return res.json(row);
+  } catch (e) {
+    return res.status(500).json({ error: 'ack_failed' });
+  }
 });
+
+// Debug alert creation (disabled in production by default)
+app.post('/api/_debug/alert', (req, res) => {
+  try {
+    if (process.env.NODE_ENV === 'production') return res.status(403).json({ error: 'forbidden' });
+    const { severity = 'info', source = 'system', message = 'Test alert' } = req.body || {};
+    const a = alertsBus.createAlert({ severity, source, message });
+    return res.json(a);
+  } catch (e) {
+    return res.status(500).json({ error: 'create_failed' });
+  }
+});
+
+// --- ROSTER VISIBILITY ---
+function marketIsOpenSimple() {
+  const now = new Date();
+  const day = now.getUTCDay();
+  const hour = now.getUTCHours();
+  const minute = now.getUTCMinutes();
+  const etHour = (hour - 4 + 24) % 24;
+  return !(day === 0 || day === 6 || etHour < 9 || etHour >= 16 || (etHour === 9 && minute < 30));
+}
+
+function computeActiveRosterItems() {
+  const isRTH = marketIsOpenSimple();
+  let mod;
+  try { mod = require('./dist/src/services/symbolRoster'); } catch {}
+  if (!mod || !mod.roster) throw new Error('roster_unavailable');
+  const r = mod.roster;
+
+  const weight = { tier1: 3.0, tier2: 1.5, tier3: 0.5, subscription: 1.0, pin: 999 };
+  const limit = isRTH ? 150 : 50;
+
+  const aggregate = new Map();
+  const add = (sym, w, reason) => {
+    const s = String(sym).toUpperCase();
+    const cur = aggregate.get(s) || { symbol: s, score: 0, reasons: {} };
+    cur.score += w;
+    cur.reasons[reason] = (cur.reasons[reason] || 0) + w;
+    aggregate.set(s, cur);
+  };
+
+  // tiers
+  Array.from(r.tier1 || []).forEach((s) => add(s, weight.tier1, 'tier1'));
+  Array.from(r.tier2 || []).forEach((s) => add(s, weight.tier2, 'tier2'));
+  Array.from(r.tier3 || []).forEach((s) => add(s, weight.tier3, 'tier3'));
+
+  // subscriptions included in getAll but not necessarily in tiers
+  const all = new Set(r.getAll ? r.getAll() : []);
+  all.forEach((s) => {
+    if (!(r.tier1?.has(s) || r.tier2?.has(s) || r.tier3?.has(s))) add(s, weight.subscription, 'subscription');
+  });
+
+  // pins: open positions + open orders from in-memory state
+  try { (paperPositions || []).forEach((p) => add(p.symbol, weight.pin, 'pin')); } catch {}
+  try {
+    const open = (paperOrders || []).filter((o) => !['filled','canceled','rejected'].includes(String(o.status||'').toLowerCase()));
+    open.forEach((o) => add(o.symbol, weight.pin, 'pin'));
+  } catch {}
+
+  const items = Array.from(aggregate.values())
+    .filter((x) => x.score > 0.05)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+
+  return items;
+}
+
+app.get('/api/roster/active', (req, res) => {
+  try {
+    const items = computeActiveRosterItems();
+    res.json({ items });
+  } catch (e) {
+    res.status(500).json({ error: 'roster_failed' });
+  }
+});
+
+// Keep the quotes loop following the active roster by syncing tier1 periodically
+try {
+  const distRosterMod = require('./dist/src/services/symbolRoster');
+  const pushActiveToTier = () => {
+    try {
+      const items = computeActiveRosterItems();
+      const syms = items.map(i => i.symbol);
+      if (Array.isArray(distRosterMod?.roster?.setTier)) {
+        // setTier is a function; but CommonJS export has method
+      }
+      if (distRosterMod && distRosterMod.roster && typeof distRosterMod.roster.setTier === 'function') {
+        distRosterMod.roster.setTier('tier1', syms);
+        distRosterMod.roster.setTier('tier2', []);
+        distRosterMod.roster.setTier('tier3', []);
+      }
+    } catch {}
+  };
+  setInterval(pushActiveToTier, 15000);
+  // initial push
+  pushActiveToTier();
+} catch {}
 
 const PORT = Number(process.env.PORT) || 4000;
 // Migration guard: refuse to start if pending migrations are detected
@@ -1107,12 +1337,24 @@ const wssPrices = new WebSocket.Server({ noServer: true });
 // Handle WebSocket connections
 wss.on('connection', (ws, request) => {
   console.log('WebSocket connection established');
+  try {
+    ws.on('message', (raw) => {
+      try {
+        const msg = JSON.parse(raw.toString());
+        if (msg && msg.type === 'ping') {
+          ws.send(JSON.stringify({ type: 'pong', ts: new Date().toISOString() }));
+        }
+      } catch {}
+    });
+  } catch {}
 });
 
+// Bind alert bus to main WS server
+try { alertsBus.bindWebSocketServer(wss); } catch {}
+
 // WebSocket Server for decisions endpoint
-wssDecisions.on('connection', (ws) => {
-  console.log('WebSocket connection established for decisions');
-});
+// Bind decisions bus to decisions WS server
+try { decisionsBus.bindDecisionsWS(wssDecisions); } catch {}
 
 // WS for prices
 wssPrices.on('connection', (ws) => {
@@ -1153,15 +1395,7 @@ if (CONFIG.PRICES_WS_ENABLED) {
 }
 
 // Broadcast helper for decisions stream
-function broadcastDecision(obj) {
-  wssDecisions.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      try { client.send(JSON.stringify(obj)); } catch {}
-    }
-  });
-}
-
-module.exports.broadcastDecision = broadcastDecision;
+module.exports.publishDecision = decisionsBus.publish;
 
 // Add heartbeat to all WebSocket servers to detect and clean up dead connections
 attachHeartbeat(wss);
@@ -1176,13 +1410,15 @@ app.locals.wssPrices = wssPrices;
 // Live status endpoint
 app.use('/api/live', require('./routes/live'));
 
-// Quotes API routes
-app.use('/api/quotes', require('./dist/routes/quotes'));
+// Quotes API routes (disabled dist router in favor of normalized /api/quotes above)
+// Ensure the provider-backed route at /api/quotes (defined earlier) is authoritative
 
 // Handle WebSocket upgrades
 server.on('upgrade', (request, socket, head) => {
   try {
-    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    let { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    // Normalize trailing slashes for robust matching
+    pathname = pathname.replace(/\/+$/, '');
 
     if (pathname === '/ws/decisions') {
       wssDecisions.handleUpgrade(request, socket, head, (ws) => {

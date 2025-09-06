@@ -35,6 +35,8 @@ from .websocket_manager import (
     broadcast_system_log
 )
 from pydantic import BaseModel
+from fastapi import Header
+import os
 
 # Import auth modules
 from trading_bot.auth.api import router as auth_router
@@ -1437,6 +1439,105 @@ def initialize_api(strategy_rotator, continuous_learner, engine, market_analyzer
     logger.info("Started real-time update background tasks")
     
     logger.info("API initialized with strategy rotator, continuous learner, and trading engine")
+
+# --- Paper trading endpoints (Tradier paper adapter) ---
+try:
+    from trading_bot.brokers.tradier.adapter import TradierAdapter as _Tradier
+    _tradier_available = True
+except Exception:
+    _Tradier = None
+    _tradier_available = False
+
+class OrderIn(BaseModel):
+    symbol: str
+    side: str
+    qty: float
+    type: str
+    limit_price: float | None = None
+    stop_price: float | None = None
+
+_paper_broker = None
+
+def _get_paper_broker():
+    global _paper_broker
+    if _paper_broker is not None:
+        return _paper_broker
+    if not _tradier_available:
+        raise HTTPException(status_code=503, detail="Tradier adapter not available")
+    token = os.getenv("TRADIER_TOKEN")
+    account_id = os.getenv("TRADIER_ACCOUNT_ID")
+    if not token or not account_id:
+        raise HTTPException(status_code=500, detail="Missing TRADIER_TOKEN or TRADIER_ACCOUNT_ID")
+    _paper_broker = _Tradier(api_key=token, account_id=account_id, sandbox=True)
+    return _paper_broker
+
+@app.post("/paper/orders")
+async def paper_place_order(order: OrderIn, idempotency_key: str | None = Header(default=None, convert_underscores=False)):
+    try:
+        br = _get_paper_broker()
+        # map UI -> broker args
+        result = br.place_equity_order(
+            symbol=order.symbol,
+            quantity=int(order.qty),
+            side=order.side,
+            order_type=order.type,
+            limit_price=order.limit_price,
+            stop_price=order.stop_price,
+        )
+        # Normalize to UI contract: { id, status }
+        oid = str(result.get("order_id") or result.get("id") or "")
+        status = str(result.get("status") or "accepted")
+        if not oid:
+            # fallback to a minimal object to keep UI flow
+            oid = f"tradier_{int(datetime.utcnow().timestamp())}"
+        return {"id": oid, "status": status}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"paper order failed: {e}")
+
+@app.get("/paper/orders/{oid}")
+async def paper_get_order(oid: str):
+    try:
+        br = _get_paper_broker()
+        o = br.get_order_by_id(oid) if hasattr(br, "get_order_by_id") else br.client.get_order_by_id(oid)
+        # Map to UI shape
+        status = str(o.get("status") or o.get("order", {}).get("status") or "pending").lower()
+        filled_qty = o.get("filled_quantity") or o.get("filled_qty") or 0
+        avg_price = o.get("avg_fill_price") or o.get("avg_price") or o.get("price")
+        # normalize a few common statuses
+        if status in ("ok", "accepted", "new"):
+            status = "accepted"
+        return {"id": oid, "status": status, "filled_qty": filled_qty, "avg_fill_price": avg_price}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"paper get order failed: {e}")
+
+@app.get("/paper/positions")
+async def paper_positions():
+    try:
+        br = _get_paper_broker()
+        pos = br.get_positions()
+        # Return as-is; Node will preserve UI mapping
+        return {"positions": pos}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"paper positions failed: {e}")
+
+@app.get("/paper/account")
+async def paper_account():
+    try:
+        br = _get_paper_broker()
+        info = br.get_account_info() if hasattr(br, "get_account_info") else {}
+        bal = br.get_account_balance()
+        # Minimal UI shape
+        return {"equity": info.get("equity", None) or bal, "cash": info.get("cash", bal), "buyingPower": info.get("buying_power", None) or info.get("buyingPower", None) or bal * 2, "asOf": datetime.utcnow().isoformat()}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"paper account failed: {e}")
 
 # Event handlers for WebSocket broadcasting
 async def _handle_price_update(event):

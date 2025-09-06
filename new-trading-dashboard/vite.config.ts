@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
         '/metrics':{ target: 'http://localhost:4000', changeOrigin: true },
         '/health': { target: 'http://localhost:4000', changeOrigin: true },
         // covers /ws, /ws/decisions, /ws/prices (and future /ws/*)
-        '^/ws':    { target: 'ws://localhost:4000', ws: true, changeOrigin: true },
+        '/ws':     { target: 'ws://localhost:4000', ws: true, changeOrigin: true },
       },
     },
   }

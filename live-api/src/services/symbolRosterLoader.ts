@@ -18,29 +18,44 @@ export async function refreshRosterFromBackend() {
   const tier1 = new Set<string>();
   const tier2 = new Set<string>();
   const tier3 = new Set<string>();
+  const pins: string[] = [];
 
   // Tier1: portfolio + open orders + active strategy required symbols
   if (portfolio.status === 'fulfilled') {
-    (portfolio.value.data?.positions || []).forEach((p: any) => tier1.add(String(p.symbol).toUpperCase()));
+    (portfolio.value.data?.positions || []).forEach((p: any) => {
+      const s = String(p.symbol).toUpperCase();
+      tier1.add(s);
+      pins.push(s);
+    });
   }
   if (orders.status === 'fulfilled') {
-    (orders.value.data || []).forEach((o: any) => tier1.add(String(o.symbol).toUpperCase()));
+    (orders.value.data || []).forEach((o: any) => {
+      const s = String(o.symbol).toUpperCase();
+      tier1.add(s);
+      pins.push(s);
+    });
   }
   if (activeStrats.status === 'fulfilled') {
     (activeStrats.value.data || []).forEach((s: any) => (s.symbols || []).forEach((sym: string) => tier1.add(sym.toUpperCase())));
   }
 
-  // Tier2: scanner candidates (top N by score) + first watchlist(s)
+  // Tier2: scanner candidates (top N by score) + ingest into scoring
   if (candidates.status === 'fulfilled') {
     const items = (candidates.value.data?.items || []).sort((a: any,b: any)=> (b.score??0)-(a.score??0));
-    TAKE(items, 50).forEach((c: any) => tier2.add(String(c.symbol).toUpperCase()));
+    TAKE(items, 50).forEach((c: any) => {
+      const sym = String(c.symbol).toUpperCase();
+      tier2.add(sym);
+      const score = Math.max(0, Math.min(1, Number(c.score ?? 0.5)));
+      roster.ingest({ symbol: sym, reason: 'scanner', score, ttlSec: 3600 });
+    });
   }
 
   // Tier3: rest of universe (cap it)
   if (universe.status === 'fulfilled') {
-    (universe.value.data || []).forEach((sym: any) => {
-      const u = String(sym).toUpperCase();
-      if (!tier1.has(u) && !tier2.has(u)) tier3.add(u);
+    const u = (universe.value.data?.symbols || universe.value.data || []);
+    (u as any[]).forEach((sym: any) => {
+      const v = String(sym).toUpperCase();
+      if (!tier1.has(v) && !tier2.has(v)) tier3.add(v);
     });
   }
 
@@ -48,4 +63,5 @@ export async function refreshRosterFromBackend() {
   roster.setTier('tier2', Array.from(tier2));
   // keep tier3 modest; cap later in the governor
   roster.setTier('tier3', Array.from(tier3));
+  roster.setPins(pins);
 }

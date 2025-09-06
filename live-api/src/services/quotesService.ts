@@ -25,26 +25,18 @@ let tokens = QPM;
 setInterval(()=> { tokens = QPM; }, 60_000);
 
 function inMarketHours(now = new Date()) {
-  // simple guard; if you have a market-hours util, use it
-  const day = now.getUTCDay(); // 0 Sun ... 6 Sat
+  const day = now.getUTCDay();
   if (day === 0 || day === 6) return false;
-  
-  // Check US market hours (9:30 AM - 4:00 PM ET)
   const hour = now.getUTCHours();
   const minute = now.getUTCMinutes();
-  
-  // Convert to ET (UTC-4 or UTC-5 depending on DST)
-  // Simplified: just subtract 4 hours (assuming EDT)
-  const etHour = (hour - 4 + 24) % 24;
-  
-  // Market hours: 9:30 AM - 4:00 PM ET
+  const etHour = (hour - 4 + 24) % 24; // simplified EDT
   if (etHour < 9 || etHour >= 16) return false;
   if (etHour === 9 && minute < 30) return false;
-  
   return true;
 }
 
 let tickIdx = 0;
+let healthBackoff = 1; // grows when errors rise
 
 async function refreshBatch(symbols: string[]) {
   if (!symbols.length) return;
@@ -53,14 +45,18 @@ async function refreshBatch(symbols: string[]) {
     Object.assign(cache, data);
     lastRefresh = Date.now();
     emitter.emit('quotes', { quotes: data, time: new Date(lastRefresh).toISOString() });
+    healthBackoff = Math.max(1, Math.floor(healthBackoff / 2));
   } catch (e: any) {
     lastError = e?.message || String(e);
-    throw e; // Let caller handle it
+    healthBackoff = Math.min(8, healthBackoff + 1);
+    throw e;
   }
 }
 
 async function governorTick() {
-  const all = roster.getAll().slice(0, MAX_SYMS);
+  // Use activeRoster with scoring + pins; no fixed universe
+  const active = roster.activeRoster(Date.now(), inMarketHours()).map(r => r.symbol);
+  const all = active.length ? active.slice(0, MAX_SYMS) : ['SPY','QQQ','AAPL'];
   if (!all.length) return;
 
   // slice into tiers with staggered cadence
@@ -84,14 +80,13 @@ async function governorTick() {
     tokens--; // 1 API call per chunk
     try { 
       await refreshBatch(chunk); 
-      console.log(`[QuotesService] Refreshed ${chunk.length} symbols, ${tokens} tokens left`);
+      console.log(`[QuotesService] Refreshed ${chunk.length} symbols, ${tokens} tokens left (backoff=${healthBackoff})`);
     }
     catch (e:any) { 
       lastError = e?.message || String(e);
       console.error(`[QuotesService] Error refreshing quotes: ${lastError}`);
     }
-    // tiny delay between chunks to be gentle
-    await new Promise(r => setTimeout(r, 50));
+    await new Promise(r => setTimeout(r, 50 * healthBackoff));
   }
 }
 
@@ -137,7 +132,7 @@ export function startQuotesLoop() {
 
   const tick = async () => {
     await governorTick().catch(()=>{});
-    const next = inMarketHours() ? BASE_MS : OFF_MS;
+    const next = (inMarketHours() ? BASE_MS : OFF_MS) * healthBackoff;
     loop = setTimeout(tick, next);
   };
   tick();

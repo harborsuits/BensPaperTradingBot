@@ -112,13 +112,30 @@ export const alertsApi = {
       data: { ids }
     });
   },
+
+  /** Acknowledge a single alert (matches live-api POST /api/alerts/:id/acknowledge) */
+  acknowledge: async (id: string) => {
+    return apiRequest<{ status: string }>({
+      url: `/alerts/${id}/acknowledge`,
+      method: 'POST'
+    });
+  },
   
   /**
    * Get recent notifications
    */
   getNotifications: async (limit = 10) => {
+    // Use alerts endpoint as the notification source
     return apiRequest<Alert[]>({
-      url: `/notifications?limit=${limit}`,
+      url: `/alerts?limit=${limit}`,
+      method: 'GET'
+    });
+  },
+
+  /** Explicit recent alerts helper */
+  getRecent: async (limit = 10) => {
+    return apiRequest<Alert[]>({
+      url: `/alerts?limit=${limit}`,
       method: 'GET'
     });
   }
