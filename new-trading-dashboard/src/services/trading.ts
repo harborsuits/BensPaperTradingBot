@@ -2,41 +2,53 @@ import { get, post, del } from "@/lib/api";
 
 export type Account = { equity:number; cash:number; day_pl_dollar:number; day_pl_pct:number; };
 export const AccountSvc = {
-  balance: () => get<Account>("/api/v1/account/balance"),
+  balance: () => get<{ data:{ equity:number; cash:number } }>("/api/portfolio/allocations").then(r => ({
+    equity: r.data?.equity ?? 0,
+    cash: r.data?.cash ?? 0,
+    day_pl_dollar: 0,
+    day_pl_pct: 0,
+  })),
 };
 
 export type Position = { symbol:string; qty:number; avg_price:number; last:number; pl_dollar:number; pl_pct:number; };
 export const PositionsSvc = {
-  list: () => get<Position[]>("/api/v1/positions"),
+  list: () => get<any[]>("/api/paper/positions").then(rows => rows.map(p => ({
+    symbol: p.symbol,
+    qty: p.quantity ?? p.qty ?? 0,
+    avg_price: p.avg_price ?? 0,
+    last: p.last_price ?? p.last ?? 0,
+    pl_dollar: ((p.last_price ?? 0) - (p.avg_price ?? 0)) * (p.quantity ?? 0),
+    pl_pct: ((p.last_price ?? 0) / Math.max(1, (p.avg_price ?? 1)) - 1) * 100,
+  }) as Position)),
 };
 
 export type Order = { id:string; symbol:string; side:string; qty:number; type:string; limit_price:number|null; status:string; ts:string; };
 export const OrdersSvc = {
-  open:   () => get<Order[]>("/api/v1/orders/open"),
-  recent: () => get<Order[]>("/api/v1/orders/recent"),
+  open:   () => get<Order[]>("/api/paper/orders/open"),
+  recent: () => get<{ items: any[] }>("/api/trades").then(x => x.items || []),
   place:  (p:{symbol:string; side:"buy"|"sell"; qty:number; type:"market"|"limit"; limit_price?:number|null;}) =>
-           post<{order_id:string}>("/api/v1/orders", p, true),
-  cancel: (id:string) => del<{ok:boolean}>(`/api/v1/orders/${id}`, true),
+           post<{order_id?:string}|any>("/api/paper/orders/dry-run", p),
+  cancel: (id:string) => post<{ok:boolean}>(`/api/paper/orders/${id}/cancel`, {}),
 };
 
 export type StrategyCard = { id:string; name:string; active:boolean; exposure_pct:number; last_signal_time?:string; last_signal_strength?:number; p_l_30d:number; };
 export const StrategiesSvc = {
-  list: () => get<StrategyCard[]>("/api/v1/strategies"),
-  activate: (id:string)   => post<{ok:boolean}>(`/api/v1/strategies/${id}/activate`, {}, true),
-  deactivate: (id:string) => post<{ok:boolean}>(`/api/v1/strategies/${id}/deactivate`, {}, true),
+  list: () => get<{ items: StrategyCard[] }>("/api/strategies").then(x => x.items || []),
+  activate: (id:string)   => post<{ok:boolean}>(`/api/strategies/${id}/activate`, {}),
+  deactivate: (id:string) => post<{ok:boolean}>(`/api/strategies/${id}/deactivate`, {}),
 };
 
 export type LiveSignal = { ts:string; strategy:string; symbol:string; action:string; size:number; reason:string; };
 export const SignalsSvc = {
-  live: () => get<LiveSignal[]>("/api/v1/signals/live"),
+  live: () => get<any[]>("/api/alerts").then(x => x?.items || []),
 };
 
 export const RiskSvc = {
-  status: () => get<{ portfolio_heat:number; dd_pct:number; concentration_flag:boolean; blocks:string[]; }>("/api/v1/risk/status"),
+  status: () => get<any>("/api/risk/status"),
 };
 
 export const HealthSvc = {
-  status: () => get<{ broker:"UP"|"DOWN"; data:"UP"|"DEGRADED"|"DOWN"; last_heartbeat:string; }>("/api/v1/health"),
+  status: () => get<any>("/api/health"),
 };
 
 export const JobsSvc = {

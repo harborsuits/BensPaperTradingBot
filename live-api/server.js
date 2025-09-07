@@ -1440,3 +1440,63 @@ server.on('upgrade', (request, socket, head) => {
     socket.destroy();
   }
 });
+
+// --- FastAPI -> Node decisions bridge (optional, if Python emits decisions) ---
+try {
+  const WSClient = require('ws');
+  const PY_WS = String(process.env.PY_PAPER_BASE || 'http://127.0.0.1:8008')
+    .replace(/^http/, 'ws')
+    .replace(/\/$/, '') + '/ws/decisions';
+
+  function startDecisionBridge() {
+    let sock = null; let retry = 1000;
+    const connect = () => {
+      try {
+        sock = new WSClient(PY_WS);
+        sock.on('open', () => { retry = 1000; console.log('[bridge] connected to FastAPI decisions'); });
+        sock.on('message', (msg) => {
+          try {
+            // fan-out to connected UI clients
+            wssDecisions?.clients?.forEach((c) => { try { c.send(msg); } catch {} });
+            // also persist to recent via decisions bus if payload fits
+            try {
+              const parsed = JSON.parse(String(msg));
+              if (parsed?.type === 'decision' && parsed?.payload) {
+                decisionsBus.publish(parsed.payload);
+              } else if (parsed?.symbol) {
+                decisionsBus.publish(parsed);
+              }
+            } catch {}
+          } catch {}
+        });
+        sock.on('close', () => { sock = null; setTimeout(connect, retry = Math.min(retry * 2, 15000)); });
+        sock.on('error', () => { try { sock && sock.close(); } catch {}; });
+      } catch (e) {
+        setTimeout(connect, retry = Math.min(retry * 2, 15000));
+      }
+    };
+    connect();
+  }
+  if (process.env.BRIDGE_DECISIONS !== '0') startDecisionBridge();
+} catch {}
+
+// --- Lightweight health log + backpressure for quotes freshness ---
+setInterval(() => {
+  try {
+    const h = currentHealth();
+    const rosterSz = (() => { try { return computeActiveRosterItems().length; } catch { return 0; } })();
+    const recent = (() => { try { return decisionsBus.recent(10).length; } catch { return 0; } })();
+    console.log(`[brain] roster_size=${rosterSz} quotes_age_s=${Number(h.quote_age_s ?? 0).toFixed(1)} decisions=${recent}`);
+    // simple backpressure: if quotes stale, shrink tiers
+    if (Number(h.quote_age_s) > (Number(process.env.QUOTE_STALE_SEC || 10))) {
+      try {
+        const distRosterMod = require('./dist/src/services/symbolRoster');
+        const items = computeActiveRosterItems();
+        const cap = Number(h.quote_age_s) > 20 ? 50 : 100;
+        distRosterMod.roster.setTier('tier1', items.slice(0, cap).map(i => i.symbol));
+        distRosterMod.roster.setTier('tier2', []);
+        distRosterMod.roster.setTier('tier3', []);
+      } catch {}
+    }
+  } catch {}
+}, 10000);
