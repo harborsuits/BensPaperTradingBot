@@ -41,6 +41,37 @@ interface TradeCandidatesProps {
   className?: string;
 }
 
+// Normalize raw decision traces into TradeCandidate shape with safe defaults
+function normalizeDecision(dec: any): TradeCandidate {
+  const score = Number(dec?.candidate_score?.alpha);
+  const entryPx = Number(dec?.plan?.entry?.px);
+  const tp = Number(dec?.plan?.exits?.take_profit);
+  const sl = Number(dec?.plan?.exits?.stop);
+  const direction = (String(dec?.plan?.action || '').toLowerCase().includes('sell') ? 'sell' : 'buy') as 'buy'|'sell';
+  const signals = Array.isArray(dec?.signals) ? dec.signals : [];
+  return {
+    id: String(dec?.trace_id || dec?.id || Math.random().toString(36).slice(2)),
+    symbol: String(dec?.symbol || 'SPY').toUpperCase(),
+    strategy_id: String(dec?.strategy_id || 'unknown'),
+    strategy_name: String(dec?.strategy_name || 'Pipeline'),
+    direction,
+    score: Number.isFinite(score) ? score : 0.5,
+    entry_price: Number.isFinite(entryPx) ? entryPx : 0,
+    target_price: Number.isFinite(tp) ? tp : 0,
+    stop_loss: Number.isFinite(sl) ? sl : 0,
+    potential_profit_pct: 0,
+    risk_reward_ratio: 1,
+    confidence: Number(dec?.market_context?.sentiment?.score ?? 0.5),
+    time_validity: String(dec?.execution?.status || 'PROPOSED'),
+    timeframe: String(dec?.timeframe || 'intraday'),
+    created_at: String(dec?.as_of || new Date().toISOString()),
+    status: 'watching',
+    tags: Array.isArray(dec?.tags) ? dec.tags : [],
+    entry_conditions: Array.isArray(dec?.explain_detail) ? dec.explain_detail : [],
+    indicators: signals.map((s: any) => ({ name: String(s?.name || s?.source || 'signal'), value: Number(s?.value ?? 0), signal: (s?.direction === 'bearish' ? 'bearish' : s?.direction === 'bullish' ? 'bullish' : 'neutral') }))
+  };
+}
+
 // This would ideally be in our tradeApi module
 const getTradeCandidates = async () => {
   try {
@@ -51,7 +82,8 @@ const getTradeCandidates = async () => {
       : Array.isArray((resp.data as any)?.items)
         ? (resp.data as any).items
         : [];
-    return { success: true as const, data: data as TradeCandidate[] };
+    const mapped = (data as any[]).map(normalizeDecision);
+    return { success: true as const, data: mapped as TradeCandidate[] };
   } catch (e: any) {
     return { success: false as const, error: e?.message ?? 'error' };
   }
@@ -129,8 +161,8 @@ const TradeCandidates: React.FC<TradeCandidatesProps> = ({ className }) => {
   }
 
   const renderCandidateCard = (candidate: TradeCandidate) => {
-    const profitLossRatio = candidate.risk_reward_ratio.toFixed(2);
-    const scorePercentage = Math.round(candidate.score * 100);
+    const profitLossRatio = Number.isFinite(candidate.risk_reward_ratio) ? candidate.risk_reward_ratio.toFixed(2) : '—';
+    const scorePercentage = Number.isFinite(candidate.score) ? Math.round(candidate.score * 100) : 0;
     
     return (
       <div 
@@ -165,22 +197,22 @@ const TradeCandidates: React.FC<TradeCandidatesProps> = ({ className }) => {
         <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
           <div className="flex flex-col">
             <span className="text-muted-foreground">Entry</span>
-            <span className="font-medium">${candidate.entry_price.toFixed(2)}</span>
+            <span className="font-medium">${Number(candidate.entry_price ?? 0).toFixed(2)}</span>
           </div>
           <div className="flex flex-col">
             <span className="text-muted-foreground">Target</span>
-            <span className="font-medium text-success">${candidate.target_price.toFixed(2)}</span>
+            <span className="font-medium text-success">${Number(candidate.target_price ?? 0).toFixed(2)}</span>
           </div>
           <div className="flex flex-col">
             <span className="text-muted-foreground">Stop</span>
-            <span className="font-medium text-destructive">${candidate.stop_loss.toFixed(2)}</span>
+            <span className="font-medium text-destructive">${Number(candidate.stop_loss ?? 0).toFixed(2)}</span>
           </div>
         </div>
         
         <div className="flex justify-between items-center mt-3 text-xs">
           <div className="flex items-center text-muted-foreground">
             <Clock size={12} className="mr-1" />
-            {formatRelativeTime(new Date(candidate.created_at))}
+            {candidate.created_at ? formatRelativeTime(new Date(candidate.created_at)) : '—'}
           </div>
           <div className="flex items-center">
             <span className="text-muted-foreground mr-1">Strategy:</span>
@@ -188,7 +220,7 @@ const TradeCandidates: React.FC<TradeCandidatesProps> = ({ className }) => {
           </div>
         </div>
         
-        {candidate.entry_conditions.length > 0 && (
+        {(candidate.entry_conditions?.length ?? 0) > 0 && (
           <div className="mt-2">
             <div className="text-xs text-muted-foreground mb-1">Entry Conditions:</div>
             <div className="flex flex-wrap gap-1">
@@ -204,7 +236,7 @@ const TradeCandidates: React.FC<TradeCandidatesProps> = ({ className }) => {
           </div>
         )}
         
-        {candidate.indicators.length > 0 && (
+        {(candidate.indicators?.length ?? 0) > 0 && (
           <div className="mt-2 pt-2 border-t border-border/50">
             <div className="text-xs font-medium mb-1">Key Indicators:</div>
             <div className="grid grid-cols-2 gap-2">
@@ -216,7 +248,7 @@ const TradeCandidates: React.FC<TradeCandidatesProps> = ({ className }) => {
                     indicator.signal === 'bearish' ? 'text-bear' : 
                     'text-muted-foreground'
                   }>
-                    {indicator.value.toFixed(2)}
+                    {Number.isFinite(indicator.value) ? indicator.value.toFixed(2) : '—'}
                   </span>
                 </div>
               ))}

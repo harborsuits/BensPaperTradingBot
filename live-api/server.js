@@ -1410,6 +1410,17 @@ app.locals.wssPrices = wssPrices;
 // Live status endpoint
 app.use('/api/live', require('./routes/live'));
 
+// Quotes status for UI health pill
+app.get('/api/quotes/status', (req, res) => {
+  try {
+    const s = require('./dist/src/services/quotesService');
+    const st = s.getQuotesStatus ? s.getQuotesStatus() : { provider: process.env.QUOTES_PROVIDER || 'auto' };
+    return res.json(st);
+  } catch (e) {
+    return res.json({ provider: process.env.QUOTES_PROVIDER || 'auto', error: String(e?.message || e) });
+  }
+});
+
 // Quotes API routes (disabled dist router in favor of normalized /api/quotes above)
 // Ensure the provider-backed route at /api/quotes (defined earlier) is authoritative
 

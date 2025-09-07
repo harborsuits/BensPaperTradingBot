@@ -15,11 +15,21 @@ export function useQuotes(symbols?: string[], pollMs = 5000) {
     const tick = async () => {
       try {
         const res = await fetch(apiUrl('/api/quotes'));
-        const json = (await res.json()) as QuotesPayload;
+        const json = await res.json();
         if (!mounted) return;
-        if (json?.quotes) {
+        // Accept array shape or {quotes:Record}
+        if (Array.isArray(json)) {
+          const mapped = Object.fromEntries(json.map((q:any) => [String(q.symbol || '').toUpperCase(), {
+            symbol: String(q.symbol || '').toUpperCase(),
+            last: Number(q.last ?? q.price ?? q.close ?? 0),
+            bid: Number(q.bid ?? 0),
+            ask: Number(q.ask ?? 0),
+            prevClose: Number(q.prevClose ?? q.previousClose ?? 0),
+          }]));
+          setQuotes(prev => ({ ...prev, ...mapped }));
+        } else if (json?.quotes && typeof json.quotes === 'object') {
           setQuotes(prev => ({ ...prev, ...json.quotes }));
-          setAsOf(json.asOf);
+          if (json.asOf) setAsOf(json.asOf);
         }
       } catch (e: any) { 
         setError(e?.message || 'Failed to fetch quotes'); 
