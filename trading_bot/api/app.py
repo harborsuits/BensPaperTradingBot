@@ -47,6 +47,7 @@ from trading_bot.assistant.benbot_assistant import BenBotAssistant
 from trading_bot.api.event_endpoints import event_api
 from trading_bot.api.backtest_endpoints import router as backtest_api
 from trading_bot.api.evotester_endpoints import router as evo_router
+from trading_bot.api.bot_competition_endpoints import router as bot_competition_router
 from trading_bot.api.data_ingestion_endpoints import router as data_router
 from trading_bot.api.context_endpoints import router as context_router
 from trading_bot.api.orchestrator_context_endpoints import router as orchestrator_router
@@ -127,6 +128,7 @@ app.include_router(auth_router)
 app.include_router(event_api)  # Add event system endpoints
 app.include_router(backtest_api)  # Add backtesting endpoints
 app.include_router(evo_router)  # Add EvoTester endpoints
+app.include_router(bot_competition_router)  # Add Bot Competition endpoints
 app.include_router(context_router, prefix="/api", tags=["MarketContext"])  # Add context endpoints under /api
 # Include orders, positions and trades routers
 app.include_router(orders_router, prefix="/api", tags=["Orders"])

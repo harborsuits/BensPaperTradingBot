@@ -14,7 +14,10 @@ export function useQuotes(symbols?: string[], pollMs = 5000) {
     let t: any;
     const tick = async () => {
       try {
-        const res = await fetch(apiUrl('/api/quotes'));
+        const url = symbols?.length
+          ? apiUrl(`/api/quotes?symbols=${encodeURIComponent(symbols.join(','))}`)
+          : apiUrl('/api/quotes');
+        const res = await fetch(url);
         const json = await res.json();
         if (!mounted) return;
         // Accept array shape or {quotes:Record}
@@ -44,7 +47,21 @@ export function useQuotes(symbols?: string[], pollMs = 5000) {
   useEffect(() => {
     const off = pricesStream.onMessage((msg) => {
       if (msg?.type === 'prices' && msg?.data) {
-        setQuotes(prev => ({ ...prev, ...msg.data }));
+        // Accept both array and object payloads from the server
+        try {
+          if (Array.isArray(msg.data)) {
+            const mapped = Object.fromEntries(msg.data.map((q:any) => [String(q.symbol || '').toUpperCase(), {
+              symbol: String(q.symbol || '').toUpperCase(),
+              last: Number(q.last ?? q.price ?? q.close ?? 0),
+              bid: Number(q.bid ?? 0),
+              ask: Number(q.ask ?? 0),
+              prevClose: Number(q.prevClose ?? q.previousClose ?? 0),
+            }]));
+            setQuotes(prev => ({ ...prev, ...mapped }));
+          } else if (typeof msg.data === 'object') {
+            setQuotes(prev => ({ ...prev, ...msg.data }));
+          }
+        } catch {}
         if (msg.time) setAsOf(msg.time);
       }
     });

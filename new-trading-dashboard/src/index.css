@@ -21,39 +21,61 @@
   position: absolute;
   top: 0;
 }
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-ticker {
+  animation: ticker 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
  
-html, body, #root { height: 100%; }
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+  overflow-y: auto;
+  min-height: 100vh;
+}
 
 @layer base {
   :root {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    
-    --card: 222.2 84% 6.9%;
-    --card-foreground: 210 40% 98%;
- 
+
+    /* Improved card contrast - lighter background, darker text */
+    --card: 217.2 32.6% 8.5%;
+    --card-foreground: 210 40% 85%;
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
- 
+
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
- 
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
- 
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    
+
     --radius: 0.5rem;
   }
 }
@@ -68,32 +90,32 @@ html, body, #root { height: 100%; }
   }
 }
 
-/* Equal-height cards in grids */
-.card { @apply h-full flex flex-col rounded-2xl shadow-sm border border-gray-200 bg-white; }
-.card-header { @apply px-4 py-3 border-b border-gray-100 flex items-center justify-between; }
-.card-title { @apply font-semibold text-gray-900; }
-.card-subtle { @apply text-xs text-gray-500; }
+/* Equal-height cards in grids - Theme-aware */
+.card { @apply h-full flex flex-col rounded-2xl shadow-sm border border-border bg-card; }
+.card-header { @apply px-4 py-3 border-b border-border flex items-center justify-between; }
+.card-title { @apply font-semibold text-card-foreground; }
+.card-subtle { @apply text-xs text-muted-foreground; }
 .card-content { @apply p-4 grow; }
 
 /* Compact numeric text that still looks good when cards shrink */
 .num { font-variant-numeric: tabular-nums; }
 
-/* Chips for reasons/tags */
-.chip { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs text-gray-700 border-gray-300; }
-.chip-on { @apply bg-gray-100 border-gray-400; }
+/* Chips for reasons/tags - Theme-aware */
+.chip { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs text-foreground border-border; }
+.chip-on { @apply bg-accent border-accent-foreground; }
 
-/* Simple buttons */
-.btn { @apply inline-flex items-center rounded-lg px-3 py-2 border border-gray-300 text-sm; }
-.btn-primary { @apply border-transparent bg-gray-900 text-white; }
-.btn-danger { @apply border-transparent bg-red-600 text-white; }
+/* Simple buttons - Theme-aware */
+.btn { @apply inline-flex items-center rounded-lg px-3 py-2 border border-border text-sm; }
+.btn-primary { @apply border-transparent bg-primary text-primary-foreground; }
+.btn-danger { @apply border-transparent bg-destructive text-destructive-foreground; }
 
 /* Responsive card grid */
 .card-grid { @apply grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3; }
 
-/* Legacy styles */
+/* Legacy styles - Theme-aware */
 .badge       { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium; }
-.skeleton    { @apply animate-pulse bg-gray-200 rounded; }
+.skeleton    { @apply animate-pulse bg-muted rounded; }
 
-/* Numbers & tables */
-.table th { @apply py-2 text-left text-xs text-gray-500; }
-.table td { @apply py-2 align-middle border-t; }
+/* Numbers & tables - Theme-aware */
+.table th { @apply py-2 text-left text-xs text-muted-foreground; }
+.table td { @apply py-2 align-middle border-t border-border; }

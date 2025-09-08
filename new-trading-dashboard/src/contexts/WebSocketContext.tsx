@@ -353,10 +353,13 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, [stopHeartbeat]);
 
-  // Connect when authenticated
+  // Connect when authenticated — defer slightly in dev to avoid React StrictMode double-connect warning
   useEffect(() => {
-    connect();
-    return cleanup;
+    const delayMs = (import.meta as any).env?.DEV ? 150 : 0;
+    let timer: any = setTimeout(() => {
+      connect();
+    }, delayMs);
+    return () => { try { clearTimeout(timer); } catch {}; cleanup(); };
   }, [connect, cleanup]);
 
   // Expose debug helpers in dev mode

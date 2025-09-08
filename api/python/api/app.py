@@ -77,6 +77,7 @@ from trading_bot.api.strategy_endpoints import router as strategy_analysis_route
 from trading_bot.api.routers.safety import router as safety_router
 from trading_bot.api.routers.decisions import router as decisions_router
 from trading_bot.api.routers.health_sources import router as health_sources_router
+from api.routers.ai_scoring import router as ai_scoring_router
 from trading_bot.api.websocket_endpoint import router as websocket_router
 
 # Import Coinbase API router
@@ -140,6 +141,7 @@ app.include_router(logging_router, prefix="/api", tags=["Logging"])
 app.include_router(strategy_analysis_router, prefix="/api", tags=["StrategyAnalysis"])
 app.include_router(safety_router, prefix="/api", tags=["Safety"])
 app.include_router(decisions_router, prefix="/api", tags=["Decisions"])
+app.include_router(ai_scoring_router, prefix="", tags=["AIScoring"])
 
 # Include the new policy-driven decisions router
 app.include_router(decisions_router, prefix="/api/policy", tags=["PolicyDecisions"])

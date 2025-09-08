@@ -22,7 +22,7 @@ class WebSocketService {
 
   constructor(baseUrl?: string) {
     const envBase = (import.meta as any).env?.VITE_WS_BASE_URL as string | undefined;
-    const base = envBase ? envBase.replace(/\/$/, '') : ((typeof location !== 'undefined') ? location.origin.replace(/^http/, 'ws') : 'ws://localhost:4000');
+    const base = envBase ? envBase.replace(/\/$/, '') : 'ws://localhost:4000';
     this.url = (baseUrl || base + '/ws');
     // Default handler for ping responses
     this.addMessageHandler('pong', () => console.debug('Received pong from server'));

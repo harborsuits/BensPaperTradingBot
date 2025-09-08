@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import type { IngestEvent, DecisionRow, ContextRow } from "@/contracts/types";
-import { useState } from "react";
+import type { IngestEvent } from "@/contracts/types";
+// Removed useState - no longer needed
 import { useNavigate } from "react-router-dom";
-import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
-import { buildEvidenceFromUi } from "@/lib/evidence/builders";
+// Removed EvidenceDrawer and evidence builders - now using DecisionCard for evidence display
 
 const STAGES = ["INGEST","CONTEXT","CANDIDATES","GATES","PLAN","ROUTE","MANAGE","LEARN"] as const;
 
@@ -11,77 +10,56 @@ export default function BrainFlowNowCard(){
   const navigate = useNavigate();
   const { data: events } = useQuery<IngestEvent[]>({
     queryKey:["ingestion","events"],
-    queryFn: async ()=> (await fetch("/api/ingestion/events?limit=30")).json(),
+    queryFn: async ()=> (await fetch("/api/ingestion/events?limit=200")).json(),
     refetchInterval: 8000, staleTime: 5000,
   });
-  const { data: decisions } = useQuery<DecisionRow[]>({
-    queryKey:["decisions","recent"],
-    queryFn: async ()=> (await fetch("/api/decisions/recent")).json(),
-    refetchInterval: 10000, staleTime: 7000,
-  });
-  const { data: context } = useQuery<ContextRow>({
-    queryKey:["context","now"],
-    queryFn: async ()=> (await fetch("/api/context")).json(),
-    refetchInterval: 45000, staleTime: 30000,
-  });
+  // Removed context query - no longer needed since we're navigating to decisions page
 
-  const latestMap = new Map<string, IngestEvent>();
+  // Group by symbol to show all active symbols, not just latest traces
+  const symbolMap = new Map<string, IngestEvent>();
   (events ?? []).forEach(e=>{
-    const k = `${e.symbol}|${e.trace_id}`;
-    const prev = latestMap.get(k);
-    if (!prev || new Date(e.ts) > new Date(prev.ts)) latestMap.set(k, e);
+    const prev = symbolMap.get(e.symbol);
+    if (!prev || new Date(e.ts) > new Date(prev.ts)) symbolMap.set(e.symbol, e);
   });
-  const latest = Array.from(latestMap.values()).slice(0,4);
+  const activeSymbols = Array.from(symbolMap.values()).sort((a,b)=> new Date(b.ts).getTime() - new Date(a.ts).getTime());
 
-  const [open, setOpen] = useState(false);
-  const [packet, setPacket] = useState<any>(null);
   const openEvidence = (ev:IngestEvent)=>{
-    const d = (decisions ?? []).find(x=> (x.trace_id && ev.trace_id && x.trace_id===ev.trace_id) || x.symbol===ev.symbol);
-    // Prefer routing to Decisions page per UX
-    const symbol = ev.symbol || d?.symbol;
-    const trace = d?.trace_id || d?.id || ev.trace_id;
-    if (symbol || trace) {
-      const params = new URLSearchParams();
-      if (symbol) params.set("symbol", symbol);
-      if (trace) params.set("trace", String(trace));
-      navigate(`/decisions?${params.toString()}`);
-      return;
-    }
-    // Fallback: try local drawer
-    try {
-      if (!d) { setPacket(null); setOpen(false); return; }
-      const p = buildEvidenceFromUi({ decision: d, context });
-      setPacket(p);
-      setOpen(true);
-    } catch (e) {
-      console.error("Failed to build evidence", e);
-      setPacket(null);
-      setOpen(false);
-    }
+    // Always navigate to the decisions page - let the DecisionCard handle evidence display
+    const symbol = ev.symbol;
+    const trace = ev.trace_id;
+    const params = new URLSearchParams();
+    if (symbol) params.set("symbol", symbol);
+    if (trace) params.set("trace", String(trace));
+    navigate(`/decisions?${params.toString()}`);
   };
 
   return (
-    <div className="border rounded-2xl p-4">
-      <div className="flex items-baseline justify-between">
-        <h3 className="text-lg font-semibold">Brain Flow (Now)</h3>
-        <div className="text-xs text-muted-foreground">last 5m</div>
+    <div className="border rounded-2xl p-4 w-full max-w-full overflow-x-auto">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
+        <h3 className="text-lg font-semibold">🧠 Brain Flow (Discovery Mode)</h3>
+        <div className="text-xs text-muted-foreground">{activeSymbols.length} active • open discovery • last 5m</div>
       </div>
-      {latest.length===0 ? (
-        <div className="text-sm text-muted-foreground mt-2">No active traces in the last 5 minutes.</div>
+      {activeSymbols.length===0 ? (
+        <div className="text-sm text-muted-foreground mt-2">No active symbols in the last 5 minutes.</div>
       ) : (
-        <div className="mt-2 space-y-3">
-          {latest.map(item=>{
+        <div className="mt-2 space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/30">
+          {activeSymbols.map(item=>{
             const reached = STAGES.indexOf(item.stage as any);
             return (
-              <div key={(item.trace_id ?? "")+item.symbol} className="border rounded-xl p-3">
+              <div key={(item.trace_id ?? "")+item.symbol} className="border rounded-xl p-3 w-full">
                 <div className="flex items-center justify-between">
-                  <div className="font-medium">{item.symbol}</div>
-                  <button onClick={()=>openEvidence(item)} className="text-xs underline">Open Evidence</button>
+                  <div className="flex items-center gap-2">
+                    <div className="font-medium truncate">{item.symbol}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(item.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </div>
+                  </div>
+                  <button onClick={()=>openEvidence(item)} className="text-xs underline whitespace-nowrap">Open Evidence</button>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-1 mt-2">
                   {STAGES.map((s,i)=>{
                     const color = i<reached ? "bg-green-600 text-white" : i===reached ? (item.status==="ok"?"bg-amber-500 text-white":"bg-red-600 text-white") : "bg-slate-200 text-slate-700";
-                    return <span key={s} className={`px-2 py-0.5 rounded text-xs ${color}`}>{s}</span>;
+                    return <span key={s} className={`px-1.5 py-0.5 rounded text-xs ${color} whitespace-nowrap`}>{s}</span>;
                   })}
                 </div>
               </div>
@@ -89,7 +67,6 @@ export default function BrainFlowNowCard(){
           })}
         </div>
       )}
-      <EvidenceDrawer open={open} onOpenChange={setOpen} data={packet} />
     </div>
   );
 }

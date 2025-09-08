@@ -15,9 +15,12 @@ import useEvoTesterWebSocket from '@/hooks/useEvoTesterWebSocket';
 import { useEvoTesterUpdates } from '@/hooks/useEvoTesterUpdates';
 import { EvoStrategy, EvoTesterConfig } from '@/types/api.types';
 // Import components with explicit file extensions to help TypeScript resolution
-import FitnessTrendChart from './FitnessTrendChart.js';
-import StrategyParametersView from './StrategyParametersView.js';
-import ActiveSessionsList from './ActiveSessionsList.js';
+import FitnessTrendChart from './FitnessTrendChart';
+import StrategyParametersView from './StrategyParametersView';
+import ActiveSessionsList from './ActiveSessionsList';
+import EvolutionStatusBar from './EvolutionStatusBar';
+import PipelineFlowVisualization from './PipelineFlowVisualization';
+import StrategyDeploymentPipeline from './StrategyDeploymentPipeline';
 import styles from './EvoTesterDashboard.module.css';
 
 interface EvoTesterDashboardProps {
@@ -206,7 +209,19 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
 
   return (
     <div className={`${className}`}>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Evolution Status Bar - Always Visible */}
+      <EvolutionStatusBar
+        activeSessions={activeSessions?.length || 0}
+        totalStrategies={activeSessions?.reduce((acc, session) => acc + (session.totalStrategies || 100), 0) || 0}
+        bestFitness={Math.max(...(activeSessions?.map(s => s.bestFitness || 0) || [0]))}
+        marketRegime="Bull Market"
+        lastDeployment={new Date(Date.now() - 2 * 60 * 60 * 1000)} // 2 hours ago
+        activeSymbols={['SPY', 'QQQ', 'AAPL']}
+        sentimentScore={0.67}
+        newsImpactScore={0.45}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -261,8 +276,12 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                         generations: 50,
                         mutation_rate: 0.1,
                         crossover_rate: 0.8,
-                        target_asset: 'BTC-USD',
-                        optimization_metric: 'sharpe'
+                        target_asset: 'SPY', // Default to S&P 500
+                        optimization_metric: 'sharpe',
+                        symbols: ['SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'BTC-USD'], // Multi-asset evolution
+                        sentiment_weight: 0.3, // Include sentiment in fitness
+                        news_impact_weight: 0.2, // Include news impact in fitness
+                        intelligence_snowball: true // Enable intelligence accumulation
                       });
                     }}
                     disabled={isRunning}
@@ -536,6 +555,16 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
       )}
+
+      {/* Pipeline Flow Visualization */}
+      <div className="mt-6">
+        <PipelineFlowVisualization />
+      </div>
+
+      {/* Strategy Deployment Pipeline */}
+      <div className="mt-6">
+        <StrategyDeploymentPipeline />
+      </div>
 
       {/* Strategy Parameters Modal would go here */}
       {selectedStrategy && (

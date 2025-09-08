@@ -42,9 +42,7 @@ const MainLayout: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/portfolio', label: 'Portfolio', icon: <Briefcase size={20} /> },
-    { path: '/strategies', label: 'Strategies', icon: <Settings size={20} /> },
     { path: '/decisions', label: 'Trade Decisions', icon: <BarChart3 size={20} /> },
-    { path: '/context', label: 'Market Context', icon: <LineChart size={20} /> },
     { path: '/market', label: 'Market Data', icon: <TrendingUp size={20} /> },
     { path: '/evotester', label: 'EvoTester', icon: <Brain size={20} /> },
     { path: '/logs', label: 'Logs & Alerts', icon: <FileText size={20} /> },
@@ -55,7 +53,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex w-full max-w-full overflow-x-auto">
       {/* Sidebar */}
       <aside 
         className={`${
@@ -234,8 +232,8 @@ const MainLayout: React.FC = () => {
         )}
         
         {/* Content area with AppLayout wrapper */}
-        <main className="flex-1 overflow-auto">
-          <div className="px-4">
+        <main className="flex-1 overflow-y-auto overflow-x-auto w-full min-h-0">
+          <div className="w-full max-w-7xl mx-auto min-h-full">
             <Outlet />
           </div>
         </main>

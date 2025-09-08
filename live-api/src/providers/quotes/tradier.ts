@@ -3,10 +3,11 @@ import { Quote, QuoteProvider } from './QuoteProvider';
 
 export class TradierQuoteProvider implements QuoteProvider {
   private token: string;
-  private baseUrl = 'https://api.tradier.com/v1';
+  private baseUrl: string;
   
   constructor(token: string) {
     this.token = token;
+    this.baseUrl = process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
   }
   
   async getQuotes(symbols: string[]): Promise<Record<string, Quote>> {
@@ -32,16 +33,18 @@ export class TradierQuoteProvider implements QuoteProvider {
       
       const result: Record<string, Quote> = {};
       for (const q of quotesArray) {
+        const last = Number(q.last || q.close || q.bid || q.ask || 0);
+        const prevClose = Number(q.prevclose || q.previous_close || q.previousClose || 0);
         result[q.symbol] = {
           symbol: q.symbol,
-          price: q.last || q.close || q.bid || q.ask || 0,
+          price: last,
           open: q.open || undefined,
           high: q.high || undefined,
           low: q.low || undefined,
-          prevClose: q.prevclose || undefined,
-          change: q.change || undefined,
-          changePct: q.change_percentage || undefined,
-          time: new Date().toISOString() // Tradier doesn't always provide a timestamp
+          prevClose,
+          change: typeof q.change === 'number' ? q.change : (last && prevClose ? last - prevClose : undefined),
+          changePct: typeof q.change_percentage === 'number' ? q.change_percentage : (last && prevClose ? ((last/prevClose)-1)*100 : undefined),
+          time: new Date().toISOString()
         };
       }
       

@@ -47,14 +47,9 @@ export function useDecisionFeed({
   useEffect(() => {
     (async () => {
       try {
-        // Try the FastAPI endpoint first (port 8000)
-        let res = await fetch(`${basePath || 'http://localhost:8000'}/api/decision-traces?limit=${initialFetchLimit}`);
-        
-        // Fallback to the original path if that fails
-        if (!res.ok && basePath === '') {
-          res = await fetch(`/api/decision-traces?limit=${initialFetchLimit}`);
-        }
-        
+        // Use the proxy route - Vite will forward to backend
+        const res = await fetch(`${basePath || ''}/api/decision-traces?limit=${initialFetchLimit}`);
+
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const arr = await res.json();
         if (Array.isArray(arr)) arr.forEach(addTrace);
@@ -65,10 +60,10 @@ export function useDecisionFeed({
     })();
   }, [addTrace, basePath, initialFetchLimit]);
 
-  // WebSocket live stream
+  // WebSocket live stream - Connect to backend API server
   useEffect(() => {
-    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${proto}://${window.location.host}/ws/decisions`;
+    // Always connect to backend API server (port 4000), not frontend dev server
+    const url = `ws://localhost:4000/ws/decisions`;
     setStatus('connecting');
     const ws = new WebSocket(url);
     wsRef.current = ws;

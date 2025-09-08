@@ -49,12 +49,12 @@ export default function TradeDecisionsPage() {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-4">
+    <div className="w-full py-6 space-y-6">
       {/* Header with status */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Trade Decisions</h1>
+        <h1 className="text-2xl font-semibold text-white">Trade Decisions</h1>
         <div className="flex items-center gap-2">
-          <Badge variant={status === 'live' ? "default" : "destructive"}>
+          <Badge variant={status === 'live' ? "default" : "destructive"} className="bg-blue-800 text-white">
             {status}
           </Badge>
           {error && (
@@ -72,17 +72,17 @@ export default function TradeDecisionsPage() {
 
       {/* Symbol filter */}
       <div className="flex flex-wrap gap-2">
-        <Badge 
-          className="cursor-pointer" 
+        <Badge
+          className="cursor-pointer bg-blue-800 hover:bg-blue-700 text-white"
           variant={selectedSymbol === null ? "default" : "outline"}
           onClick={() => setSelectedSymbol(null)}
         >
           All
         </Badge>
         {symbols.map(symbol => (
-          <Badge 
+          <Badge
             key={symbol}
-            className="cursor-pointer" 
+            className="cursor-pointer bg-blue-800 hover:bg-blue-700 text-white"
             variant={selectedSymbol === symbol ? "default" : "outline"}
             onClick={() => setSelectedSymbol(symbol)}
           >
@@ -92,26 +92,26 @@ export default function TradeDecisionsPage() {
       </div>
 
       {/* Decision cards */}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredDecisions.length === 0 && (
-          <div className="col-span-2 text-center py-10 text-muted-foreground">
+          <div className="col-span-full text-center py-10 text-white">
             No decisions found.
           </div>
         )}
         {filteredDecisions.map(decision => (
-          <DecisionCard 
-            key={decision.trace_id} 
-            d={decision} 
+          <DecisionCard
+            key={decision.trace_id}
+            d={decision}
             onOpenEvidence={handleOpenEvidence}
           />
         ))}
       </div>
 
       {/* Evidence drawer */}
-      <EvidenceDrawer 
-        open={evidenceOpen} 
-        onOpenChange={setEvidenceOpen} 
-        data={evidencePacket} 
+      <EvidenceDrawer
+        open={evidenceOpen}
+        onOpenChange={setEvidenceOpen}
+        data={evidencePacket}
       />
     </div>
   );

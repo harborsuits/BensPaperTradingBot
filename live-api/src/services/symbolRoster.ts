@@ -17,8 +17,8 @@ const scores = new Map<string, ScoreRecord>();
 const pins = new Set<string>();
 
 const HALFLIFE_MS = 30 * 60 * 1000; // 30 minutes
-const LIMIT_RTH = 150;
-const LIMIT_OOH = 50;
+const LIMIT_RTH = 500;  // Increased from 150 to allow more discovery
+const LIMIT_OOH = 200;  // Increased from 50 to allow more discovery
 
 function decayFactor(sinceMs: number) {
   return Math.exp(-(sinceMs) / HALFLIFE_MS);
@@ -60,15 +60,15 @@ export const roster = {
 
   onUpdated(cb: () => void) { em.on('updated', cb); return () => em.off('updated', cb); },
 
-  // Scoring ingest API
+  // Scoring ingest API - more inclusive for discovery
   ingest(hit: Hit) {
     const now = Date.now();
     const sym = hit.symbol.toUpperCase();
     const rec: ScoreRecord = scores.get(sym) || { score: 0, updated: now, reasons: {} };
     const dec = decayFactor(now - rec.updated);
     const base = rec.score * dec;
-    const added = Math.min(1, Math.max(0, Number(hit.score) || 0));
-    const next = Math.min(5, base + added);
+    const added = Math.min(2, Math.max(0, Number(hit.score) || 0));  // Increased max from 1 to 2 for better discovery
+    const next = Math.min(10, base + added);  // Increased max score from 5 to 10
     rec.score = next;
     rec.updated = now;
     rec.reasons[hit.reason] = (rec.reasons[hit.reason] || 0) + added;
@@ -101,16 +101,16 @@ export const roster = {
       aggregate.set(sym, cur);
     };
 
-    // decayed scores
+    // decayed scores - more inclusive for new symbol discovery
     scores.forEach((rec, sym) => {
       const s = rec.score * decayFactor(now - rec.updated);
-      if (s > 0.01) add(sym, s, 'scanner');
+      if (s > 0.005) add(sym, s, 'scanner');  // Lower threshold from 0.01 to 0.005 for more discovery
     });
 
-    // tiers contribute baseline priority
-    this.tier1.forEach((sym) => add(sym, 3.0, 'tier1'));
-    this.tier2.forEach((sym) => add(sym, 1.5, 'tier2'));
-    this.tier3.forEach((sym) => add(sym, 0.5, 'tier3'));
+    // tiers contribute baseline priority (reduced to allow more discovery)
+    this.tier1.forEach((sym) => add(sym, 2.0, 'tier1'));  // Reduced from 3.0
+    this.tier2.forEach((sym) => add(sym, 1.0, 'tier2'));  // Reduced from 1.5
+    this.tier3.forEach((sym) => add(sym, 0.3, 'tier3'));  // Reduced from 0.5 to allow more new discovery
 
     // subscriptions
     subs.forEach((sub, sym) => { if (sub.expiresAt > now) add(sym, 1.0, 'subscription'); });
@@ -119,7 +119,7 @@ export const roster = {
     pins.forEach((sym) => add(sym, 999, 'pin'));
 
     const items = Array.from(aggregate.values())
-      .filter(x => x.score > 0.05)
+      .filter(x => x.score > 0.01)  // Lower threshold from 0.05 to 0.01 for more discovery
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 

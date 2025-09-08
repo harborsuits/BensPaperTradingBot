@@ -14,11 +14,11 @@ export default function RealtimeBanner({ demoQuotes }: { demoQuotes?: boolean })
   if (!noPrices && !noDecisions && !demoQuotes) return null;
 
   return (
-    <div className="rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-600 px-3 py-2 text-sm">
+    <div className="w-full rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-600 px-3 py-2 text-sm overflow-hidden">
       {!demoQuotes && (noPrices || noDecisions) ? (
-        <>Not receiving real-time updates{noPrices ? ' (prices)' : ''}{noPrices && noDecisions ? ' & ' : ''}{noDecisions ? ' (decisions)' : ''}. Reconnecting…</>
+        <div className="truncate">Not receiving real-time updates{noPrices ? ' (prices)' : ''}{noPrices && noDecisions ? ' & ' : ''}{noDecisions ? ' (decisions)' : ''}. Reconnecting…</div>
       ) : demoQuotes ? (
-        <>Quotes running in demo mode. Add <code>TRADIER_TOKEN</code> (or set <code>QUOTES_PROVIDER</code>) for live prices.</>
+        <div className="truncate">Quotes running in demo mode. Add <code>TRADIER_TOKEN</code> (or set <code>QUOTES_PROVIDER</code>) for live prices.</div>
       ) : null}
     </div>
   );

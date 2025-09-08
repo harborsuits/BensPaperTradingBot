@@ -30,18 +30,18 @@ const ActivityTicker = () => {
     .filter((_, i: number) => i % 2 === 0); // sample every other item
 
   return (
-    <div className="bg-card border border-border rounded-md p-2 overflow-hidden relative h-10">
+    <div className="bg-card border border-border rounded-md p-2 overflow-hidden relative h-10 w-full">
       <div className="absolute inset-0 flex items-center">
-        <div className="flex animate-marquee whitespace-nowrap">
+        <div className="flex animate-marquee whitespace-nowrap w-max">
           {tickerEvents.map((event, i) => (
-            <Link to={`/decisions?symbol=${encodeURIComponent(event.symbol)}&trace=${encodeURIComponent(event.trace_id)}`} key={`${event.id}-${i}`} className="flex items-center mx-4 text-sm hover:text-primary">
+            <Link to={`/decisions?symbol=${encodeURIComponent(event.symbol)}&trace=${encodeURIComponent(event.trace_id)}`} key={`${event.id}-${i}`} className="flex items-center mx-4 text-sm hover:text-primary whitespace-nowrap">
               <span className="text-muted-foreground">{new Date(event.timestamp).toLocaleTimeString()}</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span className="font-medium">{event.stage}</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span>{event.symbol}</span>
               <span className="mx-2 text-muted-foreground">•</span>
-              <span className="italic text-muted-foreground">"{event.note}"</span>
+              <span className="italic text-muted-foreground max-w-xs truncate">"{event.note}"</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span>{event.latency_ms}ms</span>
               <span className="mx-2 text-muted-foreground">•</span>
@@ -49,16 +49,16 @@ const ActivityTicker = () => {
             </Link>
           ))}
         </div>
-        <div className="flex animate-marquee2 whitespace-nowrap">
+        <div className="flex animate-marquee2 whitespace-nowrap w-max">
                     {tickerEvents.map((event, i) => (
-            <Link to={`/decisions?symbol=${encodeURIComponent(event.symbol)}&trace=${encodeURIComponent(event.trace_id)}`} key={`${event.id}-${i}-clone`} className="flex items-center mx-4 text-sm hover:text-primary">
+            <Link to={`/decisions?symbol=${encodeURIComponent(event.symbol)}&trace=${encodeURIComponent(event.trace_id)}`} key={`${event.id}-${i}-clone`} className="flex items-center mx-4 text-sm hover:text-primary whitespace-nowrap">
               <span className="text-muted-foreground">{new Date(event.timestamp).toLocaleTimeString()}</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span className="font-medium">{event.stage}</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span>{event.symbol}</span>
               <span className="mx-2 text-muted-foreground">•</span>
-              <span className="italic text-muted-foreground">"{event.note}"</span>
+              <span className="italic text-muted-foreground max-w-xs truncate">"{event.note}"</span>
               <span className="mx-2 text-muted-foreground">•</span>
               <span>{event.latency_ms}ms</span>
               <span className="mx-2 text-muted-foreground">•</span>

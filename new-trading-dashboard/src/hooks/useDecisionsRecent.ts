@@ -48,9 +48,9 @@ export function useDecisionsRecent(limit = 20) {
 
   // WS stream for real-time updates
   useEffect(() => {
-    const proto = window.location.protocol === "https:" ? "wss" : "ws";
+    // Always connect to backend API server (port 4000)
     const base = (import.meta as any).env?.VITE_WS_BASE_URL;
-    const url = (base ? String(base).replace(/\/$/, '') : `${proto}://${window.location.host}`) + `/ws/decisions`;
+    const url = (base ? String(base).replace(/\/$/, '') : 'ws://localhost:4000') + `/ws/decisions`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
     ws.onmessage = (ev) => {

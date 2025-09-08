@@ -12,16 +12,11 @@ import SafetyControls from '@/components/trading/SafetyControls';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
 import PortfolioSummaryCard from '@/components/dashboard/PortfolioSummaryCard';
-import RecentTradeDecisionsCard from '@/components/dashboard/RecentTradeDecisionsCard';
 import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
 import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
-import RecentAlertsCard from '@/components/dashboard/RecentAlertsCard';
 import { toPortfolio, toArray } from '@/services/normalize';
-import UniverseSwitcher from '@/components/UniverseSwitcher';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
-import CandidateCard from '@/components/trading/CandidateCard';
-import TradeCandidates from '@/components/strategy/TradeCandidates';
 import PriceTape from '@/components/cards/PriceTape';
 import ScannerCandidatesCard from '@/components/cards/ScannerCandidatesCard';
 import RealtimeBanner from '@/components/Banners/RealtimeBanner';
@@ -188,36 +183,50 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="container py-6">
-      <RealtimeBanner />
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <UniverseSwitcher />
-      </div>
+    <div className="w-full py-6">
+      <div className="w-full max-w-7xl px-4 xl:px-6 mx-auto">
+        <RealtimeBanner />
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+        </div>
 
-      {/* Activity loop strip and ingestion activity ticker */}
-      <div className="space-y-3 mb-6">
-        <AutoRunnerStrip />
-        <ActivityTicker />
-      </div>
-      
-      {/* Live prices */}
-      <div className="mb-6">
-        <PriceTape />
-      </div>
+        {/* Activity loop strip and ingestion activity ticker */}
+        <div className="space-y-3 mb-6">
+          <AutoRunnerStrip />
+          <ActivityTicker />
+        </div>
 
-      {/* Stacked full-width cards */}
-      <ErrorBoundary>
-      <div className="space-y-6">
-        <PortfolioSummaryCard />
-        <RecentTradeDecisionsCard />
-        <BrainFlowNowCard />
-        <TickerHighlightsCard />
-        <ScannerCandidatesCard />
+        {/* Live prices */}
+        <div className="mb-6">
+          <PriceTape />
+        </div>
 
-        {/* Recent Trade Decisions overview */}
-        <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
-          <div className="min-h-[240px] space-y-3">
+        {/* Responsive 2-column dashboard layout */}
+        <ErrorBoundary>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {/* Column 1 - Core Portfolio & Activity */}
+          <div className="space-y-4 md:space-y-6">
+            <PortfolioSummaryCard />
+            <ScannerCandidatesCard />
+          </div>
+
+          {/* Column 2 - AI Insights & Safety */}
+          <div className="space-y-4 md:space-y-6">
+            <BrainFlowNowCard />
+            <SimpleCard title="Safety Controls">
+              <SafetyControls />
+            </SimpleCard>
+          </div>
+
+          {/* Full-width section for market intelligence */}
+          <div className="col-span-1 md:col-span-2">
+            <TickerHighlightsCard />
+          </div>
+
+          {/* Full-width section for recent activity */}
+          <div className="col-span-1 md:col-span-2">
+            <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
+              <div className="min-h-[240px] space-y-3">
             {(() => {
               try {
                 const decisions = Array.isArray(recentDecisions) ? recentDecisions : [];
@@ -230,7 +239,7 @@ const DashboardPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{d.symbol}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full 
+                            <span className={`text-xs px-2 py-0.5 rounded-full
                               ${d.action === 'buy' ? 'bg-bull/20 text-bull' : 'bg-bear/20 text-bear'}`}
                             >
                               {(d.action || 'HOLD').toString().toUpperCase()}
@@ -276,6 +285,8 @@ const DashboardPage: React.FC = () => {
             })()}
           </div>
         </SimpleCard>
+        </div>
+
 
         {/* Removed extra Brain Flow card (kept BrainFlowNowCard above) */}
 
@@ -284,21 +295,11 @@ const DashboardPage: React.FC = () => {
         {/* Removed Active Strategies per request */}
 
         {/* Ticker Highlights (to be implemented next) */}
+        </div>
+        </ErrorBoundary>
 
-        {/* Safety Controls */}
-        <SimpleCard title="Safety Controls">
-          <SafetyControls />
-        </SimpleCard>
+
       </div>
-      </ErrorBoundary>
-
-      {/* Candidate card and trade candidates stacked */}
-      <div className="space-y-6 mb-6">
-        <CandidateCard />
-        <TradeCandidates />
-      </div>
-
-      <RecentAlertsCard />
     </div>
   );
 };

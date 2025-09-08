@@ -28,7 +28,9 @@ export default function RecentTradeDecisionsCard(){
 
   const openEvidence = (d:DecisionRow)=>{
     const p = buildEvidenceFromUi({ decision: d, context });
-    setPacket(p); setOpen(true);
+    // Pass the original decision object to enrichWithWhy for rich feature analysis
+    const enriched = enrichWithWhy(p, undefined, d);
+    setPacket(enriched); setOpen(true);
   };
 
   return (
