@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: ACTIVE SESSIONS LIST]
+ * Running evolution experiments, session management, progress tracking
+ * ============================================
+ */
+
 import React from 'react';
 import { RefreshCw, Clock, BarChart3, Play, Pause } from 'lucide-react';
 import { StatusBadge } from '@/components/ui/StatusBadge';

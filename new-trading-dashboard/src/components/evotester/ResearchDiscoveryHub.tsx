@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: RESEARCH & DISCOVERY HUB]
+ * News analysis, fundamental research, strategy hypotheses, market discovery
+ * ============================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

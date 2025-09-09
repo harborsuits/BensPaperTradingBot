@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: EVOLUTION SANDBOX]
+ * Auto-triggers, capital management, automated experiments, risk controls
+ * ============================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

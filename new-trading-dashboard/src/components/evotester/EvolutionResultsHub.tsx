@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: EVOLUTION RESULTS HUB]
+ * Top strategies, how evolution works, system flow, deployment status
+ * ============================================
+ */
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

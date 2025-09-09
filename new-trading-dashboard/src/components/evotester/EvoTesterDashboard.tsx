@@ -1,3 +1,19 @@
+/**
+ * ============================================
+ * EVO TESTER DASHBOARD - MAIN CONTAINER
+ * ============================================
+ * [1] Evolution Status Bar - Top status overview
+ * [2] System Functionality Demo - Technical details
+ * [3] Evolution Progress Section - Charts, controls, session management
+ * [4] Research & Discovery Hub - News analysis, fundamental research
+ * [5] Active Sessions List - Running evolution experiments
+ * [6] Session History - Completed sessions list
+ * [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment
+ * [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics
+ * [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments
+ * [10] Promotion Pipeline - Strategy promotion criteria, validation gates
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { 
@@ -242,7 +258,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
 
   return (
     <div className={`${className}`}>
-      {/* Evolution Status Bar - Always Visible */}
+      {/* [1] Evolution Status Bar - Top status overview and session management */}
       <EvolutionStatusBar
         activeSessions={activeSessions?.length || 0}
         totalStrategies={activeSessions?.reduce((acc, session) => acc + (session.totalStrategies || 100), 0) || 0}
@@ -447,9 +463,9 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
-        {/* Research & Discovery Hub */}
-        <div className="mt-6">
-          <ResearchDiscoveryHub
+      {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
+      <div className="mt-6">
+        <ResearchDiscoveryHub
             onStartEvolutionWithSymbols={handleAddToEvolution}
           />
         </div>
@@ -462,8 +478,8 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                 onValueChange={(value) => setViewMode(value as 'active' | 'history')}
               >
                 <TabsList className="w-full">
-                  <TabsTrigger value="active" className="flex-1">Active Sessions</TabsTrigger>
-                  <TabsTrigger value="history" className="flex-1">History</TabsTrigger>
+                  <TabsTrigger value="active" className="flex-1">[5] Active Sessions</TabsTrigger>
+                  <TabsTrigger value="history" className="flex-1">[6] Session History</TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardTitle>
@@ -514,7 +530,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </Card>
       </div>
 
-      {/* Evolution Results Hub - Consolidated view of strategies, explanation, pipeline, and deployment */}
+      {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
       <div className="mt-6">
         <EvolutionResultsHub
           topStrategies={result?.topStrategies || []}
@@ -523,17 +539,17 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         />
       </div>
 
-      {/* Evolution Lifecycle View */}
+      {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
       <div className="mt-6">
         <EvoLifecycleView sessionId={activeSessionId || undefined} />
       </div>
 
-      {/* Evolution Sandbox - Autonomous Research */}
+      {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
       <div className="mt-6">
         <EvolutionSandbox />
       </div>
 
-      {/* Promotion Pipeline */}
+      {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
       <div className="mt-6">
         <PromotionPipeline />
       </div>

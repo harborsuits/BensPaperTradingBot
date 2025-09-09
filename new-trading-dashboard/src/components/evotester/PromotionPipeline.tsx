@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: PROMOTION PIPELINE]
+ * Strategy promotion criteria, validation gates, deployment approval
+ * ============================================
+ */
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

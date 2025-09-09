@@ -1,3 +1,10 @@
+/**
+ * ============================================
+ * [CARD: EVOLUTION STATUS BAR]
+ * Top status overview, session management, and real-time metrics
+ * ============================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/Card';
