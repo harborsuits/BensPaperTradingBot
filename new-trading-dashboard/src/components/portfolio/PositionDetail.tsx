@@ -4,7 +4,7 @@ import {
   ArrowDown,
   DollarSign,
   Clock,
-  BarChart2,
+  BarChart3,
   Info,
   TrendingUp,
   Zap
@@ -86,7 +86,7 @@ const PositionDetail: React.FC<PositionDetailProps> = ({ position, onClose }) =>
         
         <div>
           <div className="text-xs text-muted-foreground flex items-center mb-1">
-            <BarChart2 size={12} className="mr-1" /> Current Price
+            <BarChart3 size={12} className="mr-1" /> Current Price
           </div>
           <div className="text-xl font-bold">${formatCurrency(position.lastPrice)}</div>
         </div>

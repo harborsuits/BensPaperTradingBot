@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # Main BenBot API server
+  benbot-api:
+    build: .
+    container_name: benbot-api
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - QUOTES_PROVIDER=tradier
+      - AUTOREFRESH_ENABLED=1
+      - DD_MIN_MULT=1.0
+      - DD_FLOOR=0.05
+      - RATE_LIMIT_QPS=10
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # React frontend
+  benbot-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: benbot-ui
+    ports:
+      - "3003:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:4000
+    depends_on:
+      - benbot-api
+    restart: unless-stopped
+
+  # Redis for caching and locks
+  redis:
+    image: redis:7-alpine
+    container_name: benbot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: PostgreSQL for advanced data storage
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: benbot-postgres
+  #   environment:
+  #     POSTGRES_DB: benbot
+  #     POSTGRES_USER: benbot
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+volumes:
+  redis_data:
+  # postgres_data:
+
+networks:
+  default:
+    name: benbot-network
+

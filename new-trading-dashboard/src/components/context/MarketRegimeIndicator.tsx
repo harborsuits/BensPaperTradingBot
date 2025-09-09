@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { TrendingUp, TrendingDown, BarChart2, Zap, HelpCircle, RefreshCw } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Zap, HelpCircle, RefreshCw } from 'lucide-react';
 import { MarketRegimeData, contextApi } from '@/services/contextApi';
 import { Card, CardContent } from '@/components/ui/Card';
 import { useContextUpdates } from '@/hooks/useWebSocketSubscriptions';
@@ -16,7 +16,7 @@ interface MarketRegimeIndicatorProps {
 const RegimeIcons = {
   bullish: <TrendingUp className="text-bull" size={24} />,
   bearish: <TrendingDown className="text-bear" size={24} />,
-  neutral: <BarChart2 className="text-muted-foreground" size={24} />,
+  neutral: <BarChart3 className="text-muted-foreground" size={24} />,
   volatile: <Zap className="text-warning" size={24} />,
   recovery: <TrendingUp className="text-info" size={24} />,
   unknown: <HelpCircle className="text-muted" size={24} />

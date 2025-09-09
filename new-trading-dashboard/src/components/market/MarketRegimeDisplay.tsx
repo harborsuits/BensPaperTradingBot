@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Gauge, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Activity, TrendingUp, AlertTriangle } from 'lucide-react';
 import { contextApi } from '@/services/contextApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
@@ -39,15 +39,15 @@ const regimeIcons: Record<string, React.ReactNode> = {
   bearish: <TrendingUp className="text-red-500 transform rotate-180" />,
   'strongly_bearish': <TrendingUp className="text-red-600 transform rotate-180" />,
   'cautiously_bearish': <TrendingUp className="text-red-400 transform rotate-180" />,
-  neutral: <Gauge className="text-blue-500" />,
+  neutral: <Activity className="text-blue-500" />,
   choppy: <AlertTriangle className="text-orange-500" />,
   volatile: <AlertTriangle className="text-purple-500" />,
-  'low_volatility': <Gauge className="text-sky-500" />,
+  'low_volatility': <Activity className="text-sky-500" />,
   'high_volatility': <AlertTriangle className="text-fuchsia-500" />,
   recovery: <TrendingUp className="text-teal-500" />,
   reversal: <AlertTriangle className="text-amber-500" />,
   breakdown: <AlertTriangle className="text-rose-500" />,
-  unknown: <Gauge className="text-gray-500" />
+  unknown: <Activity className="text-gray-500" />
 };
 
 export const MarketRegimeDisplay: React.FC<MarketRegimeProps> = ({ 
@@ -84,7 +84,7 @@ export const MarketRegimeDisplay: React.FC<MarketRegimeProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Gauge size={18} className="mr-2" />
+            <Activity size={18} className="mr-2" />
             Market Regime Analysis
           </CardTitle>
           <CardDescription>Loading market regime data...</CardDescription>

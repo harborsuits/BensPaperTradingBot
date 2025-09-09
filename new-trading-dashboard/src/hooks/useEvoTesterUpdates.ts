@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWebSocketChannel, useWebSocketMessage } from '@/services/websocket';
 import { evoTesterApi } from '@/services/api';
+import { fetchEvoGenerations } from '@/services/evotesterApi';
 
 export type EvoProgress = {
   sessionId: string;
@@ -40,6 +41,20 @@ export type EvoResult = {
 };
 
 /**
+ * Shared data synchronization utility for EvoTester components
+ * Ensures all components stay in sync when data changes occur
+ */
+export const invalidateEvoTesterQueries = (queryClient: any) => {
+  queryClient.invalidateQueries(['evoTester']);
+  queryClient.invalidateQueries(['strategies']);
+  queryClient.invalidateQueries(['portfolio']);
+  queryClient.invalidateQueries(['context']);
+  queryClient.invalidateQueries(['decisions']);
+  queryClient.invalidateQueries(['trades']);
+  queryClient.invalidateQueries(['pipeline']);
+};
+
+/**
  * React hook for EvoTester WebSocket updates.
  * Handles all aspects of real-time communication with the EvoTester backend.
  */
@@ -73,8 +88,18 @@ export function useEvoTesterUpdates(sessionId?: string) {
           console.error('Error fetching EvoTester status:', err);
         }
       };
+      // Fetch historical generations to populate charts for completed sessions
+      const fetchSeries = async () => {
+        try {
+          const series = await fetchEvoGenerations(sessionId);
+          if (Array.isArray(series) && series.length) setGenerations(series as any);
+        } catch (err) {
+          // Non-fatal; just leave chart empty
+        }
+      };
       
       fetchStatus();
+      fetchSeries();
     }
   }, [sessionId]);
 
@@ -153,8 +178,9 @@ export function useEvoTesterUpdates(sessionId?: string) {
     try {
       const response = await evoTesterApi.startEvoTest(config);
       if (response.success && response.data) {
-        // Just return the session_id, let the caller set the state
-        return response.data.session_id;
+        // Accept either session_id or sessionId from backend
+        const sid = (response.data as any).session_id || (response.data as any).sessionId;
+        return sid || null;
       } else {
         setError(response.error || 'Failed to start EvoTester');
         return null;

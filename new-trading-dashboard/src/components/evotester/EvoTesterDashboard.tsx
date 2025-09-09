@@ -19,8 +19,10 @@ import FitnessTrendChart from './FitnessTrendChart';
 import StrategyParametersView from './StrategyParametersView';
 import ActiveSessionsList from './ActiveSessionsList';
 import EvolutionStatusBar from './EvolutionStatusBar';
-import PipelineFlowVisualization from './PipelineFlowVisualization';
-import StrategyDeploymentPipeline from './StrategyDeploymentPipeline';
+import EvoLifecycleView from './EvoLifecycleView';
+import EvolutionSandbox from './EvolutionSandbox';
+import PromotionPipeline from './PromotionPipeline';
+import { EvolutionResultsHub } from './EvolutionResultsHub';
 import styles from './EvoTesterDashboard.module.css';
 
 interface EvoTesterDashboardProps {
@@ -33,9 +35,14 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
   const [selectedStrategy, setSelectedStrategy] = useState<EvoStrategy | null>(null);
 
   const queryClient = useQueryClient();
-  
+
   // Setup WebSocket updates for notifications and live updates
   useEvoTesterWebSocket(activeSessionId || undefined);
+
+  // Coordinated refresh strategy for all EvoTester components:
+  // Fast (10-20s): Pipeline health, session status, real-time decisions/trades
+  // Medium (30-60s): Market context, portfolio, active strategies
+  // Slow (120-300s): Historical data, evolution history, performance metrics
   
   // Get real-time updates for active session
   const { 
@@ -215,7 +222,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         totalStrategies={activeSessions?.reduce((acc, session) => acc + (session.totalStrategies || 100), 0) || 0}
         bestFitness={Math.max(...(activeSessions?.map(s => s.bestFitness || 0) || [0]))}
         marketRegime="Bull Market"
-        lastDeployment={new Date(Date.now() - 2 * 60 * 60 * 1000)} // 2 hours ago
+        lastDeployment={new Date(Date.now() - 2 * 60 * 60 * 1000)}
         activeSymbols={['SPY', 'QQQ', 'AAPL']}
         sentimentScore={0.67}
         newsImpactScore={0.45}
@@ -278,7 +285,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                         crossover_rate: 0.8,
                         target_asset: 'SPY', // Default to S&P 500
                         optimization_metric: 'sharpe',
-                        symbols: ['SPY', 'QQQ', 'AAPL', 'NVDA', 'TSLA', 'BTC-USD'], // Multi-asset evolution
+                        symbols: 'all', // Use all available symbols by default
                         sentiment_weight: 0.3, // Include sentiment in fitness
                         news_impact_weight: 0.2, // Include news impact in fitness
                         intelligence_snowball: true // Enable intelligence accumulation
@@ -297,38 +304,38 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-gray-500">Session ID</div>
+                    <div className="text-sm text-foreground">Session ID</div>
                     <div className="text-md font-medium">{activeSessionId.substring(0, 8)}...</div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Status</div>
-                    <StatusBadge 
-                      variant={progress.status === 'running' ? 'bull' : 
-                               progress.status === 'paused' ? 'warning' : 
-                               progress.status === 'completed' ? 'info' : 
+                    <div className="text-sm text-foreground">Status</div>
+                    <StatusBadge
+                      variant={progress?.status === 'running' ? 'bull' :
+                               progress?.status === 'paused' ? 'warning' :
+                               progress?.status === 'completed' ? 'info' :
                                'bear'}
                       withDot
-                      pulse={progress.status === 'running'}
+                      pulse={progress?.status === 'running'}
                     >
-                      {progress.status.charAt(0).toUpperCase() + progress.status.slice(1)}
+                      {progress?.status ? progress.status.charAt(0).toUpperCase() + progress.status.slice(1) : 'Unknown'}
                     </StatusBadge>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Generation</div>
+                    <div className="text-sm text-foreground">Generation</div>
                     <div className="text-md font-medium">
-                      {progress.currentGeneration} / {progress.totalGenerations}
+                      {progress?.currentGeneration || 0} / {progress?.totalGenerations || 0}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Best Fitness</div>
+                    <div className="text-sm text-foreground">Best Fitness</div>
                     <div className="text-md font-medium text-green-600">
-                      {progress.bestFitness.toFixed(4)}
+                      {progress?.bestFitness?.toFixed(4) || '0.0000'}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Avg Fitness</div>
+                    <div className="text-sm text-foreground">Avg Fitness</div>
                     <div className="text-md font-medium">
-                      {progress.averageFitness.toFixed(4)}
+                      {progress?.averageFitness?.toFixed(4) || '0.0000'}
                     </div>
                   </div>
                 </div>
@@ -336,12 +343,12 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                 <div className="relative pt-4">
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div 
-                      className={`${styles.dashboardProgressBar} ${styles[`progress${Math.round(Math.min(Math.max(progress.progress || 0, 0) * 100, 100) / 5) * 5}`]}`}
+                      className={`${styles.dashboardProgressBar} ${styles[`progress${Math.round(Math.min(Math.max((progress?.progress || 0), 0) * 100, 100) / 5) * 5}`]}`}
                     ></div>
                   </div>
-                  <div className="mt-2 flex justify-between text-xs text-gray-500">
+                  <div className="mt-2 flex justify-between text-xs text-foreground">
                     <span>0%</span>
-                    <span>Progress: {(progress.progress * 100).toFixed(1)}%</span>
+                    <span>Progress: {((progress?.progress || 0) * 100).toFixed(1)}%</span>
                     <span>100%</span>
                   </div>
                 </div>
@@ -374,7 +381,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                     </TabsContent>
                     
                     <TabsContent value="strategy-distribution" className="h-64">
-                      <div className="flex items-center justify-center h-full text-gray-500">
+                      <div className="flex items-center justify-center h-full text-foreground">
                         Strategy distribution visualization will be available after a few generations
                       </div>
                     </TabsContent>
@@ -391,7 +398,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                 )}
               </div>
             ) : (
-              <div className="h-64 flex flex-col items-center justify-center text-gray-500">
+              <div className="h-64 flex flex-col items-center justify-center text-foreground">
                 <div className="text-xl mb-2">No active evolution session</div>
                 <div className="text-sm mb-4">Start a new session or select an existing one</div>
                 <Button 
@@ -440,7 +447,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
               <div className="space-y-3">
                 {historyLoading ? (
                   <div className="flex items-center justify-center h-40">
-                    <RefreshCw className="h-5 w-5 animate-spin text-gray-400" />
+                    <RefreshCw className="h-5 w-5 animate-spin text-foreground" />
                   </div>
                 ) : (sessionHistory && sessionHistory.length > 0) ? (
                   sessionHistory.map((session) => (
@@ -452,19 +459,19 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium">Session {session.id.substring(0, 8)}</div>
-                          <div className="text-xs text-gray-500">{new Date(session.date).toLocaleString()}</div>
+                          <div className="text-xs text-foreground">{new Date(session.date).toLocaleString()}</div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="text-sm font-medium text-blue-600">
                             {session.bestFitness.toFixed(4)}
                           </span>
-                          <ArrowUpRight className="h-4 w-4 text-gray-400" />
+                          <ArrowUpRight className="h-4 w-4 text-foreground" />
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="flex items-center justify-center h-40 text-gray-500">
+                  <div className="flex items-center justify-center h-40 text-foreground">
                     No past sessions found
                   </div>
                 )}
@@ -474,109 +481,41 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </Card>
       </div>
 
-      {/* Best Strategies Section */}
-      {(result && result.topStrategies && result.topStrategies.length > 0) && (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Award className="h-5 w-5 mr-2 text-yellow-500" />
-              Best Evolved Strategies
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {result.topStrategies.slice(0, 3).map((strategy, index) => (
-                <div 
-                  key={index}
-                  className={`p-4 border rounded-lg ${
-                    index === 0 ? 'bg-yellow-50 border-yellow-200' : 'bg-white border-gray-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      {index === 0 && (
-                        <span className="flex items-center justify-center w-6 h-6 bg-yellow-500 text-white rounded-full text-xs font-bold mr-2">
-                          1
-                        </span>
-                      )}
-                      <h3 className="font-medium">
-                        {strategy.name || `Strategy #${index + 1}`}
-                      </h3>
-                    </div>
-                    <StatusBadge 
-                      variant={index === 0 ? 'highImpact' : index === 1 ? 'info' : 'bull'}
-                      size="sm"
-                    >
-                      Rank #{index + 1}
-                    </StatusBadge>
-                  </div>
-                  
-                  <div className="space-y-2 mb-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Fitness:</span>
-                      <span className="font-medium">{strategy.fitness.toFixed(4)}</span>
-                    </div>
-                    {strategy.performance && (
-                      <>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Sharpe Ratio:</span>
-                          <span className="font-medium">{strategy.performance.sharpeRatio?.toFixed(2) || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Win Rate:</span>
-                          <span className="font-medium">{strategy.performance.winRate ? `${(strategy.performance.winRate * 100).toFixed(1)}%` : 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Max Drawdown:</span>
-                          <span className="font-medium">{strategy.performance.maxDrawdown ? `${(strategy.performance.maxDrawdown * 100).toFixed(1)}%` : 'N/A'}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  
-                  <div className="flex justify-end space-x-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => setSelectedStrategy(strategy as EvoStrategy)}
-                    >
-                      Details
-                    </Button>
-                    <Button 
-                      size="sm"
-                      onClick={() => handleSaveStrategy(strategy as EvoStrategy)}
-                    >
-                      <Save className="h-3.5 w-3.5 mr-1" /> Save
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Pipeline Flow Visualization */}
+      {/* Evolution Results Hub - Consolidated view of strategies, explanation, pipeline, and deployment */}
       <div className="mt-6">
-        <PipelineFlowVisualization />
+        <EvolutionResultsHub
+          topStrategies={result?.topStrategies || []}
+          onSelectStrategy={setSelectedStrategy}
+          onSaveStrategy={handleSaveStrategy}
+        />
       </div>
 
-      {/* Strategy Deployment Pipeline */}
+      {/* Evolution Lifecycle View */}
       <div className="mt-6">
-        <StrategyDeploymentPipeline />
+        <EvoLifecycleView sessionId={activeSessionId || undefined} />
+      </div>
+
+      {/* Evolution Sandbox - Autonomous Research */}
+      <div className="mt-6">
+        <EvolutionSandbox />
+      </div>
+
+      {/* Promotion Pipeline */}
+      <div className="mt-6">
+        <PromotionPipeline />
       </div>
 
       {/* Strategy Parameters Modal would go here */}
       {selectedStrategy && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-auto">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-lg w-full max-w-3xl max-h-[90vh] overflow-auto border border-border text-foreground">
+            <div className="p-4 border-b border-border flex justify-between items-center">
               <h2 className="text-xl font-semibold">
                 Strategy Details: {selectedStrategy.name || `Strategy ${selectedStrategy.id?.substring(0, 8) || 'Unknown'}`}
               </h2>
               <button 
                 onClick={() => setSelectedStrategy(null)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-foreground hover:text-foreground/80"
               >
                 &times;
               </button>
@@ -584,7 +523,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
             <div className="p-6">
               <StrategyParametersView strategy={selectedStrategy} />
             </div>
-            <div className="p-4 border-t border-gray-200 flex justify-end">
+            <div className="p-4 border-t border-border flex justify-end">
               <Button 
                 variant="outline" 
                 className="mr-2"

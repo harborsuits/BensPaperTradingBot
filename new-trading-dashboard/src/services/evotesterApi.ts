@@ -92,3 +92,24 @@ export async function stopEvoSession(id: string): Promise<boolean> {
     return false;
   }
 }
+
+// Generations series for charts
+export async function fetchEvoGenerations(id: string): Promise<Array<{
+  generation: number;
+  bestFitness: number;
+  averageFitness: number;
+  diversityScore?: number;
+  timestamp: string;
+}>> {
+  try {
+    const res = await api.get(`/evotester/${id}/generations`);
+    if (Array.isArray(res.data)) return res.data;
+    if (Array.isArray(res.data?.items)) return res.data.items;
+    return [];
+  } catch (err) {
+    // 404 → empty
+    if ((err as any)?.response?.status === 404) return [];
+    console.error('Failed to fetch generations:', err);
+    return [];
+  }
+}

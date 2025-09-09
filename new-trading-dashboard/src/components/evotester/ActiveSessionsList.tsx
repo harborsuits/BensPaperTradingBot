@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, Clock, BarChart2, Play, Pause } from 'lucide-react';
+import { RefreshCw, Clock, BarChart3, Play, Pause } from 'lucide-react';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { evoTesterApi } from '@/services/api';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
@@ -112,7 +112,7 @@ const ActiveSessionsList: React.FC<ActiveSessionsListProps> = ({
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center">
-              <BarChart2 className="h-4 w-4 mr-2 text-blue-500" />
+              <BarChart3 className="h-4 w-4 mr-2 text-blue-500" />
               <div className="font-medium">{session.id.substring(0, 8)}...</div>
             </div>
             {session.status && (

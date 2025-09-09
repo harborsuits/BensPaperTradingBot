@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Clock, ToggleLeft, ToggleRight, Ban } from 'lucide-react';
+import { Shield, Clock, ToggleLeft, ToggleRight, Ban } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useWebSocketMessage } from '@/services/websocket';
 import { portfolioApi } from '@/services/api';
@@ -224,9 +224,9 @@ const SafetyControls: React.FC = () => {
           }`}
       >
         <div className="flex items-center mb-2">
-          <ShieldAlert 
-            size={20} 
-            className={`mr-2 ${safetyStatus.circuitBreakers.active ? 'text-highImpact' : 'text-muted-foreground'}`} 
+          <Shield
+            size={20}
+            className={`mr-2 ${safetyStatus.circuitBreakers.active ? 'text-highImpact' : 'text-muted-foreground'}`}
           />
           <h3 className="font-medium">Circuit Breaker</h3>
         </div>

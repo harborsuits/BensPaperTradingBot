@@ -15,6 +15,7 @@ const { preTradeGate } = require('./lib/gate');
 const { saveBundle, getBundle, replayBundle } = require('./lib/trace');
 const { AutoRefresh } = require('./lib/autoRefresh');
 const { AutoLoop } = require('./lib/autoLoop');
+const { TradierBroker } = require('./lib/tradierBroker');
 
 // delay requiring TS services until after env is normalized below
 let getQuotesCache, onQuotes, startQuotesLoop, stopQuotesLoop, roster;
@@ -125,25 +126,86 @@ let tradingMode = 'paper';
 let emergencyStopActive = false;
 const asOf = () => new Date().toISOString();
 
-// Health & Metrics
-app.get('/api/health', (req, res) => {
-  const h = currentHealth();
+// Health & Metrics (single handler; never throw)
+app.get('/api/health', async (req, res) => {
+  try {
+    const h = currentHealth();
+    let brokerHealth = { ok: false, error: 'Not tested' };
+    if (process.env.TRADIER_TOKEN) {
+      try {
+        const broker = new TradierBroker();
+        brokerHealth = await broker.healthCheck();
+      } catch (error) {
+        brokerHealth = { ok: false, error: error?.message || 'broker_check_failed' };
+      }
+    }
+    res.json({
+      env: process.env.NODE_ENV || 'dev',
+      gitSha: process.env.GIT_SHA || 'local-dev',
+      region: 'local',
+      services: { api: { status: h.ok ? 'up' : 'degraded', lastUpdated: asOf() } },
+      ok: h.ok,
+      breaker: h.breaker,
+      quote_age_s: h.quote_age_s,
+      broker_age_s: h.broker_age_s,
+      slo_error_budget: h.slo_error_budget,
+      asOf: asOf(),
+      broker: brokerHealth,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      version: process.env.npm_package_version || '1.0.0'
+    });
+  } catch (error) {
+    // Never 500 health; report degraded with error echo
+    res.json({
+      env: process.env.NODE_ENV || 'dev',
+      ok: false,
+      error: String(error?.message || error || 'unknown'),
+      breaker: 'RED',
+      asOf: asOf(),
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Version endpoint
+app.get('/version', (req, res) => {
   res.json({
-    env: process.env.NODE_ENV || 'dev',
-    gitSha: process.env.GIT_SHA || 'local-dev',
-    region: 'local',
-    services: { api: { status: h.ok ? 'up' : 'degraded', lastUpdated: asOf() } },
-    ok: h.ok,
-    breaker: h.breaker,
-    quote_age_s: h.quote_age_s,
-    broker_age_s: h.broker_age_s,
-    slo_error_budget: h.slo_error_budget,
-    asOf: asOf(),
+    version: process.env.npm_package_version || '1.0.0',
+    name: 'BenBot',
+    environment: process.env.NODE_ENV || 'development',
+    buildTime: new Date().toISOString()
   });
 });
-app.get('/health', (req, res) => {
-  res.json(currentHealth());
+
+// Kill switch endpoint
+let killSwitchEnabled = false;
+
+app.get('/api/admin/kill-switch', (req, res) => {
+  res.json({
+    enabled: killSwitchEnabled,
+    timestamp: new Date().toISOString()
+  });
 });
+
+app.post('/api/admin/kill-switch', (req, res) => {
+  const { enabled } = req.body;
+  killSwitchEnabled = !!enabled;
+
+  // Set global variable for brokerPaper.js
+  global.killSwitchEnabled = killSwitchEnabled;
+
+  console.log(`[Kill Switch] ${killSwitchEnabled ? 'ENABLED' : 'DISABLED'} at ${new Date().toISOString()}`);
+
+  res.json({
+    enabled: killSwitchEnabled,
+    message: `Kill switch ${killSwitchEnabled ? 'enabled' : 'disabled'}`,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Initialize kill switch from environment
+global.killSwitchEnabled = killSwitchEnabled;
 
 // Pipeline health (brain state summary)
 app.get('/api/pipeline/health', (req, res) => {
@@ -1375,6 +1437,557 @@ app.get('/api/paper/account', async (req, res) => {
   }
 });
 
+// --- Competition Allocation System ---
+// File: lib/competitionAllocations.js
+const ALLOCATION_DATA_DIR = path.resolve(__dirname, '../data');
+const BOTS_FILE = path.join(ALLOCATION_DATA_DIR, 'competition_bots.json');
+const ALLOCATIONS_FILE = path.join(ALLOCATION_DATA_DIR, 'competition_allocations.json');
+const REBALANCE_LOG_FILE = path.join(ALLOCATION_DATA_DIR, 'rebalance_log.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(ALLOCATION_DATA_DIR)) {
+  fs.mkdirSync(ALLOCATION_DATA_DIR, { recursive: true });
+}
+
+// Load competition bots
+function loadCompetitionBots() {
+  try {
+    if (!fs.existsSync(BOTS_FILE)) return [];
+    const data = fs.readFileSync(BOTS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading competition bots:', error);
+    return [];
+  }
+}
+
+// Save competition bots
+function saveCompetitionBots(bots) {
+  try {
+    fs.writeFileSync(BOTS_FILE, JSON.stringify(bots, null, 2));
+  } catch (error) {
+    console.error('Error saving competition bots:', error);
+  }
+}
+
+// Load allocations
+function loadAllocations() {
+  try {
+    if (!fs.existsSync(ALLOCATIONS_FILE)) return {};
+    const data = fs.readFileSync(ALLOCATIONS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading allocations:', error);
+    return {};
+  }
+}
+
+// Save allocations
+function saveAllocations(allocations) {
+  try {
+    fs.writeFileSync(ALLOCATIONS_FILE, JSON.stringify(allocations, null, 2));
+  } catch (error) {
+    console.error('Error saving allocations:', error);
+  }
+}
+
+// Load rebalance log
+function loadRebalanceLog() {
+  try {
+    if (!fs.existsSync(REBALANCE_LOG_FILE)) return [];
+    const data = fs.readFileSync(REBALANCE_LOG_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading rebalance log:', error);
+    return [];
+  }
+}
+
+// Save rebalance log
+function saveRebalanceLog(log) {
+  try {
+    fs.writeFileSync(REBALANCE_LOG_FILE, JSON.stringify(log, null, 2));
+  } catch (error) {
+    console.error('Error saving rebalance log:', error);
+  }
+}
+
+// Rebalance competition allocations
+function rebalanceAllocations() {
+  const bots = loadCompetitionBots();
+  const currentAllocations = loadAllocations();
+  const previousAllocations = { ...currentAllocations };
+
+  // Filter to active bots only
+  const activeBots = bots.filter(bot => bot.status === 'active' && bot.fitness_score > 0);
+
+  if (activeBots.length === 0) {
+    console.log('No active bots with positive fitness for rebalancing');
+    return { success: false, message: 'No active bots to rebalance' };
+  }
+
+  // Calculate total fitness
+  const totalFitness = activeBots.reduce((sum, bot) => sum + bot.fitness_score, 0);
+
+  // Rebalance allocations based on fitness
+  const newAllocations = {};
+  let totalAllocated = 0;
+
+  activeBots.forEach(bot => {
+    // Allocate based on fitness percentage
+    const fitnessRatio = bot.fitness_score / totalFitness;
+    const allocation = Math.max(0.01, fitnessRatio); // Minimum 1% allocation
+    newAllocations[bot.id] = allocation;
+    totalAllocated += allocation;
+  });
+
+  // Normalize to ensure total is 1.0
+  Object.keys(newAllocations).forEach(botId => {
+    newAllocations[botId] = newAllocations[botId] / totalAllocated;
+  });
+
+  // Save new allocations
+  saveAllocations(newAllocations);
+
+  // Log the rebalance
+  const rebalanceLog = loadRebalanceLog();
+  rebalanceLog.push({
+    timestamp: new Date().toISOString(),
+    previous: previousAllocations,
+    new: newAllocations,
+    activeBots: activeBots.length,
+    totalFitness: totalFitness,
+    changes: Object.keys(newAllocations).map(botId => ({
+      botId,
+      oldAllocation: previousAllocations[botId] || 0,
+      newAllocation: newAllocations[botId],
+      change: newAllocations[botId] - (previousAllocations[botId] || 0)
+    }))
+  });
+
+  // Keep only last 100 rebalance events
+  if (rebalanceLog.length > 100) {
+    rebalanceLog.splice(0, rebalanceLog.length - 100);
+  }
+
+  saveRebalanceLog(rebalanceLog);
+
+  return {
+    success: true,
+    previousAllocations,
+    newAllocations,
+    activeBots: activeBots.length,
+    totalFitness: totalFitness,
+    rebalanceId: `rebalance_${Date.now()}`,
+    timestamp: new Date().toISOString()
+  };
+}
+
+// File-based lock for rebalance idempotency
+const REBALANCE_LOCK_FILE = path.join(ALLOCATION_DATA_DIR, 'rebalance.lock');
+
+function acquireRebalanceLock() {
+  try {
+    if (fs.existsSync(REBALANCE_LOCK_FILE)) {
+      const lockData = JSON.parse(fs.readFileSync(REBALANCE_LOCK_FILE, 'utf8'));
+      const lockAge = Date.now() - lockData.timestamp;
+      // If lock is older than 5 minutes, consider it stale and acquire it
+      if (lockAge < 5 * 60 * 1000) {
+        return false; // Lock is held by another process
+      }
+    }
+    // Acquire lock
+    fs.writeFileSync(REBALANCE_LOCK_FILE, JSON.stringify({
+      timestamp: Date.now(),
+      processId: process.pid
+    }));
+    return true;
+  } catch (error) {
+    console.error('Error acquiring rebalance lock:', error);
+    return false;
+  }
+}
+
+function releaseRebalanceLock() {
+  try {
+    if (fs.existsSync(REBALANCE_LOCK_FILE)) {
+      fs.unlinkSync(REBALANCE_LOCK_FILE);
+    }
+  } catch (error) {
+    console.error('Error releasing rebalance lock:', error);
+  }
+}
+
+// Competition rebalance endpoint
+app.post('/api/competition/rebalance', async (req, res) => {
+  try {
+    console.log('[Competition] Attempting to acquire rebalance lock...');
+
+    // Try to acquire lock
+    if (!acquireRebalanceLock()) {
+      return res.status(409).json({
+        success: false,
+        error: 'Rebalance already in progress',
+        message: 'Another rebalance operation is currently running'
+      });
+    }
+
+    console.log('[Competition] Lock acquired, starting rebalance...');
+    const result = rebalanceAllocations();
+
+    if (result.success) {
+      console.log(`[Competition] Rebalanced ${result.activeBots} bots with total fitness ${result.totalFitness.toFixed(3)}`);
+      res.json({
+        success: true,
+        rebalanceId: result.rebalanceId,
+        timestamp: result.timestamp,
+        activeBots: result.activeBots,
+        totalFitness: result.totalFitness,
+        allocations: result.newAllocations,
+        changes: result.changes
+      });
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('Competition rebalance error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  } finally {
+    // Always release the lock
+    releaseRebalanceLock();
+    console.log('[Competition] Lock released');
+  }
+});
+
+// Get current allocations
+app.get('/api/competition/allocations', (req, res) => {
+  try {
+    const allocations = loadAllocations();
+    const bots = loadCompetitionBots();
+    const activeBots = bots.filter(bot => bot.status === 'active');
+
+    res.json({
+      allocations,
+      activeBots: activeBots.length,
+      totalBots: bots.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get allocations error:', error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+});
+
+// Get rebalance history
+app.get('/api/competition/rebalance-history', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const log = loadRebalanceLog();
+    const recent = log.slice(-limit);
+
+    res.json({
+      history: recent,
+      total: log.length,
+      limit
+    });
+  } catch (error) {
+    console.error('Get rebalance history error:', error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+});
+
+// Bench pack strategies for A/B testing
+const BENCH_PACK_STRATEGIES = {
+  'ma_crossover': {
+    name: 'MA Crossover',
+    type: 'momentum',
+    description: 'Simple moving average crossover strategy',
+    parameters: {
+      fastPeriod: 10,
+      slowPeriod: 20,
+      stopLoss: 0.02,
+      takeProfit: 0.05
+    },
+    expectedSharpe: 0.8,
+    expectedWinRate: 0.48
+  },
+  'rsi_mean_reversion': {
+    name: 'RSI Mean Reversion',
+    type: 'mean_reversion',
+    description: 'RSI-based overbought/oversold signals',
+    parameters: {
+      rsiPeriod: 14,
+      overbought: 70,
+      oversold: 30,
+      stopLoss: 0.015,
+      takeProfit: 0.03
+    },
+    expectedSharpe: 0.9,
+    expectedWinRate: 0.52
+  },
+  'vwap_reversion': {
+    name: 'VWAP Reversion',
+    type: 'mean_reversion',
+    description: 'Volume-weighted average price reversion',
+    parameters: {
+      deviationThreshold: 0.02,
+      volumePeriod: 20,
+      stopLoss: 0.025,
+      takeProfit: 0.04
+    },
+    expectedSharpe: 0.7,
+    expectedWinRate: 0.46
+  },
+  'buy_news': {
+    name: 'Buy the News',
+    type: 'sentiment',
+    description: 'Buy on positive news, sell on negative',
+    parameters: {
+      sentimentThreshold: 0.3,
+      holdingPeriod: 5,
+      stopLoss: 0.03,
+      takeProfit: 0.06
+    },
+    expectedSharpe: 0.6,
+    expectedWinRate: 0.44
+  },
+  'opening_range_breakout': {
+    name: 'Opening Range Breakout',
+    type: 'breakout',
+    description: 'Breakout from first 30 minutes',
+    parameters: {
+      rangePeriod: 30,
+      breakoutThreshold: 0.005,
+      stopLoss: 0.02,
+      takeProfit: 0.08
+    },
+    expectedSharpe: 1.1,
+    expectedWinRate: 0.50
+  },
+  'bollinger_reversion': {
+    name: 'Bollinger Reversion',
+    type: 'mean_reversion',
+    description: 'Bollinger Band squeeze and reversion',
+    parameters: {
+      period: 20,
+      stdDev: 2,
+      squeezeThreshold: 0.1,
+      stopLoss: 0.02,
+      takeProfit: 0.04
+    },
+    expectedSharpe: 0.85,
+    expectedWinRate: 0.49
+  }
+};
+
+// Get bench pack strategies
+app.get('/api/bench-pack', (req, res) => {
+  res.json({
+    strategies: BENCH_PACK_STRATEGIES,
+    summary: {
+      total: Object.keys(BENCH_PACK_STRATEGIES).length,
+      types: [...new Set(Object.values(BENCH_PACK_STRATEGIES).map(s => s.type))],
+      avgSharpe: Object.values(BENCH_PACK_STRATEGIES).reduce((sum, s) => sum + s.expectedSharpe, 0) / Object.keys(BENCH_PACK_STRATEGIES).length,
+      avgWinRate: Object.values(BENCH_PACK_STRATEGIES).reduce((sum, s) => sum + s.expectedWinRate, 0) / Object.keys(BENCH_PACK_STRATEGIES).length
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Strategy promotion/demotion system
+const STRATEGY_STATUS = {
+  EVO_CANDIDATE: 'evo_candidate',     // New from EvoTester
+  BENCH_CANDIDATE: 'bench_candidate', // From bench pack
+  ACTIVE: 'active',                   // In competition
+  PROMOTED: 'promoted',               // Meets promotion criteria
+  DEMOTED: 'demoted',                 // Violates rules
+  PAUSED: 'paused'                    // Temporary pause
+};
+
+const PROMOTION_CRITERIA = {
+  sharpeThreshold: 1.2,
+  drawdownThreshold: 12,     // Max drawdown %
+  winRateThreshold: 0.52,    // 52% win rate
+  tradeCountThreshold: 25,   // Min trades for significance
+  slippageThreshold: 0.001,  // Max slippage (10 bps)
+  stabilityDays: 15          // Days to maintain criteria
+};
+
+// Check promotion criteria
+app.post('/api/strategy/evaluate', (req, res) => {
+  try {
+    const { strategyId, performance } = req.body;
+    const { sharpe_ratio, max_drawdown, win_rate, trade_count, avg_slippage } = performance;
+
+    // Build criteria evaluation first
+    const criteria = {
+      sharpe: {
+        value: sharpe_ratio,
+        threshold: PROMOTION_CRITERIA.sharpeThreshold,
+        pass: sharpe_ratio >= PROMOTION_CRITERIA.sharpeThreshold
+      },
+      drawdown: {
+        value: max_drawdown,
+        threshold: PROMOTION_CRITERIA.drawdownThreshold,
+        pass: max_drawdown <= PROMOTION_CRITERIA.drawdownThreshold
+      },
+      winRate: {
+        value: win_rate,
+        threshold: PROMOTION_CRITERIA.winRateThreshold,
+        pass: win_rate >= PROMOTION_CRITERIA.winRateThreshold
+      },
+      tradeCount: {
+        value: trade_count,
+        threshold: PROMOTION_CRITERIA.tradeCountThreshold,
+        pass: trade_count >= PROMOTION_CRITERIA.tradeCountThreshold
+      },
+      slippage: {
+        value: avg_slippage,
+        threshold: PROMOTION_CRITERIA.slippageThreshold,
+        pass: avg_slippage <= PROMOTION_CRITERIA.slippageThreshold
+      }
+    };
+
+    const evaluation = {
+      strategyId,
+      criteria,
+      overall: {
+        pass: Object.values(criteria).every(c => c.pass),
+        score: Object.values(criteria).filter(c => c.pass).length / Object.keys(criteria).length
+      },
+      recommendation: Object.values(criteria).every(c => c.pass) ? 'PROMOTE' : 'HOLD',
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(evaluation);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      message: 'Error evaluating strategy'
+    });
+  }
+});
+
+// Enhanced fitness configuration with penalties
+app.get('/api/fitness/config', (req, res) => {
+  res.json({
+    weights: {
+      sentiment: 0.67,
+      pnl: 0.25,
+      drawdown: -0.08,
+      sharpe_ratio: 0.05,
+      win_rate: 0.03,
+      volatility_penalty: -0.01,
+      turnover_penalty: -0.02,      // NEW: Penalize excessive trading
+      drawdown_variance_penalty: -0.02 // NEW: Penalize unstable performance
+    },
+    formula: 'fitness = 0.67×sent + 0.25×pnl - 0.08×dd + 0.05×sharpe + 0.03×win - 0.01×vol - 0.02×turnover - 0.02×dd_var',
+    normalization: {
+      sentiment: '(-1..1) → (0..1)',
+      pnl: 'percentage → decimal',
+      drawdown: 'capped at 50%, higher = worse',
+      volatility: 'capped at 100%, higher = worse',
+      turnover: 'annualized, higher = worse',
+      drawdown_variance: 'rolling std dev of drawdown, higher = worse'
+    },
+    walkForward: {
+      enabled: true,
+      trainWindow: '60 days',
+      holdoutWindow: '30 days',
+      overlap: '10 days'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Enhanced fitness calculation with penalties
+app.post('/api/fitness/test', (req, res) => {
+  try {
+    const {
+      sentiment_score,
+      total_return,
+      max_drawdown,
+      sharpe_ratio,
+      win_rate,
+      volatility,
+      turnover,        // NEW: Annualized turnover
+      drawdown_variance // NEW: Rolling std dev of drawdown
+    } = req.body;
+
+    // Normalize sentiment (-1..1) → (0..1)
+    const normalizedSentiment = (sentiment_score + 1) / 2;
+
+    // Normalize PnL (percentage → decimal)
+    const normalizedPnL = total_return / 100;
+
+    // Normalize drawdown (cap at 50%)
+    const normalizedDrawdown = Math.min(max_drawdown / 50, 1);
+
+    // Normalize volatility (cap at 100%)
+    const normalizedVolatility = Math.min(volatility / 100, 1);
+
+    // Normalize turnover (cap at 1000% annualized)
+    const normalizedTurnover = Math.min(turnover / 1000, 1);
+
+    // Normalize drawdown variance (cap at 50%)
+    const normalizedDDVariance = Math.min(drawdown_variance / 50, 1);
+
+    // Calculate fitness with penalties
+    const fitness =
+      0.67 * normalizedSentiment +
+      0.25 * normalizedPnL +
+      -0.08 * normalizedDrawdown +
+      0.05 * (sharpe_ratio || 0) +
+      0.03 * (win_rate || 0) +
+      -0.01 * normalizedVolatility +
+      -0.02 * normalizedTurnover +        // NEW: Turnover penalty
+      -0.02 * normalizedDDVariance;       // NEW: DD variance penalty
+
+    res.json({
+      input: { sentiment_score, total_return, max_drawdown, sharpe_ratio, win_rate, volatility, turnover, drawdown_variance },
+      normalized: {
+        sentiment: normalizedSentiment,
+        pnl: normalizedPnL,
+        drawdown: normalizedDrawdown,
+        volatility: normalizedVolatility,
+        turnover: normalizedTurnover,
+        drawdown_variance: normalizedDDVariance
+      },
+      calculation: {
+        sentiment_contribution: (0.67 * normalizedSentiment).toFixed(4),
+        pnl_contribution: (0.25 * normalizedPnL).toFixed(4),
+        drawdown_contribution: (-0.08 * normalizedDrawdown).toFixed(4),
+        sharpe_contribution: (0.05 * (sharpe_ratio || 0)).toFixed(4),
+        win_rate_contribution: (0.03 * (win_rate || 0)).toFixed(4),
+        volatility_contribution: (-0.01 * normalizedVolatility).toFixed(4),
+        turnover_contribution: (-0.02 * normalizedTurnover).toFixed(4),
+        drawdown_variance_contribution: (-0.02 * normalizedDDVariance).toFixed(4)
+      },
+      fitness: Math.max(0, parseFloat(fitness.toFixed(4))),
+      formula: 'fitness = 0.67×sent + 0.25×pnl - 0.08×dd + 0.05×sharpe + 0.03×win - 0.01×vol - 0.02×turnover - 0.02×dd_var',
+      promotionGates: {
+        sharpeThreshold: fitness >= 1.2 ? 'PASS' : 'FAIL',
+        drawdownThreshold: max_drawdown <= 12 ? 'PASS' : 'FAIL',
+        winRateThreshold: (win_rate || 0) >= 0.52 ? 'PASS' : 'FAIL',
+        overall: (fitness >= 1.2 && max_drawdown <= 12 && (win_rate || 0) >= 0.52) ? 'PROMOTE' : 'HOLD'
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      message: 'Error calculating fitness'
+    });
+  }
+});
+
 // --- Portfolio allocations (equity/options + top symbols)
 app.get('/api/portfolio/allocations', async (req, res) => {
   try {
@@ -1658,10 +2271,37 @@ app.get('/api/bars', (req, res) => {
 // --- EVO TESTER: Enhanced evolution endpoints ---
 let evoSessions = {};
 let evoResults = {};
+let evoGenerationsLog = {};
+
+// WS broadcast helper for evo events
+function broadcastWS(payload) {
+  try {
+    const srv = app.locals?.wss;
+    if (!srv) return;
+    const msg = JSON.stringify(payload);
+    srv.clients.forEach((client) => {
+      if (client.readyState === 1) {
+        try { client.send(msg); } catch {}
+      }
+    });
+  } catch {}
+}
 
 app.post('/api/evotester/start', (req, res) => {
   const sessionId = `evo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const config = req.body || {};
+
+  // Expand symbol universe: allow 'all' or empty to use broad market list
+  const allSymbols = Array.from(new Set([
+    ...BROAD_MARKET_SYMBOLS,
+    ...(WATCHLISTS?.default || [])
+  ]));
+  const chosenSymbols =
+    (typeof config.symbols === 'string' && config.symbols.toLowerCase() === 'all')
+      ? allSymbols
+      : (Array.isArray(config.symbols) && config.symbols.length > 0)
+        ? config.symbols
+        : ['SPY', 'AAPL', 'NVDA', 'TSLA'];
 
   evoSessions[sessionId] = {
     sessionId,
@@ -1674,18 +2314,22 @@ app.post('/api/evotester/start', (req, res) => {
     averageFitness: 0.0,
     status: 'running',
     config: {
-      symbols: config.symbols || ['SPY', 'AAPL', 'NVDA', 'TSLA'],
+      symbols: chosenSymbols,
       sentiment_weight: config.sentiment_weight || 0.3,
       news_impact_weight: config.news_impact_weight || 0.2,
       intelligence_snowball: config.intelligence_snowball || true
     }
   };
 
+  // initialize generation log for this session
+  evoGenerationsLog[sessionId] = [];
+
   // Simulate evolution process
   simulateEvolution(sessionId, config.generations || 50);
 
   res.json({
     sessionId,
+    session_id: sessionId, // alias for frontend variants
     message: 'EvoTester started successfully',
     config: evoSessions[sessionId].config
   });
@@ -1694,46 +2338,93 @@ app.post('/api/evotester/start', (req, res) => {
 function simulateEvolution(sessionId, totalGenerations) {
   let generation = 0;
   const interval = setInterval(() => {
-    generation++;
-    const progress = Math.min((generation / totalGenerations) * 100, 100);
+    try {
+      generation++;
+      const progressPct = Math.min((generation / totalGenerations) * 100, 100);
 
-    // Simulate improving fitness scores
-    const baseFitness = generation * 0.01;
-    const bestFitness = 1.5 + baseFitness + (Math.random() * 0.5);
-    const avgFitness = 1.2 + baseFitness + (Math.random() * 0.3);
+      // Simulate improving fitness scores
+      const baseFitness = generation * 0.01;
+      const bestFitnessRaw = 1.5 + baseFitness + (Math.random() * 0.5);
+      const averageFitnessRaw = 1.2 + baseFitness + (Math.random() * 0.3);
+      const bestFitness = Number.isFinite(bestFitnessRaw) ? +bestFitnessRaw.toFixed(4) : 0;
+      const averageFitness = Number.isFinite(averageFitnessRaw) ? +averageFitnessRaw.toFixed(4) : 0;
 
-    evoSessions[sessionId] = {
-      ...evoSessions[sessionId],
-      currentGeneration: generation,
-      progress,
-      bestFitness,
-      averageFitness,
-      status: generation >= totalGenerations ? 'completed' : 'running'
-    };
-
-    if (generation >= totalGenerations) {
-      clearInterval(interval);
-      evoResults[sessionId] = {
-        sessionId,
-        config: evoSessions[sessionId].config,
-        topStrategies: [
-          {
-            id: 'evo_best_1',
-            name: 'RSI-Momentum-V2',
-            fitness: bestFitness,
-            parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
-            performance: {
-              sharpeRatio: bestFitness,
-              winRate: 0.67,
-              maxDrawdown: 0.12
-            }
-          }
-        ],
-        startTime: evoSessions[sessionId].startTime,
-        endTime: new Date().toISOString(),
-        totalRuntime: `${totalGenerations * 2}s`,
-        status: 'completed'
+      // Update session with proper progress as 0-1 fraction
+      evoSessions[sessionId] = {
+        ...evoSessions[sessionId],
+        currentGeneration: generation,
+        progress: progressPct / 100, // Ensure progress is 0-1 fraction
+        bestFitness,
+        averageFitness,
+        status: generation >= totalGenerations ? 'completed' : 'running'
       };
+
+      // Build generation detail and store
+      const genDetail = {
+        sessionId,
+        generation,
+        bestFitness,
+        averageFitness,
+        diversityScore: +(0.7 + (Math.random() - 0.5) * 0.1).toFixed(3),
+        bestIndividual: { id: `${sessionId}_g${generation}`, params: { rsiPeriod: 14 + (generation % 3), stopLoss: +(1.5 + generation * 0.02).toFixed(2) } },
+        elapsedTime: `${generation * 2}s`,
+        timestamp: new Date().toISOString(),
+      };
+      try {
+        if (!Array.isArray(evoGenerationsLog[sessionId])) evoGenerationsLog[sessionId] = [];
+        evoGenerationsLog[sessionId].push(genDetail);
+      } catch {}
+
+      // Broadcast progress and generation tick over WS
+      broadcastWS({ type: 'evo_progress', channel: 'evotester', data: {
+        sessionId,
+        running: generation < totalGenerations,
+        currentGeneration: generation,
+        totalGenerations,
+        startTime: evoSessions[sessionId]?.startTime,
+        progress: progressPct / 100,
+        bestFitness,
+        averageFitness,
+        status: generation >= totalGenerations ? 'completed' : 'running'
+      }});
+      broadcastWS({ type: 'evo_generation_complete', channel: 'evotester', data: genDetail });
+
+      if (generation >= totalGenerations) {
+        clearInterval(interval);
+        evoResults[sessionId] = {
+          sessionId,
+          config: evoSessions[sessionId].config,
+          topStrategies: [
+            {
+              id: 'evo_best_1',
+              name: 'RSI-Momentum-V2',
+              fitness: bestFitness,
+              parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
+              performance: {
+                sharpeRatio: bestFitness,
+                winRate: 0.67,
+                maxDrawdown: 0.12
+              }
+            }
+          ],
+          startTime: evoSessions[sessionId].startTime,
+          endTime: new Date().toISOString(),
+          totalRuntime: `${totalGenerations * 2}s`,
+          status: 'completed'
+        };
+
+        // Final event
+        broadcastWS({ type: 'evo_complete', channel: 'evotester', data: {
+          sessionId,
+          config: evoSessions[sessionId]?.config || {},
+          startTime: evoSessions[sessionId]?.startTime,
+          endTime: new Date().toISOString(),
+          totalRuntime: `${totalGenerations * 2}s`,
+          status: 'completed'
+        }});
+      }
+    } catch (err) {
+      try { console.error('[EvoLoop] tick error', err?.message || err); } catch {}
     }
   }, 2000); // Update every 2 seconds
 }
@@ -1742,11 +2433,46 @@ app.get('/api/evotester/:sessionId/status', (req, res) => {
   const { sessionId } = req.params;
   const session = evoSessions[sessionId];
 
-  if (!session) {
-    return res.status(404).json({ error: 'Session not found' });
-  }
+  if (session) {
+    // Return active session status
+    res.json(session);
+  } else {
+    // Check if this is a historical session from the mock history
+    const mockHistory = [
+      {
+        id: 'evo_001',
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        bestFitness: 2.34,
+        totalGenerations: 50,
+        symbols: ['SPY', 'AAPL', 'NVDA']
+      },
+      {
+        id: 'evo_002',
+        date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+        bestFitness: 1.87,
+        totalGenerations: 30,
+        symbols: ['TSLA', 'BTC-USD']
+      }
+    ];
 
-  res.json(session);
+    const historicalSession = mockHistory.find(h => h.id === sessionId);
+    if (historicalSession) {
+      // Return completed status for historical session
+      res.json({
+        sessionId,
+        running: false,
+        currentGeneration: historicalSession.totalGenerations,
+        totalGenerations: historicalSession.totalGenerations,
+        startTime: historicalSession.date,
+        progress: 1.0,
+        bestFitness: historicalSession.bestFitness,
+        averageFitness: historicalSession.bestFitness * 0.8, // Estimate average
+        status: 'completed'
+      });
+    } else {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+  }
 });
 
 app.get('/api/evotester/:sessionId/result', (req, res) => {
@@ -1758,6 +2484,58 @@ app.get('/api/evotester/:sessionId/result', (req, res) => {
   }
 
   res.json(result);
+});
+
+// Frontend expects plural "results" to return an array of top strategies
+app.get('/api/evotester/:sessionId/results', (req, res) => {
+  const { sessionId } = req.params;
+  const result = evoResults[sessionId];
+
+  if (result && Array.isArray(result.topStrategies)) {
+    return res.json(result.topStrategies);
+  }
+
+  // Provide mock data for historical demo sessions
+  const presets = {
+    'evo_001': 2.34,
+    'evo_002': 1.87,
+  };
+  const best = presets[sessionId];
+  if (typeof best === 'number') {
+    const baseTs = Date.now() - 1000 * 60 * 60 * 12;
+    const items = [
+      {
+        id: `${sessionId}_best_1`,
+        name: 'RSI-Momentum-V2',
+        description: 'RSI with momentum filter',
+        parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
+        fitness: best,
+        performance: { sharpeRatio: best, winRate: 0.67, maxDrawdown: 0.12 },
+        created: new Date(baseTs).toISOString(),
+      },
+      {
+        id: `${sessionId}_best_2`,
+        name: 'VWAP-Reversion',
+        description: 'VWAP mean-reversion with volatility guard',
+        parameters: { deviationThreshold: 0.02, volumePeriod: 20 },
+        fitness: +(best - 0.18).toFixed(3),
+        performance: { sharpeRatio: +(best - 0.18).toFixed(3), winRate: 0.62, maxDrawdown: 0.14 },
+        created: new Date(baseTs + 1000 * 60 * 10).toISOString(),
+      },
+      {
+        id: `${sessionId}_best_3`,
+        name: 'News-Momo',
+        description: 'News sentiment momentum blend',
+        parameters: { sentimentThreshold: 0.3, holdingPeriod: 5 },
+        fitness: +(best - 0.31).toFixed(3),
+        performance: { sharpeRatio: +(best - 0.31).toFixed(3), winRate: 0.59, maxDrawdown: 0.15 },
+        created: new Date(baseTs + 1000 * 60 * 20).toISOString(),
+      },
+    ];
+    return res.json(items);
+  }
+
+  return res.status(404).json({ error: 'Result not available' });
 });
 
 app.get('/api/evotester/sessions/active', (req, res) => {
@@ -1786,6 +2564,216 @@ app.get('/api/evotester/history', (req, res) => {
     }
   ];
   res.json(mockHistory);
+});
+
+// Combined snapshot for simple verification: status + top strategies + symbols preview
+app.get('/api/evotester/:sessionId/snapshot', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    // Build status (reuse existing status route logic indirectly)
+    let statusPayload;
+    if (evoSessions[sessionId]) {
+      statusPayload = evoSessions[sessionId];
+    } else {
+      // synthesize from mock history
+      const hist = [
+        { id: 'evo_001', gens: 50, best: 2.34 },
+        { id: 'evo_002', gens: 30, best: 1.87 },
+      ];
+      const h = hist.find(x => x.id === sessionId);
+      if (h) {
+        statusPayload = {
+          sessionId,
+          running: false,
+          currentGeneration: h.gens,
+          totalGenerations: h.gens,
+          startTime: new Date(Date.now() - h.gens * 2000).toISOString(),
+          progress: 1.0,
+          bestFitness: h.best,
+          averageFitness: +(h.best * 0.8).toFixed(3),
+          status: 'completed',
+          config: { symbols: BROAD_MARKET_SYMBOLS.slice(0, 20) }
+        };
+      }
+    }
+
+    if (!statusPayload) return res.status(404).json({ error: 'Session not found' });
+
+    // Top strategies (reuse results logic)
+    const presets = {
+      'evo_001': 2.34,
+      'evo_002': 1.87,
+    };
+    const best = presets[sessionId] || statusPayload.bestFitness || 1.6;
+    const strategies = [
+      { id: `${sessionId}_1`, name: 'RSI-Momentum-V2', parameters: { rsiPeriod: 14 }, fitness: best },
+      { id: `${sessionId}_2`, name: 'VWAP-Reversion', parameters: { deviationThreshold: 0.02 }, fitness: +(best - 0.18).toFixed(3) },
+      { id: `${sessionId}_3`, name: 'News-Momo', parameters: { sentimentThreshold: 0.3 }, fitness: +(best - 0.31).toFixed(3) },
+    ];
+
+    // Generations summary
+    const gens = Number(statusPayload.totalGenerations || 30);
+    const summary = {
+      totalGenerations: gens,
+      lastGenerationAt: new Date().toISOString(),
+    };
+
+    // Symbols info
+    const symbols = Array.isArray(statusPayload?.config?.symbols)
+      ? statusPayload.config.symbols
+      : BROAD_MARKET_SYMBOLS;
+    const symbolsPreview = symbols.slice(0, 25);
+
+    return res.json({
+      asOf: new Date().toISOString(),
+      sessionId,
+      status: statusPayload,
+      strategies,
+      generations: summary,
+      symbols: { count: symbols.length, preview: symbolsPreview }
+    });
+  } catch (e) {
+    return res.status(500).json({ error: 'snapshot_failed' });
+  }
+});
+
+// Historical generation series for charts
+app.get('/api/evotester/:sessionId/generations', (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    // If we have a live/just-completed session, serve the in-memory series first
+    if (Array.isArray(evoGenerationsLog?.[sessionId]) && evoGenerationsLog[sessionId].length) {
+      const mapped = evoGenerationsLog[sessionId].map(g => ({
+        generation: g.generation,
+        bestFitness: g.bestFitness,
+        averageFitness: g.averageFitness,
+        diversityScore: g.diversityScore,
+        bestIndividual: g.bestIndividual,
+        elapsedTime: g.elapsedTime,
+        timestamp: g.timestamp,
+      }));
+      return res.json(mapped);
+    }
+    const presets = {
+      'evo_001': { gens: 50, best: 2.34 },
+      'evo_002': { gens: 30, best: 1.87 },
+    };
+
+    // If we have an in-memory session (active or completed), synthesize from it
+    let totalGenerations = 0;
+    let bestFitnessTarget = 0;
+    if (evoSessions[sessionId]) {
+      totalGenerations = Number(evoSessions[sessionId].totalGenerations || 30);
+      bestFitnessTarget = Number(evoSessions[sessionId].bestFitness || 1.5);
+    } else if (presets[sessionId]) {
+      totalGenerations = presets[sessionId].gens;
+      bestFitnessTarget = presets[sessionId].best;
+    } else {
+      totalGenerations = 30;
+      bestFitnessTarget = 1.6;
+    }
+
+    const start = Date.now() - totalGenerations * 2000;
+    const items = Array.from({ length: totalGenerations }).map((_, i) => {
+      // smooth-ish progression with a bit of noise, capped at target
+      const frac = (i + 1) / totalGenerations;
+      const best = Math.min(bestFitnessTarget, +(0.8 + frac * (bestFitnessTarget - 0.8) + (Math.random() - 0.5) * 0.06).toFixed(3));
+      const avg = +(Math.max(0.6, best - (0.35 - 0.25 * frac) + (Math.random() - 0.5) * 0.05)).toFixed(3);
+      return {
+        generation: i + 1,
+        bestFitness: best,
+        averageFitness: avg,
+        diversityScore: +(0.7 + (Math.random() - 0.5) * 0.1).toFixed(3),
+        bestIndividual: { id: `${sessionId}_g${i + 1}`, params: { rsiPeriod: 14 + (i % 3), stopLoss: +(1.5 + i * 0.02).toFixed(2) } },
+        elapsedTime: `${(i + 1) * 2}s`,
+        timestamp: new Date(start + (i + 1) * 2000).toISOString(),
+      };
+    });
+
+    return res.json(items);
+  } catch (e) {
+    return res.status(500).json({ error: 'generations_unavailable' });
+  }
+});
+
+// --- LAB: Diamonds-in-the-Rough & Research Hypotheses ---
+// Rank symbols by blended factors (sentiment, RVOL proxy, recent gap, spread penalty)
+app.get('/api/lab/diamonds', async (req, res) => {
+  try {
+    const limit = Math.min(Number(req.query.limit || 25), 200);
+    const universeParam = String(req.query.universe || 'all');
+    const baseSymbols = universeParam === 'all' ? BROAD_MARKET_SYMBOLS : (WATCHLISTS[universeParam] || WATCHLISTS.default);
+
+    // Fetch supporting features from our own endpoints (robust to failures)
+    const sentResp = await fetch(`http://localhost:${PORT}/api/news/ticker-sentiment?symbols=${encodeURIComponent(baseSymbols.join(','))}`).then(r => r.json()).catch(() => []);
+    const sentMap = new Map(sentResp.map(x => [x.symbol, x]));
+
+    // Quotes (for spread/last)
+    const quotesResp = await fetch(`http://localhost:${PORT}/api/quotes?symbols=${encodeURIComponent(baseSymbols.join(','))}`).then(r => r.json()).catch(() => []);
+    const quotesMap = new Map(quotesResp.map(x => [x.symbol, x]));
+
+    // Score each symbol
+    const scored = baseSymbols.map(sym => {
+      const s = sentMap.get(sym) || { impact1h: 0, impact24h: 0, count24h: 0 };
+      const q = quotesMap.get(sym) || { last: 0, prevClose: 0, spreadPct: 0.5, volume: 0 };
+      const gap = (Number(q.last) - Number(q.prevClose || q.last)) / (Number(q.prevClose || q.last) || 1);
+      const rvol = 1 + Math.random() * 2.5; // placeholder if no true RVOL
+      const spreadPenalty = Math.min(1, (Number(q.spreadPct) || 0.5) / 1.5);
+      const sentiment = Number(s.impact1h || 0);
+      const novelty = Math.random() * 0.5; // exploration bonus
+
+      const score =
+        0.45 * sentiment +
+        0.20 * (rvol - 1.5) +
+        0.15 * gap -
+        0.15 * spreadPenalty +
+        0.05 * novelty;
+
+      return {
+        symbol: sym,
+        score: +score.toFixed(4),
+        features: {
+          impact1h: +(s.impact1h || 0).toFixed(3),
+          impact24h: +(s.impact24h || 0).toFixed(3),
+          count24h: s.count24h || 0,
+          gapPct: +gap.toFixed(4),
+          spreadPct: +(q.spreadPct || 0).toFixed(3),
+          rvol: +rvol.toFixed(2),
+        }
+      };
+    }).sort((a,b) => b.score - a.score).slice(0, limit);
+
+    return res.json({ items: scored, asOf: new Date().toISOString() });
+  } catch (e) {
+    return res.status(500).json({ error: 'lab_diamonds_failed' });
+  }
+});
+
+// Lightweight hypotheses store (in-memory)
+const LAB_HYPOTHESES = [];
+
+app.post('/api/lab/hypotheses', (req, res) => {
+  try {
+    const body = req.body || {};
+    const h = {
+      id: nanoid(),
+      createdAt: new Date().toISOString(),
+      title: String(body.title || 'Untitled Hypothesis'),
+      rationale: String(body.rationale || ''),
+      symbols: Array.isArray(body.symbols) ? body.symbols : [],
+      features: body.features || {},
+      status: 'draft'
+    };
+    LAB_HYPOTHESES.push(h);
+    res.json(h);
+  } catch (e) {
+    res.status(400).json({ error: 'invalid_hypothesis' });
+  }
+});
+
+app.get('/api/lab/hypotheses', (req, res) => {
+  res.json({ items: LAB_HYPOTHESES.slice(-200), count: LAB_HYPOTHESES.length });
 });
 
 // --- SCANNER: candidates ranked by score ---
@@ -1918,10 +2906,6 @@ app.get('/api/scanner/candidates', async (req, res) => {
   }
 });
 
-app.get('/api/evotester/history', (req, res) => {
-  console.log('[API] GET /api/evotester/history - returning empty array');
-  res.json([]);
-});
 
 // Alerts API
 app.get('/api/alerts', (req, res) => {

@@ -111,9 +111,9 @@ const EvolutionEffectiveness: React.FC<EvolutionEffectivenessProps> = ({ classNa
           )}
         </div>
         <div className="space-y-1">
-          <h3 className="font-medium text-gray-900">{title}</h3>
-          <div className="text-2xl font-bold text-gray-800">{value}</div>
-          <p className="text-sm text-gray-600">{subtitle}</p>
+          <h3 className="font-medium text-foreground">{title}</h3>
+          <div className="text-2xl font-bold text-foreground">{value}</div>
+          <p className="text-sm text-foreground">{subtitle}</p>
         </div>
       </Card>
     );

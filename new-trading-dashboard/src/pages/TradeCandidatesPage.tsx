@@ -6,7 +6,7 @@ import {
   TrendingDown, 
   CheckCircle, 
   XCircle,
-  BarChart2,
+  BarChart3,
   RefreshCw,
   AlertTriangle
 } from 'lucide-react';
@@ -189,7 +189,7 @@ const TradeCandidatesPage: React.FC = () => {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center">
-            <BarChart2 size={18} className="mr-2" />
+            <BarChart3 size={18} className="mr-2" />
             Trade Decision Candidates
           </CardTitle>
         </CardHeader>

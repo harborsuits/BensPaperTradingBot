@@ -291,7 +291,7 @@ const PipelineIntegration: React.FC<PipelineIntegrationProps> = ({ className = '
 
               {/* Recent Learnings */}
               <div className="space-y-2">
-                <h5 className="text-sm font-medium text-gray-700">Recent Learnings</h5>
+                <h5 className="text-sm font-medium text-foreground">Recent Learnings</h5>
                 <div className="space-y-2">
                   {learningFeedback.feedback.map((item, index) => (
                     <div key={index} className="flex items-start space-x-2 text-xs">
@@ -309,8 +309,8 @@ const PipelineIntegration: React.FC<PipelineIntegrationProps> = ({ className = '
         <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-medium text-gray-900">Integration Health</h4>
-              <p className="text-sm text-gray-600">EvoTester ↔ Trading Pipeline</p>
+              <h4 className="font-medium text-foreground">Integration Health</h4>
+              <p className="text-sm text-foreground">EvoTester ↔ Trading Pipeline</p>
             </div>
             <div className="flex items-center space-x-4 text-sm">
               <div className="flex items-center space-x-1">
