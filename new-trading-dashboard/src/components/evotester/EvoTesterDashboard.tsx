@@ -464,24 +464,17 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
-        {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
-        <div className="min-h-72">
-          <ResearchDiscoveryHub
-            onStartEvolutionWithSymbols={handleAddToEvolution}
-          />
-        </div>
-
-        {/* [6] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
-        <Card>
+        {/* [4] Active Sessions & History */}
+        <Card className="min-h-64">
           <CardHeader>
             <CardTitle>
               <Tabs
                 defaultValue="active"
                 onValueChange={(value) => setViewMode(value as 'active' | 'history')}
               >
-                <TabsList className="w-full">
-                  <TabsTrigger value="active" className="flex-1">[5] Active Sessions</TabsTrigger>
-                  <TabsTrigger value="history" className="flex-1">[6] Session History</TabsTrigger>
+                <TabsList className="w-full h-8">
+                  <TabsTrigger value="active" className="text-xs flex-1">[4] Active Sessions</TabsTrigger>
+                  <TabsTrigger value="history" className="text-xs flex-1">[5] Session History</TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardTitle>
@@ -531,70 +524,12 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
-        {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
+        {/* [5] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
         <div className="min-h-72">
           <ResearchDiscoveryHub
             onStartEvolutionWithSymbols={handleAddToEvolution}
           />
         </div>
-
-        {/* [5] Active Sessions & History */}
-        <Card className="min-h-64">
-          <CardHeader>
-            <CardTitle>
-              <Tabs
-                defaultValue="active"
-                onValueChange={(value) => setViewMode(value as 'active' | 'history')}
-              >
-                <TabsList className="w-full h-8">
-                  <TabsTrigger value="active" className="text-xs flex-1">[4] Active Sessions</TabsTrigger>
-                  <TabsTrigger value="history" className="text-xs flex-1">[5] Session History</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {viewMode === 'active' ? (
-              <ActiveSessionsList
-                sessions={activeSessions || []}
-                onSelectSession={handleSelectSession}
-                activeSessionId={activeSessionId || undefined}
-                isLoading={sessionsLoading}
-              />
-            ) : (
-              <div className="space-y-2">
-                {historyLoading ? (
-                  <div className="flex items-center justify-center h-24">
-                    <RefreshCw className="h-4 w-4 animate-spin text-foreground" />
-                  </div>
-                ) : (sessionHistory && sessionHistory.length > 0) ? (
-                  sessionHistory.map((session) => (
-                    <div
-                      key={session.id}
-                      className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleSelectSession(session.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium text-sm">Session {session.id.substring(0, 8)}</div>
-                          <div className="text-xs text-foreground">{new Date(session.date).toLocaleString()}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-medium text-green-600 text-sm">{session.bestFitness.toFixed(4)}</div>
-                          <div className="text-xs text-foreground">Best Fitness</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex items-center justify-center h-24 text-foreground text-sm">
-                    No past sessions found
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* [6] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
         <div className="min-h-80">
