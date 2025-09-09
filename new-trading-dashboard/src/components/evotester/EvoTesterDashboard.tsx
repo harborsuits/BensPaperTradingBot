@@ -5,13 +5,12 @@
  * [1] Evolution Status Bar - Top status overview
  * [2] System Functionality Demo - Technical details
  * [3] Evolution Progress Section - Charts, controls, session management
- * [4] Research & Discovery Hub - News analysis, fundamental research
- * [5] Active Sessions List - Running evolution experiments
- * [6] Session History - Completed sessions list
- * [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment
- * [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics
- * [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments
- * [10] Promotion Pipeline - Strategy promotion criteria, validation gates
+ * [4] Active Sessions & History - Running experiments and session history
+ * [5] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery
+ * [6] Evolution Results Hub - Strategy results, explanation, pipeline, deployment
+ * [7] Evolution Lifecycle View - Timeline, champion lineage, population dynamics
+ * [8] Evolution Sandbox - Auto-triggers, capital management, automated experiments
+ * [9] Promotion Pipeline - Strategy promotion criteria, validation gates
  */
 
 import React, { useState, useEffect } from 'react';
@@ -472,7 +471,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           />
         </div>
 
-        {/* [5-6] Active Sessions & History */}
+        {/* [6] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -539,7 +538,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           />
         </div>
 
-        {/* [5-6] Active Sessions & History */}
+        {/* [5] Active Sessions & History */}
         <Card className="min-h-64">
           <CardHeader>
             <CardTitle>
@@ -548,8 +547,8 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
                 onValueChange={(value) => setViewMode(value as 'active' | 'history')}
               >
                 <TabsList className="w-full h-8">
-                  <TabsTrigger value="active" className="text-xs flex-1">[5] Active Sessions</TabsTrigger>
-                  <TabsTrigger value="history" className="text-xs flex-1">[6] Session History</TabsTrigger>
+                  <TabsTrigger value="active" className="text-xs flex-1">[4] Active Sessions</TabsTrigger>
+                  <TabsTrigger value="history" className="text-xs flex-1">[5] Session History</TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardTitle>
@@ -597,7 +596,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
-        {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
+        {/* [6] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
         <div className="min-h-80">
           <EvolutionResultsHub
             topStrategies={result?.topStrategies || []}
@@ -606,17 +605,17 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           />
         </div>
 
-        {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
+        {/* [7] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
         <div className="min-h-64">
           <EvoLifecycleView sessionId={activeSessionId || undefined} />
         </div>
 
-        {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
+        {/* [8] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
         <div className="min-h-64">
           <EvolutionSandbox />
         </div>
 
-        {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
+        {/* [9] Promotion Pipeline - Strategy promotion criteria, validation gates */}
         <div className="min-h-64">
           <PromotionPipeline />
         </div>
