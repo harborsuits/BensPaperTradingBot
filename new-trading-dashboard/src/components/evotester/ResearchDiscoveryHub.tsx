@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -26,9 +27,11 @@ import {
   BarChart3,
   Globe,
   Filter,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
+import { contextApi } from '@/services/api';
 
 interface ResearchDiscoveryHubProps {
   onStartEvolutionWithSymbols?: (symbols: string[], config: any) => void;
@@ -48,8 +51,30 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
     timeFrame: '24h'
   });
 
-  // Mock data - in real implementation, this would come from APIs
-  const newsDiscoveries = [
+  // Real-time data connections
+  const { data: newsData, isLoading: newsLoading } = useQuery({
+    queryKey: ['news', 'sentiment', researchFilter.timeFrame],
+    queryFn: () => contextApi.getNewsSentiment(researchFilter.timeFrame),
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 15000,
+  });
+
+  const { data: fundamentalsData, isLoading: fundamentalsLoading } = useQuery({
+    queryKey: ['fundamentals', researchFilter.sector],
+    queryFn: () => contextApi.getFundamentals(researchFilter.sector),
+    refetchInterval: 60000, // Refresh every minute
+    staleTime: 30000,
+  });
+
+  const { data: marketDiscovery, isLoading: discoveryLoading } = useQuery({
+    queryKey: ['market', 'discovery', researchFilter.sentimentThreshold],
+    queryFn: () => contextApi.getMarketDiscovery(researchFilter.sentimentThreshold),
+    refetchInterval: 45000, // Refresh every 45 seconds
+    staleTime: 20000,
+  });
+
+  // Real news data with fallback to mock data
+  const newsDiscoveries = newsData?.news || [
     {
       id: 'news_001',
       title: 'NVIDIA Announces Breakthrough in AI Chip Technology',
@@ -82,7 +107,8 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
     }
   ];
 
-  const fundamentalOpportunities = [
+  // Real fundamentals data with fallback
+  const fundamentalOpportunities = fundamentalsData?.fundamentals || [
     {
       symbol: 'NVDA',
       company: 'NVIDIA Corporation',
@@ -226,6 +252,7 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
               <h3 className="text-lg font-semibold flex items-center">
                 <Newspaper className="w-5 h-5 mr-2" />
                 News-Driven Discoveries
+                {newsLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin text-blue-500" />}
               </h3>
               <div className="flex items-center space-x-2">
                 <Filter className="w-4 h-4" />

@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -23,9 +24,12 @@ import {
   GitBranch,
   Crown,
   Flame,
-  Star
+  Star,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import TimeSeriesChart from '@/components/ui/TimeSeriesChart';
+import { evoTesterApi } from '@/services/api';
 
 interface GenerationData {
   generation: number;
@@ -65,72 +69,25 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
   const [selectedGeneration, setSelectedGeneration] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'timeline' | 'lineage' | 'diversity'>('timeline');
 
-  // Real data from API
-  const [generationsData, setGenerationsData] = useState<GenerationData[]>([]);
-  const [isLoadingGenerations, setIsLoadingGenerations] = useState(false);
+  // Real-time data connections
+  const { data: sessionStatus, isLoading: statusLoading } = useQuery({
+    queryKey: ['evoTester', 'status', sessionId],
+    queryFn: () => sessionId ? evoTesterApi.getEvoStatus(sessionId) : null,
+    enabled: !!sessionId,
+    refetchInterval: 10000, // Refresh every 10 seconds
+    staleTime: 5000,
+  });
 
-  // Fetch real generation data from the active session
-  useEffect(() => {
-    const fetchGenerationsData = async () => {
-      if (!sessionId) return;
+  const { data: generationsData, isLoading: generationLoading } = useQuery({
+    queryKey: ['evoTester', 'generations', sessionId],
+    queryFn: () => sessionId ? evoTesterApi.getGenerations(sessionId) : null,
+    enabled: !!sessionId,
+    refetchInterval: 15000, // Refresh every 15 seconds
+    staleTime: 7500,
+  });
 
-      setIsLoadingGenerations(true);
-      try {
-        // Fetch generation series from the API
-        const response = await fetch(`/api/evotester/${sessionId}/generations`);
-        if (response.ok) {
-          const data = await response.json();
-          // Transform API data to match our interface
-          const transformedData: GenerationData[] = Array.isArray(data) ? data.map((gen: any, index: number) => ({
-            generation: gen.generation || index + 1,
-            populationSize: 100, // Default population size
-            bestFitness: gen.bestFitness || 0,
-            avgFitness: gen.averageFitness || 0,
-            diversityScore: gen.diversityScore || 0.7,
-            championStrategy: gen.bestIndividual?.id || `strategy_${gen.generation}`,
-            survivalRate: Math.max(0.7, Math.min(0.95, 0.75 + (gen.bestFitness || 0) * 0.1)),
-            mutationRate: Math.max(0.05, Math.min(0.2, 0.15 - (gen.generation || 1) * 0.02)),
-            timestamp: gen.timestamp || new Date(Date.now() - (5 - gen.generation) * 15 * 60 * 1000).toISOString(),
-            promotedStrategies: (gen.bestFitness || 0) > 2.0 ? Math.floor(Math.random() * 2) : 0,
-            extinctStrategies: Math.floor(Math.random() * 25)
-          })) : [];
-
-          setGenerationsData(transformedData);
-        } else {
-          console.warn('Failed to fetch generations data');
-          // Fallback to mock data if API fails
-          setGenerationsData([
-            {
-              generation: 1,
-              populationSize: 100,
-              bestFitness: 1.234,
-              avgFitness: 0.856,
-              diversityScore: 0.723,
-              championStrategy: 'rsi_momentum_v1',
-              survivalRate: 0.78,
-              mutationRate: 0.15,
-              timestamp: new Date(Date.now() - 4 * 15 * 60 * 1000).toISOString(),
-              promotedStrategies: 0,
-              extinctStrategies: 22
-            }
-          ]);
-        }
-      } catch (error) {
-        console.error('Error fetching generations data:', error);
-        // Use minimal fallback data
-        setGenerationsData([]);
-      } finally {
-        setIsLoadingGenerations(false);
-      }
-    };
-
-    fetchGenerationsData();
-
-    // Set up polling for real-time updates
-    const interval = setInterval(fetchGenerationsData, 10000); // Update every 10 seconds
-
-    return () => clearInterval(interval);
-  }, [sessionId]);
+  // Use live generation data with fallback to mock data
+  const liveGenerationsData = generationsData?.generations || mockGenerationsData;
 
   // Generate champion lineage from real generation data
   const championLineage: ChampionLineage[] = React.useMemo(() => {

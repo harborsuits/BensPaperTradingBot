@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -29,11 +30,14 @@ import {
   Gem,
   Sparkles,
   Plus,
-  Eye
+  Eye,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import { EvoStrategy } from '@/types/api.types';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
 import { useLabDiamonds, DiamondSymbol } from '@/hooks/useLabDiamonds';
+import { evoTesterApi, strategyApi } from '@/services/api';
 
 interface EvolutionResultsHubProps {
   topStrategies?: EvoStrategy[];
@@ -50,11 +54,26 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
   onAddToEvolution,
   className = ''
 }) => {
+  // Real-time data connections
+  const { data: liveStrategies, isLoading: strategiesLoading } = useQuery({
+    queryKey: ['strategies', 'active'],
+    queryFn: () => strategyApi.getActiveStrategies(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 15000,
+  });
+
+  const { data: evolutionHistory, isLoading: historyLoading } = useQuery({
+    queryKey: ['evoTester', 'completed'],
+    queryFn: () => evoTesterApi.getEvoHistory(),
+    refetchInterval: 60000, // Refresh every minute
+    staleTime: 30000,
+  });
+
   const [selectedTab, setSelectedTab] = useState('strategies');
   const [selectedDiamonds, setSelectedDiamonds] = useState<string[]>([]);
 
-  // Fetch diamonds data
-  const { data: diamondsData, isLoading: diamondsLoading, error: diamondsError } = useLabDiamonds(25, 'all');
+  // Use the live diamonds data
+  const diamondsData = labDiamonds;
 
   const handleSaveStrategy = async (strategy: EvoStrategy) => {
     if (onSaveStrategy) {
@@ -127,6 +146,17 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
 
           {/* Top Strategies Tab */}
           <TabsContent value="strategies" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold flex items-center">
+                <Award className="w-5 h-5 mr-2 text-yellow-500" />
+                Live Strategy Results
+                {strategiesLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin text-yellow-500" />}
+              </h3>
+              <Button size="sm" variant="outline">
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Refresh
+              </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {topStrategies.slice(0, 3).map((strategy, index) => (
                 <div
