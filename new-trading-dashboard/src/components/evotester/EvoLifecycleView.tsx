@@ -86,17 +86,17 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
     staleTime: 7500,
   });
 
-  // Use live generation data with fallback to mock data
-  const liveGenerationsData = generationsData?.generations || mockGenerationsData;
+  // Use live generation data with fallback to empty array
+  const liveGenerationsData = generationsData?.generations || [];
 
   // Generate champion lineage from real generation data
   const championLineage: ChampionLineage[] = React.useMemo(() => {
-    if (generationsData.length === 0) return [];
+    if (liveGenerationsData.length === 0) return [];
 
     // Find the best performing strategies across generations
     const strategyMap = new Map<string, ChampionLineage>();
 
-    generationsData.forEach((gen, index) => {
+    liveGenerationsData.forEach((gen, index) => {
       const strategyId = gen.championStrategy;
       const fitness = gen.bestFitness;
 
@@ -128,10 +128,10 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
     return Array.from(strategyMap.values())
       .sort((a, b) => b.peakFitness - a.peakFitness)
       .slice(0, 5); // Top 5 champions
-  }, [generationsData]);
+  }, [liveGenerationsData]);
 
   const formatChartData = () => {
-    return generationsData.map(gen => ({
+    return liveGenerationsData.map(gen => ({
       timestamp: gen.timestamp,
       generation: gen.generation,
       bestFitness: gen.bestFitness,
@@ -143,9 +143,9 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
   };
 
   const getFitnessTrend = () => {
-    if (generationsData.length < 2) return 'stable';
-    const latest = generationsData[generationsData.length - 1].bestFitness;
-    const previous = generationsData[generationsData.length - 2].bestFitness;
+    if (liveGenerationsData.length < 2) return 'stable';
+    const latest = liveGenerationsData[liveGenerationsData.length - 1].bestFitness;
+    const previous = liveGenerationsData[liveGenerationsData.length - 2].bestFitness;
     const change = ((latest - previous) / previous) * 100;
 
     if (change > 5) return 'improving';
@@ -169,7 +169,7 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
     <div className="space-y-4">
       {/* Generation Timeline */}
       <div className="space-y-3">
-        {generationsData.map((gen, index) => (
+        {liveGenerationsData.map((gen, index) => (
           <div
             key={gen.generation}
             className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
@@ -359,8 +359,8 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">
-              {generationsData.length > 0 ?
-                generationsData[generationsData.length - 1]?.populationSize || 100 :
+              {liveGenerationsData.length > 0 ?
+                liveGenerationsData[liveGenerationsData.length - 1]?.populationSize || 100 :
                 '0'
               }
             </div>
@@ -370,8 +370,8 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-green-600 mb-1">
-              {generationsData.length > 0 ?
-                (generationsData[generationsData.length - 1]?.survivalRate * 100 || 0).toFixed(1) :
+              {liveGenerationsData.length > 0 ?
+                (liveGenerationsData[liveGenerationsData.length - 1]?.survivalRate * 100 || 0).toFixed(1) :
                 '0.0'
               }%
             </div>
@@ -381,8 +381,8 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-purple-600 mb-1">
-              {generationsData.length > 0 ?
-                (generationsData[generationsData.length - 1]?.diversityScore * 100 || 0).toFixed(1) :
+              {liveGenerationsData.length > 0 ?
+                (liveGenerationsData[liveGenerationsData.length - 1]?.diversityScore * 100 || 0).toFixed(1) :
                 '0.0'
               }%
             </div>
@@ -447,7 +447,7 @@ const EvoLifecycleView: React.FC<EvoLifecycleViewProps> = ({
             </Badge>
             <Badge variant="outline">
               <Clock className="w-3 h-3 mr-1" />
-              {isLoadingGenerations ? 'Loading...' : `${generationsData.length} Generations`}
+              {generationLoading ? 'Loading...' : `${liveGenerationsData.length} Generations`}
             </Badge>
           </div>
         </div>

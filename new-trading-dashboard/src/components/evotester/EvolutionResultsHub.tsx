@@ -69,11 +69,13 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
     staleTime: 30000,
   });
 
+  const { data: labDiamonds, isLoading: diamondsLoading } = useLabDiamonds();
+
   const [selectedTab, setSelectedTab] = useState('strategies');
   const [selectedDiamonds, setSelectedDiamonds] = useState<string[]>([]);
 
-  // Use the live diamonds data
-  const diamondsData = labDiamonds;
+  // Use the live diamonds data with proper fallback
+  const diamondsData = labDiamonds || [];
 
   const handleSaveStrategy = async (strategy: EvoStrategy) => {
     if (onSaveStrategy) {
