@@ -270,8 +270,8 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         newsImpactScore={0.45}
       />
 
-      {/* Vertical Card Layout - Compact Heights */}
-      <div className="space-y-3 mt-6">
+      {/* Vertical Card Layout - Proper Spacing */}
+      <div className="space-y-6 mt-6">
         {/* [3] Evolution Progress Card */}
         <Card className="max-h-80">
           <CardHeader>
@@ -539,8 +539,8 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
 
         {/* [5-6] Active Sessions & History */}
         <Card className="max-h-64">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">
+          <CardHeader>
+            <CardTitle>
               <Tabs
                 defaultValue="active"
                 onValueChange={(value) => setViewMode(value as 'active' | 'history')}
@@ -552,7 +552,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
               </Tabs>
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-2">
+          <CardContent>
             {viewMode === 'active' ? (
               <ActiveSessionsList
                 sessions={activeSessions || []}
