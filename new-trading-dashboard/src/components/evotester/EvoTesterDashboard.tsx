@@ -270,12 +270,10 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         newsImpactScore={0.45}
       />
 
-      {/* Horizontal Card Layout - 3 Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
-        {/* Column 1 */}
-        <div className="space-y-4">
-          {/* [3] Evolution Progress Card */}
-          <Card>
+      {/* Vertical Card Layout - Compact Heights */}
+      <div className="space-y-3 mt-6">
+        {/* [3] Evolution Progress Card */}
+        <Card className="max-h-80">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Evolution Progress</span>
@@ -530,75 +528,75 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
               </div>
             )}
           </CardContent>
-          </Card>
+        </Card>
 
-          {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
+        {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
+        <div className="max-h-72">
           <ResearchDiscoveryHub
             onStartEvolutionWithSymbols={handleAddToEvolution}
           />
         </div>
 
-        {/* Column 2 */}
-        <div className="space-y-4">
-          {/* [5-6] Active Sessions & History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Tabs
-                  defaultValue="active"
-                  onValueChange={(value) => setViewMode(value as 'active' | 'history')}
-                >
-                  <TabsList className="w-full">
-                    <TabsTrigger value="active" className="flex-1">[5] Active Sessions</TabsTrigger>
-                    <TabsTrigger value="history" className="flex-1">[6] Session History</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {viewMode === 'active' ? (
-                <ActiveSessionsList
-                  sessions={activeSessions || []}
-                  onSelectSession={handleSelectSession}
-                  activeSessionId={activeSessionId || undefined}
-                  isLoading={sessionsLoading}
-                />
-              ) : (
-                <div className="space-y-3">
-                  {historyLoading ? (
-                    <div className="flex items-center justify-center h-40">
-                      <RefreshCw className="h-5 w-5 animate-spin text-foreground" />
-                    </div>
-                  ) : (sessionHistory && sessionHistory.length > 0) ? (
-                    sessionHistory.map((session) => (
-                      <div
-                        key={session.id}
-                        className="p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
-                        onClick={() => handleSelectSession(session.id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium">Session {session.id.substring(0, 8)}</div>
-                            <div className="text-xs text-foreground">{new Date(session.date).toLocaleString()}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-medium text-green-600">{session.bestFitness.toFixed(4)}</div>
-                            <div className="text-xs text-foreground">Best Fitness</div>
-                          </div>
+        {/* [5-6] Active Sessions & History */}
+        <Card className="max-h-64">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">
+              <Tabs
+                defaultValue="active"
+                onValueChange={(value) => setViewMode(value as 'active' | 'history')}
+              >
+                <TabsList className="w-full h-8">
+                  <TabsTrigger value="active" className="text-xs flex-1">[5] Active Sessions</TabsTrigger>
+                  <TabsTrigger value="history" className="text-xs flex-1">[6] Session History</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2">
+            {viewMode === 'active' ? (
+              <ActiveSessionsList
+                sessions={activeSessions || []}
+                onSelectSession={handleSelectSession}
+                activeSessionId={activeSessionId || undefined}
+                isLoading={sessionsLoading}
+              />
+            ) : (
+              <div className="space-y-2">
+                {historyLoading ? (
+                  <div className="flex items-center justify-center h-24">
+                    <RefreshCw className="h-4 w-4 animate-spin text-foreground" />
+                  </div>
+                ) : (sessionHistory && sessionHistory.length > 0) ? (
+                  sessionHistory.map((session) => (
+                    <div
+                      key={session.id}
+                      className="p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleSelectSession(session.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-medium text-sm">Session {session.id.substring(0, 8)}</div>
+                          <div className="text-xs text-foreground">{new Date(session.date).toLocaleString()}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium text-green-600 text-sm">{session.bestFitness.toFixed(4)}</div>
+                          <div className="text-xs text-foreground">Best Fitness</div>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="flex items-center justify-center h-40 text-foreground">
-                      No past sessions found
                     </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center h-24 text-foreground text-sm">
+                    No past sessions found
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
+        {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
+        <div className="max-h-80">
           <EvolutionResultsHub
             topStrategies={result?.topStrategies || []}
             onSelectStrategy={setSelectedStrategy}
@@ -606,15 +604,18 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           />
         </div>
 
-        {/* Column 3 */}
-        <div className="space-y-4">
-          {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
+        {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
+        <div className="max-h-64">
           <EvoLifecycleView sessionId={activeSessionId || undefined} />
+        </div>
 
-          {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
+        {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
+        <div className="max-h-64">
           <EvolutionSandbox />
+        </div>
 
-          {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
+        {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
+        <div className="max-h-64">
           <PromotionPipeline />
         </div>
       </div>
