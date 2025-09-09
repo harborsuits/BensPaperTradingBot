@@ -545,9 +545,14 @@ export const evoTesterApi = {
       url: `/evotester/${sessionId}/resume`, method: 'POST' 
     }),
     
-  promoteStrategy: (strategy: EvoStrategy) => 
-    apiRequest<Strategy>({ 
-      url: '/strategies', method: 'POST', data: strategy 
+  promoteStrategy: (strategy: EvoStrategy) =>
+    apiRequest<Strategy>({
+      url: '/strategies', method: 'POST', data: strategy
+    }),
+
+  getGenerations: (sessionId: string) =>
+    apiRequest<EvoTesterProgress[]>({
+      url: `/evotester/${sessionId}/generations`, method: 'GET'
     }),
 };
 

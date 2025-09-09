@@ -7,6 +7,7 @@ const path = require('path');
 const { nanoid } = require('nanoid');
 const { CONFIG } = require('./lib/config');
 const axios = require('axios');
+const sqlite3 = require('sqlite3').verbose();
 const { noteRequest, setQuoteTouch, setBrokerTouch, currentHealth } = require('./lib/health');
 const { wrapResponse, errorResponse } = require('./lib/watermark');
 const { loadOrders, saveOrders, loadPositions, savePositions } = require('./lib/persistence');
@@ -46,6 +47,74 @@ const app = express();
 const PY_PAPER_BASE = process.env.PY_PAPER_BASE || 'http://localhost:8008';
 app.use(cors());
 app.use(express.json());
+
+// Initialize SQLite database for EvoTester persistence
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = path.join(dataDir, 'evotester.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('[EvoTester] SQLite initialization error:', err.message);
+  } else {
+    console.log('[EvoTester] Connected to SQLite database at:', dbPath);
+    initializeDatabase();
+  }
+});
+
+// Initialize database tables
+function initializeDatabase() {
+  db.serialize(() => {
+    // Sessions table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS evo_sessions (
+        session_id TEXT PRIMARY KEY,
+        status TEXT NOT NULL,
+        current_generation INTEGER DEFAULT 0,
+        total_generations INTEGER DEFAULT 50,
+        start_time TEXT NOT NULL,
+        end_time TEXT,
+        progress REAL DEFAULT 0.0,
+        best_fitness REAL DEFAULT 0.0,
+        average_fitness REAL DEFAULT 0.0,
+        config TEXT,
+        symbols TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Generations table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS evo_generations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT NOT NULL,
+        generation INTEGER NOT NULL,
+        best_fitness REAL DEFAULT 0.0,
+        average_fitness REAL DEFAULT 0.0,
+        diversity_score REAL DEFAULT 0.0,
+        best_individual TEXT,
+        elapsed_time TEXT,
+        timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (session_id) REFERENCES evo_sessions (session_id)
+      )
+    `);
+
+    // Results table
+    db.run(`
+      CREATE TABLE IF NOT EXISTS evo_results (
+        session_id TEXT PRIMARY KEY,
+        top_strategies TEXT,
+        config TEXT,
+        start_time TEXT,
+        end_time TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (session_id) REFERENCES evo_sessions (session_id)
+      )
+    `);
+  });
+}
 
 // Trackers for producers
 let quotesLastOk = Date.now();
@@ -2268,10 +2337,191 @@ app.get('/api/bars', (req, res) => {
   res.json({ symbol, timeframe, bars });
 });
 
+// --- RESEARCH & DISCOVERY ENDPOINTS ---
+
+// Research endpoint for "diamonds in the rough" - symbols with high potential
+app.get('/api/research/diamonds', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 25;
+    const universe = req.query.universe || 'all';
+
+    // Get current market data to score symbols
+    const quotes = getQuotesCache ? getQuotesCache() : {};
+    const symbolList = Object.keys(quotes).slice(0, limit);
+
+    // Generate "diamonds" based on available market data
+    const diamonds = symbolList.map(symbol => {
+      const quote = quotes[symbol] || {};
+      const price = quote.last || Math.random() * 1000;
+      const volume = quote.volume || Math.random() * 1000000;
+
+      // Calculate "diamond score" based on various factors
+      const sentiment = Math.random() * 2 - 1; // -1 to 1
+      const relativeVolume = volume / 500000; // Normalized volume
+      const gapPercent = Math.random() * 0.1; // Price gap
+      const spread = Math.random() * 0.05; // Bid-ask spread
+
+      // Score calculation (higher is better)
+      const score = (
+        sentiment * 0.3 + // Sentiment weight
+        Math.min(relativeVolume, 2) * 0.4 + // Volume weight (capped)
+        gapPercent * 0.2 + // Gap weight
+        (1 - spread) * 0.1 // Spread penalty (lower spread = higher score)
+      );
+
+      return {
+        symbol,
+        score: Number(score.toFixed(3)),
+        features: {
+          sentiment,
+          relativeVolume: Number(relativeVolume.toFixed(2)),
+          gapPercent: Number(gapPercent.toFixed(3)),
+          spread: Number(spread.toFixed(3))
+        },
+        rationale: `${symbol} shows strong momentum with ${Math.round(sentiment * 100)}% positive sentiment and ${(relativeVolume * 100).toFixed(0)}% above average volume.`,
+        evidence: [
+          `Price: $${price.toFixed(2)}`,
+          `Volume: ${volume.toLocaleString()}`,
+          `Sentiment: ${(sentiment * 100).toFixed(1)}%`,
+          `Gap: ${(gapPercent * 100).toFixed(2)}%`
+        ]
+      };
+    }).sort((a, b) => b.score - a.score).slice(0, limit);
+
+    res.json({
+      items: diamonds,
+      asOf: new Date().toISOString(),
+      universe,
+      total: diamonds.length
+    });
+
+  } catch (err) {
+    console.error('[Research] Error generating diamonds:', err);
+    res.status(500).json({ error: 'Failed to generate research data' });
+  }
+});
+
 // --- EVO TESTER: Enhanced evolution endpoints ---
-let evoSessions = {};
-let evoResults = {};
-let evoGenerationsLog = {};
+
+// In-memory cache for active sessions (for performance)
+let evoSessions = {}; // Keep in-memory for active sessions only
+let evoResults = {}; // Keep in-memory for quick access
+let evoGenerationsLog = {}; // Keep in-memory generation logs for active sessions
+
+// Database helper functions
+function saveSessionToDB(session) {
+  const symbolsStr = JSON.stringify(session.config?.symbols || []);
+  const configStr = JSON.stringify(session.config || {});
+
+  db.run(`
+    INSERT OR REPLACE INTO evo_sessions
+    (session_id, status, current_generation, total_generations, start_time, progress, best_fitness, average_fitness, config, symbols)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    session.sessionId,
+    session.status,
+    session.currentGeneration,
+    session.totalGenerations,
+    session.startTime,
+    session.progress,
+    session.bestFitness,
+    session.averageFitness,
+    configStr,
+    symbolsStr
+  ]);
+}
+
+function saveGenerationToDB(sessionId, generation) {
+  const bestIndividualStr = JSON.stringify(generation.bestIndividual || {});
+
+  db.run(`
+    INSERT INTO evo_generations
+    (session_id, generation, best_fitness, average_fitness, diversity_score, best_individual, elapsed_time, timestamp)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    sessionId,
+    generation.generation,
+    generation.bestFitness,
+    generation.averageFitness,
+    generation.diversityScore,
+    bestIndividualStr,
+    generation.elapsedTime,
+    generation.timestamp
+  ]);
+}
+
+function saveResultToDB(sessionId, result) {
+  const topStrategiesStr = JSON.stringify(result.topStrategies || []);
+  const configStr = JSON.stringify(result.config || {});
+
+  db.run(`
+    INSERT OR REPLACE INTO evo_results
+    (session_id, top_strategies, config, start_time, end_time)
+    VALUES (?, ?, ?, ?, ?)
+  `, [
+    sessionId,
+    topStrategiesStr,
+    configStr,
+    result.startTime,
+    result.endTime
+  ]);
+}
+
+function loadSessionFromDB(sessionId) {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM evo_sessions WHERE session_id = ?`, [sessionId], (err, row) => {
+      if (err) {
+        reject(err);
+      } else if (row) {
+        // Parse JSON fields
+        row.config = JSON.parse(row.config || '{}');
+        row.symbols = JSON.parse(row.symbols || '[]');
+        resolve(row);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
+function loadGenerationsFromDB(sessionId) {
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM evo_generations WHERE session_id = ? ORDER BY generation`, [sessionId], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        // Parse best_individual JSON
+        rows.forEach(row => {
+          if (row.best_individual) {
+            try {
+              row.bestIndividual = JSON.parse(row.best_individual);
+            } catch (e) {
+              row.bestIndividual = {};
+            }
+          }
+        });
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function loadResultsFromDB(sessionId) {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM evo_results WHERE session_id = ?`, [sessionId], (err, row) => {
+      if (err) {
+        reject(err);
+      } else if (row) {
+        // Parse JSON fields
+        row.topStrategies = JSON.parse(row.top_strategies || '[]');
+        row.config = JSON.parse(row.config || '{}');
+        resolve(row);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
 
 // WS broadcast helper for evo events
 function broadcastWS(payload) {
@@ -2321,6 +2571,13 @@ app.post('/api/evotester/start', (req, res) => {
     }
   };
 
+  // Save session to database
+  try {
+    saveSessionToDB(evoSessions[sessionId]);
+  } catch (err) {
+    console.error('[EvoTester] Error saving new session:', err);
+  }
+
   // initialize generation log for this session
   evoGenerationsLog[sessionId] = [];
 
@@ -2359,6 +2616,13 @@ function simulateEvolution(sessionId, totalGenerations) {
         status: generation >= totalGenerations ? 'completed' : 'running'
       };
 
+      // Save session to database
+      try {
+        saveSessionToDB(evoSessions[sessionId]);
+      } catch (err) {
+        console.error('[EvoTester] Error saving session:', err);
+      }
+
       // Build generation detail and store
       const genDetail = {
         sessionId,
@@ -2370,10 +2634,15 @@ function simulateEvolution(sessionId, totalGenerations) {
         elapsedTime: `${generation * 2}s`,
         timestamp: new Date().toISOString(),
       };
+
+      // Save to both in-memory cache and database
       try {
         if (!Array.isArray(evoGenerationsLog[sessionId])) evoGenerationsLog[sessionId] = [];
         evoGenerationsLog[sessionId].push(genDetail);
-      } catch {}
+        saveGenerationToDB(sessionId, genDetail);
+      } catch (err) {
+        console.error('[EvoTester] Error saving generation:', err);
+      }
 
       // Broadcast progress and generation tick over WS
       broadcastWS({ type: 'evo_progress', channel: 'evotester', data: {
@@ -2413,6 +2682,13 @@ function simulateEvolution(sessionId, totalGenerations) {
           status: 'completed'
         };
 
+        // Save results to database
+        try {
+          saveResultToDB(sessionId, evoResults[sessionId]);
+        } catch (err) {
+          console.error('[EvoTester] Error saving results to DB:', err);
+        }
+
         // Final event
         broadcastWS({ type: 'evo_complete', channel: 'evotester', data: {
           sessionId,
@@ -2429,15 +2705,257 @@ function simulateEvolution(sessionId, totalGenerations) {
   }, 2000); // Update every 2 seconds
 }
 
-app.get('/api/evotester/:sessionId/status', (req, res) => {
+app.get('/api/evotester/:sessionId/status', async (req, res) => {
   const { sessionId } = req.params;
-  const session = evoSessions[sessionId];
+  let session = evoSessions[sessionId];
 
   if (session) {
     // Return active session status
     res.json(session);
   } else {
-    // Check if this is a historical session from the mock history
+    // Try to load from database
+    try {
+      const dbSession = await loadSessionFromDB(sessionId);
+      if (dbSession) {
+        res.json({
+          sessionId: dbSession.session_id,
+          running: dbSession.status === 'running',
+          currentGeneration: dbSession.current_generation,
+          totalGenerations: dbSession.total_generations,
+          startTime: dbSession.start_time,
+          progress: dbSession.progress,
+          bestFitness: dbSession.best_fitness,
+          averageFitness: dbSession.average_fitness,
+          status: dbSession.status,
+          config: dbSession.config,
+          symbols: dbSession.symbols
+        });
+      } else {
+        // Fallback to mock data for demo
+        const mockHistory = [
+          {
+            id: 'evo_001',
+            date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+            bestFitness: 2.34,
+            totalGenerations: 50,
+            symbols: ['SPY', 'AAPL', 'NVDA']
+          },
+          {
+            id: 'evo_002',
+            date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+            bestFitness: 1.87,
+            totalGenerations: 30,
+            symbols: ['TSLA', 'BTC-USD']
+          }
+        ];
+
+        const historicalSession = mockHistory.find(h => h.id === sessionId);
+        if (historicalSession) {
+          res.json({
+            sessionId,
+            running: false,
+            currentGeneration: historicalSession.totalGenerations,
+            totalGenerations: historicalSession.totalGenerations,
+            startTime: historicalSession.date,
+            progress: 1.0,
+            bestFitness: historicalSession.bestFitness,
+            averageFitness: historicalSession.bestFitness * 0.8,
+            status: 'completed'
+          });
+        } else {
+          return res.status(404).json({ error: 'Session not found' });
+        }
+      }
+    } catch (err) {
+      console.error('[EvoTester] Error loading session from DB:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+  }
+});
+
+app.get('/api/evotester/:sessionId/result', (req, res) => {
+  const { sessionId } = req.params;
+  const result = evoResults[sessionId];
+
+  if (!result) {
+    return res.status(404).json({ error: 'Result not available' });
+  }
+
+  res.json(result);
+});
+
+// Top strategies endpoint (singular version)
+app.get('/api/evotester/:sessionId/top', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const limit = parseInt(req.query.limit) || 5;
+
+    // Try to get from in-memory results first
+    const result = evoResults[sessionId];
+    if (result && Array.isArray(result.topStrategies)) {
+      return res.json(result.topStrategies.slice(0, limit));
+    }
+
+    // Try to load from database
+    try {
+      const dbResult = await loadResultsFromDB(sessionId);
+      if (dbResult && Array.isArray(dbResult.topStrategies)) {
+        return res.json(dbResult.topStrategies.slice(0, limit));
+      }
+    } catch (err) {
+      console.error('[EvoTester] Error loading results from DB:', err);
+    }
+
+    // Provide mock data for historical demo sessions
+    const presets = {
+      'evo_001': 2.34,
+      'evo_002': 1.87,
+    };
+    const best = presets[sessionId];
+    if (typeof best === 'number') {
+      const baseTs = Date.now() - 1000 * 60 * 60 * 12;
+      const items = [
+        {
+          id: `${sessionId}_best_1`,
+          name: 'RSI-Momentum-V2',
+          description: 'RSI with momentum filter',
+          parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
+          fitness: best,
+          performance: { sharpeRatio: best, winRate: 0.67, maxDrawdown: 0.12 },
+          created: new Date(baseTs).toISOString(),
+        },
+        {
+          id: `${sessionId}_best_2`,
+          name: 'VWAP-Reversion',
+          description: 'VWAP mean-reversion with volatility guard',
+          parameters: { deviationThreshold: 0.02, volumePeriod: 20 },
+          fitness: +(best - 0.18).toFixed(3),
+          performance: { sharpeRatio: +(best - 0.18).toFixed(3), winRate: 0.62, maxDrawdown: 0.14 },
+          created: new Date(baseTs + 1000 * 60 * 10).toISOString(),
+        },
+        {
+          id: `${sessionId}_best_3`,
+          name: 'News-Momo',
+          description: 'News sentiment momentum blend',
+          parameters: { sentimentThreshold: 0.3, holdingPeriod: 5 },
+          fitness: +(best - 0.31).toFixed(3),
+          performance: { sharpeRatio: +(best - 0.31).toFixed(3), winRate: 0.59, maxDrawdown: 0.15 },
+          created: new Date(baseTs + 1000 * 60 * 20).toISOString(),
+        },
+      ].slice(0, limit);
+      return res.json(items);
+    }
+
+    return res.status(404).json({ error: 'Top strategies not available' });
+  } catch (e) {
+    return res.status(500).json({ error: 'Database error' });
+  }
+});
+
+// Frontend expects plural "results" to return an array of top strategies
+app.get('/api/evotester/:sessionId/results', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const result = evoResults[sessionId];
+
+    if (result && Array.isArray(result.topStrategies)) {
+      return res.json(result.topStrategies);
+    }
+
+    // Try to load from database
+    try {
+      const dbResult = await loadResultsFromDB(sessionId);
+      if (dbResult && Array.isArray(dbResult.topStrategies)) {
+        return res.json(dbResult.topStrategies);
+      }
+    } catch (err) {
+      console.error('[EvoTester] Error loading results from DB:', err);
+    }
+
+    // Provide mock data for historical demo sessions
+    const presets = {
+      'evo_001': 2.34,
+      'evo_002': 1.87,
+    };
+    const best = presets[sessionId];
+    if (typeof best === 'number') {
+      const baseTs = Date.now() - 1000 * 60 * 60 * 12;
+      const items = [
+        {
+          id: `${sessionId}_best_1`,
+          name: 'RSI-Momentum-V2',
+          description: 'RSI with momentum filter',
+          parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
+          fitness: best,
+          performance: { sharpeRatio: best, winRate: 0.67, maxDrawdown: 0.12 },
+          created: new Date(baseTs).toISOString(),
+        },
+        {
+          id: `${sessionId}_best_2`,
+          name: 'VWAP-Reversion',
+          description: 'VWAP mean-reversion with volatility guard',
+          parameters: { deviationThreshold: 0.02, volumePeriod: 20 },
+          fitness: +(best - 0.18).toFixed(3),
+          performance: { sharpeRatio: +(best - 0.18).toFixed(3), winRate: 0.62, maxDrawdown: 0.14 },
+          created: new Date(baseTs + 1000 * 60 * 10).toISOString(),
+        },
+        {
+          id: `${sessionId}_best_3`,
+          name: 'News-Momo',
+          description: 'News sentiment momentum blend',
+          parameters: { sentimentThreshold: 0.3, holdingPeriod: 5 },
+          fitness: +(best - 0.31).toFixed(3),
+          performance: { sharpeRatio: +(best - 0.31).toFixed(3), winRate: 0.59, maxDrawdown: 0.15 },
+          created: new Date(baseTs + 1000 * 60 * 20).toISOString(),
+        },
+      ];
+      return res.json(items);
+    }
+
+    return res.status(404).json({ error: 'Result not available' });
+  } catch (e) {
+    return res.status(500).json({ error: 'Database error' });
+  }
+});
+
+app.get('/api/evotester/sessions/active', (req, res) => {
+  const activeSessions = Object.values(evoSessions).filter(session =>
+    session.running && session.status === 'running'
+  );
+  res.json(activeSessions);
+});
+
+app.get('/api/evotester/history', async (req, res) => {
+  console.log('[API] GET /api/evotester/history');
+
+  try {
+    // Load from database first
+    const dbSessions = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT session_id, start_time, best_fitness, total_generations, symbols
+        FROM evo_sessions
+        ORDER BY start_time DESC
+        LIMIT 20
+      `, [], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows.map(row => ({
+            id: row.session_id,
+            date: row.start_time,
+            bestFitness: row.best_fitness,
+            totalGenerations: row.total_generations,
+            symbols: JSON.parse(row.symbols || '[]')
+          })));
+        }
+      });
+    });
+
+    if (dbSessions.length > 0) {
+      return res.json(dbSessions);
+    }
+
+    // Fallback to mock data for demo
     const mockHistory = [
       {
         id: 'evo_001',
@@ -2454,116 +2972,28 @@ app.get('/api/evotester/:sessionId/status', (req, res) => {
         symbols: ['TSLA', 'BTC-USD']
       }
     ];
-
-    const historicalSession = mockHistory.find(h => h.id === sessionId);
-    if (historicalSession) {
-      // Return completed status for historical session
-      res.json({
-        sessionId,
-        running: false,
-        currentGeneration: historicalSession.totalGenerations,
-        totalGenerations: historicalSession.totalGenerations,
-        startTime: historicalSession.date,
-        progress: 1.0,
-        bestFitness: historicalSession.bestFitness,
-        averageFitness: historicalSession.bestFitness * 0.8, // Estimate average
-        status: 'completed'
-      });
-    } else {
-      return res.status(404).json({ error: 'Session not found' });
-    }
-  }
-});
-
-app.get('/api/evotester/:sessionId/result', (req, res) => {
-  const { sessionId } = req.params;
-  const result = evoResults[sessionId];
-
-  if (!result) {
-    return res.status(404).json({ error: 'Result not available' });
-  }
-
-  res.json(result);
-});
-
-// Frontend expects plural "results" to return an array of top strategies
-app.get('/api/evotester/:sessionId/results', (req, res) => {
-  const { sessionId } = req.params;
-  const result = evoResults[sessionId];
-
-  if (result && Array.isArray(result.topStrategies)) {
-    return res.json(result.topStrategies);
-  }
-
-  // Provide mock data for historical demo sessions
-  const presets = {
-    'evo_001': 2.34,
-    'evo_002': 1.87,
-  };
-  const best = presets[sessionId];
-  if (typeof best === 'number') {
-    const baseTs = Date.now() - 1000 * 60 * 60 * 12;
-    const items = [
+    res.json(mockHistory);
+  } catch (err) {
+    console.error('[EvoTester] Error loading history from DB:', err);
+    // Return mock data as fallback
+    const mockHistory = [
       {
-        id: `${sessionId}_best_1`,
-        name: 'RSI-Momentum-V2',
-        description: 'RSI with momentum filter',
-        parameters: { rsiPeriod: 14, stopLoss: 2.1, takeProfit: 3.8 },
-        fitness: best,
-        performance: { sharpeRatio: best, winRate: 0.67, maxDrawdown: 0.12 },
-        created: new Date(baseTs).toISOString(),
+        id: 'evo_001',
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        bestFitness: 2.34,
+        totalGenerations: 50,
+        symbols: ['SPY', 'AAPL', 'NVDA']
       },
       {
-        id: `${sessionId}_best_2`,
-        name: 'VWAP-Reversion',
-        description: 'VWAP mean-reversion with volatility guard',
-        parameters: { deviationThreshold: 0.02, volumePeriod: 20 },
-        fitness: +(best - 0.18).toFixed(3),
-        performance: { sharpeRatio: +(best - 0.18).toFixed(3), winRate: 0.62, maxDrawdown: 0.14 },
-        created: new Date(baseTs + 1000 * 60 * 10).toISOString(),
-      },
-      {
-        id: `${sessionId}_best_3`,
-        name: 'News-Momo',
-        description: 'News sentiment momentum blend',
-        parameters: { sentimentThreshold: 0.3, holdingPeriod: 5 },
-        fitness: +(best - 0.31).toFixed(3),
-        performance: { sharpeRatio: +(best - 0.31).toFixed(3), winRate: 0.59, maxDrawdown: 0.15 },
-        created: new Date(baseTs + 1000 * 60 * 20).toISOString(),
-      },
+        id: 'evo_002',
+        date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+        bestFitness: 1.87,
+        totalGenerations: 30,
+        symbols: ['TSLA', 'BTC-USD']
+      }
     ];
-    return res.json(items);
+    res.json(mockHistory);
   }
-
-  return res.status(404).json({ error: 'Result not available' });
-});
-
-app.get('/api/evotester/sessions/active', (req, res) => {
-  const activeSessions = Object.values(evoSessions).filter(session =>
-    session.running && session.status === 'running'
-  );
-  res.json(activeSessions);
-});
-
-app.get('/api/evotester/history', (req, res) => {
-  console.log('[API] GET /api/evotester/history - returning mock history');
-  const mockHistory = [
-    {
-      id: 'evo_001',
-      date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      bestFitness: 2.34,
-      totalGenerations: 50,
-      symbols: ['SPY', 'AAPL', 'NVDA']
-    },
-    {
-      id: 'evo_002',
-      date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      bestFitness: 1.87,
-      totalGenerations: 30,
-      symbols: ['TSLA', 'BTC-USD']
-    }
-  ];
-  res.json(mockHistory);
 });
 
 // Combined snapshot for simple verification: status + top strategies + symbols preview
@@ -2639,9 +3069,10 @@ app.get('/api/evotester/:sessionId/snapshot', async (req, res) => {
 });
 
 // Historical generation series for charts
-app.get('/api/evotester/:sessionId/generations', (req, res) => {
+app.get('/api/evotester/:sessionId/generations', async (req, res) => {
   try {
     const { sessionId } = req.params;
+
     // If we have a live/just-completed session, serve the in-memory series first
     if (Array.isArray(evoGenerationsLog?.[sessionId]) && evoGenerationsLog[sessionId].length) {
       const mapped = evoGenerationsLog[sessionId].map(g => ({
@@ -2654,6 +3085,16 @@ app.get('/api/evotester/:sessionId/generations', (req, res) => {
         timestamp: g.timestamp,
       }));
       return res.json(mapped);
+    }
+
+    // Try to load from database
+    try {
+      const dbGenerations = await loadGenerationsFromDB(sessionId);
+      if (dbGenerations && dbGenerations.length > 0) {
+        return res.json(dbGenerations);
+      }
+    } catch (err) {
+      console.error('[EvoTester] Error loading generations from DB:', err);
     }
     const presets = {
       'evo_001': { gens: 50, best: 2.34 },

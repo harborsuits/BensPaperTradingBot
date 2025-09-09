@@ -51,27 +51,21 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
     timeFrame: '24h'
   });
 
-  // Real-time data connections
+  // Real-time data connections - using available API functions
   const { data: newsData, isLoading: newsLoading } = useQuery({
-    queryKey: ['news', 'sentiment', researchFilter.timeFrame],
-    queryFn: () => contextApi.getNewsSentiment(researchFilter.timeFrame),
+    queryKey: ['news', researchFilter.timeFrame],
+    queryFn: () => contextApi.getNews(25), // Use existing getNews function
     refetchInterval: 30000, // Refresh every 30 seconds
     staleTime: 15000,
   });
 
-  const { data: fundamentalsData, isLoading: fundamentalsLoading } = useQuery({
-    queryKey: ['fundamentals', researchFilter.sector],
-    queryFn: () => contextApi.getFundamentals(researchFilter.sector),
-    refetchInterval: 60000, // Refresh every minute
-    staleTime: 30000,
-  });
+  // Mock fundamentals data since the API function doesn't exist yet
+  const fundamentalsData = { fundamentals: [] };
+  const fundamentalsLoading = false;
 
-  const { data: marketDiscovery, isLoading: discoveryLoading } = useQuery({
-    queryKey: ['market', 'discovery', researchFilter.sentimentThreshold],
-    queryFn: () => contextApi.getMarketDiscovery(researchFilter.sentimentThreshold),
-    refetchInterval: 45000, // Refresh every 45 seconds
-    staleTime: 20000,
-  });
+  // Mock market discovery data since the API function doesn't exist yet
+  const marketDiscovery = { discoveries: [] };
+  const discoveryLoading = false;
 
   // Real news data with fallback to mock data
   const newsDiscoveries = newsData?.news || [

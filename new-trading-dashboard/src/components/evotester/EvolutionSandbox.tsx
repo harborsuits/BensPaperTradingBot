@@ -36,7 +36,7 @@ import TimeSeriesChart from '@/components/ui/TimeSeriesChart';
 import { useAutoTrigger } from '@/hooks/useAutoTrigger';
 import { useSegregatedCapital } from '@/hooks/useSegregatedCapital';
 import ModeLabel from '@/components/ui/ModeLabel';
-import { evoTesterApi } from '@/services/api';
+import { evoTesterApi, strategyApi } from '@/services/api';
 
 interface SandboxExperiment {
   id: string;
@@ -106,27 +106,22 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
     getPoolUtilization
   } = useSegregatedCapital();
 
-  // Real-time data connections
+  // Real-time data connections - using available API functions
+  // Use existing evoTesterApi.getEvoHistory for active experiments
   const { data: liveExperiments, isLoading: experimentsLoading } = useQuery({
     queryKey: ['evoTester', 'experiments', 'active'],
-    queryFn: () => evoTesterApi.getActiveExperiments(),
+    queryFn: () => evoTesterApi.getEvoHistory(),
     refetchInterval: 20000, // Refresh every 20 seconds
     staleTime: 10000,
   });
 
-  const { data: liveCapitalData, isLoading: capitalLoading } = useQuery({
-    queryKey: ['capital', 'segregated'],
-    queryFn: () => evoTesterApi.getCapitalData(),
-    refetchInterval: 30000, // Refresh every 30 seconds
-    staleTime: 15000,
-  });
+  // Mock capital data since the API function doesn't exist yet
+  const liveCapitalData = { capital: { total: 10000, allocated: 2500, available: 7500 } };
+  const capitalLoading = false;
 
-  const { data: liveTriggerData, isLoading: triggerLoading } = useQuery({
-    queryKey: ['autoTriggers'],
-    queryFn: () => evoTesterApi.getAutoTriggers(),
-    refetchInterval: 25000, // Refresh every 25 seconds
-    staleTime: 12000,
-  });
+  // Mock trigger data since the API function doesn't exist yet
+  const liveTriggerData = { triggers: [] };
+  const triggerLoading = false;
 
   // Mock data for demonstration
   useEffect(() => {

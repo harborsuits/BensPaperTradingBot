@@ -69,7 +69,7 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
     staleTime: 30000,
   });
 
-  const { data: labDiamonds, isLoading: diamondsLoading } = useLabDiamonds();
+  const { data: labDiamonds, isLoading: diamondsLoading, error: diamondsError } = useLabDiamonds();
 
   const [selectedTab, setSelectedTab] = useState('strategies');
   const [selectedDiamonds, setSelectedDiamonds] = useState<string[]>([]);
