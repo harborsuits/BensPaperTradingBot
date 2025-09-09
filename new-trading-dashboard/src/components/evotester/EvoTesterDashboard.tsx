@@ -270,11 +270,11 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         newsImpactScore={0.45}
       />
 
-      {/* Horizontal Card Layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        {/* Left Column */}
-        <div className="space-y-6">
-          {/* Evolution Progress Card */}
+      {/* Horizontal Card Layout - 3 Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
+        {/* Column 1 */}
+        <div className="space-y-4">
+          {/* [3] Evolution Progress Card */}
           <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -530,18 +530,84 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
               </div>
             )}
           </CardContent>
-        </Card>
+          </Card>
+
+          {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
+          <ResearchDiscoveryHub
+            onStartEvolutionWithSymbols={handleAddToEvolution}
+          />
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-6">
+        {/* Column 2 */}
+        <div className="space-y-4">
+          {/* [5-6] Active Sessions & History */}
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <Tabs
+                  defaultValue="active"
+                  onValueChange={(value) => setViewMode(value as 'active' | 'history')}
+                >
+                  <TabsList className="w-full">
+                    <TabsTrigger value="active" className="flex-1">[5] Active Sessions</TabsTrigger>
+                    <TabsTrigger value="history" className="flex-1">[6] Session History</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {viewMode === 'active' ? (
+                <ActiveSessionsList
+                  sessions={activeSessions || []}
+                  onSelectSession={handleSelectSession}
+                  activeSessionId={activeSessionId || undefined}
+                  isLoading={sessionsLoading}
+                />
+              ) : (
+                <div className="space-y-3">
+                  {historyLoading ? (
+                    <div className="flex items-center justify-center h-40">
+                      <RefreshCw className="h-5 w-5 animate-spin text-foreground" />
+                    </div>
+                  ) : (sessionHistory && sessionHistory.length > 0) ? (
+                    sessionHistory.map((session) => (
+                      <div
+                        key={session.id}
+                        className="p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+                        onClick={() => handleSelectSession(session.id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-medium">Session {session.id.substring(0, 8)}</div>
+                            <div className="text-xs text-foreground">{new Date(session.date).toLocaleString()}</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-medium text-green-600">{session.bestFitness.toFixed(4)}</div>
+                            <div className="text-xs text-foreground">Best Fitness</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center h-40 text-foreground">
+                      No past sessions found
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
           <EvolutionResultsHub
             topStrategies={result?.topStrategies || []}
             onSelectStrategy={setSelectedStrategy}
             onSaveStrategy={handleSaveStrategy}
           />
+        </div>
 
+        {/* Column 3 */}
+        <div className="space-y-4">
           {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
           <EvoLifecycleView sessionId={activeSessionId || undefined} />
 
