@@ -270,8 +270,12 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         newsImpactScore={0.45}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <Card className="lg:col-span-2">
+      {/* Horizontal Card Layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Evolution Progress Card */}
+          <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Evolution Progress</span>
@@ -463,13 +467,12 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
-      {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
-      <div className="mt-6">
+        {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
         <ResearchDiscoveryHub
-            onStartEvolutionWithSymbols={handleAddToEvolution}
-          />
-        </div>
+          onStartEvolutionWithSymbols={handleAddToEvolution}
+        />
 
+        {/* [5-6] Active Sessions & History */}
         <Card>
           <CardHeader>
             <CardTitle>
@@ -528,30 +531,26 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
             )}
           </CardContent>
         </Card>
-      </div>
+        </div>
 
-      {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
-      <div className="mt-6">
-        <EvolutionResultsHub
-          topStrategies={result?.topStrategies || []}
-          onSelectStrategy={setSelectedStrategy}
-          onSaveStrategy={handleSaveStrategy}
-        />
-      </div>
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
+          <EvolutionResultsHub
+            topStrategies={result?.topStrategies || []}
+            onSelectStrategy={setSelectedStrategy}
+            onSaveStrategy={handleSaveStrategy}
+          />
 
-      {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
-      <div className="mt-6">
-        <EvoLifecycleView sessionId={activeSessionId || undefined} />
-      </div>
+          {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
+          <EvoLifecycleView sessionId={activeSessionId || undefined} />
 
-      {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
-      <div className="mt-6">
-        <EvolutionSandbox />
-      </div>
+          {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
+          <EvolutionSandbox />
 
-      {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
-      <div className="mt-6">
-        <PromotionPipeline />
+          {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
+          <PromotionPipeline />
+        </div>
       </div>
 
       {/* Strategy Parameters Modal would go here */}
