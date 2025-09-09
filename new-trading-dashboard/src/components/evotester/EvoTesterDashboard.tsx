@@ -466,9 +466,11 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </Card>
 
         {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
-        <ResearchDiscoveryHub
-          onStartEvolutionWithSymbols={handleAddToEvolution}
-        />
+        <div className="min-h-72">
+          <ResearchDiscoveryHub
+            onStartEvolutionWithSymbols={handleAddToEvolution}
+          />
+        </div>
 
         {/* [5-6] Active Sessions & History */}
         <Card>
