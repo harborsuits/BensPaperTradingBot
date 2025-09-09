@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -28,12 +29,14 @@ import {
   Square,
   RefreshCw,
   Bell,
-  BellOff
+  BellOff,
+  Loader2
 } from 'lucide-react';
 import TimeSeriesChart from '@/components/ui/TimeSeriesChart';
 import { useAutoTrigger } from '@/hooks/useAutoTrigger';
 import { useSegregatedCapital } from '@/hooks/useSegregatedCapital';
 import ModeLabel from '@/components/ui/ModeLabel';
+import { evoTesterApi } from '@/services/api';
 
 interface SandboxExperiment {
   id: string;
@@ -102,6 +105,28 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
     getActiveAllocations,
     getPoolUtilization
   } = useSegregatedCapital();
+
+  // Real-time data connections
+  const { data: liveExperiments, isLoading: experimentsLoading } = useQuery({
+    queryKey: ['evoTester', 'experiments', 'active'],
+    queryFn: () => evoTesterApi.getActiveExperiments(),
+    refetchInterval: 20000, // Refresh every 20 seconds
+    staleTime: 10000,
+  });
+
+  const { data: liveCapitalData, isLoading: capitalLoading } = useQuery({
+    queryKey: ['capital', 'segregated'],
+    queryFn: () => evoTesterApi.getCapitalData(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 15000,
+  });
+
+  const { data: liveTriggerData, isLoading: triggerLoading } = useQuery({
+    queryKey: ['autoTriggers'],
+    queryFn: () => evoTesterApi.getAutoTriggers(),
+    refetchInterval: 25000, // Refresh every 25 seconds
+    staleTime: 12000,
+  });
 
   // Mock data for demonstration
   useEffect(() => {
@@ -195,8 +220,19 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
   const renderExperimentsView = () => (
     <div className="space-y-4">
       {/* Active Experiments */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold flex items-center">
+          <FlaskConical className="w-5 h-5 mr-2 text-purple-500" />
+          Active Experiments
+          {experimentsLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin text-purple-500" />}
+        </h3>
+        <Button size="sm" variant="outline">
+          <RefreshCw className="w-3 h-3 mr-1" />
+          Refresh
+        </Button>
+      </div>
       <div className="grid gap-4">
-        {activeExperiments.map((experiment) => (
+        {(liveExperiments?.experiments || activeExperiments).map((experiment) => (
           <Card key={experiment.id} className="border-l-4 border-l-purple-500">
             <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">

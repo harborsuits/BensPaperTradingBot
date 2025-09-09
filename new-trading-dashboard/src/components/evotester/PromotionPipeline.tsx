@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -20,10 +21,13 @@ import {
   Award,
   AlertTriangle,
   Crown,
-  Zap
+  Zap,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
 import { usePromotionService } from '@/hooks/usePromotionService';
 import ModeLabel from '@/components/ui/ModeLabel';
+import { evoTesterApi } from '@/services/api';
 
 interface PromotionPipelineProps {
   className?: string;
@@ -41,6 +45,28 @@ const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' })
 
   const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null);
   const [promoting, setPromoting] = useState<Set<string>>(new Set());
+
+  // Real-time data connections
+  const { data: promotionCandidates, isLoading: candidatesLoading } = useQuery({
+    queryKey: ['promotion', 'candidates'],
+    queryFn: () => evoTesterApi.getPromotionCandidates(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 15000,
+  });
+
+  const { data: deployedStrategies, isLoading: deployedLoading } = useQuery({
+    queryKey: ['strategies', 'deployed'],
+    queryFn: () => evoTesterApi.getDeployedStrategies(),
+    refetchInterval: 60000, // Refresh every minute
+    staleTime: 30000,
+  });
+
+  const { data: pipelineHealth, isLoading: healthLoading } = useQuery({
+    queryKey: ['pipeline', 'health'],
+    queryFn: () => evoTesterApi.getPipelineHealth(),
+    refetchInterval: 45000, // Refresh every 45 seconds
+    staleTime: 20000,
+  });
 
   const handlePromoteCandidate = async (candidateId: string, pipelineId: string) => {
     setPromoting(prev => new Set([...prev, candidateId]));
