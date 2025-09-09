@@ -17,15 +17,22 @@ import {
   Crown,
   Activity,
   DollarSign,
-  Shield
+  Shield,
+  Search,
+  Gem,
+  Sparkles,
+  Plus,
+  Eye
 } from 'lucide-react';
 import { EvoStrategy } from '@/types/api.types';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
+import { useLabDiamonds, DiamondSymbol } from '@/hooks/useLabDiamonds';
 
 interface EvolutionResultsHubProps {
   topStrategies?: EvoStrategy[];
   onSelectStrategy?: (strategy: EvoStrategy) => void;
   onSaveStrategy?: (strategy: EvoStrategy) => void;
+  onAddToEvolution?: (symbols: string[]) => void;
   className?: string;
 }
 
@@ -33,9 +40,14 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
   topStrategies = [],
   onSelectStrategy,
   onSaveStrategy,
+  onAddToEvolution,
   className = ''
 }) => {
   const [selectedTab, setSelectedTab] = useState('strategies');
+  const [selectedDiamonds, setSelectedDiamonds] = useState<string[]>([]);
+
+  // Fetch diamonds data
+  const { data: diamondsData, isLoading: diamondsLoading, error: diamondsError } = useLabDiamonds(25, 'all');
 
   const handleSaveStrategy = async (strategy: EvoStrategy) => {
     if (onSaveStrategy) {
@@ -48,6 +60,22 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
   const handleSelectStrategy = (strategy: EvoStrategy) => {
     if (onSelectStrategy) {
       onSelectStrategy(strategy);
+    }
+  };
+
+  const handleDiamondToggle = (symbol: string) => {
+    setSelectedDiamonds(prev =>
+      prev.includes(symbol)
+        ? prev.filter(s => s !== symbol)
+        : [...prev, symbol]
+    );
+  };
+
+  const handleAddToEvolution = () => {
+    if (selectedDiamonds.length > 0 && onAddToEvolution) {
+      onAddToEvolution(selectedDiamonds);
+      showSuccessToast(`Added ${selectedDiamonds.length} diamonds to evolution candidates`);
+      setSelectedDiamonds([]);
     }
   };
 
@@ -82,8 +110,9 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
       </CardHeader>
       <CardContent>
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="strategies">Top Strategies</TabsTrigger>
+            <TabsTrigger value="research">Research</TabsTrigger>
             <TabsTrigger value="explanation">How It Works</TabsTrigger>
             <TabsTrigger value="pipeline">System Flow</TabsTrigger>
             <TabsTrigger value="deployment">Deployment</TabsTrigger>
@@ -163,6 +192,156 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
                 <Award className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                 <p className="text-lg font-medium mb-2">No Strategies Yet</p>
                 <p className="text-sm">Run an evolution session to generate winning strategies</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Research & Discovery Tab */}
+          <TabsContent value="research" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold flex items-center">
+                  <Gem className="w-5 h-5 mr-2 text-yellow-500" />
+                  Diamonds in the Rough
+                </h3>
+                <p className="text-sm text-foreground mt-1">
+                  Discover promising symbols for evolution testing
+                </p>
+              </div>
+              {selectedDiamonds.length > 0 && (
+                <Button onClick={handleAddToEvolution} className="flex items-center">
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add {selectedDiamonds.length} to Evolution
+                </Button>
+              )}
+            </div>
+
+            {diamondsLoading ? (
+              <div className="text-center py-8">
+                <Sparkles className="w-8 h-8 mx-auto mb-4 text-yellow-500 animate-pulse" />
+                <p className="text-foreground">Scanning markets for diamonds...</p>
+              </div>
+            ) : diamondsError ? (
+              <div className="text-center py-8">
+                <p className="text-red-500">Error loading diamond research data</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Top Diamonds */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {diamondsData?.items.slice(0, 9).map((diamond, index) => (
+                    <div
+                      key={diamond.symbol}
+                      className={`p-4 border rounded-lg bg-card border-border text-foreground ${
+                        selectedDiamonds.includes(diamond.symbol) ? 'ring-2 ring-yellow-500/50 bg-yellow-50/10' : ''
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center">
+                          <Gem className="w-4 h-4 mr-2 text-yellow-500" />
+                          <span className="font-semibold">{diamond.symbol}</span>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-green-600">
+                            {diamond.score.toFixed(3)}
+                          </div>
+                          <div className="text-xs text-foreground">Score</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 mb-3">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-foreground">Sentiment 1h:</span>
+                          <span className={`font-medium ${diamond.features.impact1h > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {diamond.features.impact1h > 0 ? '+' : ''}{diamond.features.impact1h.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-foreground">Gap %:</span>
+                          <span className={`font-medium ${diamond.features.gapPct > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {diamond.features.gapPct > 0 ? '+' : ''}{diamond.features.gapPct.toFixed(2)}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-foreground">RVOL:</span>
+                          <span className="font-medium">{diamond.features.rvol.toFixed(1)}x</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-foreground">Spread:</span>
+                          <span className="font-medium">{diamond.features.spreadPct.toFixed(2)}%</span>
+                        </div>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        variant={selectedDiamonds.includes(diamond.symbol) ? "default" : "outline"}
+                        onClick={() => handleDiamondToggle(diamond.symbol)}
+                        className="w-full"
+                      >
+                        {selectedDiamonds.includes(diamond.symbol) ? (
+                          <>
+                            <Eye className="w-3 h-3 mr-1" />
+                            Selected
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-3 h-3 mr-1" />
+                            Select for Evolution
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Research Insights */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-purple-50 dark:bg-purple-950/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center">
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      Research Methodology
+                    </h4>
+                    <ul className="text-sm text-purple-800 dark:text-purple-200 space-y-1">
+                      <li>• <strong>45% Sentiment Analysis:</strong> Recent news impact</li>
+                      <li>• <strong>20% Relative Volume:</strong> Unusual trading activity</li>
+                      <li>• <strong>15% Price Gap:</strong> Intraday price movements</li>
+                      <li>• <strong>15% Spread Penalty:</strong> Trading costs</li>
+                      <li>• <strong>5% Exploration:</strong> Novel opportunities</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      Discovery Process
+                    </h4>
+                    <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                      <li>• Scans 400+ symbols across all asset classes</li>
+                      <li>• Combines multiple market signals</li>
+                      <li>• Identifies potential trading opportunities</li>
+                      <li>• Feeds promising candidates to evolution</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {selectedDiamonds.length > 0 && (
+                  <div className="bg-yellow-50 dark:bg-yellow-950/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-yellow-900 dark:text-yellow-100">
+                          Selected for Evolution
+                        </h4>
+                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                          {selectedDiamonds.join(', ')}
+                        </p>
+                      </div>
+                      <Button onClick={handleAddToEvolution} className="bg-yellow-600 hover:bg-yellow-700">
+                        <Zap className="w-4 h-4 mr-1" />
+                        Start Evolution
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </TabsContent>

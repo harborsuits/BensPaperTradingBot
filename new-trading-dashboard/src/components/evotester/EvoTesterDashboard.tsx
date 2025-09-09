@@ -23,6 +23,7 @@ import EvoLifecycleView from './EvoLifecycleView';
 import EvolutionSandbox from './EvolutionSandbox';
 import PromotionPipeline from './PromotionPipeline';
 import { EvolutionResultsHub } from './EvolutionResultsHub';
+import { ResearchDiscoveryHub } from './ResearchDiscoveryHub';
 import styles from './EvoTesterDashboard.module.css';
 
 interface EvoTesterDashboardProps {
@@ -189,7 +190,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
   const handleSaveStrategy = async (strategyToSave: EvoStrategy) => {
     try {
       const response = await evoTesterApi.promoteStrategy(strategyToSave);
-      
+
       if (response.success) {
         showSuccessToast('Strategy saved successfully');
       } else {
@@ -198,6 +199,31 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
     } catch (err) {
       console.error('Error saving strategy:', err);
       showErrorToast('Error saving strategy');
+    }
+  };
+
+  // Handle adding research discoveries to evolution candidates
+  const handleAddToEvolution = async (symbols: string[], researchConfig?: any) => {
+    try {
+      // Start a new evolution session with the selected symbols
+      const config = researchConfig || {
+        population_size: 100,
+        generations: 50,
+        mutation_rate: 0.1,
+        crossover_rate: 0.8,
+        target_asset: symbols[0], // Use first symbol as primary target
+        symbols: symbols, // Include all selected diamonds
+        optimization_metric: 'sharpe',
+        sentiment_weight: 0.3,
+        news_impact_weight: 0.2,
+        intelligence_snowball: true
+      };
+
+      await handleStartNewSession(config);
+      showSuccessToast(`Evolution started with ${symbols.length} research candidates!`);
+    } catch (err) {
+      console.error('Error starting evolution with research discoveries:', err);
+      showErrorToast('Failed to start evolution with selected research discoveries');
     }
   };
 
@@ -421,11 +447,18 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
           </CardContent>
         </Card>
 
+        {/* Research & Discovery Hub */}
+        <div className="mt-6">
+          <ResearchDiscoveryHub
+            onStartEvolutionWithSymbols={handleAddToEvolution}
+          />
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle>
-              <Tabs 
-                defaultValue="active" 
+              <Tabs
+                defaultValue="active"
                 onValueChange={(value) => setViewMode(value as 'active' | 'history')}
               >
                 <TabsList className="w-full">
