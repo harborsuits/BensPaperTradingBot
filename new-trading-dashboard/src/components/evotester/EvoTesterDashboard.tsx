@@ -270,10 +270,10 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         newsImpactScore={0.45}
       />
 
-      {/* Vertical Card Layout - Proper Spacing */}
-      <div className="space-y-6 mt-6">
+      {/* Vertical Card Layout - Clear Separation */}
+      <div className="space-y-8 mt-6">
         {/* [3] Evolution Progress Card */}
-        <Card className="max-h-80">
+        <Card className="min-h-80">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Evolution Progress</span>
@@ -531,14 +531,14 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </Card>
 
         {/* [4] Research & Discovery Hub - News analysis, fundamental research, strategy hypotheses, market discovery */}
-        <div className="max-h-72">
+        <div className="min-h-72">
           <ResearchDiscoveryHub
             onStartEvolutionWithSymbols={handleAddToEvolution}
           />
         </div>
 
         {/* [5-6] Active Sessions & History */}
-        <Card className="max-h-64">
+        <Card className="min-h-64">
           <CardHeader>
             <CardTitle>
               <Tabs
@@ -596,7 +596,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </Card>
 
         {/* [7] Evolution Results Hub - Strategy results, explanation, pipeline, deployment */}
-        <div className="max-h-80">
+        <div className="min-h-80">
           <EvolutionResultsHub
             topStrategies={result?.topStrategies || []}
             onSelectStrategy={setSelectedStrategy}
@@ -605,17 +605,17 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         </div>
 
         {/* [8] Evolution Lifecycle View - Timeline, champion lineage, population dynamics */}
-        <div className="max-h-64">
+        <div className="min-h-64">
           <EvoLifecycleView sessionId={activeSessionId || undefined} />
         </div>
 
         {/* [9] Evolution Sandbox - Auto-triggers, capital management, automated experiments */}
-        <div className="max-h-64">
+        <div className="min-h-64">
           <EvolutionSandbox />
         </div>
 
         {/* [10] Promotion Pipeline - Strategy promotion criteria, validation gates */}
-        <div className="max-h-64">
+        <div className="min-h-64">
           <PromotionPipeline />
         </div>
       </div>
