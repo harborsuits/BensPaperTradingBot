@@ -1,0 +1,142 @@
+{
+  "timestamp": "2025-09-09T22:54:10.182Z",
+  "suite": "Safety Proof Suite",
+  "version": "1.0.0",
+  "tests": [
+    {
+      "name": "System Health",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.251Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Pre-Trade Proof Generation",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.260Z",
+      "details": {},
+      "reasons": [
+        "No proof data returned"
+      ]
+    },
+    {
+      "name": "Post-Trade Execution Bounds",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.261Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Post-Trade Structure Bounds",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.261Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Post-Trade Cash Bounds",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.261Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Post-Trade Greeks Drift",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.261Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "24h NBBO Freshness",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.263Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "24h Friction Compliance",
+      "passed": false,
+      "timestamp": "2025-09-09T22:54:10.263Z",
+      "details": {},
+      "reasons": [
+        "FRICTION_20PCT_INSUFFICIENT: 47.6% < 90.0%",
+        "FRICTION_25PCT_INSUFFICIENT: 61.9% < 100.0%"
+      ]
+    },
+    {
+      "name": "24h Cap Compliance",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.263Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "24h Slippage Conformance",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.263Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Broker Sides Attestation",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.264Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Broker Margin Attestation",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.264Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Broker Buying Power",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.264Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Idempotency",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.266Z",
+      "details": {},
+      "reasons": [
+        "Endpoint not implemented"
+      ]
+    },
+    {
+      "name": "Chaos: Stale NBBO Handling",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.267Z",
+      "details": {},
+      "reasons": []
+    },
+    {
+      "name": "Chaos: Pool Freeze Handling",
+      "passed": true,
+      "timestamp": "2025-09-09T22:54:10.268Z",
+      "details": {},
+      "reasons": []
+    }
+  ],
+  "summary": {
+    "total": 16,
+    "passed": 10,
+    "failed": 6,
+    "passRate": 62.5
+  },
+  "attestation": {
+    "commit": "a1b2c3d4e5f6",
+    "configHash": "sha256:mock-config-hash",
+    "policyVersion": "RTM-Micro-v1.0",
+    "thermostat": {
+      "evoCap": 0.04,
+      "optionsCap": 0.015,
+      "thetaGovernor": 0.0025
+    }
+  }
+}

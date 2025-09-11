@@ -224,85 +224,105 @@ const NightlyRecapPage: React.FC = () => {
   };
   
   return (
-    <div className="container py-6 space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">Nightly Performance Recap</h1>
-          <p className="text-muted-foreground">
-            Automated analysis of trading performance with actionable insights
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground whitespace-nowrap">Recap Date:</span>
-            <select
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="h-8 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background"
-              disabled={isLoadingDates || availableDates.length === 0}
-            >
-              {availableDates.length === 0 ? (
-                <option value="">No reports available</option>
-              ) : (
-                availableDates.map(date => (
-                  <option key={date} value={date}>
-                    {new Date(date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={refetchRecap}
-            disabled={isLoading}
-          >
-            <RefreshCcw size={14} className="mr-1" />
-            Refresh
-          </Button>
-          
-          <Button 
-            onClick={triggerManualRecap}
-            size="sm"
-          >
-            <FileBarChart size={14} className="mr-1" />
-            Run New Recap
-          </Button>
-        </div>
-      </div>
-      
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview">Performance Overview</TabsTrigger>
-          <TabsTrigger value="strategies">Strategy Health</TabsTrigger>
-          <TabsTrigger value="suggestions">Recommendations</TabsTrigger>
-        </TabsList>
-        
-        <div className="mt-6">
-          {isLoading ? (
-            <div className="w-full h-96 flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-                <p className="mt-2 text-sm text-muted-foreground">Loading recap data...</p>
-              </div>
-            </div>
-          ) : !recapData ? (
-            <div className="w-full py-12 flex flex-col items-center justify-center border rounded-lg border-dashed">
-              <AlertCircle size={36} className="text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No recap data available</h3>
-              <p className="text-sm text-muted-foreground mt-1 mb-4">
-                {availableDates.length === 0 
-                  ? "No performance recaps have been generated yet."
-                  : "Failed to load performance recap data for the selected date."}
+    <div className="w-full min-h-screen bg-background">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">Nightly Performance Recap</h1>
+              <p className="text-muted-foreground mt-2">
+                Automated analysis of trading performance with actionable insights
               </p>
-              <Button onClick={triggerManualRecap} variant="outline">
-                Generate Recap
+            </div>
+        
+            <div className="flex items-center gap-3 mt-4 md:mt-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">Recap Date:</span>
+                <select
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="h-8 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background"
+                  disabled={isLoadingDates || availableDates.length === 0}
+                >
+                  {availableDates.length === 0 ? (
+                    <option value="">No reports available</option>
+                  ) : (
+                    availableDates.map(date => (
+                      <option key={date} value={date}>
+                        {new Date(date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={refetchRecap}
+                disabled={isLoading}
+              >
+                <RefreshCcw size={14} className="mr-1" />
+                Refresh
+              </Button>
+
+              <Button
+                onClick={triggerManualRecap}
+                size="sm"
+              >
+                <FileBarChart size={14} className="mr-1" />
+                Run New Recap
               </Button>
             </div>
-          ) : (
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="dashboard-container">
+          {/* Tabs Navigation */}
+          <div className="dashboard-section">
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="overview">Performance Overview</TabsTrigger>
+                <TabsTrigger value="strategies">Strategy Health</TabsTrigger>
+                <TabsTrigger value="suggestions">Recommendations</TabsTrigger>
+              </TabsList>
+
+                {/* Loading State */}
+                {isLoading ? (
+                  <div className="dashboard-section">
+                    <Card className="card">
+                      <div className="card-content">
+                        <div className="flex items-center justify-center py-12">
+                          <div className="flex flex-col items-center">
+                            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                            <p className="mt-4 text-sm text-muted-foreground">Loading recap data...</p>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                ) : !recapData ? (
+                  <div className="dashboard-section">
+                    <Card className="card">
+                      <div className="card-content">
+                        <div className="text-center py-12">
+                          <AlertCircle size={48} className="mx-auto text-muted-foreground mb-4" />
+                          <h3 className="text-xl font-medium mb-2">No recap data available</h3>
+                          <p className="text-muted-foreground mb-6">
+                            {availableDates.length === 0
+                              ? "No performance recaps have been generated yet."
+                              : "Failed to load performance recap data for the selected date."}
+                          </p>
+                          <Button onClick={triggerManualRecap} variant="outline">
+                            Generate Recap
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  </div>
+                ) : (
             <>
               {/* Daily Summary */}
               <TabsContent value="overview" className="mt-0">
@@ -672,8 +692,10 @@ const NightlyRecapPage: React.FC = () => {
               </TabsContent>
             </>
           )}
+            </Tabs>
+          </div>
         </div>
-      </Tabs>
+      </div>
     </div>
   );
 };

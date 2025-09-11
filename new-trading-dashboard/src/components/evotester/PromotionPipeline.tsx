@@ -23,17 +23,59 @@ import {
   Crown,
   Zap,
   RefreshCw,
-  Loader2
+  Loader2,
+  Shield,
+  Eye,
+  FileText
 } from 'lucide-react';
-import { usePromotionService } from '@/hooks/usePromotionService';
 import ModeLabel from '@/components/ui/ModeLabel';
 import { evoTesterApi, strategyApi } from '@/services/api';
+import {
+  useEvoPrecheck,
+  useStageStrategy,
+  useEvoWebSocketHandlers,
+  PrecheckResult
+} from '@/hooks/useEvoQueries';
+import { usePromotionService } from '@/hooks/usePromotionService';
 
 interface PromotionPipelineProps {
   className?: string;
 }
 
 const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' }) => {
+  const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [selectedStrategy, setSelectedStrategy] = useState<string | null>(null);
+  const [precheckResult, setPrecheckResult] = useState<PrecheckResult | null>(null);
+  const [showPrecheck, setShowPrecheck] = useState(false);
+
+  // Phase 3: Connect to EVO APIs
+  useEvoWebSocketHandlers();
+
+  // Get promotion candidates from evoTester history
+  const { data: evoHistory, isLoading: evoLoading } = useQuery({
+    queryKey: ['evoTester', 'history'],
+    queryFn: () => evoTesterApi.getEvoHistory(),
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+
+  // Precheck hook for selected strategy
+  const { data: currentPrecheck, isLoading: precheckLoading } = useEvoPrecheck(
+    selectedSession || '',
+    selectedStrategy || ''
+  );
+
+  // Stage strategy mutation
+  const stageMutation = useStageStrategy();
+
+  // Update precheck result when it changes
+  React.useEffect(() => {
+    if (currentPrecheck) {
+      setPrecheckResult(currentPrecheck);
+    }
+  }, [currentPrecheck]);
+
+  // Legacy promotion service (will be phased out)
   const {
     pipelines,
     candidates,
@@ -46,27 +88,30 @@ const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' })
   const [selectedPipeline, setSelectedPipeline] = useState<string | null>(null);
   const [promoting, setPromoting] = useState<Set<string>>(new Set());
 
-  // Real-time data connections - using available API functions
-  // Use existing strategyApi.getActiveStrategies for promotion candidates
-  const { data: promotionCandidates, isLoading: candidatesLoading } = useQuery({
-    queryKey: ['promotion', 'candidates'],
-    queryFn: () => strategyApi.getActiveStrategies(),
-    refetchInterval: 30000, // Refresh every 30 seconds
-    staleTime: 15000,
-  });
+  // Phase 3: EVO Promotion Functions
+  const handleEvoPrecheck = (sessionId: string, strategyId: string) => {
+    setSelectedSession(sessionId);
+    setSelectedStrategy(strategyId);
+    setShowPrecheck(true);
+  };
 
-  // Use existing strategyApi.getActiveStrategies for deployed strategies
-  const { data: deployedStrategies, isLoading: deployedLoading } = useQuery({
-    queryKey: ['strategies', 'deployed'],
-    queryFn: () => strategyApi.getActiveStrategies(),
-    refetchInterval: 60000, // Refresh every minute
-    staleTime: 30000,
-  });
+  const handleEvoStage = async (sessionId: string, strategyId: string, strategyRef: string) => {
+    if (!precheckResult?.ok) return;
 
-  // Mock pipeline health data since the API function doesn't exist yet
-  const pipelineHealth = { health: 'good', status: 'operational' };
-  const healthLoading = false;
+    try {
+      await stageMutation.mutateAsync({
+        sessionId,
+        strategyRef,
+        allocation: 3000, // Default allocation
+        pool: 'EVO',
+        ttlDays: 7
+      });
+    } catch (error) {
+      console.error('Failed to stage EVO strategy:', error);
+    }
+  };
 
+  // Legacy promotion function (will be phased out)
   const handlePromoteCandidate = async (candidateId: string, pipelineId: string) => {
     setPromoting(prev => new Set([...prev, candidateId]));
 
@@ -85,6 +130,203 @@ const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' })
       });
     }
   };
+
+  // Phase 3: EVO Promotion View
+  const renderEvoPromotion = () => (
+    <div className="space-y-6">
+      {/* EVO Promotion Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold flex items-center">
+            <Shield className="w-5 h-5 mr-2 text-green-600" />
+            EVO Strategy Promotion
+            {evoLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin text-green-600" />}
+          </h3>
+          <p className="text-sm text-gray-600">Promote winning strategies to paper EVO allocations</p>
+        </div>
+        <Button size="sm" variant="outline">
+          <RefreshCw className="w-3 h-3 mr-1" />
+          Refresh
+        </Button>
+      </div>
+
+      {/* EVO Promotion Candidates */}
+      <div className="space-y-4">
+        {evoHistory?.experiments?.map((experiment: any) => {
+          const sessionId = experiment.id;
+          const topStrategy = experiment.topStrategies?.[0];
+
+          if (!topStrategy) return null;
+
+          return (
+            <Card key={sessionId} className="border-l-4 border-l-green-500">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <Crown className="w-5 h-5 text-yellow-500" />
+                    <div>
+                      <h4 className="font-semibold text-foreground">{topStrategy.id}</h4>
+                      <p className="text-sm text-gray-600">Session: {sessionId}</p>
+                    </div>
+                    <Badge className="bg-green-100 text-green-800 border-green-300">
+                      WINNER
+                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline" className="text-xs">
+                      EVO READY
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Strategy Metrics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <span className="text-xs text-gray-500">Sharpe Ratio</span>
+                    <div className="font-medium text-green-600">
+                      {topStrategy.performance?.sharpeRatio?.toFixed(2) || 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-500">Max Drawdown</span>
+                    <div className="font-medium text-red-600">
+                      {topStrategy.performance?.maxDrawdown ? `${(topStrategy.performance.maxDrawdown * 100).toFixed(1)}%` : 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-500">Win Rate</span>
+                    <div className="font-medium text-blue-600">
+                      {topStrategy.performance?.winRate ? `${(topStrategy.performance.winRate * 100).toFixed(1)}%` : 'N/A'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-500">Total Trades</span>
+                    <div className="font-medium text-purple-600">
+                      {topStrategy.performance?.tradeCount || 'N/A'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Precheck Result */}
+                {showPrecheck && selectedSession === sessionId && selectedStrategy === topStrategy.id && (
+                  <Card className="mb-4 bg-blue-50 border-blue-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Eye className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm font-medium text-blue-800">EVO Precheck Results</span>
+                        {precheckLoading && <Loader2 className="w-4 h-4 animate-spin text-blue-600" />}
+                      </div>
+
+                      {precheckResult && (
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            {precheckResult.ok ? (
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <XCircle className="w-4 h-4 text-red-600" />
+                            )}
+                            <span className={`text-sm font-medium ${
+                              precheckResult.ok ? 'text-green-800' : 'text-red-800'
+                            }`}>
+                              {precheckResult.ok ? 'PASS: Eligible for EVO' : 'FAIL: Not eligible'}
+                            </span>
+                          </div>
+
+                          {!precheckResult.ok && precheckResult.failed && (
+                            <div className="text-xs text-red-700 ml-6">
+                              Failed checks: {precheckResult.failed.join(', ')}
+                            </div>
+                          )}
+
+                          <div className="text-xs text-gray-600 ml-6">
+                            Sharpe: {precheckResult.metrics.sharpe.toFixed(2)} |
+                            Win Rate: {(precheckResult.metrics.win.toFixed(1))}% |
+                            Trades: {precheckResult.metrics.trades}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Ready for EVO promotion with segregated capital allocation
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEvoPrecheck(sessionId, topStrategy.id)}
+                      disabled={precheckLoading}
+                    >
+                      <FileText className="w-3 h-3 mr-1" />
+                      Precheck
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => handleEvoStage(sessionId, topStrategy.id, topStrategy.id)}
+                      disabled={!precheckResult?.ok || stageMutation.isPending}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {stageMutation.isPending ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Shield className="w-3 h-3 mr-1" />
+                      )}
+                      Stage for EVO
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        }) || []}
+
+        {(!evoHistory?.experiments || evoHistory.experiments.length === 0) && !evoLoading && (
+          <div className="text-center py-8 text-gray-500">
+            <Crown className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Promotion Candidates</h3>
+            <p className="text-gray-600">Complete EvoTester sessions to see strategies ready for EVO promotion</p>
+          </div>
+        )}
+      </div>
+
+      {/* EVO Promotion Stats */}
+      {evoHistory?.experiments && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-green-600 mb-1">
+                {evoHistory.experiments.filter((exp: any) => exp.topStrategies?.[0]).length}
+              </div>
+              <div className="text-sm text-gray-600">Ready for EVO</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600 mb-1">
+                {evoHistory.experiments.length}
+              </div>
+              <div className="text-sm text-gray-600">Total Sessions</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-purple-600 mb-1">
+                {Math.round(evoHistory.experiments.reduce((acc: number, exp: any) =>
+                  acc + (exp.topStrategies?.[0]?.performance?.sharpeRatio || 0), 0) /
+                  evoHistory.experiments.filter((exp: any) => exp.topStrategies?.[0]).length * 100) / 100 || 0}
+              </div>
+              <div className="text-sm text-gray-600">Avg Sharpe</div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
 
   const renderPipelineOverview = () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -389,11 +631,16 @@ const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' })
       <CardContent>
         {renderPipelineOverview()}
 
-        <Tabs defaultValue="pipelines">
+        <Tabs defaultValue="evo">
           <TabsList className="mb-6">
+            <TabsTrigger value="evo">EVO Promotion</TabsTrigger>
             <TabsTrigger value="pipelines">Promotion Pipelines</TabsTrigger>
             <TabsTrigger value="criteria">Promotion Criteria</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="evo">
+            {renderEvoPromotion()}
+          </TabsContent>
 
           <TabsContent value="pipelines">
             {renderPipelineDetails()}

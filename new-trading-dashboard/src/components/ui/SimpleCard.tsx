@@ -9,14 +9,18 @@ type SimpleCardProps = {
 
 function SimpleCardBase({ title, action, children, className = '' }: SimpleCardProps) {
   return (
-    <div className={`rounded-2xl border border-white/10 bg-white/5 p-4 ${className}`}>
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold opacity-80 truncate pr-2">{title}</h3>
+    <div className={`card ${className}`}>
+      <div className="card-header">
+        <h3 className="card-title truncate pr-2">{title}</h3>
         {action ? (
-          <div className="text-xs opacity-70 hover:opacity-100">{action}</div>
+          <div className="text-sm opacity-80 hover:opacity-100 transition-opacity flex-shrink-0">
+            {action}
+          </div>
         ) : null}
       </div>
-      {children}
+      <div className="card-content">
+        {children}
+      </div>
     </div>
   )
 }

@@ -134,204 +134,210 @@ export default function MarketDataPage(){
   };
 
   return (
-    <div className="w-full py-6">
-      <div className="w-full max-w-7xl mx-auto px-4 xl:px-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">Market Data</h1>
-            <p className="text-sm text-muted-foreground">
-              Real-time charts, quotes, and market analysis
-            </p>
+    <div className="w-full min-h-screen bg-background">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">Market Data</h1>
+            <Button
+              onClick={() => {
+                refetchQuotes();
+                refetchChart();
+              }}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw size={16} />
+              Refresh Data
+            </Button>
           </div>
-          <Button
-            onClick={() => {
-              refetchQuotes();
-              refetchChart();
-            }}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw size={16} />
-            Refresh
-          </Button>
+          <p className="text-sm text-muted-foreground mt-2">
+            Real-time charts, quotes, and market analysis
+          </p>
         </div>
 
-        {/* Watchlist and Chart Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-          {/* Watchlist */}
-          <Card className="xl:col-span-1">
-            <div className="card-header">
-              <div className="flex items-center justify-between">
-                <h3 className="card-title">Watchlist</h3>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowAddSymbol(true)}
-                  className="flex items-center gap-1"
-                >
-                  <Plus size={14} />
-                  Add
-                </Button>
-              </div>
-            </div>
-            <div className="card-content">
-              {/* Add Symbol Input */}
-              {showAddSymbol && (
-                <div className="mb-4 p-3 border rounded-lg bg-muted/50">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Enter symbol (e.g., MSFT)"
-                      value={newSymbol}
-                      onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
-                      className="flex-1 px-3 py-2 text-sm border rounded"
-                      onKeyPress={(e) => e.key === 'Enter' && addSymbol()}
-                    />
-                    <Button size="sm" onClick={addSymbol}>
-                      Add
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setShowAddSymbol(false)}>
-                      <X size={14} />
-                    </Button>
-                  </div>
+        {/* Main Dashboard Content - Vertical Flow */}
+        <div className="dashboard-container">
+          {/* Watchlist Section */}
+          <div className="dashboard-section">
+            <Card className="card">
+              <div className="card-header">
+                <div className="flex items-center justify-between">
+                  <h3 className="card-title">Watchlist</h3>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowAddSymbol(true)}
+                    className="flex items-center gap-1"
+                  >
+                    <Plus size={14} />
+                    Add Symbol
+                  </Button>
                 </div>
-              )}
+                <div className="card-subtle">{symbols.length} symbols</div>
+              </div>
+              <div className="card-content">
+                {/* Add Symbol Input */}
+                {showAddSymbol && (
+                  <div className="mb-6 p-4 border border-border rounded-lg bg-card/30">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Enter symbol (e.g., MSFT)"
+                        value={newSymbol}
+                        onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
+                        className="flex-1 px-3 py-2 text-sm border border-border rounded focus:ring-2 focus:ring-primary focus:border-transparent"
+                        onKeyPress={(e) => e.key === 'Enter' && addSymbol()}
+                      />
+                      <Button size="sm" onClick={addSymbol}>
+                        Add
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setShowAddSymbol(false)}>
+                        <X size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
-              {/* Watchlist Items */}
-              <div className="space-y-2">
-                {quotesLoading ? (
-                  <div className="text-center py-4">
-                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">Loading quotes...</p>
-                  </div>
-                ) : !quotes || quotes.length === 0 ? (
-                  <div className="text-center py-4 text-muted-foreground">
-                    No symbols in watchlist
-                  </div>
-                ) : (
-                  quotes.map((quote: any) => (
-                    <div
-                      key={quote.symbol}
-                      className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
-                        selectedSymbol === quote.symbol
-                          ? 'bg-primary/10 border-primary/30'
-                          : 'hover:bg-muted/50 border-border'
-                      }`}
-                      onClick={() => setSelectedSymbol(quote.symbol)}
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{quote.symbol}</span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeSymbol(quote.symbol);
-                            }}
-                            className="h-6 w-6 p-0 opacity-50 hover:opacity-100"
-                          >
-                            <X size={12} />
-                          </Button>
+                {/* Watchlist Items */}
+                <div className="space-y-3">
+                  {quotesLoading ? (
+                    <div className="text-center py-8">
+                      <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-primary" />
+                      <p className="text-sm text-muted-foreground">Loading quotes...</p>
+                    </div>
+                  ) : !quotes || quotes.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Activity className="w-8 h-8 mx-auto mb-3 opacity-50" />
+                      <p className="text-lg font-medium">No symbols in watchlist</p>
+                      <p className="text-sm mt-2">Add symbols to start tracking market data.</p>
+                    </div>
+                  ) : (
+                    quotes.map((quote: any) => (
+                      <div
+                        key={quote.symbol}
+                        className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                          selectedSymbol === quote.symbol
+                            ? 'bg-primary/10 border-primary/30 shadow-sm'
+                            : 'hover:bg-muted/50 border-border hover:shadow-sm'
+                        }`}
+                        onClick={() => setSelectedSymbol(quote.symbol)}
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <span className="font-semibold text-lg">{quote.symbol}</span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeSymbol(quote.symbol);
+                              }}
+                              className="h-7 w-7 p-0 opacity-50 hover:opacity-100 hover:bg-destructive/20 hover:text-destructive"
+                            >
+                              <X size={14} />
+                            </Button>
+                          </div>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            ${Number(quote.last || quote.price || 0).toFixed(2)}
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          ${Number(quote.last || quote.price || 0).toFixed(2)}
+                        <div className="text-right">
+                          <div className={`text-lg font-semibold ${
+                            (quote.pct || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+                          }`}>
+                            {(quote.pct || 0) >= 0 ? '+' : ''}{Number(quote.pct || 0).toFixed(2)}%
+                          </div>
+                          <div className={`flex items-center gap-1 text-sm mt-1 ${
+                            (quote.pct || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+                          }`}>
+                            {(quote.pct || 0) >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                            ${Math.abs(Number(quote.change || 0)).toFixed(2)}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className={`text-sm font-medium ${
-                          (quote.pct || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                        }`}>
-                          {(quote.pct || 0) >= 0 ? '+' : ''}{Number(quote.pct || 0).toFixed(2)}%
-                        </div>
-                        <div className={`flex items-center gap-1 text-xs ${
-                          (quote.pct || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                        }`}>
-                          {(quote.pct || 0) >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                          ${Math.abs(Number(quote.change || 0)).toFixed(2)}
-                        </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Chart Section */}
+          <div className="dashboard-section">
+            <Card className="card">
+              <div className="card-header">
+                <div className="flex items-center justify-between">
+                  <h3 className="card-title">Chart - {selectedSymbol}</h3>
+                  <div className="flex items-center gap-3">
+                    <div className="card-subtle">{timeframe}</div>
+                    {/* Timeframe Selector */}
+                    <div className="flex gap-1">
+                      {timeframes.map((tf) => (
+                        <Button
+                          key={tf}
+                          size="sm"
+                          variant={timeframe === tf ? "default" : "outline"}
+                          onClick={() => setTimeframe(tf)}
+                          className="text-xs px-3"
+                        >
+                          {tf.replace('Min', 'm').replace('Hour', 'h').replace('Day', 'd')}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-content">
+                {renderChart()}
+              </div>
+            </Card>
+          </div>
+
+          {/* Market Overview Section */}
+          <div className="dashboard-section">
+            <Card className="card">
+              <div className="card-header">
+                <h3 className="card-title">Market Overview</h3>
+                <div className="card-subtle">Key market indicators</div>
+              </div>
+              <div className="card-content">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="flex items-center gap-4 p-4 bg-card/30 rounded-lg border border-border/50">
+                    <div className="p-3 bg-blue-500/20 rounded-lg">
+                      <Activity className="w-6 h-6 text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Market Status</p>
+                      <p className="font-semibold text-green-400">Open</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-card/30 rounded-lg border border-border/50">
+                    <div className="p-3 bg-green-500/20 rounded-lg">
+                      <TrendingUp className="w-6 h-6 text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">S&P 500</p>
+                      <p className="font-semibold text-green-400">+0.45%</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-card/30 rounded-lg border border-border/50">
+                    <div className="p-3 bg-purple-500/20 rounded-lg">
+                      <div className="w-6 h-6 text-purple-400 flex items-center justify-center font-bold text-xs">
+                        VIX
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </Card>
-
-          {/* Chart */}
-          <Card className="xl:col-span-2">
-            <div className="card-header">
-              <div className="flex items-center justify-between">
-                <h3 className="card-title">Chart</h3>
-                <div className="flex items-center gap-2">
-                  {/* Timeframe Selector */}
-                  <div className="flex gap-1">
-                    {timeframes.map((tf) => (
-                      <Button
-                        key={tf}
-                        size="sm"
-                        variant={timeframe === tf ? "default" : "outline"}
-                        onClick={() => setTimeframe(tf)}
-                        className="text-xs"
-                      >
-                        {tf.replace('Min', 'm').replace('Hour', 'h').replace('Day', 'd')}
-                      </Button>
-                    ))}
+                    <div>
+                      <p className="text-sm text-muted-foreground">Volatility Index</p>
+                      <p className="font-semibold">17.2</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="card-content">
-              {renderChart()}
-            </div>
-          </Card>
-        </div>
-
-        {/* Market Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <div className="card-content">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/20 rounded-lg">
-                  <Activity className="w-6 h-6 text-blue-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Market Status</p>
-                  <p className="font-semibold text-green-400">Open</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="card-content">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/20 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-green-400" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">S&P 500</p>
-                  <p className="font-semibold">+0.45%</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="card-content">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-500/20 rounded-lg">
-                  <div className="w-6 h-6 text-purple-400 flex items-center justify-center font-bold text-xs">
-                    VIX
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Volatility Index</p>
-                  <p className="font-semibold">17.2</p>
-                </div>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

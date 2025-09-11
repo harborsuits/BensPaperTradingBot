@@ -425,7 +425,19 @@ export const handlers = [
     const outlets: Record<string, { count: number; avg_sent: number; avg_partisan: number; avg_info: number }> = {
       'Reuters': { count: 3, avg_sent: 0.1, avg_partisan: 0.05, avg_info: 0.72 },
       'Bloomberg': { count: 2, avg_sent: 0.2, avg_partisan: 0.15, avg_info: 0.85 },
-      'CNBC': { count: 4, avg_sent: -0.1, avg_partisan: 0.25, avg_info: 0.65 }
+      'CNBC': { count: 4, avg_sent: -0.1, avg_partisan: 0.25, avg_info: 0.65 },
+      'WSJ': { count: 5, avg_sent: 0.05, avg_partisan: 0.15, avg_info: 0.68 },
+      'FT': { count: 3, avg_sent: -0.15, avg_partisan: 0.22, avg_info: 0.74 },
+      'Yahoo Finance': { count: 4, avg_sent: -0.02, avg_partisan: -0.08, avg_info: 0.79 },
+      'MarketWatch': { count: 4, avg_sent: 0.18, avg_partisan: -0.01, avg_info: 0.71 },
+      'Seeking Alpha': { count: 1, avg_sent: -0.08, avg_partisan: -0.12, avg_info: 0.82 },
+      'The Guardian': { count: 2, avg_sent: 0.12, avg_partisan: 0.03, avg_info: 0.69 },
+      'BBC': { count: 4, avg_sent: -0.25, avg_partisan: 0.04, avg_info: 0.77 },
+      'AP News': { count: 5, avg_sent: 0.01, avg_partisan: 0.18, avg_info: 0.75 },
+      'Dow Jones': { count: 4, avg_sent: -0.03, avg_partisan: 0.07, avg_info: 0.68 },
+      'Barron\'s': { count: 1, avg_sent: -0.09, avg_partisan: 0.12, avg_info: 0.73 },
+      'Investopedia': { count: 3, avg_sent: -0.12, avg_partisan: 0.08, avg_info: 0.76 },
+      'CoinDesk': { count: 2, avg_sent: 0.22, avg_partisan: 0.11, avg_info: 0.84 }
     };
     
     let clusters: Array<any> = [];

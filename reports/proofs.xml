@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Safety Proof Suite" tests="16" failures="5" timestamp="2025-09-09T22:25:54.050Z">
+    <testcase name="System Health" time="0.001">
+    </testcase>
+    <testcase name="Pre-Trade Proof Generation" time="0.001">
+      <failure message="No proof data returned">
+        No proof data returned
+      </failure>
+    </testcase>
+    <testcase name="Post-Trade Execution Bounds" time="0.001">
+      <failure message="">
+        
+      </failure>
+    </testcase>
+    <testcase name="Post-Trade Structure Bounds" time="0.001">
+      <failure message="">
+        
+      </failure>
+    </testcase>
+    <testcase name="Post-Trade Cash Bounds" time="0.001">
+      <failure message="">
+        
+      </failure>
+    </testcase>
+    <testcase name="Post-Trade Greeks Drift" time="0.001">
+      <failure message="">
+        
+      </failure>
+    </testcase>
+    <testcase name="24h NBBO Freshness" time="0.001">
+    </testcase>
+    <testcase name="24h Friction Compliance" time="0.001">
+    </testcase>
+    <testcase name="24h Cap Compliance" time="0.001">
+    </testcase>
+    <testcase name="24h Slippage Conformance" time="0.001">
+    </testcase>
+    <testcase name="Broker Sides Attestation" time="0.001">
+    </testcase>
+    <testcase name="Broker Margin Attestation" time="0.001">
+    </testcase>
+    <testcase name="Broker Buying Power" time="0.001">
+    </testcase>
+    <testcase name="Idempotency Tokens" time="0.001">
+    </testcase>
+    <testcase name="Chaos: Stale NBBO Handling" time="0.001">
+    </testcase>
+    <testcase name="Chaos: Pool Freeze Handling" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>

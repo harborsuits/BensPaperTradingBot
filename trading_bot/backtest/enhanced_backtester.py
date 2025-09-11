@@ -13,6 +13,7 @@ from trading_bot.brokers.tradier_client import TradierClient
 from trading_bot.webhook_handler import MarketContext
 from trading_bot.trading_strategy import TradingStrategy
 from trading_bot.position_sizing import PositionSizer
+from trading_bot.risk.cost_model import apply_costs, CostModelConfig
 
 
 class EnhancedBacktester:
@@ -448,10 +449,27 @@ class EnhancedBacktester:
                 shares = int(position_value / price)
                 
                 if shares > 0 and price * shares <= available_capital:
-                    # Create buy order
-                    commission = price * shares * self.commission
-                    slippage = price * shares * self.slippage
-                    
+                    # Create buy order using unified cost model
+                    # Assume bid/ask spread based on current price (simple approximation)
+                    bid = price * 0.995  # rough bid
+                    ask = price * 1.005  # rough ask
+                    order_notional = price * shares
+                    # Use market context for VIX and participation
+                    vix = context.vix_level if hasattr(context, 'vix_level') else 20.0
+                    one_min_notional = order_notional * 10  # rough estimate
+
+                    # Apply unified cost model
+                    cost_details = apply_costs(
+                        asset="equity",  # default to equity
+                        side="buy",
+                        qty=shares,
+                        bid=bid,
+                        ask=ask,
+                        vix=vix,
+                        one_min_notional=one_min_notional,
+                        order_notional=order_notional
+                    )
+
                     order = {
                         'date': date,
                         'symbol': symbol,
@@ -459,9 +477,13 @@ class EnhancedBacktester:
                         'quantity': shares,
                         'price': price,
                         'cost': price * shares,
-                        'commission': commission,
-                        'slippage': slippage,
-                        'total_cost': price * shares + commission + slippage
+                        'half_spread_bps': cost_details['half_spread_bps'],
+                        'impact_bps': cost_details['impact_bps'],
+                        'modeled_slippage_bps': cost_details['modeled_slippage_bps'],
+                        'commission': cost_details['modeled_total_cost_cash'],
+                        'slippage': (cost_details['modeled_slippage_bps'] / 1e4) * order_notional,
+                        'total_cost': price * shares + cost_details['modeled_total_cost_cash'],
+                        'cost_details': cost_details
                     }
                     
                     orders.append(order)
@@ -471,10 +493,27 @@ class EnhancedBacktester:
                 # Sell existing position
                 shares = new_positions[symbol]
                 
-                # Create sell order
-                commission = price * shares * self.commission
-                slippage = price * shares * self.slippage
-                
+                # Create sell order using unified cost model
+                # Assume bid/ask spread based on current price (simple approximation)
+                bid = price * 0.995  # rough bid
+                ask = price * 1.005  # rough ask
+                order_notional = price * shares
+                # Use market context for VIX and participation
+                vix = context.vix_level if hasattr(context, 'vix_level') else 20.0
+                one_min_notional = order_notional * 10  # rough estimate
+
+                # Apply unified cost model
+                cost_details = apply_costs(
+                    asset="equity",  # default to equity
+                    side="sell",
+                    qty=shares,
+                    bid=bid,
+                    ask=ask,
+                    vix=vix,
+                    one_min_notional=one_min_notional,
+                    order_notional=order_notional
+                )
+
                 order = {
                     'date': date,
                     'symbol': symbol,
@@ -482,9 +521,13 @@ class EnhancedBacktester:
                     'quantity': shares,
                     'price': price,
                     'cost': price * shares,
-                    'commission': commission,
-                    'slippage': slippage,
-                    'total_cost': commission + slippage
+                    'half_spread_bps': cost_details['half_spread_bps'],
+                    'impact_bps': cost_details['impact_bps'],
+                    'modeled_slippage_bps': cost_details['modeled_slippage_bps'],
+                    'commission': cost_details['modeled_total_cost_cash'],
+                    'slippage': (cost_details['modeled_slippage_bps'] / 1e4) * order_notional,
+                    'total_cost': cost_details['modeled_total_cost_cash'],
+                    'cost_details': cost_details
                 }
                 
                 orders.append(order)

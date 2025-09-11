@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Hourglass, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatDistanceToNowStrict } from 'date-fns';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle, Search, Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/Badge';
 import { useHealth } from '@/hooks/useHealth';
 
 type EmptyStateProps = {

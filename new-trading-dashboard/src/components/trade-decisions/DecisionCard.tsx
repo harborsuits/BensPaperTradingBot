@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { DecisionTrace, proofStrength } from '@/types/DecisionTrace';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 
 interface DecisionCardProps {
   d: DecisionTrace;

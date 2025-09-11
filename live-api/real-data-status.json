@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-09-09T23:10:58.676Z",
+  "realDataSources": [
+    {
+      "name": "EVO Sessions",
+      "description": "Session lifecycle and evolution progress",
+      "status": "real",
+      "details": "Uses evo_sessions table with real timestamps and fitness scores"
+    },
+    {
+      "name": "EVO Allocations",
+      "description": "Strategy allocations and pool assignments",
+      "status": "real",
+      "details": "Uses evo_allocations table with real TTL and status tracking"
+    },
+    {
+      "name": "Competition Ledger",
+      "description": "Active allocation tracking",
+      "status": "real",
+      "details": "Queries real database for live allocation data"
+    },
+    {
+      "name": "Quote Provider",
+      "description": "Real-time price feeds",
+      "status": "real",
+      "details": "Uses Tradier API with MarketRecorder integration"
+    },
+    {
+      "name": "Poor-Capital Mode",
+      "description": "Symbol filtering and scoring",
+      "status": "real",
+      "details": "Uses real quotes cache instead of synthetic Math.random data"
+    },
+    {
+      "name": "Post-Trade Proofs",
+      "description": "Execution validation against real fills",
+      "status": "real",
+      "details": "Queries fills_snapshot table with real NBBO comparisons"
+    },
+    {
+      "name": "MarketRecorder",
+      "description": "Event-sourced market data logging",
+      "status": "real",
+      "details": "Captures all quotes, chains, orders, fills, and ledger changes"
+    }
+  ],
+  "syntheticSources": [
+    {
+      "name": "UI Mock Experiments",
+      "description": "EvolutionSandbox experiment data",
+      "status": "synthetic",
+      "details": "Frontend demo data - not safety-critical"
+    },
+    {
+      "name": "Historical Backtest Data",
+      "description": "Past market data for strategy testing",
+      "status": "synthetic",
+      "details": "Would use real historical feeds in production"
+    }
+  ],
+  "partiallyReal": [
+    {
+      "name": "PnL Calculations",
+      "description": "Realized and unrealized P&L",
+      "status": "partial",
+      "details": "Structure ready, needs real fills data integration"
+    },
+    {
+      "name": "Pool Status Metrics",
+      "description": "Portfolio equity and risk metrics",
+      "status": "partial",
+      "details": "Uses real ledger data, needs performance calculation enhancement"
+    }
+  ],
+  "recommendations": [
+    "✅ Set QUOTES_PROVIDER=tradier and TRADIER_TOKEN for real market data",
+    "✅ Enable AUTOREFRESH_ENABLED=1 for continuous quote updates",
+    "✅ The safety system now validates REAL data, not synthetic mocks",
+    "✅ MarketRecorder captures all market interactions for proof validation",
+    "⚠️  Consider adding real options chain data (currently simplified)",
+    "⚠️  Enhance PnL calculations with real position tracking",
+    "📝 UI mocks can remain for development/demo purposes"
+  ]
+}

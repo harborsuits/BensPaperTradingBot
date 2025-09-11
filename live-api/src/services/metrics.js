@@ -1,0 +1,40 @@
+// live-api/src/services/metrics.js
+const client = require('prom-client');
+
+const register = new client.Registry();
+const scoreLatency = new client.Histogram({
+  name:"brain_score_latency_ms",
+  help:"score latency",
+  buckets:[25,50,100,200,300,500,800,1200]
+});
+const planLatency = new client.Histogram({
+  name:"brain_plan_latency_ms",
+  help:"plan latency",
+  buckets:[25,50,100,200,300,500,800,1200]
+});
+const quotesFresh = new client.Gauge({
+  name:"fresh_quotes_s",
+  help:"quotes age seconds"
+});
+const featsFresh = new client.Gauge({
+  name:"fresh_features_s",
+  help:"features age seconds"
+});
+const wmFresh = new client.Gauge({
+  name:"fresh_world_model_s",
+  help:"world model age seconds"
+});
+
+register.registerMetric(scoreLatency);
+register.registerMetric(planLatency);
+register.registerMetric(quotesFresh);
+register.registerMetric(featsFresh);
+register.registerMetric(wmFresh);
+
+function observeFreshness(f) {
+  quotesFresh.set(f.quotes_s);
+  featsFresh.set(f.features_s);
+  wmFresh.set(f.world_model_s);
+}
+
+module.exports = { register, observeFreshness, scoreLatency, planLatency };

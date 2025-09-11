@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/Badge';
 import { format } from 'date-fns';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 

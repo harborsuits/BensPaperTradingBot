@@ -10,15 +10,16 @@
     "skipLibCheck": true,
     "strict": false,
     "sourceMap": true,
-    "types": ["node"]
+    "types": ["node"],
+    "allowJs": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "**/*.tsx",
-    "tests/**",
-    "../**"
+    "dist",
+    "tests",
+    "**/*.test.*"
   ]
 }

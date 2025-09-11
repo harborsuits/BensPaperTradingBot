@@ -3,6 +3,7 @@ import { resolveQuoteProvider } from '../providers/quotes';
 import type { Quote } from '../providers/quotes/QuoteProvider';
 import { roster } from './symbolRoster';
 import { refreshRosterFromBackend } from './symbolRosterLoader';
+import { recorder } from './marketRecorder';
 
 const emitter = new EventEmitter();
 let cache: Record<string, Quote> = {};
@@ -44,11 +45,68 @@ async function refreshBatch(symbols: string[]) {
     const data = await provider.getQuotes(symbols);
     Object.assign(cache, data);
     lastRefresh = Date.now();
-    emitter.emit('quotes', { quotes: data, time: new Date(lastRefresh).toISOString() });
+
+    // Record real quotes in MarketRecorder for proof validation
+    const ts_feed = new Date().toISOString();
+    const ts_recv = new Date(lastRefresh).toISOString();
+
+    for (const [symbol, quote] of Object.entries(data)) {
+      try {
+        await recorder.recordQuote(symbol, {
+          bid: quote.price,  // Using price as both bid/ask for simplicity
+          ask: quote.price,
+          last: quote.price,
+          volume: 0  // Tradier doesn't provide volume in quote endpoint
+        }, ts_feed, ts_recv, 'tradier');
+      } catch (recordError) {
+        console.warn(`Failed to record quote for ${symbol}:`, recordError.message);
+        // Don't fail the quote refresh if recording fails
+      }
+    }
+
+    emitter.emit('quotes', { quotes: data, time: ts_recv });
     healthBackoff = Math.max(1, Math.floor(healthBackoff / 2));
   } catch (e: any) {
     lastError = e?.message || String(e);
     healthBackoff = Math.min(8, healthBackoff + 1);
+
+    // Enhanced backoff monitoring with structured logging
+    const backoffInfo = {
+      level: healthBackoff,
+      reason: lastError,
+      recovery_time_seconds: (BASE_MS * healthBackoff) / 1000,
+      timestamp: new Date().toISOString(),
+      symbol_count: symbols.length,
+      rate_limit_hit: lastError.includes('429') || lastError.includes('rate limit'),
+      network_error: lastError.includes('timeout') || lastError.includes('network'),
+      // Mark data as stale during backoff to prevent trading
+      data_stale: true,
+      stale_until: new Date(Date.now() + (BASE_MS * healthBackoff)).toISOString()
+    };
+
+    console.warn('📊 QUOTES BACKOFF EVENT:', JSON.stringify(backoffInfo, null, 2));
+
+    // CRITICAL: Mark all cached data as stale during backoff
+    if (backoffInfo.rate_limit_hit || backoffInfo.network_error) {
+      console.error('🚨 RATE LIMIT/NETWORK ERROR: Marking all quote data as stale');
+
+      // Clear cache to force fresh data requirement
+      Object.keys(cache).forEach(symbol => {
+        delete cache[symbol];
+      });
+
+      // Emit critical alert for stale data during backoff
+      emitter.emit('quotes:stale_data_alert', {
+        reason: 'rate_limit_or_network_error',
+        backoff_level: healthBackoff,
+        cache_cleared: true,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Emit structured event for monitoring
+    emitter.emit('quotes:backoff', backoffInfo);
+
     throw e;
   }
 }

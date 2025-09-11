@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { format } from 'date-fns';
 

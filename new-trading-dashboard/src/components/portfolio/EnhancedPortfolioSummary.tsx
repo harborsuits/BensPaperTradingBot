@@ -247,13 +247,52 @@ const EnhancedPortfolioSummary: React.FC<EnhancedPortfolioSummaryProps> = ({
               <div className="space-y-1">
                 <span className="text-xs text-muted-foreground">Sharpe</span>
                 <div className={`font-medium ${
-                  (safeSummary.performance_metrics?.sharpe_ratio || 0) >= 1 ? 'text-green-500' : 
+                  (safeSummary.performance_metrics?.sharpe_ratio || 0) >= 1 ? 'text-green-500' :
                   (safeSummary.performance_metrics?.sharpe_ratio || 0) >= 0.5 ? 'text-amber-500' : 'text-red-500'
                 }`}>
                   {(safeSummary.performance_metrics?.sharpe_ratio || 0).toFixed(2)}
                 </div>
               </div>
             </div>
+
+            {/* After-Cost Performance Section */}
+            {(summary as any)?.after_cost_metrics && (
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="text-xs text-muted-foreground mb-3 font-medium">After-Cost Performance</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">Daily P/L (After Cost)</span>
+                    <div className={`font-medium text-sm ${
+                      (summary as any).after_cost_metrics.daily_pl_after_cost >= 0 ? 'text-green-500' : 'text-red-500'
+                    }`}>
+                      {(summary as any).after_cost_metrics.daily_pl_after_cost >= 0 ? '+' : ''}
+                      {formatCurrency((summary as any).after_cost_metrics.daily_pl_after_cost)}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">Avg Slippage (bps)</span>
+                    <div className="font-medium text-sm">
+                      {(summary as any).after_cost_metrics.avg_slippage_bps?.toFixed(1) || '0.0'}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">Total Trading Costs</span>
+                    <div className="font-medium text-sm text-red-500">
+                      {formatCurrency((summary as any).after_cost_metrics.total_trading_costs || 0)}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground">Cost Impact %</span>
+                    <div className="font-medium text-sm">
+                      {((summary as any).after_cost_metrics.cost_impact_pct || 0).toFixed(2)}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

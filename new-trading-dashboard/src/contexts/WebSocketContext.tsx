@@ -118,23 +118,42 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  // Schedule reconnection with exponential backoff
+  // Schedule reconnection with exponential backoff and jitter
   const scheduleReconnect = useCallback(() => {
+    // Don't reconnect if tab is hidden - wait for visibility change
+    if (document.hidden) {
+      console.log('Tab hidden - pausing reconnection until visible');
+      return;
+    }
+
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
     }
-    
-    const MAX_RECONNECT_DELAY = 30000; // 30 seconds
-    const MIN_RECONNECT_DELAY = 1000; // 1 second
-    const reconnectDelay = Math.min(
-      MIN_RECONNECT_DELAY * Math.pow(1.5, reconnectAttemptsRef.current),
-      MAX_RECONNECT_DELAY
+
+    // More conservative backoff: 100ms base, max 5s, with jitter
+    const BASE_DELAY = 100; // 100ms base (not 1s)
+    const MAX_DELAY = 5000; // 5s max (not 30s)
+    const JITTER_FACTOR = 0.3; // ±30% jitter
+
+    // Exponential backoff with cap
+    const exponentialDelay = Math.min(
+      BASE_DELAY * Math.pow(1.5, Math.min(reconnectAttemptsRef.current, 10)), // Cap exponent
+      MAX_DELAY
     );
-    
+
+    // Add jitter to prevent thundering herd
+    const jitter = exponentialDelay * JITTER_FACTOR * (Math.random() * 2 - 1);
+    const reconnectDelay = Math.max(100, exponentialDelay + jitter); // Min 100ms
+
     reconnectAttemptsRef.current += 1;
-    
-    console.log(`Scheduling WebSocket reconnection in ${reconnectDelay}ms (attempt ${reconnectAttemptsRef.current})`);
-    
+
+    // Only log first few attempts to reduce console spam
+    if (reconnectAttemptsRef.current <= 3) {
+      console.log(`WebSocket reconnection scheduled in ${(reconnectDelay / 1000).toFixed(1)}s (attempt ${reconnectAttemptsRef.current})`);
+    } else if (reconnectAttemptsRef.current % 5 === 0) {
+      console.log(`WebSocket reconnection attempt ${reconnectAttemptsRef.current} in ${(reconnectDelay / 1000).toFixed(1)}s`);
+    }
+
     reconnectTimeoutRef.current = setTimeout(() => {
       connect();
     }, reconnectDelay);
@@ -142,14 +161,16 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Handle different types of WebSocket messages
   const handleWebSocketMessage = useCallback((message: any) => {
-    // Reset ping timeout if we received any message
+    // Reset ping timeout if we received any message (proves connection is alive)
     if (pingTimeoutRef.current) {
       clearTimeout(pingTimeoutRef.current);
       pingTimeoutRef.current = null;
     }
-    
-    // Handle pong responses
+
+    // Handle pong responses explicitly
     if (message.type === 'pong') {
+      // Connection is confirmed alive
+      reconnectAttemptsRef.current = 0; // Reset reconnection attempts on successful pong
       return; // Don't process further
     }
     switch (message.type) {
@@ -254,24 +275,32 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   // Heartbeat to keep connection alive and detect disconnections
-  const heartbeatMsActive = 10000; // 10 seconds when tab is active
-  const heartbeatMsHidden = 30000; // 30 seconds when tab is hidden
-  const PING_TIMEOUT = 10000; // 10 seconds
-  
+  const heartbeatMsActive = 15000; // 15 seconds when tab is active (not too frequent)
+  const heartbeatMsHidden = 60000; // 60 seconds when tab is hidden (conservative)
+  const PING_TIMEOUT = 10000; // 10 seconds to wait for pong
+
   // Send ping message over WebSocket
   const sendPing = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      // Send ping
-      wsRef.current.send(JSON.stringify({ type: 'ping' }));
-      
-      // Set timeout for pong response
-      pingTimeoutRef.current = setTimeout(() => {
-        console.log('Ping timeout - connection may be dead');
+      try {
+        // Send ping with timestamp for debugging
+        const pingData = { type: 'ping', ts: Date.now() };
+        wsRef.current.send(JSON.stringify(pingData));
+
+        // Set timeout for pong response
+        pingTimeoutRef.current = setTimeout(() => {
+          console.warn('WebSocket ping timeout - connection may be dead');
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.close(1001, 'ping timeout'); // Going away
+          }
+        }, PING_TIMEOUT);
+      } catch (error) {
+        console.error('Error sending ping:', error);
+        // Force reconnection on ping send error
         if (wsRef.current) {
-          wsRef.current.close(1001); // Going away
-          // This will trigger the onclose handler which will schedule reconnect
+          wsRef.current.close(1001, 'ping send error');
         }
-      }, PING_TIMEOUT);
+      }
     }
   }, []);
   
@@ -284,27 +313,41 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     heartbeatIntervalRef.current = setInterval(sendPing, interval);
   }, [sendPing]);
   
-  // Handle visibility change
+  // Handle visibility change - resume reconnection and adjust heartbeat
   useEffect(() => {
     const handleVisibilityChange = () => {
-      // Re-arm heartbeat at appropriate cadence based on visibility
-      if (!wsRef.current) return;
-      
-      stopHeartbeat();
-      heartbeatIntervalRef.current = setInterval(
-        sendPing, 
-        document.hidden ? heartbeatMsHidden : heartbeatMsActive
-      );
+      const isHidden = document.hidden;
+
+      if (isHidden) {
+        // Tab hidden - pause heartbeat and reconnection
+        stopHeartbeat();
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+          reconnectTimeoutRef.current = null;
+          console.log('Tab hidden - paused reconnection');
+        }
+      } else {
+        // Tab visible - resume heartbeat and try reconnection if needed
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+          // Connection is good, just restart heartbeat
+          heartbeatIntervalRef.current = setInterval(sendPing, heartbeatMsActive);
+        } else if (wsRef.current?.readyState === WebSocket.CLOSED) {
+          // Connection is closed, try to reconnect
+          console.log('Tab visible - resuming reconnection');
+          reconnectAttemptsRef.current = 0; // Reset attempts for fresh start
+          scheduleReconnect();
+        }
+      }
     };
-    
+
     // Add event listener
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
     // Clean up
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [sendPing]);
+  }, [sendPing, scheduleReconnect]);
   
   // Stop heartbeat timers
   const stopHeartbeat = useCallback(() => {

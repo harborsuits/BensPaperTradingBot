@@ -90,12 +90,140 @@ html, body, #root {
   }
 }
 
-/* Equal-height cards in grids - Theme-aware */
-.card { @apply h-full flex flex-col rounded-2xl shadow-sm border border-border bg-card; }
-.card-header { @apply px-4 py-3 border-b border-border flex items-center justify-between; }
-.card-title { @apply font-semibold text-card-foreground; }
-.card-subtle { @apply text-xs text-muted-foreground; }
-.card-content { @apply p-4 grow; }
+/* Enhanced card styles for vertical flow layout */
+.card {
+  @apply w-full flex flex-col rounded-xl shadow-sm border border-border bg-card/50 backdrop-blur-sm;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  @apply bg-card/70 shadow-md transform translate-y-[-1px];
+}
+
+.card-header {
+  @apply px-6 py-4 border-b border-border flex items-center justify-between;
+}
+
+.card-title {
+  @apply font-semibold text-lg text-card-foreground;
+}
+
+.card-subtle {
+  @apply text-xs text-muted-foreground;
+}
+
+.card-content {
+  @apply p-6 grow;
+}
+
+/* Vertical flow dashboard layout */
+.dashboard-container {
+  @apply space-y-8;
+}
+
+.dashboard-section {
+  @apply w-full;
+}
+
+/* Enhanced responsive design */
+@media (max-width: 640px) {
+  .dashboard-container {
+    @apply space-y-6;
+  }
+
+  .card-header {
+    @apply px-4 py-3;
+  }
+
+  .card-content {
+    @apply p-4;
+  }
+
+  .card-title {
+    @apply text-base;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-container {
+    @apply space-y-10;
+  }
+}
+
+/* Smooth animations and transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Enhanced scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+}
+
+/* Loading states */
+.loading-skeleton {
+  @apply animate-pulse bg-muted/50 rounded;
+}
+
+/* Consistent text sizing across components */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Utility classes for consistent spacing */
+.section-spacing {
+  @apply space-y-6 sm:space-y-8 lg:space-y-10;
+}
+
+.card-spacing {
+  @apply space-y-4 sm:space-y-6;
+}
+
+/* Browser compatibility fixes */
+@supports (backdrop-filter: blur(10px)) {
+  .card {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .card {
+    background: hsl(var(--card) / 0.8);
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* Compact numeric text that still looks good when cards shrink */
 .num { font-variant-numeric: tabular-nums; }

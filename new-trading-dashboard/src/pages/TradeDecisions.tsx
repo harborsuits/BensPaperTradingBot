@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useDecisionFeed } from "@/hooks/useDecisionFeed";
 import { DecisionCard } from "@/components/trade-decisions/DecisionCard";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";
 import EvidenceDrawer from "@/components/trading/EvidenceDrawer";
 import { buildEvidenceFromUi, enrichWithWhy } from "@/lib/evidence/builders";
 

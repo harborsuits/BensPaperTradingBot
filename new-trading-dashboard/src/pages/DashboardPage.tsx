@@ -11,15 +11,19 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import SafetyControls from '@/components/trading/SafetyControls';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
-import PortfolioSummaryCard from '@/components/dashboard/PortfolioSummaryCard';
+import PortfolioCard from '@/components/dashboard/PortfolioCard';
 import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
 import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
+import BrainScoringActivityCard from '@/components/dashboard/BrainScoringActivityCard';
+import NewsSentimentDashboard from '@/components/dashboard/NewsSentimentDashboard';
+import PaperExecutionMonitor from '@/components/dashboard/PaperExecutionMonitor';
 import { toPortfolio, toArray } from '@/services/normalize';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
 import PriceTape from '@/components/cards/PriceTape';
 import ScannerCandidatesCard from '@/components/cards/ScannerCandidatesCard';
 import RealtimeBanner from '@/components/Banners/RealtimeBanner';
+import EvoTestCard from '@/components/ui/EvoTestCard';
 
 // Helpers to make rendering resilient to undefined data
 const asArray = <T,>(v: T[] | undefined | null): T[] => (Array.isArray(v) ? v : []);
@@ -183,122 +187,161 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full py-6">
-      <div className="w-full max-w-7xl px-4 xl:px-6 mx-auto">
-        <RealtimeBanner />
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="w-full min-h-screen bg-background">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header Section */}
+        <div className="mb-8">
+          <RealtimeBanner />
+          <div className="flex items-center justify-between mt-4">
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          </div>
         </div>
 
-        {/* Activity loop strip and ingestion activity ticker */}
-        <div className="space-y-3 mb-6">
+        {/* Activity Strips - Full Width */}
+        <div className="mb-8 space-y-4">
           <AutoRunnerStrip />
           <ActivityTicker />
         </div>
 
-        {/* Live prices */}
-        <div className="mb-6">
+        {/* Price Tape - Full Width */}
+        <div className="mb-8">
           <PriceTape />
         </div>
 
-        {/* Responsive 2-column dashboard layout */}
+        {/* Main Dashboard Content - Vertical Flow */}
         <ErrorBoundary>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Column 1 - Core Portfolio & Activity */}
-          <div className="space-y-4 md:space-y-6">
-            <PortfolioSummaryCard />
-            <ScannerCandidatesCard />
-          </div>
+          <div className="dashboard-container">
+            {/* Portfolio Summary - Primary Card */}
+            <div className="dashboard-section">
+              <PortfolioCard />
+            </div>
 
-          {/* Column 2 - AI Insights & Safety */}
-          <div className="space-y-4 md:space-y-6">
-            <BrainFlowNowCard />
-            <SimpleCard title="Safety Controls">
-              <SafetyControls />
-            </SimpleCard>
-          </div>
+            {/* Brain Flow AI Insights */}
+            <div className="dashboard-section">
+              <BrainFlowNowCard />
+            </div>
 
-          {/* Full-width section for market intelligence */}
-          <div className="col-span-1 md:col-span-2">
-            <TickerHighlightsCard />
-          </div>
+            {/* Brain Scoring Activity */}
+            <div className="dashboard-section">
+              <BrainScoringActivityCard />
+            </div>
 
-          {/* Full-width section for recent activity */}
-          <div className="col-span-1 md:col-span-2">
-            <SimpleCard title="Recent Trade Decisions" action={<Link to="/decisions" className="text-sm text-primary flex items-center">View all <ChevronRight size={16} /></Link>}>
-              <div className="min-h-[240px] space-y-3">
-            {(() => {
-              try {
-                const decisions = Array.isArray(recentDecisions) ? recentDecisions : [];
-                return decisions.length > 0 ? (
-                  decisions.slice(0, 4).map((decision, idx) => {
-                    const d = decision as any;
-                    if (!d?.symbol) return null;
-                    return (
-                      <div key={String(d.id || `${d.symbol}-${d.timestamp || d.created_at || d.decidedAt || (d.asOf) || idx}-${d.direction || d.action || ''}`)} className="border border-border rounded-md p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{d.symbol}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full
-                              ${d.action === 'buy' ? 'bg-bull/20 text-bull' : 'bg-bear/20 text-bear'}`}
-                            >
-                              {(d.action || 'HOLD').toString().toUpperCase()}
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full
-                              ${d.decided === 'executed' ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}
-                            >
-                              {d.decided === 'executed' ? 'Executed' : 'Pending'}
-                            </span>
-                          </div>
-                          <span className="text-sm flex items-center gap-1">
-                            Score: <span className="font-medium">{Math.round(numberOr(d.score, 0) * 100)}</span>
-                          </span>
+            {/* News Sentiment Dashboard */}
+            <div className="dashboard-section">
+              <NewsSentimentDashboard />
+            </div>
+
+            {/* Paper Execution Monitor */}
+            <div className="dashboard-section">
+              <PaperExecutionMonitor />
+            </div>
+
+            {/* Safety Controls */}
+            <div className="dashboard-section">
+              <SimpleCard title="Safety Controls">
+                <SafetyControls />
+              </SimpleCard>
+            </div>
+
+            {/* Scanner Candidates */}
+            <div className="dashboard-section">
+              <ScannerCandidatesCard />
+            </div>
+
+            {/* Evolution Testing */}
+            <div className="dashboard-section">
+              <EvoTestCard />
+            </div>
+
+            {/* Market Intelligence */}
+            <div className="dashboard-section">
+              <TickerHighlightsCard />
+            </div>
+
+            {/* Recent Trade Decisions */}
+            <div className="dashboard-section">
+              <SimpleCard
+                title="Recent Trade Decisions"
+                action={
+                  <Link to="/decisions" className="text-sm text-primary flex items-center hover:text-primary/80 transition-colors">
+                    View all <ChevronRight size={16} className="ml-1" />
+                  </Link>
+                }
+                className="w-full"
+              >
+                <div className="min-h-[280px]">
+                  {(() => {
+                    try {
+                      const decisions = Array.isArray(recentDecisions) ? recentDecisions : [];
+                      return decisions.length > 0 ? (
+                        <div className="space-y-4">
+                          {decisions.slice(0, 4).map((decision, idx) => {
+                            const d = decision as any;
+                            if (!d?.symbol) return null;
+                            return (
+                              <div
+                                key={String(d.id || `${d.symbol}-${d.timestamp || d.created_at || d.decidedAt || (d.asOf) || idx}-${d.direction || d.action || ''}`)}
+                                className="border border-border rounded-lg p-4 bg-card/50 hover:bg-card/70 transition-colors"
+                              >
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center gap-3">
+                                    <span className="font-semibold text-lg text-foreground">{d.symbol}</span>
+                                    <span className={`text-xs px-3 py-1 rounded-full font-medium
+                                      ${d.action === 'buy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}
+                                    >
+                                      {(d.action || 'HOLD').toString().toUpperCase()}
+                                    </span>
+                                    <span className={`text-xs px-3 py-1 rounded-full font-medium
+                                      ${d.decided === 'executed' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'}`}
+                                    >
+                                      {d.decided === 'executed' ? 'Executed' : 'Pending'}
+                                    </span>
+                                  </div>
+                                  <div className="text-sm font-medium text-foreground">
+                                    Score: <span className="text-primary text-lg">{Math.round(numberOr(d.score, 0) * 100)}</span>
+                                  </div>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                                  {d.reason || d.reasons?.[0] || 'No reason provided'}
+                                </p>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                  <span className="font-medium">Strategy: {d.strategy_name || d.strategy || '—'}</span>
+                                  <span className="font-medium">
+                                    {(() => {
+                                      try {
+                                        const ts = d.timestamp || d.decidedAt;
+                                        return ts ? new Date(ts).toLocaleTimeString() : '—';
+                                      } catch { return '—'; }
+                                    })()}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }).filter(Boolean)}
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-1">{d.reason || d.reasons?.[0] || 'No reason provided'}</p>
-                        <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                          <span>Strategy: {d.strategy_name || d.strategy || '—'}</span>
-                          <span>{(() => {
-                            try {
-                              const ts = d.timestamp || d.decidedAt;
-                              return ts ? new Date(ts).toLocaleTimeString() : '—';
-                            } catch { return '—'; }
-                          })()}</span>
+                      ) : (
+                        <div className="text-center text-muted-foreground py-12">
+                          <TrendingUp className="mx-auto h-12 w-12 mb-4 opacity-50" />
+                          <p className="text-lg font-medium">No recent trade decisions</p>
+                          <p className="text-sm mt-2">Trade decisions will appear here as they are made.</p>
                         </div>
-                      </div>
-                    );
-                  }).filter(Boolean)
-                ) : (
-                  <div className="text-center text-muted-foreground py-8">
-                    <TrendingUp className="mx-auto h-8 w-8 mb-2 opacity-50" />
-                    <p>No recent trade decisions</p>
-                  </div>
-                );
-              } catch (error) {
-                console.error('Dashboard decisions error:', error);
-                return (
-                  <div className="text-center text-red-500 py-8">
-                    <AlertTriangle className="mx-auto h-8 w-8 mb-2" />
-                    <p>Error loading decisions</p>
-                  </div>
-                );
-              }
-            })()}
+                      );
+                    } catch (error) {
+                      console.error('Dashboard decisions error:', error);
+                      return (
+                        <div className="text-center text-red-500 py-12">
+                          <AlertTriangle className="mx-auto h-12 w-12 mb-4" />
+                          <p className="text-lg font-medium">Error loading decisions</p>
+                          <p className="text-sm mt-2">Please check the console for details.</p>
+                        </div>
+                      );
+                    }
+                  })()}
+                </div>
+              </SimpleCard>
+            </div>
           </div>
-        </SimpleCard>
-        </div>
-
-
-        {/* Removed extra Brain Flow card (kept BrainFlowNowCard above) */}
-
-        {/* Removed Market Context per request */}
-
-        {/* Removed Active Strategies per request */}
-
-        {/* Ticker Highlights (to be implemented next) */}
-        </div>
         </ErrorBoundary>
-
-
       </div>
     </div>
   );

@@ -1,0 +1,23 @@
+name: ma_crossover_v1
+universe:
+  etfs: [SPY, QQQ, IWM, XLF, XLE, SMH]
+  equities: [AMD, INTC, F, BAC, PLTR, SOFI, DAL, PFE]
+params:
+  fast: 20
+  mid: 50
+  slow: 200
+  pullback_ema: 20
+  adx_min: 18
+  atr_stop: 1.2
+  trail_atr: 1.5
+  partial_at_R: 1.0
+risk:
+  max_loss_pct: 0.01
+  per_trade_cap_pct: 0.01
+  max_concurrent: 5
+gates:
+  spread_bps_stock: 25
+  spread_bps_etf: 15
+  quote_age_ms_stock: 1000
+  quote_age_ms_affordable: 500
+  participation_pct: 0.5

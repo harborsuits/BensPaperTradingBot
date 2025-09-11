@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { Lock, RefreshCw } from 'lucide-react';
 import { useHealth } from '@/hooks/useHealth';
 import { fmtShortHand } from '@/utils/formatters';
