@@ -15,8 +15,10 @@ import PortfolioCard from '@/components/dashboard/PortfolioCard';
 import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
 import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
 import BrainScoringActivityCard from '@/components/dashboard/BrainScoringActivityCard';
+import BrainEvoFlow from '@/components/BrainEvoFlow';
 import NewsSentimentDashboard from '@/components/dashboard/NewsSentimentDashboard';
 import PaperExecutionMonitor from '@/components/dashboard/PaperExecutionMonitor';
+import AIOrchestratorStatus from '@/components/AIOrchestratorStatus';
 import { toPortfolio, toArray } from '@/services/normalize';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
@@ -224,6 +226,16 @@ const DashboardPage: React.FC = () => {
             {/* Brain Scoring Activity */}
             <div className="dashboard-section">
               <BrainScoringActivityCard />
+            </div>
+
+            {/* Brain & Evo Flow */}
+            <div className="dashboard-section">
+              <BrainEvoFlow />
+            </div>
+
+            {/* AI Orchestrator Status */}
+            <div className="dashboard-section">
+              <AIOrchestratorStatus />
             </div>
 
             {/* News Sentiment Dashboard */}

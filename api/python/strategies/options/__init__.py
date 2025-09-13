@@ -99,7 +99,7 @@ except ImportError as e:
     logging.warning(f"Some advanced spread strategies could not be imported: {e}")
 
 # Register all strategies with the strategy registry
-from trading_bot.core.strategy_registry import StrategyRegistry, StrategyType, AssetClass, MarketRegime, TimeFrame
+from trading_bot.core.strategy_registry import StrategyRegistry, AssetClass, MarketRegime, TimeFrame
 
 try:
     # Register the base strategy
@@ -111,59 +111,63 @@ try:
         # Prioritize the new implementation
         from trading_bot.strategies.options.complex_spreads.iron_condor_strategy_new import IronCondorStrategyNew
         StrategyRegistry.register(
-            "iron_condor", 
+            "iron_condor",
             IronCondorStrategyNew,
             metadata={
-                "type": StrategyType.INCOME,
-                "asset_class": AssetClass.OPTIONS,
-                "market_regime": MarketRegime.RANGE_BOUND,
-                "timeframe": TimeFrame.SWING
+                "type": "income",  # Use string instead of enum
+                "asset_class": "options",
+                "market_regime": "range_bound",
+                "timeframe": "swing"
             }
         )
         logging.info("Registered Iron Condor Strategy (New Implementation)")
     except ImportError:
         # Fall back to the original implementation if needed
-        StrategyRegistry.register("iron_condor", IronCondorStrategy)
+        if IronCondorStrategy:
+            StrategyRegistry.register("iron_condor", IronCondorStrategy)
         logging.info("Registered Iron Condor Strategy (Original Implementation)")
-    
+
     # 2. Register Strangle - VOLATILITY strategy
-    StrategyRegistry.register(
-        "strangle", 
-        StrangleStrategy,
-        metadata={
-            "type": StrategyType.VOLATILITY,
-            "asset_class": AssetClass.OPTIONS,
-            "market_regime": MarketRegime.VOLATILE,
-            "timeframe": TimeFrame.SWING
-        }
-    )
-    logging.info("Registered Strangle Strategy")
-    
+    if StrangleStrategy:
+        StrategyRegistry.register(
+            "strangle",
+            StrangleStrategy,
+            metadata={
+                "type": "volatility",  # Use string instead of enum
+                "asset_class": "options",
+                "market_regime": "volatile",
+                "timeframe": "swing"
+            }
+        )
+        logging.info("Registered Strangle Strategy")
+
     # 3. Register Straddle - VOLATILITY strategy
-    StrategyRegistry.register(
-        "straddle", 
-        StraddleStrategy,
-        metadata={
-            "type": StrategyType.VOLATILITY,
-            "asset_class": AssetClass.OPTIONS,
-            "market_regime": MarketRegime.VOLATILE,
-            "timeframe": TimeFrame.SWING
-        }
-    )
-    logging.info("Registered Straddle Strategy")
-    
+    if StraddleStrategy:
+        StrategyRegistry.register(
+            "straddle",
+            StraddleStrategy,
+            metadata={
+                "type": "volatility",  # Use string instead of enum
+                "asset_class": "options",
+                "market_regime": "volatile",
+                "timeframe": "swing"
+            }
+        )
+        logging.info("Registered Straddle Strategy")
+
     # 4. Register Combined Straddle/Strangle strategy - VOLATILITY strategy
-    StrategyRegistry.register(
-        "straddle_strangle", 
-        StraddleStrangleStrategy,
-        metadata={
-            "type": StrategyType.VOLATILITY,
-            "asset_class": AssetClass.OPTIONS,
-            "market_regime": MarketRegime.VOLATILE,
-            "timeframe": TimeFrame.SWING
-        }
-    )
-    logging.info("Registered Straddle/Strangle Combined Strategy")
+    if StraddleStrangleStrategy:
+        StrategyRegistry.register(
+            "straddle_strangle",
+            StraddleStrangleStrategy,
+            metadata={
+                "type": "volatility",  # Use string instead of enum
+                "asset_class": "options",
+                "market_regime": "volatile",
+                "timeframe": "swing"
+            }
+        )
+        logging.info("Registered Straddle/Strangle Combined Strategy")
     
 except (NameError, ImportError) as e:
     import logging

@@ -1,0 +1,52 @@
+{
+  "max_allocation_change": 15.0,
+  "min_allocation_pct": 5.0,
+  "rotation_frequency_days": 7,
+  "enable_guardrails": true,
+  
+  "risk_levels": {
+    "low": {
+      "max_allocation": 35.0,
+      "aggressive_strategies_cap": 60.0
+    },
+    "medium": {
+      "max_allocation": 25.0,
+      "aggressive_strategies_cap": 45.0
+    },
+    "high": {
+      "max_allocation": 20.0,
+      "aggressive_strategies_cap": 30.0
+    }
+  },
+  
+  "strategy_risk_levels": {
+    "breakout_swing": "medium",
+    "momentum": "medium",
+    "mean_reversion": "low",
+    "trend_following": "medium",
+    "volatility_breakout": "high",
+    "option_spreads": "high",
+    "scalping": "high",
+    "grid_trading": "low",
+    "arbitrage": "low",
+    "market_making": "medium",
+    "statistical_arbitrage": "medium",
+    "pair_trading": "low"
+  },
+  
+  "drawdown_handling": {
+    "reduce_high_risk_threshold": 7.0,
+    "reduce_high_risk_factor": 0.7,
+    "reduce_all_threshold": 15.0,
+    "reduce_all_factor": 0.5,
+    "emergency_threshold": 20.0,
+    "emergency_max_allocation": 10.0
+  },
+  
+  "volatility_adjustments": {
+    "high_vix_threshold": 25.0,
+    "low_vix_threshold": 15.0,
+    "high_vix_aggressive_reduction": 0.7,
+    "low_vix_defensive_reduction": 0.8
+  }
+} 

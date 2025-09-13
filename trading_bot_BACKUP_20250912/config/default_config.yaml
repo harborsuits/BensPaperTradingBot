@@ -1,0 +1,122 @@
+# Default Trading Bot Configuration
+
+# General Configuration
+general:
+  name: "Trading Bot"
+  version: "1.0.0"
+  mode: "paper"  # paper, live, backtest
+  log_level: "INFO"
+  data_dir: "data"
+  max_concurrent_strategies: 5
+
+# Data Providers Configuration
+data_providers:
+  - name: "alphavantage"
+    type: "rest_api"
+    enabled: true
+    api_key: "YOUR_ALPHAVANTAGE_API_KEY"
+    base_url: "https://www.alphavantage.co/query"
+    rate_limit: 5  # calls per minute
+    timeout: 10  # seconds
+    
+  - name: "yahoo_finance"
+    type: "python_library"
+    enabled: true
+    cache_expiry: 30  # minutes
+
+# Strategies Configuration
+strategies:
+  calendar_spread:
+    enabled: true
+    interval_minutes: 60
+    symbols: ["SPY", "QQQ", "AAPL", "MSFT", "GOOG"]
+    parameters:
+      use_same_strike: true
+      net_theta_decay_target: 0.01
+      strike_selection: "ATM"
+      min_iv_rank: 30
+      max_iv_rank: 60
+      option_type: "call"
+      direction: "neutral"
+      liquidity_tier: "medium"
+      
+  swing_trading:
+    enabled: true
+    interval_minutes: 240  # 4 hours
+    symbols: ["SPY", "QQQ", "AAPL", "MSFT", "AMD", "NVDA"]
+    parameters:
+      fast_ma_period: 20
+      slow_ma_period: 50
+      rsi_period: 14
+      rsi_overbought: 70
+      rsi_oversold: 30
+      
+  mean_reversion:
+    enabled: false
+    interval_minutes: 30
+    symbols: ["SPY", "QQQ", "IWM"]
+    parameters:
+      lookback_period: 20
+      z_score_threshold: 2.0
+      holding_period: 5
+
+# Risk Management Configuration
+risk_management:
+  max_account_risk_pct: 2.0  # Maximum account risk per day (%)
+  max_position_size_pct: 5.0  # Maximum position size (%)
+  max_correlated_positions: 3  # Maximum number of correlated positions
+  stop_loss_pct: 2.0  # Default stop loss (%)
+  portfolio_value: 100000  # Portfolio value for paper trading
+  
+  # Portfolio Greek limits (per $100k of account value)
+  greek_limits:
+    normalized_delta: 500
+    normalized_gamma: 50
+    normalized_theta: 30
+    normalized_vega: 200
+    
+  # Strategy-specific risk limits
+  strategy_limits:
+    calendar_spread:
+      max_position_size_pct: 2.0
+      max_concurrent_positions: 3
+      risk_per_trade_pct: 0.5
+
+# Order Management Configuration
+order_management:
+  default_order_type: "limit"
+  default_exchange: "smart"
+  limit_order_slippage_pct: 0.1
+  retry_attempts: 3
+  retry_delay_seconds: 5
+  
+  # Paper trading settings
+  paper_trading:
+    slippage_model: "fixed"  # fixed, normal_distribution
+    slippage_std_dev: 0.001  # For normal_distribution model
+    commission_per_contract: 0.65
+    commission_min: 1.0
+
+# Notification Configuration
+notifications:
+  enabled: true
+  channels:
+    - type: "email"
+      enabled: true
+      smtp_server: "smtp.gmail.com"
+      smtp_port: 587
+      from_email: "your-email@gmail.com"
+      to_email: "your-email@gmail.com"
+      
+    - type: "telegram"
+      enabled: false
+      bot_token: "YOUR_TELEGRAM_BOT_TOKEN"
+      chat_id: "YOUR_TELEGRAM_CHAT_ID"
+      
+  events:
+    trade_executed: true
+    order_filled: true
+    strategy_started: true
+    strategy_stopped: true
+    risk_limit_breached: true
+    error: true 

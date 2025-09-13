@@ -5,7 +5,7 @@
   "credential_store": {
     "type": "encrypted",
     "path": "data/credentials.enc",
-    "master_password": "${TRADING_BOT_MASTER_PASSWORD}"
+    "master_password": "SecureTradingSystem2025"
   },
   "audit_log": {
     "enabled": true,
@@ -15,8 +15,8 @@
   "brokers": {
     "alpaca": {
       "enabled": true,
-      "api_key": "${ALPACA_API_KEY}",
-      "api_secret": "${ALPACA_API_SECRET}", 
+      "api_key": "PKYBHCCT1DIMGZX6P64A",
+      "api_secret": "ssidJ2cJU0EGBOhdHrXJd7HegoaPaAMQqs0AU2PO", 
       "paper_trading": true,
       "primary": true
     }

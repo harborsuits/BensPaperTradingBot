@@ -1,0 +1,49 @@
+{
+    "name": "Volatility_Breakout",
+    "strategy_type": "VolatilityBreakoutStrategy",
+    "symbol": "TSLA",
+    "timeframe": "1h",
+    "lookback_period": 20,
+    "volatility_factor": 1.5,
+    "entry_threshold": 2.0,
+    "exit_threshold": 0.8,
+    "indicators": {
+        "atr": {
+            "type": "ATR",
+            "timeperiod": 14
+        },
+        "bbands": {
+            "type": "BBANDS",
+            "timeperiod": 20,
+            "nbdevup": 2,
+            "nbdevdn": 2
+        },
+        "volume_ma": {
+            "type": "SMA",
+            "timeperiod": 20
+        }
+    },
+    "entry_rules": [
+        {
+            "condition": "volume > volume_ma * 1.5",
+            "entry_signal": "buy",
+            "description": "Entry when volume spikes along with price breakout"
+        }
+    ],
+    "exit_rules": [
+        {
+            "condition": "volume < volume_ma * 0.7",
+            "description": "Exit when volume dries up"
+        }
+    ],
+    "position_sizing": {
+        "type": "percent",
+        "value": 5.0
+    },
+    "risk_management": {
+        "stop_loss_pct": 4.0,
+        "take_profit_pct": 8.0,
+        "trailing_stop_pct": 2.0,
+        "max_drawdown_pct": 15.0
+    }
+}

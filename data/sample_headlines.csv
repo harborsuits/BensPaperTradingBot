@@ -1,0 +1,21 @@
+id,headline,timestamp,tickers,sector,sentiment,return_1d,return_5d
+1,"Apple Reports Strong Q4 Earnings, Beating Estimates",2024-01-15T14:30:00Z,AAPL,technology,0.8,0.025,0.08
+2,"Tesla Delivers Record Number of Vehicles in Q4",2024-01-16T10:15:00Z,TSLA,technology,0.7,0.032,0.12
+3,"Microsoft Cloud Revenue Surges 30% Year-over-Year",2024-01-17T16:45:00Z,MSFT,technology,0.9,0.018,0.06
+4,"NVIDIA Graphics Chip Demand Remains Strong",2024-01-18T11:20:00Z,NVDA,technology,0.6,0.028,0.09
+5,"Federal Reserve Signals Potential Rate Cuts in 2024",2024-01-19T14:00:00Z,SPY,markets,0.4,0.015,0.04
+6,"Oil Prices Surge on Middle East Tensions",2024-01-20T09:30:00Z,XOM,energy,-0.3,-0.022,-0.08
+7,"Gold Hits New High as Investors Seek Safe Haven",2024-01-21T13:15:00Z,GLD,commodities,0.5,0.012,0.03
+8,"Amazon Prime Membership Growth Slows",2024-01-22T15:45:00Z,AMZN,technology,-0.4,-0.035,-0.11
+9,"Johnson & Johnson Faces New Legal Challenges",2024-01-23T10:00:00Z,JNJ,healthcare,-0.6,-0.041,-0.13
+10,"Bitcoin Surges Past $50,000 Milestone",2024-01-24T12:30:00Z,BTC,crypto,0.7,0.045,0.15
+11,"Apple Announces New iPhone Line with AI Features",2024-01-25T09:00:00Z,AAPL,technology,0.8,0.022,0.07
+12,"Tesla Stock Falls on Production Concerns",2024-01-26T11:30:00Z,TSLA,technology,-0.5,-0.028,-0.09
+13,"Microsoft Acquires AI Startup for $2 Billion",2024-01-27T14:15:00Z,MSFT,technology,0.6,0.016,0.05
+14,"NVIDIA Faces Supply Chain Disruptions",2024-01-28T16:00:00Z,NVDA,technology,-0.4,-0.019,-0.06
+15,"Fed Minutes Show Divided Views on Inflation",2024-01-29T14:30:00Z,SPY,markets,0.1,0.008,0.02
+16,"Exxon Mobil Reports Higher Than Expected Profits",2024-01-30T10:45:00Z,XOM,energy,0.5,0.014,0.04
+17,"Gold Prices Decline on Economic Optimism",2024-01-31T13:20:00Z,GLD,commodities,-0.3,-0.011,-0.03
+18,"Amazon Expands into Healthcare with New Acquisition",2024-02-01T15:30:00Z,AMZN,technology,0.4,0.012,0.03
+19,"Pfizer Vaccine Revenue Declines as Expected",2024-02-02T11:15:00Z,PFE,healthcare,-0.2,-0.008,-0.02
+20,"Ethereum Network Congestion Slows Transactions",2024-02-03T14:45:00Z,ETH,crypto,-0.4,-0.031,-0.08

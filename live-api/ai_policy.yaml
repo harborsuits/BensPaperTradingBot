@@ -1,0 +1,119 @@
+ai_policy:
+  # Global paper trading budget and concurrency limits
+  paper_cap_max: 20000
+  exploration_quota: 0.10
+  rounds:
+    R1: { max_slots: 50, cap_total: 5000, criteria: { trades_min: 40, sharpe_min: 0.9, pf_min: 1.15, dd_max: 0.08, breaches_max: 0 } }
+    R2: { max_slots: 20, cap_total: 8000, criteria: { sharpe_min: 1.1, pf_min: 1.25, dd_max: 0.07, slip_bps_over_model_max: 5 } }
+    R3: { max_slots: 8,  cap_total: 7000, criteria: { sharpe_min: 1.2, pf_min: 1.3, dd_max: 0.06 } }
+  live_probation:
+    cap_per_strategy: 2500
+    demote_if:
+      sharpe_10d_max: 0.8
+      dd_max: 0.06
+      breaches_24h_max: 3
+      slip_bps_over_model_max: 8
+  cadence:
+    decisions_minutes: 15
+    nightly_backtest: "22:30-06:00"
+
+# Strategy families and their gene bounds by regime
+families:
+  trend:
+    weight: 0.5
+    genes:
+      ma_fast: [8,20]
+      ma_slow: [40,200]
+      adx_min: [18,30]
+      pullback_atr: [0.6,1.6]
+      sl_atr: [1.1,2.0]
+      tp_r: [0.8,1.6]
+      time_window: ["09:35","11:00"]
+
+  meanrev:
+    weight: 0.3
+    genes:
+      rsi_len: [9,21]
+      rsi_buy: [20,35]
+      rsi_sell: [65,80]
+      bb_dev: [1.6,2.4]
+      hold_mins: [5,45]
+      sl_pct: [0.8,2.0]
+
+  breakout:
+    weight: 0.2
+    genes:
+      range_mins: [5,15]
+      min_vol_x: [1.2,2.0]
+      slippage_bps_max: [10,25]
+      sl_atr: [0.9,1.5]
+
+# Trigger thresholds for autonomous decisions
+triggers:
+  regime_change:
+    volatility_spike_threshold: 1.5  # VIX change > 50%
+    trend_change_persistence: 5      # Days to confirm trend change
+
+  decay_detection:
+    sharpe_decay_threshold: -0.25    # 25% drop in Sharpe ratio
+    edge_decay_threshold: -0.25      # 25% drop in edge
+    lookback_days: 10
+
+  capacity_management:
+    paper_budget_threshold: 0.3      # 30% free budget triggers top-up
+    roster_gap_threshold: 0.2        # 20% below target roster size
+
+  event_drivers:
+    earnings_window_days: 7
+    fomc_window_days: 3
+    cpi_window_days: 2
+
+  drift_detection:
+    feature_drift_ks_threshold: 0.1  # KS statistic > 0.1 indicates drift
+    alpha_drift_threshold: 0.15      # 15% change in alpha
+
+# Safety guardrails
+guardrails:
+  pre_registration_filters:
+    min_adv_usd: 1000000    # Minimum average daily volume
+    max_spread_bps: 50      # Maximum spread in basis points
+    borrow_ssr_min: 2.0     # Minimum SSR for short positions
+    earnings_blackout_days: 5
+
+  execution_limits:
+    max_slippage_bps: 25
+    max_participation_pct: 5
+    quote_age_max_seconds: 30
+
+  compute_limits:
+    nightly_ga_max_evals: 10000
+    max_parallel_backtests: 8
+
+# Market regime mappings
+regimes:
+  trending:
+    families: ["trend"]
+    volatility_filter: [0.1, 0.3]
+    adapt_gene_bounds: true
+
+  choppy:
+    families: ["meanrev"]
+    volatility_filter: [0.05, 0.15]
+    adapt_gene_bounds: true
+
+  volatile:
+    families: ["breakout"]
+    volatility_filter: [0.25, 0.5]
+    adapt_gene_bounds: true
+
+  event_driven:
+    families: ["breakout", "trend"]
+    event_boost_weight: 1.5
+    adapt_gene_bounds: true
+
+# Feedback and learning parameters
+learning:
+  promotion_feedback_weight: 0.7
+  demotion_feedback_weight: 0.9
+  regime_adaptation_rate: 0.1
+  exploration_decay_rate: 0.95

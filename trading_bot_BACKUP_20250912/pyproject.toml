@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "benbot"
+version = "1.0.0"
+description = "BenBot - Algorithmic Trading System"
+authors = [
+    {name = "BenBot Team"}
+]
+dependencies = [
+    "pandas",
+    "numpy",
+    "requests",
+    "click",
+    "python-dotenv",
+    "sqlalchemy",
+    "fastapi",
+    "uvicorn",
+    "plotly",
+    "dash",
+    "ta-lib",
+    "yfinance",
+    "ccxt",
+    "websockets"
+]
+
+[project.scripts]
+benbot = "python.benbot_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["trading_bot*"]
+
+[tool.setuptools.package-data]
+trading_bot = ["config/*.yaml", "config/*.json", "core_strategies.yaml"]

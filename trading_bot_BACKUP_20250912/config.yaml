@@ -1,0 +1,100 @@
+# Tradier API Configuration
+tradier:
+  api_key: "YOUR_TRADIER_API_KEY"
+  account_id: "YOUR_TRADIER_ACCOUNT_ID"
+  endpoint: "https://api.tradier.com/v1/"
+  sandbox_mode: true  # Set to false for live trading
+
+# Bot Mode Settings
+mode: "manual"  # options: autonomous, manual
+default_strategy: "rsi_ema"
+risk_mode: "balanced"  # options: conservative, balanced, aggressive
+
+# Contextual AI Settings
+contextual_ai:
+  enabled: false
+  gpt_bias_filter: false
+  finbert_sentiment: false
+  macro_bias: false
+  pattern_scoring: false
+  
+# Trading Settings
+trading:
+  default_order_type: "market"
+  default_quantity: 1
+  max_position_size: 5
+  max_trades_per_day: 10
+  
+# Risk Management
+risk:
+  max_loss_per_trade_percent: 2.0
+  max_account_risk_percent: 5.0
+  stop_loss_percent: 3.0
+  take_profit_percent: 6.0
+
+# Webhook Settings
+webhook:
+  port: 5000
+  endpoint: "/tradingview-webhook"
+  secret_key: "YOUR_SECRET_KEY"  # For validating webhook requests
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_to_file: true
+  log_trades: true 
+
+# Macro Guidance Settings
+macro_guidance:
+  enabled: true
+  sector_rotation_path: "configs/sector_rotation_framework.json"
+  seasonality_insights_path: "configs/seasonality_insights_framework.json"
+  economic_calendar:
+    enabled: true
+    look_ahead_days: 14
+    api_source: "local"  # options: local, alpha_vantage, tradingeconomics
+  position_sizing:
+    vix_adjustments:
+      above_40: 0.6
+      above_30: 0.7
+      above_25: 0.8
+      above_20: 0.9
+    regime_adjustments:
+      expansion: 1.0
+      late_cycle: 0.8
+      contraction: 0.6
+      early_recovery: 0.9
+      unknown: 0.8
+    event_adjustments:
+      fomc: 0.7
+      cpi: 0.8
+      nfp: 0.8
+      gdp: 0.8
+      default: 0.8
+  sector_sensitivities:
+    technology:
+      highly_sensitive_to: ["fomc", "consumer_confidence"]
+      moderately_sensitive_to: ["cpi", "ppi"]
+      low_sensitivity_to: ["retail_sales"]
+    financials:
+      highly_sensitive_to: ["fomc", "yield_curve"]
+      moderately_sensitive_to: ["unemployment", "gdp"]
+      low_sensitivity_to: ["manufacturing_pmi"]
+    energy:
+      highly_sensitive_to: ["eia_petroleum_status", "geopolitical_events"]
+      moderately_sensitive_to: ["industrial_production", "ppi"]
+      low_sensitivity_to: ["consumer_confidence"]
+  seasonality_adjustments:
+    apply_monthly_bias: true
+    apply_recurring_patterns: true
+    composite_score_thresholds:
+      strong_bullish: 80
+      bullish: 60
+      neutral: 40
+      bearish: 20
+    position_sizing_adjustments:
+      strong_bullish: 1.2
+      bullish: 1.1
+      neutral: 1.0
+      bearish: 0.9
+      strong_bearish: 0.8 

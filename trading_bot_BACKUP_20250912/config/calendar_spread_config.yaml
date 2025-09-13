@@ -1,0 +1,78 @@
+# Calendar Spread Strategy Configuration
+
+# Strategy name
+name: "Calendar Spread Strategy"
+
+# 1. Strategy Philosophy parameters
+strategy_philosophy:
+  use_same_strike: true
+  net_theta_decay_target: 0.01  # 1% per day theta decay target
+
+# 2. Underlying & Option Universe & Timeframe parameters
+universe:
+  underlying_universe: 
+    - "SPY"
+    - "QQQ"
+    - "AAPL"
+  short_leg_min_dte: 7
+  short_leg_max_dte: 21
+  long_leg_min_dte: 45
+  long_leg_max_dte: 90
+  roll_short_leg_dte: 7
+  roll_long_leg_dte: 30
+
+# 3. Selection Criteria for Underlying parameters
+selection_criteria:
+  min_iv_rank: 30
+  max_iv_rank: 60
+  min_underlying_adv: 500000
+  min_option_open_interest: 1000
+  max_bid_ask_spread_pct: 0.15
+
+# 4. Spread Construction parameters
+spread_construction:
+  strike_selection: "ATM"  # Options: 'ATM', 'ITM', 'OTM'
+  strike_bias: 0  # -1, 0, or 1 for directional bias
+  max_net_debit_pct: 1.0  # 1% of equity per spread
+  leg_ratio: 1  # 1:1 or consider 2:1 for more theta
+
+# 5. Expiration & Roll Timing parameters
+expiration_and_roll:
+  roll_trigger_dte: 7
+  early_roll_volatility_change_pct: 20
+
+# 6. Entry Execution parameters
+entry_execution:
+  use_combo_orders: true
+  max_slippage_pct: 5.0  # Maximum allowable slippage in percent
+
+# 7. Exit & Adjustment Rules parameters
+exit_rules:
+  profit_target_pct: 50  # Exit at 50% of max theoretical value
+  stop_loss_multiplier: 1.0  # Stop loss at 1x initial debit
+  adjustment_threshold_pct: 10  # Adjust if underlying moves 10%
+
+# 8. Position Sizing & Risk Controls parameters
+risk_controls:
+  position_size_pct: 1.0  # 1% of equity per spread
+  max_concurrent_spreads: 5
+  max_margin_usage_pct: 10.0
+  max_sector_concentration: 1  # Max 1 calendar per sector
+
+# 9. Backtesting & Performance Metrics parameters
+backtesting:
+  historical_window_days: 1095  # 3 years of data
+  performance_metrics:
+    - "theta_capture_ratio"
+    - "win_rate"
+    - "avg_profit_per_trade"
+    - "max_drawdown"
+    - "roll_cost_impact"
+    - "net_roi_per_cycle"
+
+# 10. Continuous Optimization parameters
+optimization:
+  optimization_frequency_days: 30  # Monthly review
+  iv_rank_adaptation: true
+  strike_bias_optimization: true
+  use_ml_model: false  # Optional ML enhancement 

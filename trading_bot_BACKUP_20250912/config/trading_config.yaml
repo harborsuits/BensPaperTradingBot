@@ -1,0 +1,23 @@
+# Trading API Configuration
+# Paper Trading Accounts
+
+tradier:
+  account_number: VA1201776
+  api_key: KU2iUnOZIUFre0wypgyOn8TgmGxI
+  
+alpaca:
+  endpoint: https://paper-api.alpaca.markets/v2
+  api_key: PKYBHCCT1DIMGZX6P64A
+  api_secret: ssidJ2cJU0EGBOhdHrXJd7HegoaPaAMQqs0AU2PO
+
+coinbase:
+  # Coinbase Cloud API format
+  api_key_name: organizations/1781cc1d-57ec-4e92-aa78-7a403caa11c5/apiKeys/8ef865bf-2217-47ec-9fa9-237c0637d335
+  private_key: |
+    -----BEGIN EC PRIVATE KEY-----
+    MHcCAQEEIMs6tEqZbbC6ziEaK/MxCl/YBLJ1/uL0AybaAdvWJfr4oAoGCCqGSM49
+    AwEHoUQDQgAEdZJ/L8mrFCNNKLQRo3r52YRm4oAWlKc341TYsymeyXiG6DGPdFEX
+    WHezb1iJMTCwBBpsJCxwYnfKieCZrbiJig==
+    -----END EC PRIVATE KEY-----
+  cloud_api: true
+  sandbox: false

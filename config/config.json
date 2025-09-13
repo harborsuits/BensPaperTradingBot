@@ -78,12 +78,15 @@
         "end_date": "2023-01-01"
     },
     "api_keys": {
-        "finnhub": "YOUR_FINNHUB_API_KEY",
-        "marketaux": "YOUR_MARKETAUX_API_KEY",
-        "newsdata": "YOUR_NEWSDATA_API_KEY",
-        "gnews": "YOUR_GNEWS_API_KEY",
+        "finnhub": "pcIfIzF_AiAd2Ps0ifLTXRtuA2BbBVtS",
+        "marketaux": "7PgROm6BE4m6ejBW8unmZnnYS6kIygu5lwzpfd9K",
+        "newsdata": "pub_81036c20e73907398317875951d4569722f2a",
+        "gnews": "00c755186577632fbf651fc38e39858b",
         "tradingview": "YOUR_TRADINGVIEW_API_KEY",
-        "alpha_vantage": "YOUR_ALPHA_VANTAGE_API_KEY"
+        "alpha_vantage": "SXZ4FVOWJPKU4ZPK",
+        "mediastack": "3ff958493e0f1d8cf9af5e8425c8f5a3",
+        "currents": "O5_JjrWdlLN2v93iuKbhEhA9OSIYfChf4Cx9XE9xXgW1oYTC",
+        "nytimes": "NosApZGLGvPusEz30Fk4lQban19z9PTo"
     },
     "backtest_settings": {
         "default_symbols": [
@@ -112,7 +115,7 @@
         "log_level": "INFO",
         "notification_email": ""
     },
-    "alpha_vantage_api_key": "YOUR_API_KEY_HERE",
+    "alpha_vantage_api_key": "SXZ4FVOWJPKU4ZPK",
     "strategies": {
         "sma_crossover": {
             "short_window": 20,

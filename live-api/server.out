@@ -1,0 +1,2825 @@
+📊 Loaded pre-computed reaction statistics
+[AutoRefresh] Starting with interval 5000ms for symbols: SPY,AAPL,QQQ
+📈 Paper Trading API endpoints loaded
+🔒 Legacy crypto endpoints disabled - Paper Trading Engine active
+[QuotesService] Starting quotes loop
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+[AI_ORCHESTRATOR] Policy loaded: [
+  'ai_policy',
+  'families',
+  'triggers',
+  'guardrails',
+  'regimes',
+  'learning'
+]
+[AI_ORCHESTRATOR] Initialized with policy version: latest
+[AI_ORCHESTRATOR] Starting autonomous operation...
+[AI_ORCHESTRATOR] Starting orchestration cycle...
+Failed to detect market regime for SPY: TypeError: Cannot read properties of undefined (reading 'getRecentQuotes')
+    at MarketIndicatorsService.getMarketRegime (/Users/bendickinson/Desktop/benbot/live-api/src/services/marketIndicators.js:73:43)
+    at AIOrchestrator.getMarketContext (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:202:64)
+    at AIOrchestrator.runOrchestratorCycle (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:130:40)
+    at AIOrchestrator.start (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:93:14)
+    at Object.<anonymous> (/Users/bendickinson/Desktop/benbot/live-api/routes/live.js:28:16)
+    at Module._compile (node:internal/modules/cjs/loader:1734:14)
+    at Object..js (node:internal/modules/cjs/loader:1899:10)
+    at Module.load (node:internal/modules/cjs/loader:1469:32)
+    at Function._load (node:internal/modules/cjs/loader:1286:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+[AI_ORCHESTRATOR] Orchestration loop started (900s intervals)
+live-api listening on http://localhost:4000
+Failed to compute indicators for VIX: TypeError: Cannot read properties of undefined (reading 'getRecentQuotes')
+    at MarketIndicatorsService.getIndicators (/Users/bendickinson/Desktop/benbot/live-api/src/services/marketIndicators.js:36:43)
+    at AIOrchestrator.getMarketContext (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:214:67)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AIOrchestrator.runOrchestratorCycle (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:130:29)
+[AI_ORCHESTRATOR] Could not get VIX data: Cannot read properties of undefined (reading 'getRecentQuotes')
+[AI_ORCHESTRATOR] Market context: neutral_medium regime, medium volatility
+[AI_ORCHESTRATOR] Error in orchestration cycle: TypeError: roster.reduce is not a function
+    at PolicyEngine.checkCircuitBreakers (/Users/bendickinson/Desktop/benbot/live-api/services/policy_engine.js:38:33)
+    at AIOrchestrator.runOrchestratorCycle (/Users/bendickinson/Desktop/benbot/live-api/services/ai_orchestrator.js:138:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[EvoTester] Connected to SQLite database at: /Users/bendickinson/Desktop/benbot/live-api/data/evotester.db
+📊 Loaded reaction stats for 5 event types
+📁 Loaded existing paper account
+💰 USD Balance: $17500.00
+📊 Positions: 0
+📈 Paper Trading Engine initialized with Gemini market data
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:26.671Z
+MarketRecorder initialized with event-sourced tables
+Order retrieval error: Request failed with status code 400
+[QuotesService] Refreshed 1 symbols, 59 tokens left (backoff=1)
+[PaperOrders] Mock mode: true, PAPER_MOCK_MODE env: true
+[PaperOrders] Using mock mode for order execution
+[PaperOrders] Quotes cache: {"quotes":{"SPY":{"symbol":"SPY","price":657.63,"open":654.18,"high":658.33,"low":653.59,"prevClose":652.21,"change":5.42,"changePct":0.84,"time":"2025-09-12T02:58:26.669Z"}},"asOf":"2025-09-12T02:58:
+[PaperOrders] Found quote for SPY : {
+  symbol: 'SPY',
+  price: 657.63,
+  open: 654.18,
+  high: 658.33,
+  low: 653.59,
+  prevClose: 652.21,
+  change: 5.42,
+  changePct: 0.84,
+  time: '2025-09-12T02:58:26.669Z'
+}
+[PaperOrders] Using fill price: 657.63
+[MockAccount] Bought 5 SPY @ $657.63, cash now: $96711.85
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:31.507Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:36.501Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:41.505Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:46.459Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:51.463Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:58:56.461Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:01.469Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:06.464Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:11.468Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:16.469Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:21.467Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:26.471Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:31.470Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:36.477Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:41.475Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:46.478Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:51.484Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T02:59:56.491Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+Order retrieval error: Request failed with status code 400
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:01.481Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:06.482Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:11.486Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:16.486Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:21.490Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:26.490Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:31.490Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:36.492Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:41.503Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:46.498Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:51.499Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:00:56.500Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:01.499Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:06.503Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:11.501Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:16.504Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:21.503Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:26.502Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:31.505Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:36.514Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:41.508Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:46.509Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:51.509Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:01:56.509Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:01.510Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:06.510Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:11.513Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:16.511Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:21.516Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:26.526Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:31.520Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:36.516Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:41.517Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:46.518Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:51.518Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:02:56.517Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:01.519Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:06.521Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:11.520Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:16.521Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:21.522Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:26.522Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:31.525Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:36.525Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:41.528Z
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:46.530Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:51.530Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:03:56.536Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:01.534Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:06.534Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:11.535Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:16.536Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:21.538Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:26.537Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:31.540Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:36.540Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:41.541Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:46.543Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:51.544Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:04:56.544Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:01.544Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:06.545Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:11.546Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:16.546Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:21.547Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:26.547Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:31.549Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:36.550Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:41.550Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:46.552Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:51.554Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:05:56.553Z
+Order retrieval error: Request failed with status code 400
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:01.556Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:06.556Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:11.557Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:16.558Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:21.559Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:26.564Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:31.563Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:36.564Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:41.567Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:46.568Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:51.571Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:06:56.570Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:01.573Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:06.575Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:11.578Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:16.579Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:21.580Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:26.580Z
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:31.581Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:36.582Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:41.582Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:46.591Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:51.590Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:07:56.594Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:01.595Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:06.596Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:11.594Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:16.596Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:21.596Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:26.600Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:31.598Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:36.602Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:41.602Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:46.605Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:51.604Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:08:56.607Z
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:01.609Z
+[brain] roster_size=5 quotes_age_s=5.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:06.613Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:11.614Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:16.613Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:21.617Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:26.616Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:31.620Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:36.619Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:41.623Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:46.623Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:51.624Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:09:56.625Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:01.631Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:06.629Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:11.630Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:16.632Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:21.634Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:26.636Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:31.636Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:36.637Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:41.638Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:46.639Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:51.647Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:10:56.645Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:01.648Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:06.647Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:11.648Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:16.649Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:21.650Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:26.653Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:31.665Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:36.655Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:41.658Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:46.660Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:51.659Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:11:56.660Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:01.663Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:06.665Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:11.664Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:16.665Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:21.666Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:26.667Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:31.668Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:36.669Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:41.671Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:46.671Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:51.671Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:12:56.673Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:01.673Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:06.675Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:11.675Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:16.676Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:21.679Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:26.679Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:31.681Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:36.682Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:41.683Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:46.684Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:51.684Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:13:56.686Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:01.745Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:06.722Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:11.725Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:16.727Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:21.725Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:26.726Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:31.727Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:36.729Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:41.729Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:46.731Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:51.731Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:14:56.731Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:01.734Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:06.919Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:11.750Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:16.751Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:21.753Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:26.748Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:31.752Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:36.749Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:41.751Z
+[brain] roster_size=5 quotes_age_s=4.9 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:46.751Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:51.755Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:15:56.754Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:01.758Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:06.756Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:11.760Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:16.761Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:21.763Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:26.760Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:31.764Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:36.762Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:41.765Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:46.764Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:51.768Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:16:56.766Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:01.770Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:06.800Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:11.769Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:16.776Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:21.769Z
+[QuotesService] Refreshed 5 symbols, 60 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:26.772Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:31.772Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:36.775Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:41.774Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:46.774Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:51.776Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:17:56.775Z
+Order retrieval error: Request failed with status code 400
+[QuotesService] Refreshed 2 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:01.779Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:06.778Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:11.784Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:16.796Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:21.786Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:26.786Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:31.786Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:36.787Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:41.789Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:46.789Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:51.791Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:18:56.791Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:01.791Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:06.795Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:11.793Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:16.795Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:21.801Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:26.795Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:31.798Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:36.798Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:41.799Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:46.803Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:51.802Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:19:56.808Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:01.804Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:06.805Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:11.815Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:16.809Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:21.808Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:26.815Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:31.811Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:36.814Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:41.814Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:46.816Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:51.816Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:20:56.814Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:01.820Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:06.821Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:11.820Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:16.822Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:21.820Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:26.846Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:31.823Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:36.834Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:41.824Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:46.826Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:51.827Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:21:56.827Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:01.828Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:06.829Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:11.830Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:16.831Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:21.832Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:26.831Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:31.835Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:36.835Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:41.841Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:46.836Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:51.841Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:22:56.839Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:01.843Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:06.844Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:11.845Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:16.855Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:21.846Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:26.850Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:31.848Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:36.848Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:41.852Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:46.850Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:51.854Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:23:56.851Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:01.857Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:06.855Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:11.854Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:16.857Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:21.857Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:26.860Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:31.860Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:36.861Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:41.864Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:46.870Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:51.866Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:24:56.867Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:01.867Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:06.869Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:11.867Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:16.871Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:21.869Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:26.870Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:31.871Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:36.872Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:41.873Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:46.873Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:51.875Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:25:56.874Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:01.879Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:06.882Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:11.879Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:16.880Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:21.880Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:26.883Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:31.882Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:36.884Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:41.884Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:46.885Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:51.888Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:26:56.887Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:01.891Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:06.890Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:11.892Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:16.894Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:21.895Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:26.895Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:31.900Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:36.896Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:41.897Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:46.901Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:51.900Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:27:56.902Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:01.901Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:06.903Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:11.903Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:16.903Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:21.905Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:26.905Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:31.908Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:36.908Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:41.910Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:46.909Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:51.913Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:28:56.913Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:01.914Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:06.915Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:11.914Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:16.916Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:21.916Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:26.919Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:31.917Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:36.920Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:41.920Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:46.923Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:51.923Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:29:56.924Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:01.925Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:06.926Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:11.928Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:16.927Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:21.931Z
+[QuotesService] Refreshed 5 symbols, 60 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:26.929Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:31.932Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:36.931Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:41.936Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:46.938Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:51.935Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:30:56.938Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:01.941Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:06.941Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:11.940Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:16.944Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:21.942Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:26.944Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:31.945Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:36.949Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:41.950Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:46.951Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:51.952Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:31:56.952Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:01.954Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:06.953Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:11.956Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:16.956Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:21.959Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:26.959Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:31.963Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:36.966Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:41.966Z
+[brain] roster_size=5 quotes_age_s=4.8 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:46.966Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:51.970Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:32:56.972Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:01.973Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:06.978Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:11.977Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:16.979Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:21.978Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:26.981Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:31.979Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:36.983Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:41.982Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:46.985Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:51.987Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:33:56.984Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:01.987Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:06.988Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:11.990Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:16.988Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:21.992Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:26.990Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:31.993Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:36.997Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:41.997Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:47.002Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:51.999Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:34:57.000Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:02.002Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:07.000Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:12.002Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:17.005Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:22.005Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:27.006Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:32.007Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:37.057Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:42.020Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:47.024Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:52.025Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:35:57.019Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:02.025Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:07.028Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:12.026Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:17.027Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:22.026Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:27.027Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:32.030Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:37.031Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:42.030Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:47.032Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:52.035Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:36:57.034Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:02.035Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:07.039Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:12.036Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:17.037Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:22.039Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:27.039Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:32.041Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:37.040Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:42.045Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:47.043Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:52.046Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:37:57.045Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:02.047Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:07.049Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:12.050Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:17.051Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:22.051Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:27.052Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:32.051Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:37.054Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:42.054Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:47.056Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:52.056Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:38:57.057Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:02.059Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:07.060Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:12.063Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:17.062Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:22.063Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:27.061Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:32.064Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:37.062Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:42.064Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:47.063Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:52.065Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:39:57.065Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:02.066Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:07.068Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:12.068Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:17.070Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:22.071Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:27.071Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:32.071Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:37.078Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:42.075Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:47.078Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:52.077Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:40:57.081Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:02.079Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:07.083Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:12.082Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:17.088Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:22.084Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:27.086Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:32.088Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:37.090Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:42.090Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:47.090Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:52.091Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:41:57.090Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:02.093Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:07.093Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:12.096Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:17.098Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:22.098Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:27.099Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:32.100Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:37.103Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:42.101Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:47.101Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:52.103Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:42:57.103Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:02.106Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:07.107Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:12.106Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:17.107Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:22.110Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:27.109Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:32.111Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:37.113Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:42.114Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:47.115Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:52.114Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:43:57.115Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:02.115Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:07.116Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:12.117Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:17.117Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:22.135Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:27.119Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:32.118Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:37.119Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:42.120Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:47.122Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:52.126Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:44:57.123Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:02.124Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:07.125Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:12.125Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:17.126Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:22.125Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:27.127Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:32.126Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:37.126Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:42.127Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:47.127Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:52.128Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:45:57.136Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:02.131Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:07.129Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:12.130Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:17.130Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:22.131Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:27.130Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:32.132Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:37.131Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:42.133Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:47.135Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:52.136Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:46:57.137Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:02.138Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:07.139Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:12.140Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:17.140Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:22.140Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:27.140Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:32.143Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:37.142Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:42.142Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:47.143Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:52.146Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:47:57.144Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:02.145Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:07.145Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:12.146Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:17.148Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:22.148Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:27.150Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:32.150Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:37.151Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:42.151Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:47.151Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:52.152Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:48:57.161Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:02.156Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:07.153Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:12.154Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:17.154Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:22.155Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:27.155Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:32.156Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:37.159Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:42.159Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:47.159Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:52.159Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:49:57.160Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:02.160Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:07.160Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:12.161Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:17.161Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:22.161Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:27.162Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:32.162Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:37.162Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:42.164Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:47.165Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:52.164Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:50:57.163Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:02.165Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:07.166Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:12.167Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:17.167Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:22.167Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:27.168Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:32.169Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:37.170Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:42.171Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:47.171Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:52.172Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:51:57.173Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:02.172Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:07.173Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:12.175Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:17.176Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:22.176Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:27.174Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:32.176Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:37.178Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:42.184Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:47.180Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:52.183Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:52:57.182Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:02.184Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:07.185Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:12.185Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:17.187Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:22.186Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:27.187Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:32.188Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:37.188Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:42.190Z
+[brain] roster_size=5 quotes_age_s=4.7 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:47.194Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:52.192Z
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:53:57.191Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:02.194Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:07.194Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:12.195Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:17.196Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:22.196Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:27.197Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:32.197Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:37.197Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:42.198Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:47.198Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:52.199Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:54:57.201Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:02.200Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:07.200Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:12.201Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:17.203Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:22.203Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:27.203Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:32.205Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:37.204Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:42.208Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:47.207Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:52.207Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:55:57.207Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:02.218Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:07.209Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:12.210Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:17.211Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:22.211Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:27.213Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:32.213Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:37.216Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:42.213Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:47.214Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:52.217Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:56:57.216Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:02.218Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:07.219Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:12.220Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:17.221Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:22.221Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:27.221Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:32.221Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:37.224Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:42.224Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:47.225Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:52.226Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:57:57.228Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:02.228Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:07.229Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:12.230Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:17.230Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:22.232Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:27.232Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:32.233Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:37.236Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:42.234Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:47.235Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:52.237Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:58:57.239Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:02.237Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:07.238Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:12.239Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:17.239Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:22.241Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:27.242Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:32.242Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:37.244Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:42.245Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:47.246Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:52.247Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T03:59:57.247Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:02.252Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:07.250Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:12.251Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:17.252Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:22.251Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:27.252Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:32.253Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:37.253Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:42.254Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:47.255Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:52.255Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:00:57.256Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:02.300Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:07.278Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:12.278Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:17.280Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:22.281Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:27.281Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:32.283Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:37.282Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:42.283Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:47.283Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:52.285Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:01:57.284Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:02.285Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:07.286Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:12.285Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:17.287Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:22.287Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:27.287Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:32.289Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:37.289Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:42.290Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:47.289Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:52.290Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:02:57.289Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:02.290Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:07.291Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:12.293Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:17.293Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:22.294Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:27.295Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:32.295Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:37.295Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:42.295Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:47.296Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:52.296Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:03:57.296Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:02.297Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:07.297Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:12.299Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:17.298Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:22.299Z
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:27.298Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:32.300Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:37.301Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:42.302Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:47.303Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:52.304Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:04:57.305Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:02.307Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:07.308Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:12.310Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:17.311Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:22.312Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:27.311Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:32.313Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:37.315Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:42.315Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:47.316Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:52.316Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:05:57.316Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:02.317Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:07.318Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:12.319Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:17.324Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:22.321Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:27.321Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:32.322Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:37.324Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:42.324Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:47.325Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:52.327Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:06:57.327Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:02.328Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:07.328Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:12.329Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:17.330Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:22.335Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:27.332Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:32.334Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:37.335Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:42.336Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:47.336Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:52.336Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:07:57.337Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:02.338Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:07.339Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:12.340Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:17.341Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:22.356Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:27.353Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:32.354Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:37.353Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:42.353Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:47.355Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:52.354Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.0 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:08:57.355Z
+[QuotesService] Refreshed 2 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:02.357Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:07.357Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:12.359Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:17.360Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:22.361Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:27.363Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:32.363Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:37.364Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:42.364Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:47.365Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:52.366Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:09:57.366Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:02.366Z
+[brain] roster_size=5 quotes_age_s=4.6 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:07.368Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:12.370Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:17.370Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:22.371Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:27.370Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:32.371Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:37.371Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:42.372Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:47.372Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:52.373Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:10:57.373Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:02.373Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:07.374Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:12.373Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:17.374Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:22.378Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:27.376Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:32.375Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:37.378Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:42.378Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:47.379Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:52.382Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:11:57.382Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:02.384Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:07.388Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:12.389Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:17.389Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:22.391Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:27.391Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:32.392Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:37.392Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:42.392Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:47.395Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:52.395Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:12:57.396Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:02.396Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:07.395Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:12.397Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:17.398Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:22.399Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:27.400Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:32.402Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:37.406Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:42.407Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:47.405Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:52.406Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:13:57.441Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:02.410Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:07.409Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:12.411Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:17.413Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:22.412Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:27.414Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:32.415Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:37.414Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:42.415Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:47.415Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:52.417Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:14:57.416Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:02.418Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:07.420Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:12.419Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:17.422Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:22.422Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:27.423Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:32.425Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:37.427Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:42.427Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:47.427Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:52.428Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:15:57.429Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:02.430Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:07.431Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:12.431Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:17.433Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:22.434Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:27.432Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:32.434Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:37.435Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:42.437Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:47.437Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:52.439Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:16:57.438Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:02.440Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:07.442Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:12.442Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:17.442Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:22.442Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:27.443Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:32.443Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:37.445Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:42.446Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:47.449Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:52.449Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:17:57.448Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:02.448Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:07.449Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:12.448Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:17.450Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:22.451Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:27.452Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:32.452Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:37.452Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:42.452Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:47.458Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:52.457Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:18:57.459Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:02.461Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:07.461Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:12.462Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:17.462Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:22.464Z
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:27.465Z
+Order retrieval error: Request failed with status code 400
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:32.467Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:37.467Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:42.467Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:47.469Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:52.472Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:19:57.469Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:02.469Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:07.470Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:12.469Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:17.469Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:22.469Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:27.470Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:32.470Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:37.471Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:42.470Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:47.471Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:52.477Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:20:57.475Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:02.476Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:07.478Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:12.477Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:17.478Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:22.478Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:27.478Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:32.478Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:37.479Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:42.480Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:47.480Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:52.480Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:21:57.483Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:02.480Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:07.482Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:12.481Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:17.482Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:22.484Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:27.482Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:32.484Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:37.485Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:42.486Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:47.486Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:52.486Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:22:57.487Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:02.488Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:07.489Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:12.488Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:17.490Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:22.491Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:27.490Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:32.491Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:37.492Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:42.493Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:47.494Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:52.495Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:23:57.495Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:02.500Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:07.498Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:12.499Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:17.501Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:22.501Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:27.502Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:32.502Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:37.503Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:42.503Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:47.505Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:52.504Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:24:57.506Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:02.507Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:07.509Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:12.509Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:17.511Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:22.511Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:27.510Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:32.511Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:37.512Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:42.511Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:47.512Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:52.513Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:25:57.513Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:02.515Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:07.518Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:12.517Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:17.517Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:22.519Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:27.519Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:32.519Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:37.520Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:42.521Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:47.524Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:52.524Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:26:57.524Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:02.526Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:07.528Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:12.526Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:17.529Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:22.527Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:27.526Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:32.527Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:37.528Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:42.529Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:47.529Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:52.530Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:27:57.532Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:02.534Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:07.537Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:12.540Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:17.536Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:22.537Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:27.538Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:32.538Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:37.539Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:42.541Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:47.541Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:52.543Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:28:57.543Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:02.544Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:07.546Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:12.547Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:17.548Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:22.548Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:27.549Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:32.550Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:37.550Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:42.551Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:47.553Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:52.553Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:29:57.554Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:02.555Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:07.554Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:12.554Z
+[brain] roster_size=5 quotes_age_s=4.5 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:17.555Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:22.557Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:27.555Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:32.557Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:37.558Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:42.558Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:47.559Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:52.561Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:30:57.562Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:02.562Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:07.563Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:12.564Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:17.566Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:22.564Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:27.565Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:32.567Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:37.569Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:42.568Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:47.572Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:52.572Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:31:57.574Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:02.573Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:07.574Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:12.575Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:17.576Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:22.576Z
+[QuotesService] Refreshed 5 symbols, 60 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:27.578Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:32.579Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:37.579Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:42.580Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:47.581Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:52.581Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.2 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:32:57.581Z
+[QuotesService] Refreshed 2 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:02.582Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:07.583Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:12.582Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:17.583Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:22.582Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:27.584Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:32.585Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:37.587Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:42.588Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:47.588Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:52.589Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:33:57.589Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:02.590Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:07.590Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:12.592Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:17.591Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:22.592Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:27.594Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:32.593Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:37.595Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:42.596Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:47.597Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:52.597Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:34:57.599Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:02.599Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:07.600Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:12.602Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:17.602Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:22.603Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:27.604Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:32.605Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:37.606Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:42.605Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:47.607Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:52.607Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:35:57.608Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:02.610Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:07.611Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:12.613Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:17.614Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:22.615Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:27.616Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:32.618Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:37.619Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:42.619Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:47.619Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:52.620Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:36:57.620Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:02.623Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:07.625Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:12.624Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:17.625Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:22.624Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:27.624Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:32.627Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:37.628Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:42.628Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:47.629Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:52.629Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:37:57.629Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:02.630Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:07.631Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:12.633Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:17.633Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:22.651Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:27.635Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:32.636Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:37.637Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:42.637Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:47.640Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:52.642Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:38:57.642Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:02.647Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:07.647Z
+[QuotesService] Refreshed 2 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:12.647Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:17.648Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:22.649Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:27.648Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:32.648Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:37.650Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:42.650Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:47.651Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:52.652Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:39:57.653Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:02.655Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:07.656Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:12.657Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:17.658Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:22.660Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:27.661Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:32.661Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:37.662Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:42.661Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:47.662Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:52.662Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:40:57.663Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:02.669Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:07.664Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:12.670Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:17.667Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:22.665Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:27.667Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:32.668Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:37.667Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:42.669Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:47.670Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:52.673Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:41:57.672Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:02.676Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:07.677Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:12.677Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:17.678Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:22.680Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:27.679Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:32.680Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:37.682Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:42.683Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:47.683Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:52.684Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:42:57.685Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:02.687Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:07.688Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:12.689Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:17.688Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:22.689Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:27.689Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:32.691Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:37.692Z
+[QuotesService] Refreshed 2 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:42.695Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:47.694Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:52.696Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:43:57.697Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:02.698Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:07.699Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:12.700Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:17.701Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:22.702Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:27.702Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:32.704Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:37.704Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:42.703Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:47.705Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:52.706Z
+Order retrieval error: Request failed with status code 400
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:44:57.705Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:02.708Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:07.709Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:12.710Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:17.712Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:22.713Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:27.713Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:32.713Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:37.714Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:42.713Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:47.714Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:52.715Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:45:57.715Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:02.717Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:07.719Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:12.719Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:17.719Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:22.721Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:27.719Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:32.721Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:37.721Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:42.723Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:47.724Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:52.725Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:46:57.725Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:02.726Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:07.727Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:12.728Z
+[brain] roster_size=5 quotes_age_s=4.4 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:17.729Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:22.730Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:27.731Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:32.733Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:37.733Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:42.733Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:47.734Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:52.735Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:47:57.734Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:02.737Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:07.737Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:12.737Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:17.740Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:22.739Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:27.740Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:32.741Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:37.742Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:42.742Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:47.743Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:52.743Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:48:57.745Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:02.745Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:07.749Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:12.748Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:17.748Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:22.747Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:27.747Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:32.749Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:37.750Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:42.750Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:47.752Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:52.753Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:49:57.755Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:02.756Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:07.759Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:12.757Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:17.757Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:22.758Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:27.757Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:32.757Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:37.758Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:42.760Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:47.761Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:52.762Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:50:57.763Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:02.765Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:07.766Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:12.767Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:17.768Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:22.769Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:27.769Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:32.768Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:37.769Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:42.780Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:47.768Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:52.770Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:51:57.770Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:02.770Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:07.771Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:12.771Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:17.771Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:22.772Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:27.774Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:32.775Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:37.776Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:42.777Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:47.779Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:52.780Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:52:57.781Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:02.786Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:07.785Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:12.786Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:17.786Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:22.787Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:27.788Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:32.790Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:37.790Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:42.791Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:47.792Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:52.794Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:53:57.793Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:02.795Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:07.797Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:12.797Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:17.799Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:22.799Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:27.801Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:32.803Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:37.804Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:42.805Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:47.805Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:52.805Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:54:57.807Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:02.807Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:07.810Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:12.808Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:17.808Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:22.810Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.1 decisions=0
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:27.810Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:32.812Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:37.814Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:42.815Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:47.815Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:52.817Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:55:57.819Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:02.819Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:07.820Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:12.827Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:17.822Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:22.823Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:27.823Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:32.825Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:37.826Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:42.828Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:47.829Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:52.829Z
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:56:57.829Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:02.831Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:07.832Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:12.832Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:17.832Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:22.835Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:27.835Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:32.835Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:37.836Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:42.838Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:47.839Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:52.840Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:57:57.841Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:02.843Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:07.843Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:12.843Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:17.847Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:22.847Z
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Cycle complete. 0 decisions made.
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:27.847Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:32.848Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:37.848Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:42.848Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:47.849Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:52.851Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:58:57.852Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:02.853Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:07.854Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:12.854Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:17.858Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:22.857Z
+[QuotesService] Refreshed 5 symbols, 56 tokens left (backoff=1)
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:27.859Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:32.861Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:37.862Z
+[QuotesService] Refreshed 5 symbols, 59 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:42.864Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:47.864Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:52.866Z
+[QuotesService] Refreshed 5 symbols, 58 tokens left (backoff=1)
+Order retrieval error: Request failed with status code 400
+[brain] roster_size=5 quotes_age_s=0.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T04:59:57.866Z
+[AutoRefresh] Refreshed quotes at 2025-09-12T05:00:02.868Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T05:00:07.870Z
+[QuotesService] Refreshed 5 symbols, 57 tokens left (backoff=1)
+[AutoRefresh] Refreshed quotes at 2025-09-12T05:00:12.871Z
+[brain] roster_size=5 quotes_age_s=4.3 decisions=0
+[AutoRefresh] Refreshed quotes at 2025-09-12T05:00:17.872Z

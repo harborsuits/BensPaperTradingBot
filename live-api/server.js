@@ -28,6 +28,12 @@ const { withinEarningsWindow } = require('./src/services/policy.js');
 // delay requiring TS services until after env is normalized below
 let getQuotesCache, onQuotes, startQuotesLoop, stopQuotesLoop, roster;
 let decisionsBus;
+let paperEngine;
+let mockEquityAccount = {
+  cash: 100000,
+  positions: new Map(),
+  orders: []
+};
 try {
   decisionsBus = require('./src/decisions/bus');
 } catch (error) {
@@ -1711,6 +1717,8 @@ app.get('/api/paper/orders', async (req, res) => {
 // Enhanced paper orders POST endpoint (replaces the original)
 app.post('/api/paper/orders', async (req, res) => {
   try {
+    const isMockMode = process.env.PAPER_MOCK_MODE === 'true';
+    console.log(`[PaperOrders] Mock mode: ${isMockMode}, PAPER_MOCK_MODE env: ${process.env.PAPER_MOCK_MODE}`);
     const baseUrl = process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
     const token = process.env.TRADIER_TOKEN || 'KU2iUnOZIUFre0wypgyOn8TgmGxI';
     const accountId = process.env.TRADIER_ACCOUNT_ID || 'VA1201776';
@@ -1727,10 +1735,29 @@ app.post('/api/paper/orders', async (req, res) => {
     };
 
     // Get reference price for slippage calculation
-    const { quotes } = getQuotesCache();
-    const symbol = String(body.symbol || '').toUpperCase();
-    const quote = quotes?.find(q => String(q.symbol || '').toUpperCase() === symbol);
-    const refMid = quote ? (quote.bid + quote.ask) / 2 : null;
+    let refMid = null;
+    try {
+      const quotesCache = getQuotesCache();
+      const symbol = String(body.symbol || '').toUpperCase();
+
+      let quote = null;
+      if (Array.isArray(quotesCache)) {
+        quote = quotesCache.find(q => String(q.symbol || '').toUpperCase() === symbol);
+      } else if (quotesCache && typeof quotesCache === 'object') {
+        if (quotesCache.quotes && Array.isArray(quotesCache.quotes)) {
+          quote = quotesCache.quotes.find(q => String(q.symbol || '').toUpperCase() === symbol);
+        } else if (quotesCache.quotes && quotesCache.quotes[symbol]) {
+          quote = quotesCache.quotes[symbol];
+        } else if (quotesCache[symbol]) {
+          quote = quotesCache[symbol];
+        }
+      }
+
+      refMid = quote && quote.bid && quote.ask ? (quote.bid + quote.ask) / 2 : (quote?.last || quote?.price || null);
+    } catch (e) {
+      console.log('[PaperOrders] Could not get reference price:', e.message);
+      refMid = null;
+    }
 
     // Create enhanced order record
     const orderId = `po_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -1760,16 +1787,150 @@ app.post('/api/paper/orders', async (req, res) => {
       enhancedPaperOrders.shift();
     }
 
-    const r = await axios.post(`${baseUrl}/accounts/${accountId}/orders`, tradierOrder, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      }
-    });
+    let r;
+    if (isMockMode) {
+      // Mock paper trading mode - simulate immediate fill
+      console.log('[PaperOrders] Using mock mode for order execution');
+      try {
+        const quotesCache = getQuotesCache();
+        console.log('[PaperOrders] Quotes cache:', JSON.stringify(quotesCache).substring(0, 200));
+        const symbol = String(body.symbol || '').toUpperCase();
 
-    // Update order with broker order ID
-    enhancedOrder.broker_order_id = r.data?.order?.id || r.data?.id;
-    enhancedOrder.status = 'working';
+        // Handle different possible structures
+        let quote = null;
+        if (Array.isArray(quotesCache)) {
+          quote = quotesCache.find(q => String(q.symbol || '').toUpperCase() === symbol);
+        } else if (quotesCache && typeof quotesCache === 'object') {
+          if (quotesCache.quotes && Array.isArray(quotesCache.quotes)) {
+            quote = quotesCache.quotes.find(q => String(q.symbol || '').toUpperCase() === symbol);
+          } else if (quotesCache.quotes && quotesCache.quotes[symbol]) {
+            quote = quotesCache.quotes[symbol];
+          } else if (quotesCache[symbol]) {
+            quote = quotesCache[symbol];
+          }
+        }
+
+        console.log('[PaperOrders] Found quote for', symbol, ':', quote);
+        const fillPrice = quote?.last || quote?.price || 100; // Multiple fallbacks
+        console.log('[PaperOrders] Using fill price:', fillPrice);
+
+        // Simulate immediate fill
+        enhancedOrder.px_fill = fillPrice;
+        enhancedOrder.status = 'filled';
+        enhancedOrder.t_fill = new Date().toISOString();
+        enhancedOrder.exec_ms = 0; // Instant fill
+        enhancedOrder.broker_order_id = `mock_${Date.now()}`;
+
+        // Update mock equity account
+        try {
+          const quantity = body.qty || body.quantity;
+          const symbol = body.symbol;
+          const side = body.side;
+
+          if (side === 'buy') {
+            const cost = quantity * fillPrice;
+            if (mockEquityAccount.cash >= cost) {
+              mockEquityAccount.cash -= cost;
+
+              // Update position
+              const existingPosition = mockEquityAccount.positions.get(symbol);
+              if (existingPosition) {
+                const newQuantity = existingPosition.quantity + quantity;
+                const newTotalCost = existingPosition.total_cost + cost;
+                const newAvgPrice = newTotalCost / newQuantity;
+                existingPosition.quantity = newQuantity;
+                existingPosition.total_cost = newTotalCost;
+                existingPosition.avg_price = newAvgPrice;
+              } else {
+                mockEquityAccount.positions.set(symbol, {
+                  quantity,
+                  avg_price: fillPrice,
+                  total_cost: cost
+                });
+              }
+
+              console.log(`[MockAccount] Bought ${quantity} ${symbol} @ $${fillPrice}, cash now: $${mockEquityAccount.cash}`);
+            } else {
+              console.log(`[MockAccount] Insufficient cash for ${symbol} purchase`);
+            }
+          } else if (side === 'sell') {
+            const existingPosition = mockEquityAccount.positions.get(symbol);
+            if (existingPosition && existingPosition.quantity >= quantity) {
+              const proceeds = quantity * fillPrice;
+              mockEquityAccount.cash += proceeds;
+
+              // Update position
+              existingPosition.quantity -= quantity;
+              existingPosition.total_cost -= (existingPosition.avg_price * quantity);
+
+              if (existingPosition.quantity <= 0) {
+                mockEquityAccount.positions.delete(symbol);
+              }
+
+              console.log(`[MockAccount] Sold ${quantity} ${symbol} @ $${fillPrice}, cash now: $${mockEquityAccount.cash}`);
+            } else {
+              console.log(`[MockAccount] Insufficient position for ${symbol} sale`);
+            }
+          }
+
+          mockEquityAccount.orders.push({
+            id: enhancedOrder.broker_order_id,
+            symbol,
+            side,
+            quantity,
+            price: fillPrice,
+            timestamp: new Date().toISOString()
+          });
+
+        } catch (notifyError) {
+          console.log('[MockAccount] Could not update account:', notifyError.message);
+        }
+
+        // Mock response
+        r = {
+          status: 200,
+          data: {
+            order: {
+              id: enhancedOrder.broker_order_id,
+              status: 'filled',
+              fill_price: fillPrice
+            }
+          }
+        };
+      } catch (mockError) {
+        console.error('[PaperOrders] Mock mode error:', mockError.message);
+        // Fallback to simple mock response
+        const fillPrice = 100;
+        enhancedOrder.px_fill = fillPrice;
+        enhancedOrder.status = 'filled';
+        enhancedOrder.t_fill = new Date().toISOString();
+        enhancedOrder.exec_ms = 0;
+        enhancedOrder.broker_order_id = `mock_fallback_${Date.now()}`;
+
+        r = {
+          status: 200,
+          data: {
+            order: {
+              id: enhancedOrder.broker_order_id,
+              status: 'filled',
+              fill_price: fillPrice
+            }
+          }
+        };
+      }
+    } else {
+      // Real Tradier API call
+      r = await axios.post(`${baseUrl}/accounts/${accountId}/orders`, tradierOrder, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      // Update order with broker order ID
+      enhancedOrder.broker_order_id = r.data?.order?.id || r.data?.id;
+      enhancedOrder.status = 'working';
+    }
 
     // Create alert
     try {
@@ -2110,6 +2271,40 @@ setInterval(() => {
 }, 5000);
 app.get('/api/paper/positions', async (req, res) => {
   try {
+    const isMockMode = process.env.PAPER_MOCK_MODE === 'true';
+
+    if (isMockMode) {
+      // Return mock positions
+      const positions = Array.from(mockEquityAccount.positions.entries()).map(([symbol, pos]) => {
+        // Get current price for unrealized P&L
+        const quotesCache = getQuotesCache();
+        let currentPrice = pos.avg_price;
+        try {
+          if (quotesCache?.quotes?.[symbol]) {
+            currentPrice = quotesCache.quotes[symbol].last || quotesCache.quotes[symbol].price || pos.avg_price;
+          }
+        } catch (e) {
+          console.log('[MockAccount] Could not get current price for positions:', e.message);
+        }
+
+        const marketValue = pos.quantity * currentPrice;
+        const unrealizedPl = marketValue - pos.total_cost;
+
+        return {
+          symbol,
+          quantity: pos.quantity,
+          cost_basis: pos.total_cost,
+          market_value: marketValue,
+          unrealized_pl: unrealizedPl,
+          avg_price: pos.avg_price,
+          current_price: currentPrice
+        };
+      });
+
+      return res.status(200).json({ positions });
+    }
+
+    // Original Tradier API call
     const baseUrl = process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
     const token = process.env.TRADIER_TOKEN || 'KU2iUnOZIUFre0wypgyOn8TgmGxI';
     const accountId = process.env.TRADIER_ACCOUNT_ID || 'VA1201776';
@@ -2152,9 +2347,63 @@ app.get('/api/portfolio/paper/history', (req, res) => {
   res.json(points);
 });
 
-// Paper account summary - Direct Tradier API call
+// Paper account summary
 app.get('/api/paper/account', async (req, res) => {
   try {
+    const isMockMode = process.env.PAPER_MOCK_MODE === 'true';
+
+    if (isMockMode) {
+      // Return mock account data
+      const totalMarketValue = Array.from(mockEquityAccount.positions.values())
+        .reduce((sum, pos) => {
+          // Use current quotes to calculate market value
+          const quotesCache = getQuotesCache();
+          let currentPrice = pos.avg_price; // fallback
+          try {
+            if (quotesCache?.quotes?.[pos.symbol]) {
+              currentPrice = quotesCache.quotes[pos.symbol].last || quotesCache.quotes[pos.symbol].price || pos.avg_price;
+            }
+          } catch (e) {
+            console.log('[MockAccount] Could not get current price:', e.message);
+          }
+          return sum + (pos.quantity * currentPrice);
+        }, 0);
+
+      const mockResponse = {
+        balances: {
+          option_short_value: 0,
+          total_equity: mockEquityAccount.cash + totalMarketValue,
+          account_number: 'MOCK001',
+          account_type: 'margin',
+          close_pl: 0,
+          current_requirement: 0,
+          equity: mockEquityAccount.cash + totalMarketValue,
+          long_market_value: totalMarketValue,
+          market_value: totalMarketValue,
+          open_pl: totalMarketValue - Array.from(mockEquityAccount.positions.values()).reduce((sum, pos) => sum + pos.total_cost, 0),
+          option_long_value: 0,
+          option_requirement: 0,
+          pending_orders_count: mockEquityAccount.orders.filter(o => o.status === 'pending').length,
+          short_market_value: 0,
+          stock_long_value: totalMarketValue,
+          total_cash: mockEquityAccount.cash,
+          uncleared_funds: 0,
+          pending_cash: 0,
+          margin: {
+            fed_call: 0,
+            maintenance_call: 0,
+            option_buying_power: mockEquityAccount.cash * 2,
+            stock_buying_power: mockEquityAccount.cash * 2,
+            stock_short_value: 0,
+            sweep: 0
+          }
+        }
+      };
+
+      return res.status(200).json(mockResponse);
+    }
+
+    // Original Tradier API call
     const baseUrl = process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
     const token = process.env.TRADIER_TOKEN || 'KU2iUnOZIUFre0wypgyOn8TgmGxI';
     const accountId = process.env.TRADIER_ACCOUNT_ID || 'VA1201776';
@@ -3999,7 +4248,7 @@ try {
   const GEMINI_SANDBOX_API_KEY = 'account-84qzp7isnuVsHl0fk4J1';
   const GEMINI_SANDBOX_API_SECRET = '3krJkotRataxyxt9TqSEpisPaUR4';
 
-  const paperEngine = new PaperTradingEngine(GEMINI_SANDBOX_API_KEY, GEMINI_SANDBOX_API_SECRET);
+  paperEngine = new PaperTradingEngine(GEMINI_SANDBOX_API_KEY, GEMINI_SANDBOX_API_SECRET);
 
   // Initialize paper trading engine
   paperEngine.initialize().then(() => {
@@ -7203,7 +7452,7 @@ app.locals.wssPrices = wssPrices;
 
 // Live status endpoint
 app.use('/api/live', require('./routes/live'));
-app.use('/api/metrics', require('./routes/metrics').metrics);
+app.use('/api/metrics', require('./routes/metrics'));
 
 // Quotes status for UI health pill
 app.get('/api/quotes/status', (req, res) => {

@@ -1,0 +1,670 @@
+strategies:
+  # ================ DAY TRADING STRATEGIES ================
+  
+  gap_fill_daytrade:
+    type: equity
+    category: day_trading
+    timeframes: ["1m", "5m", "15m"]
+    direction: bidirectional
+    indicators:
+      primary:
+        - condition: "large_gap_open > 1%"
+          weight: 3
+        - condition: "price_reversal_toward_prev_close"
+          weight: 2
+        - condition: "vwap_reclaim_or_rejection"
+          weight: 2
+      secondary:
+        - condition: "rsi_divergence"
+          weight: 1
+        - condition: "market_internals_confirm_direction"
+          weight: 1
+    ideal_conditions:
+      - "low_news_interference: true"
+      - "premarket_volume > 500k"
+      - "not_within_15m_of_market_open: true"
+      - "not_within_30m_of_market_close: true"
+      - "gap_not_due_to_earnings: true"
+    execution:
+      position_sizing: "2% account risk"
+      entry:
+        - "wait for first reversal candle"
+        - "confirm with volume spike"
+      exit:
+        take_profit: "50% to 70% of gap distance"
+        stop_loss: "hard 2% loss"
+        time_based: "exit by 3:30pm if not filled"
+    performance:
+      historical_win_rate: 0.68
+      avg_risk_reward: 1.8
+      optimal_market_type: "trending"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    notes: "Most reliable on SPY, QQQ, and large-cap tech stocks"
+    
+  vwap_bounce:
+    type: equity
+    category: day_trading
+    timeframes: ["1m", "5m"]
+    direction: bidirectional
+    indicators:
+      primary:
+        - condition: "price_tests_vwap"
+          weight: 3
+        - condition: "candle_rejection_at_vwap"
+          weight: 2
+        - condition: "volume_surge_on_bounce > 1.3x avg"
+          weight: 2
+      secondary:
+        - condition: "market_direction_alignment"
+          weight: 1
+        - condition: "sector_strength_alignment"
+          weight: 1
+    ideal_conditions:
+      - "market_trending_day: true"
+      - "first_two_tests_of_vwap: true"
+      - "morning_session: true"
+    execution:
+      position_sizing: "1.5% account risk"
+      entry:
+        - "enter after rejection candle closes"
+        - "add on second confirmation candle"
+      exit:
+        take_profit: "next significant resistance/support level"
+        stop_loss: "beyond vwap level (0.5% buffer)"
+    performance:
+      historical_win_rate: 0.63
+      avg_risk_reward: 1.6
+      optimal_market_type: "trending"
+      backtest_period: "Jan 2023 - Oct 2024"
+    confidence: medium
+    notes: "Works best on liquid stocks that respect technical levels"
+  
+  opening_range_breakout:
+    type: equity
+    category: day_trading
+    timeframes: ["1m", "5m"]
+    direction: bidirectional
+    indicators:
+      primary:
+        - condition: "break_above_first_30m_high"
+          weight: 3
+        - condition: "break_below_first_30m_low"
+          weight: 3
+        - condition: "volume_confirmation > 1.5x avg"
+          weight: 2
+      secondary:
+        - condition: "premarket_trend_continuation"
+          weight: 1
+        - condition: "overall_market_alignment"
+          weight: 1
+    ideal_conditions:
+      - "news_catalyst_present: true"
+      - "clean_price_structure: true"
+      - "not_within_first_15m_of_market_open: true"
+    execution:
+      position_sizing: "2% account risk"
+      entry:
+        - "enter on confirmed break of range"
+        - "limit entry 0.05% beyond breakout level"
+      exit:
+        take_profit: "1.5x opening range height"
+        stop_loss: "50% into opening range"
+    performance:
+      historical_win_rate: 0.59
+      avg_risk_reward: 1.7
+      optimal_market_type: "volatile"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    notes: "Particularly effective on market index ETFs and high-beta stocks"
+
+  # ================ SWING TRADING STRATEGIES ================
+  
+  breakout_swing:
+    type: equity
+    category: swing_trading
+    timeframes: ["1h", "4h", "daily"]
+    direction: bullish
+    indicators:
+      primary:
+        - condition: "price_breaks_recent_high (10 bars)"
+          weight: 3
+        - condition: "volume_spike > 1.5x avg"
+          weight: 2
+        - condition: "macd_bullish_crossover"
+          weight: 2
+      secondary:
+        - condition: "rising_relative_strength_vs_spy"
+          weight: 1
+        - condition: "bullish_sector_rotation"
+          weight: 1
+        - condition: "50day_ma_support"
+          weight: 1
+    ideal_conditions:
+      - "bullish_macro_bias: true"
+      - "sector_rotation_to_target_sector: true"
+      - "low_volatility_expansion: true"
+      - "no_major_resistance_overhead: true"
+    execution:
+      position_sizing: "2.5% account risk"
+      entry:
+        - "buy on breakout confirmation (close above high)"
+        - "alternative: buy on first pullback to breakout level"
+      exit:
+        take_profit: "next major resistance level"
+        stop_loss: "trail stop at 3% below entry, widening to 5% after +7% gain"
+        time_based: "review if no progress after 10 trading days"
+    performance:
+      historical_win_rate: 0.64
+      avg_risk_reward: 2.1
+      optimal_market_type: "uptrend"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    notes: "Filter for stocks with clean chart patterns and institutional buying"
+  
+  pullback_to_moving_average:
+    type: equity
+    category: swing_trading
+    timeframes: ["daily", "weekly"]
+    direction: bullish
+    indicators:
+      primary:
+        - condition: "price_pullback_to_21ema"
+          weight: 3
+        - condition: "rsi_oversold_recovery (daily < 40)"
+          weight: 2
+        - condition: "higher_lows_pattern"
+          weight: 2
+      secondary:
+        - condition: "bullish_macd_histogram_divergence"
+          weight: 1
+        - condition: "money_flow_index > 50"
+          weight: 1
+    ideal_conditions:
+      - "overall_uptrend_intact: true"
+      - "broader_market_support: true"
+      - "pullback_on_decreasing_volume: true"
+      - "no_earnings_within_10_days: true"
+    execution:
+      position_sizing: "2% account risk"
+      entry:
+        - "enter on first green candle after touching MA"
+        - "confirm with volume increase on bounce day"
+      exit:
+        take_profit: "previous swing high"
+        stop_loss: "below recent swing low"
+        trailing_stop: "implement 7% trailing stop after +10% gain"
+    performance:
+      historical_win_rate: 0.71
+      avg_risk_reward: 1.9
+      optimal_market_type: "bull market"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    notes: "Best applied to quality stocks in leading sectors"
+  
+  oversold_bounce:
+    type: equity
+    category: swing_trading
+    timeframes: ["4h", "daily"]
+    direction: bullish
+    indicators:
+      primary:
+        - condition: "rsi_oversold < 30 (daily)"
+          weight: 3
+        - condition: "price_near_major_support"
+          weight: 2
+        - condition: "bullish_candle_pattern (hammer, engulfing)"
+          weight: 2
+      secondary:
+        - condition: "positive_divergence_rsi"
+          weight: 1
+        - condition: "bollinger_band_touch_lower"
+          weight: 1
+        - condition: "elevated_put_call_ratio"
+          weight: 1
+    ideal_conditions:
+      - "no_major_negative_news: true"
+      - "high_volume_selling_climax: true"
+      - "sentiment_extremely_bearish: true"
+    execution:
+      position_sizing: "1.5% account risk"
+      entry:
+        - "enter after confirmation candle"
+        - "scale in 50% initial, 50% on first pullback"
+      exit:
+        take_profit: "prior resistance level or +15%"
+        stop_loss: "below confirmation candle low"
+    performance:
+      historical_win_rate: 0.58
+      avg_risk_reward: 2.2
+      optimal_market_type: "bottom of range"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: medium
+    notes: "Counter-trend strategy requiring strict discipline; best used selectively"
+
+  # ================ OPTIONS STRATEGIES ================
+  
+  rsi_ema_reversal:
+    type: options
+    category: directional_options
+    timeframes: ["5m", "15m", "1h"]
+    direction: bidirectional
+    indicators:
+      primary:
+        - condition: "rsi < 30 for calls"
+          weight: 3
+        - condition: "rsi > 70 for puts"
+          weight: 3
+        - condition: "ema20_crossover_for_confirmation"
+          weight: 2
+      secondary:
+        - condition: "volume_spike_on_reversal"
+          weight: 1
+        - condition: "stochastic_crossover"
+          weight: 1
+    ideal_conditions:
+      - "medium_volatility: true"
+      - "post_news_pullback: true"
+      - "clear_support_resistance_levels: true"
+      - "no_earnings_announcement_pending: true"
+    execution:
+      position_sizing: "1% account risk"
+      option_parameters:
+        strike_selection: "slightly OTM (0.30-0.40 delta)"
+        expiration: "7-14 DTE"
+        contract_type: "single leg calls/puts"
+      entry:
+        - "enter after confirmation candle close"
+        - "check option volume > open interest"
+      exit:
+        take_profit: "+15% to +25% (scale out)"
+        stop_loss: "-10%"
+        time_based: "exit at -5% if no movement within 1h"
+    performance:
+      historical_win_rate: 0.62
+      avg_risk_reward: 1.5
+      optimal_market_type: "high volatility"
+      backtest_period: "Jan 2023 - Oct 2024"
+    confidence: medium
+    notes: "Best used on high liquidity underlyings with tight bid-ask spreads"
+  
+  theta_spread:
+    type: options
+    category: premium_collection
+    strategy_class: vertical_spread
+    direction: neutral to slightly bullish
+    entry_criteria:
+      primary:
+        - condition: "sell_call_at_0.30_delta"
+          weight: 3
+        - condition: "buy_call_1_2_strikes_higher"
+          weight: 2
+        - condition: "iv_rank > 50%"
+          weight: 3
+      secondary:
+        - condition: "underlying_above_20/50_ema"
+          weight: 1
+        - condition: "earnings_report_passed"
+          weight: 2
+    option_parameters:
+      expiration: "25-45 DTE"
+      width: "1-2 strikes (balanced for risk/reward)"
+      max_risk: "width of spread - premium collected"
+      max_reward: "premium collected"
+    ideal_conditions:
+      - "high_implied_volatility: true"
+      - "flat_or_rising_market: true"
+      - "no_major_events_pending: true"
+      - "clear_resistance_level_above_short_strike: true"
+    execution:
+      position_sizing: "max loss < 1.5% of account"
+      management:
+        - "adjust if delta exceeds 0.40"
+        - "consider rolling if tested early"
+      exit:
+        take_profit: "50% of max profit or 21 DTE (whichever comes first)"
+        stop_loss: "150% of credit received"
+        adjustment: "roll to next expiration if profitable but threatened"
+    performance:
+      historical_win_rate: 0.78
+      avg_risk_reward: 0.7 # Lower R:R but higher win rate
+      optimal_market_type: "sideways to bullish"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    greeks_management:
+      delta: "maintain 0.20-0.40 for short strike"
+      theta: "maximize daily decay"
+      vega: "negative (benefit from IV contraction)"
+    notes: "Best deployed on ETFs or large-cap stocks with liquid options chains"
+  
+  volatility_squeeze:
+    type: options
+    category: volatility_play
+    direction: bidirectional
+    timeframes: ["daily"]
+    indicators:
+      primary:
+        - condition: "bollinger_band_width < 0.05"
+          weight: 3
+        - condition: "squeeze_histogram_flip"
+          weight: 3
+        - condition: "iv_contraction_near_end"
+          weight: 2
+      secondary:
+        - condition: "20dma_flat_or_sideways"
+          weight: 1
+        - condition: "decreasing_volume_pattern"
+          weight: 1
+    ideal_conditions:
+      - "quiet_tape_with_rising_tension: true"
+      - "iv_percentile < 25%: true"
+      - "significant_overhead_resistance: false"
+      - "unusual_options_activity: true"
+    execution:
+      position_sizing: "1.2% account risk"
+      option_parameters:
+        strategy: "long straddle or strangle"
+        expiration: "30-45 DTE"
+        strike_selection: "ATM for straddle, 0.25 delta for strangle"
+      entry:
+        - "enter when squeeze indicators align"
+        - "confirm with early directional bias if possible"
+      exit:
+        take_profit: "close 80% of position at +30%"
+        stop_loss: "-15%"
+        time_based: "exit full position if no breakout within 7 days"
+    performance:
+      historical_win_rate: 0.54
+      avg_risk_reward: 2.5
+      optimal_market_type: "transitioning"
+      backtest_period: "Jan 2023 - Oct 2024"
+    confidence: medium
+    greeks_management:
+      delta: "near-zero initially, increases with breakout"
+      gamma: "high (benefit from price movement)"
+      vega: "positive (benefit from IV expansion)"
+    notes: "Requires patience; false breakouts common before real move"
+  
+  iron_condor:
+    type: options
+    category: premium_collection
+    direction: neutral
+    timeframes: ["daily"]
+    entry_criteria:
+      primary:
+        - condition: "underlying_trading_in_range"
+          weight: 3
+        - condition: "iv_rank > 60%"
+          weight: 3
+        - condition: "technical_resistance_above_call_spread"
+          weight: 2
+        - condition: "technical_support_below_put_spread"
+          weight: 2
+      secondary:
+        - condition: "no_earnings_during_trade"
+          weight: 2
+        - condition: "historical_volatility_decreasing"
+          weight: 1
+    option_parameters:
+      expiration: "30-45 DTE"
+      short_strikes: "delta 0.16-0.20"
+      long_strikes: "1-2 strikes beyond short strikes"
+      width: "balanced for risk/reward (typically 3-5 points)"
+    ideal_conditions:
+      - "sideways_market_expected: true"
+      - "no_major_catalysts_pending: true"
+      - "underlying_between_major_support_resistance: true"
+    execution:
+      position_sizing: "max loss < 2% of account"
+      management:
+        - "adjust if short strike breached"
+        - "consider adding butterfly to threatened side"
+      exit:
+        take_profit: "50% of max profit"
+        stop_loss: "2x credit received"
+        time_based: "exit at 21 DTE regardless of P/L"
+    performance:
+      historical_win_rate: 0.67
+      avg_risk_reward: 0.65
+      optimal_market_type: "low volatility"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: high
+    greeks_management:
+      delta: "maintain near-zero overall"
+      theta: "positive (maximum decay)"
+      vega: "negative (benefit from IV contraction)"
+    notes: "Best on high-liquidity ETFs; avoid on stocks with unpredictable movement"
+
+  # ================ SPECIALTY STRATEGIES ================
+  
+  earnings_strangle:
+    type: options
+    category: event_volatility
+    direction: neutral but volatile
+    timeframes: ["daily"]
+    entry_criteria:
+      primary:
+        - condition: "earnings_announcement_pending"
+          weight: 3
+        - condition: "iv_rank > 75%"
+          weight: 2
+        - condition: "historical_earnings_movement > expected_move"
+          weight: 2
+      secondary:
+        - condition: "unusual_options_activity"
+          weight: 1
+        - condition: "sector_peers_reaction"
+          weight: 1
+    option_parameters:
+      expiration: "first weekly after earnings"
+      strikes: "0.15-0.20 delta OTM puts and calls"
+      timing: "enter 1-3 days before announcement"
+    ideal_conditions:
+      - "stock_has_history_of_big_moves: true"
+      - "expectations_appear_balanced: true"
+      - "options_pricing_in_less_than_historical_move: true"
+    execution:
+      position_sizing: "0.8% account risk (smaller due to high risk)"
+      entry:
+        - "enter as close to announcement as possible for IV capture"
+        - "sell before actual announcement to avoid IV crush"
+      exit:
+        take_profit: "+25% to +40%"
+        stop_loss: "-20%"
+        time_based: "exit before announcement in most cases"
+    performance:
+      historical_win_rate: 0.52
+      avg_risk_reward: 1.9
+      optimal_market_type: "any"
+      backtest_period: "Jan 2022 - Oct 2024"
+    confidence: low
+    greeks_management:
+      vega: "positive (benefit from IV expansion)"
+      theta: "negative (minimize time decay exposure)"
+    notes: "High-risk strategy; size accordingly and focus on liquid underlyings"
+  
+  weekly_options_momentum:
+    type: options
+    category: short_term_directional
+    direction: bidirectional
+    timeframes: ["5m", "15m"]
+    indicators:
+      primary:
+        - condition: "strong_momentum_on_high_volume"
+          weight: 3
+        - condition: "break_of_key_level"
+          weight: 3
+        - condition: "trending_5-min_macd"
+          weight: 2
+      secondary:
+        - condition: "sector_sympathy_move"
+          weight: 1
+        - condition: "unusual_options_activity"
+          weight: 1
+    option_parameters:
+      expiration: "0-7 DTE"
+      strikes: "0.30-0.50 delta"
+      contract_type: "single leg calls/puts"
+    ideal_conditions:
+      - "catalyst_present: true"
+      - "high_volume_breakout: true"
+      - "clear_directional_bias: true"
+    execution:
+      position_sizing: "0.5% account risk (smaller due to high theta)"
+      entry:
+        - "enter on confirmation of direction"
+        - "check for adequate liquidity in contract"
+      exit:
+        take_profit: "+20% to +50% (scale out)"
+        stop_loss: "-15%"
+        time_based: "exit same day if possible"
+    performance:
+      historical_win_rate: 0.48
+      avg_risk_reward: 2.2
+      optimal_market_type: "trending"
+      backtest_period: "Jan 2023 - Oct 2024"
+    confidence: low
+    greeks_management:
+      delta: "high (maximize directional exposure)"
+      theta: "minimize (avoid overnight decay)"
+    notes: "High-risk strategy requiring strict discipline; best for experienced traders"
+
+# ================ STRATEGY COMBINATIONS ================
+
+strategy_combinations:
+  
+  trending_market_suite:
+    active_strategies: 
+      - "breakout_swing"
+      - "opening_range_breakout"
+      - "vwap_bounce"
+    risk_adjustment: "standard"
+    capital_allocation: 
+      - "40% breakout_swing"
+      - "30% opening_range_breakout" 
+      - "30% vwap_bounce"
+    trigger_conditions:
+      - "spy_above_20dma"
+      - "advance_decline_line_rising"
+      - "vix < 20"
+  
+  high_volatility_suite:
+    active_strategies:
+      - "volatility_squeeze"
+      - "gap_fill_daytrade"
+      - "iron_condor"
+    risk_adjustment: "reduced by 25%"
+    capital_allocation:
+      - "40% gap_fill_daytrade"
+      - "30% volatility_squeeze"
+      - "30% iron_condor"
+    trigger_conditions:
+      - "vix > 25"
+      - "atr_expansion > 150% normal"
+      - "market_indexes_volatile"
+  
+  earnings_season_suite:
+    active_strategies:
+      - "earnings_strangle"
+      - "iron_condor"
+      - "theta_spread"
+    risk_adjustment: "reduced by 30%"
+    capital_allocation:
+      - "40% theta_spread"
+      - "30% iron_condor"
+      - "30% earnings_strangle"
+    trigger_conditions:
+      - "earnings_season_active"
+      - "sector_in_focus"
+      - "iv_rank_elevated"
+
+# ================ RISK MANAGEMENT RULES ================
+
+risk_management:
+  daily_loss_limit: "3% of account"
+  weekly_loss_limit: "5% of account"
+  max_open_positions: 7
+  max_correlation_between_positions: 0.7
+  max_sector_exposure: "25% of portfolio"
+  drawdown_response:
+    level_1:
+      trigger: "3% daily drawdown"
+      action: "reduce position size by 50% for rest of day"
+    level_2:
+      trigger: "5% weekly drawdown"
+      action: "trading pause for 2 days, strategy review"
+    level_3:
+      trigger: "7% monthly drawdown"
+      action: "trading pause for 1 week, comprehensive review"
+  correlated_risk_limits:
+    max_tech_exposure: "30% of portfolio"
+    max_similar_strategy_allocation: "25% of portfolio"
+
+# ================ PERFORMANCE METRICS ================
+
+performance_tracking:
+  review_frequency: "weekly"
+  key_metrics:
+    - "win_rate"
+    - "profit_factor"
+    - "average_hold_time"
+    - "risk_adjusted_return"
+    - "strategy_correlation"
+  strategy_rotation:
+    underperforming_threshold: "below 40% win rate for 10 trades"
+    outperforming_promotion: "increase allocation after 5 consecutive winners"
+
+# ================ MARKET CONDITION FRAMEWORK ================
+
+market_conditions:
+  bullish:
+    indicators:
+      - "spy_above_20dma_and_50dma"
+      - "more_new_highs_than_lows"
+      - "vix < 18"
+    strategies_to_favor:
+      - "breakout_swing"
+      - "pullback_to_moving_average"
+      - "theta_spread"
+    strategies_to_avoid:
+      - "volatility_squeeze"
+      - "oversold_bounce"
+  
+  bearish:
+    indicators:
+      - "spy_below_20dma_and_50dma"
+      - "more_new_lows_than_highs"
+      - "vix > 25"
+    strategies_to_favor:
+      - "gap_fill_daytrade"
+      - "oversold_bounce"
+      - "iron_condor"
+    strategies_to_avoid:
+      - "breakout_swing"
+      - "theta_spread"
+  
+  sideways:
+    indicators:
+      - "spy_between_20dma_and_50dma"
+      - "low_adr_on_indexes"
+      - "vix 15-25"
+    strategies_to_favor:
+      - "iron_condor"
+      - "theta_spread"
+      - "vwap_bounce"
+    strategies_to_avoid:
+      - "earnings_strangle"
+      - "volatility_squeeze"
+  
+  high_volatility:
+    indicators:
+      - "vix > 30"
+      - "large_daily_ranges"
+      - "elevated_put_call_ratio"
+    strategies_to_favor:
+      - "volatility_squeeze"
+      - "gap_fill_daytrade"
+      - "rsi_ema_reversal"
+    strategies_to_avoid:
+      - "iron_condor"
+      - "theta_spread" 

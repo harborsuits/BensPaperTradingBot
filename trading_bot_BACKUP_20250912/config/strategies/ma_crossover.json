@@ -1,0 +1,55 @@
+{
+    "name": "MA_Crossover",
+    "strategy_type": "indicator",
+    "symbol": "SPY",
+    "timeframe": "1d",
+    "indicators": {
+        "fast_ma": {
+            "type": "EMA",
+            "timeperiod": 9
+        },
+        "slow_ma": {
+            "type": "EMA",
+            "timeperiod": 21
+        },
+        "trend_ma": {
+            "type": "SMA",
+            "timeperiod": 50
+        },
+        "volume_ma": {
+            "type": "SMA",
+            "timeperiod": 20
+        }
+    },
+    "entry_rules": [
+        {
+            "condition": "fast_ma crosses_above slow_ma",
+            "entry_signal": "buy",
+            "description": "Bullish crossover (fast MA crosses above slow MA)"
+        },
+        {
+            "condition": "fast_ma crosses_below slow_ma",
+            "entry_signal": "sell",
+            "description": "Bearish crossover (fast MA crosses below slow MA)"
+        }
+    ],
+    "exit_rules": [
+        {
+            "condition": "close < fast_ma",
+            "description": "Exit long when price drops below fast MA"
+        },
+        {
+            "condition": "close > fast_ma",
+            "description": "Exit short when price rises above fast MA"
+        }
+    ],
+    "position_sizing": {
+        "type": "percent",
+        "value": 10.0
+    },
+    "risk_management": {
+        "stop_loss_pct": 3.0,
+        "take_profit_pct": 6.0,
+        "trailing_stop_pct": 1.5
+    }
+}

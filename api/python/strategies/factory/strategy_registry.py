@@ -28,9 +28,16 @@ class StrategyType(Enum):
     DAY_TRADING = "day_trading"
     POSITION = "position"
     ML_BASED = "ml_based"
-    # Added for options strategies
+    # Added for options strategies - match core/strategy_base.py
     VOLATILITY = "volatility"
     INCOME = "income"
+    # Additional types from core/strategy_base.py
+    MACHINE_LEARNING = "machine_learning"
+    EXTERNAL_SIGNAL = "external_signal"
+    PATTERN_RECOGNITION = "pattern_recognition"
+    INDICATOR_BASED = "indicator_based"
+    CUSTOM = "custom"
+    ENSEMBLE = "ensemble"
 
 # Asset classes
 class AssetClass(Enum):

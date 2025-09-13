@@ -1,0 +1,11 @@
+{
+  "seasonality_insights": {
+    "framework_version": "3.0.0",
+    "last_updated": "2025-04-11",
+    "meta_data": {
+      "framework_name": "Comprehensive Seasonality Insights Framework",
+      "description": "Multi-phase seasonality framework for optimizing trading strategies based on calendar patterns",
+      "created_by": "Trading Bot System"
+    }
+  }
+} 

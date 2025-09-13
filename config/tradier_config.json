@@ -5,7 +5,7 @@
   "credential_store": {
     "type": "encrypted",
     "path": "data/credentials.enc",
-    "master_password": "${TRADING_BOT_MASTER_PASSWORD}"
+    "master_password": "SecureTradingSystem2025"
   },
   "audit_log": {
     "enabled": true,
@@ -15,8 +15,8 @@
   "brokers": {
     "tradier": {
       "enabled": true,
-      "api_key": "${TRADIER_API_KEY}",
-      "account_id": "${TRADIER_ACCOUNT_ID}",
+      "api_key": "KU2iUnOZIUFre0wypgyOn8TgmGxI",
+      "account_id": "VA1201776",
       "sandbox": true,
       "primary": true
     }

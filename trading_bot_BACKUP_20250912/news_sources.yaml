@@ -1,0 +1,91 @@
+sources:
+  - name: "Reuters"
+    domain: "reuters.com"
+    category: "markets"
+    bias_prior: 0.1
+    reliability_prior: 0.85
+    rss: "https://www.reuters.com/finance/rss"
+
+  - name: "Bloomberg"
+    domain: "bloomberg.com"
+    category: "markets"
+    bias_prior: 0.2
+    reliability_prior: 0.85
+    rss: "https://www.bloomberg.com/feeds/podcasts/etf-report.xml"
+
+  - name: "WSJ Markets"
+    domain: "wsj.com"
+    category: "markets"
+    bias_prior: 0.3
+    reliability_prior: 0.8
+    rss: "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"
+
+  - name: "The Guardian (US)"
+    domain: "theguardian.com"
+    category: "politics"
+    bias_prior: -0.8
+    reliability_prior: 0.65
+    rss: "https://www.theguardian.com/us-news/rss"
+
+  - name: "Fox News"
+    domain: "foxnews.com"
+    category: "politics"
+    bias_prior: 0.9
+    reliability_prior: 0.55
+    rss: "https://moxie.foxnews.com/google-publisher/latest.xml"
+
+  - name: "MSNBC"
+    domain: "msnbc.com"
+    category: "politics"
+    bias_prior: -0.9
+    reliability_prior: 0.55
+    rss: "https://www.msnbc.com/feeds/latest"
+
+  - name: "CoinDesk"
+    domain: "coindesk.com"
+    category: "crypto"
+    bias_prior: 0.1
+    reliability_prior: 0.7
+    rss: "https://www.coindesk.com/arc/outboundfeeds/rss/"
+
+  - name: "TechCrunch"
+    domain: "techcrunch.com"
+    category: "tech"
+    bias_prior: -0.2
+    reliability_prior: 0.75
+    rss: "https://techcrunch.com/feed/"
+
+  - name: "CNBC"
+    domain: "cnbc.com"
+    category: "markets"
+    bias_prior: 0.1
+    reliability_prior: 0.75
+    rss: "https://www.cnbc.com/id/20409666/device/rss/rss.html"
+
+  - name: "Financial Times"
+    domain: "ft.com"
+    category: "markets"
+    bias_prior: 0.0
+    reliability_prior: 0.9
+    rss: "https://www.ft.com/rss/markets"
+
+  - name: "The Economist"
+    domain: "economist.com"
+    category: "macro"
+    bias_prior: 0.0
+    reliability_prior: 0.9
+    rss: "https://www.economist.com/finance-and-economics/rss.xml"
+
+  - name: "MarketWatch"
+    domain: "marketwatch.com"
+    category: "markets"
+    bias_prior: 0.1
+    reliability_prior: 0.7
+    rss: "https://www.marketwatch.com/rss/marketwatch_marketpulse"
+
+  - name: "Barron's"
+    domain: "barrons.com"
+    category: "markets"
+    bias_prior: 0.2
+    reliability_prior: 0.8
+    rss: "https://www.barrons.com/feed/rss/market-data"

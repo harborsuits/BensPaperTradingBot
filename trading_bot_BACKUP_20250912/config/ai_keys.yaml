@@ -1,0 +1,6 @@
+# AI Service API Keys - KEEP SECURE
+# Do not commit this file to version control
+
+openai: "YOUR_OPENAI_API_KEY"  # Replace with your actual OpenAI API key
+anthropic: "YOUR_ANTHROPIC_API_KEY"  # Replace with your actual Anthropic API key
+mistral: ""  # Add your Mistral key if you have one

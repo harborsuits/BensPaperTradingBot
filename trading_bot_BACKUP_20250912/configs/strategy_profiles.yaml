@@ -1,0 +1,99 @@
+---
+# Strategy Profiles for Intelligent Backtesting
+# Defines optimization goals, parameter ranges, and regime preferences
+
+momentum_breakout:
+  description: "Momentum-based breakout strategy using MA crossovers and volume confirmation"
+  regime: "trending"
+  optimization:
+    min_sharpe: 1.2
+    target_sharpe: 1.5
+    max_drawdown: 12.0
+    min_return: 8.0
+    min_win_rate: 0.55
+  parameters:
+    ma_short: [5, 10, 15, 20]
+    ma_long: [50, 100, 150, 200]
+    rsi_period: [7, 9, 14]
+    volume_threshold: [1.5, 2.0, 2.5]
+    breakout_confirmation_days: [1, 2, 3]
+
+mean_reversion:
+  description: "Mean reversion strategy using Bollinger Bands and RSI"
+  regime: "range_bound"
+  optimization:
+    min_sharpe: 1.0
+    target_sharpe: 1.3
+    max_drawdown: 10.0
+    min_return: 6.0
+    min_win_rate: 0.6
+  parameters:
+    bollinger_period: [15, 20, 25]
+    bollinger_dev: [1.5, 2.0, 2.5]
+    rsi_period: [7, 14, 21]
+    rsi_oversold: [30]
+    rsi_overbought: [70]
+    mean_reversion_threshold: [0.8, 1.0, 1.2]
+
+trend_following:
+  description: "Classic trend following using moving averages and ADX"
+  regime: "trending"
+  optimization:
+    min_sharpe: 1.0
+    target_sharpe: 1.4
+    max_drawdown: 15.0
+    min_return: 8.0
+    min_win_rate: 0.5
+  parameters:
+    ma_short: [10, 20, 30]
+    ma_long: [50, 100, 200]
+    adx_period: [14]
+    adx_threshold: [20, 25, 30]
+    trailing_stop_atr: [2.0, 3.0, 4.0]
+
+value_dividend:
+  description: "Value-based strategy targeting dividend stocks with valuation metrics"
+  regime: "all"
+  optimization:
+    min_sharpe: 0.8
+    target_sharpe: 1.2
+    max_drawdown: 10.0
+    min_return: 5.0
+    min_win_rate: 0.55
+  parameters:
+    pe_max: [15, 20, 25] 
+    dividend_yield_min: [2.5, 3.0, 3.5]
+    price_to_book_max: [2.0, 3.0, 4.0]
+    holding_period_months: [3, 6, 12]
+
+volatility_etf:
+  description: "Volatility-based strategy trading VIX-related ETFs"
+  regime: "high_volatility"
+  optimization:
+    min_sharpe: 1.0
+    target_sharpe: 1.6
+    max_drawdown: 20.0
+    min_return: 12.0
+    min_win_rate: 0.45
+  parameters:
+    vix_entry_level: [20, 25, 30]
+    vix_exit_level: [15, 18, 22]
+    ma_short_vix: [5, 10]
+    ma_long_vix: [20, 30]
+    contango_threshold: [-5, -3, -1]
+
+ai_sentiment:
+  description: "AI-powered sentiment analysis strategy for news-driven moves"
+  regime: "all"
+  optimization:
+    min_sharpe: 1.0
+    target_sharpe: 1.4
+    max_drawdown: 12.0
+    min_return: 7.0
+    min_win_rate: 0.52
+  parameters:
+    sentiment_threshold: [0.6, 0.65, 0.7]
+    sentiment_lookback_days: [3, 5, 7]
+    sentiment_confirmation_hours: [6, 12, 24]
+    news_volume_threshold: [1.5, 2.0, 3.0]
+    position_hold_days: [1, 2, 3, 5]
