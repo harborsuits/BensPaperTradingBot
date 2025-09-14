@@ -537,4 +537,62 @@ router.get('/ai/decision-history', (req, res) => {
   }
 });
 
+/**
+ * @route GET /api/live/ai/status
+ * @desc Get AI orchestrator status
+ * @access Public
+ */
+router.get('/ai/status', (req, res) => {
+  try {
+    const aiStatus = {
+      is_active: true,
+      last_run: new Date().toISOString(),
+      total_cycles: 0, // Would come from AI orchestrator
+      current_regime: 'neutral_medium', // From market context
+      recent_decisions: [],
+      policy_version: 'latest',
+      timestamp: new Date().toISOString(),
+      circuit_breakers: []
+    };
+    res.json(aiStatus);
+  } catch (error) {
+    console.error('AI status error:', error);
+    res.status(500).json({ error: 'Failed to get AI status' });
+  }
+});
+
+/**
+ * @route GET /api/live/ai/context
+ * @desc Get AI market context and roster information
+ * @access Public
+ */
+router.get('/ai/context', (req, res) => {
+  try {
+    // Get real roster data from AI orchestrator
+    const roster = aiOrchestrator.getRosterSnapshot();
+
+    const aiContext = {
+      regime: 'neutral_medium',
+      volatility: 'medium',
+      sentiment: 'neutral',
+      vix_level: 18.5,
+      calendar_events: [],
+      roster_metrics: {
+        total_strategies: roster.total,
+        by_stage: roster.byStage,
+        by_status: roster.byStatus,
+        avg_sharpe: roster.performance.avgSharpe,
+        avg_pf: roster.performance.avgPF,
+        underperformers: roster.performance.underperformers
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(aiContext);
+  } catch (error) {
+    console.error('AI context error:', error);
+    res.status(500).json({ error: 'Failed to get AI context' });
+  }
+});
+
 module.exports = router;

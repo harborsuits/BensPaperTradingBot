@@ -50,7 +50,7 @@ const AIOrchestratorStatus: React.FC = () => {
   const { data: statusData, isLoading: statusLoading, error: statusError, refetch: refetchStatus } = useQuery({
     queryKey: ['ai-status'],
     queryFn: async () => {
-      const response = await apiClient.get('/api/ai/status');
+      const response = await apiClient.get('/live/ai/status');
       return response.data;
     },
     refetchInterval: 30000, // Refresh every 30 seconds
@@ -60,7 +60,7 @@ const AIOrchestratorStatus: React.FC = () => {
   const { data: contextData, isLoading: contextLoading, refetch: refetchContext } = useQuery({
     queryKey: ['ai-context'],
     queryFn: async () => {
-      const response = await apiClient.get('/api/ai/context');
+      const response = await apiClient.get('/live/ai/context');
       return response.data;
     },
     refetchInterval: 60000, // Refresh every minute

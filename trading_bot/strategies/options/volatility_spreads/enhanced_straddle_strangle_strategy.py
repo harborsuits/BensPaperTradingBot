@@ -6,6 +6,16 @@ Enhanced Straddle/Strangle Strategy Implementation
 This is the main implementation of the enhanced Straddle/Strangle options strategy,
 integrating the modular components for market analysis, option selection, risk management,
 and the volatility spread factory.
+
+FILE ORGANIZATION:
+- Configuration & Constants (DEFAULT_PARAMS, enums)
+- Initialization & Setup
+- Universe Management
+- Signal Generation
+- Position Management
+- Performance & Analytics
+- Event Handling
+- Utility Methods
 """
 
 import numpy as np
@@ -15,12 +25,124 @@ from datetime import datetime, timedelta
 import logging
 import uuid
 from enum import Enum
+from dataclasses import dataclass, field
 
 # Import our modular components
 from .components.market_analysis import VolatilityAnalyzer
 from .components.option_selection import OptionSelector
 from .components.risk_management import VolatilityRiskManager
 from .components.volatility_spread_factory import VolatilitySpreadFactory
+
+# ================================================================================
+# CORE SCHEMAS - Production-Ready Data Contracts
+# ================================================================================
+
+class Side(str, Enum):
+    BUY = "BUY"
+    SELL = "SELL"
+
+class OrderState(str, Enum):
+    NEW = "NEW"
+    WORKING = "WORKING"
+    PARTIAL = "PARTIAL"
+    FILLED = "FILLED"
+    FAILED = "FAILED"
+    CANCELED = "CANCELED"
+
+@dataclass(frozen=True)
+class Signal:
+    symbol: str
+    side: Side
+    size: float
+    confidence: float
+    ttl_s: int
+    key: str
+
+@dataclass
+class OrderIntent:
+    symbol: str
+    legs: List[Dict]
+    reason: str
+    max_slippage_bps: int = 50
+
+@dataclass
+class Position:
+    id: str
+    legs: List[Dict]
+    opened_at: float
+    status: str = "OPEN"
+    entry_cost: float = 0.0
+    greeks: Dict = field(default_factory=dict)
+
+# ================================================================================
+# SIGNAL NORMALIZER - Dedupes and Normalizes Trading Signals
+# ================================================================================
+
+class SignalNormalizer:
+    def normalize(self, raw_signals: List[Dict[str, Any]]) -> List[Signal]:
+        normalized = []
+        for s in raw_signals:
+            confidence = max(0.0, min(1.0, float(s.get("confidence", 0.5))))
+            key = s.get("key") or f"{s['symbol']}:{s.get('reason', '')}"
+            normalized.append(Signal(
+                symbol=s["symbol"],
+                side=Side(s["side"]),
+                size=float(s["size"]),
+                confidence=confidence,
+                ttl_s=int(s.get("ttl_s", 300)),
+                key=key
+            ))
+
+        # Dedupe by key (keep highest confidence)
+        best = {}
+        for sig in normalized:
+            if sig.key not in best or sig.confidence > best[sig.key].confidence:
+                best[sig.key] = sig
+        return list(best.values())
+
+# ================================================================================
+# ORDER MANAGEMENT SYSTEM (OMS) - Idempotent Order Lifecycle
+# ================================================================================
+
+class OMS:
+    def __init__(self, broker):
+        self.broker = broker
+        self._orders_by_key = {}  # key -> order
+        self._orders_by_id = {}   # oid -> order
+
+    def submit(self, intent: OrderIntent, key: str):
+        if key in self._orders_by_key:
+            return self._orders_by_key[key]  # idempotency
+
+        oid = self.broker.place(intent)
+        order = {
+            "state": OrderState.NEW,
+            "id": oid,
+            "intent": intent
+        }
+        self._orders_by_key[key] = order
+        self._orders_by_id[oid] = order
+        return order
+
+    def on_fill(self, oid, fill):
+        o = self._orders_by_id.get(oid)
+        if not o:
+            return
+
+        # Transition rules
+        if fill["filled_qty"] == fill["total_qty"]:
+            o["state"] = OrderState.FILLED
+        elif fill["filled_qty"] > 0:
+            o["state"] = OrderState.PARTIAL
+
+# ================================================================================
+# UNIFIED COST MODEL - Same Costs for Backtest, Paper, and Live
+# ================================================================================
+
+def apply_costs(gross_pnl: float, notional: float, spread_bps: int, fees_per_contract: float, contracts: int) -> float:
+    spread_cost = notional * (spread_bps / 1e4)
+    fees_cost = fees_per_contract * contracts
+    return gross_pnl - spread_cost - fees_cost
 
 # Define strategy enumerations locally to avoid circular imports
 class StrategyType(Enum):
@@ -132,8 +254,12 @@ class EnhancedStraddleStrangleStrategy:
         'cache_volatility_data': True        # Cache volatility calculations for efficiency
     }
     
-    def __init__(self, 
-                 strategy_id: str = None, 
+    # ========================================================================================
+    # INITIALIZATION & SETUP
+    # ========================================================================================
+
+    def __init__(self,
+                 strategy_id: str = None,
                  name: str = None,
                  parameters: Dict[str, Any] = None,
                  broker_adapter = None,
@@ -178,13 +304,23 @@ class EnhancedStraddleStrangleStrategy:
             risk_manager=self.risk_manager,
             default_params=self.params
         )
-        
-        # Trading data
+
+        # Production-ready components
+        self.signal_normalizer = SignalNormalizer()
+        self.oms = OMS(broker_adapter) if broker_adapter else None
+
+        # Trading data - Single source of truth for positions
         self.universe = []                    # Universe of tradable symbols
-        self.active_positions = {}            # Currently active positions
-        self.historical_positions = []        # Historical position data
+        self._open_positions: Dict[str, Position] = {}  # Single source of truth
+        self._closed_positions: List[Position] = []     # Closed position data for performance tracking
         self.volatility_metrics = {}          # Cached volatility metrics by symbol
         self.option_chains = {}               # Cached option chain data by symbol
+
+        # Backwards-compatible aliases
+        self.active_positions = self._open_positions
+        self.positions = self._open_positions
+        self.closed_positions = self._closed_positions
+        self.historical_positions = self._closed_positions
         
         # External integrations
         self.broker_adapter = broker_adapter  # Direct broker API access if needed
@@ -215,7 +351,11 @@ class EnhancedStraddleStrangleStrategy:
         logger.info(f"Initialized {self.name} (ID: {self.strategy_id}) with variant {self.params['strategy_variant']}")
         if self.event_bus:
             self._subscribe_to_events()
-            
+
+    # ========================================================================================
+    # UNIVERSE MANAGEMENT
+    # ========================================================================================
+
     def set_universe(self, symbols: List[str]) -> None:
         """
         Set the universe of tradable assets for this strategy instance.
@@ -299,8 +439,12 @@ class EnhancedStraddleStrangleStrategy:
             
         logger.info(f"Defined universe with {len(filtered_symbols)} symbols")
         return filtered_symbols
-        
-    def generate_signals(self, market_data: Any, option_chains: Optional[Any] = None) -> List[Dict[str, Any]]:
+
+    # ========================================================================================
+    # SIGNAL GENERATION
+    # ========================================================================================
+
+    def generate_signals(self, market_data: Any, option_chains: Optional[Any] = None) -> List[Signal]:
         """
         Generate straddle/strangle signals based on market data and option chains.
         
@@ -403,8 +547,10 @@ class EnhancedStraddleStrangleStrategy:
         # Publish to event bus if available
         if self.event_bus and signals:
             self._publish_signals_event(signals)
-            
-        return signals
+
+        # Normalize and dedupe signals
+        normalized_signals = self.signal_normalizer.normalize(signals)
+        return normalized_signals
         
     def _get_historical_data(self, market_data: Any, symbol: str) -> pd.DataFrame:
         """
@@ -644,7 +790,11 @@ class EnhancedStraddleStrangleStrategy:
         }
         
         return signal
-        
+
+    # ========================================================================================
+    # EVENT HANDLING
+    # ========================================================================================
+
     def _subscribe_to_events(self) -> None:
         """
         Subscribe to relevant events from the event bus.
@@ -723,103 +873,36 @@ class EnhancedStraddleStrangleStrategy:
         """
         # This would be implemented to handle volatility spike/crash alerts
         pass
-        
-    # Position Management Methods
-    
-    def manage_positions(self, market_data: Any, option_chains: Optional[Any] = None) -> List[Dict[str, Any]]:
+
+    # ========================================================================================
+    # UTILITY METHODS
+    # ========================================================================================
+
+    def _get_historical_data(self, market_data: Any, symbol: str) -> pd.DataFrame:
         """
-        Evaluate and manage existing positions based on current market conditions.
-        
+        Get historical data for a symbol with error handling.
+
         Args:
-            market_data: Current market data
-            option_chains: Current option chain data
-            
+            market_data: Market data object
+            symbol: Symbol to get data for
+
         Returns:
-            List of position management actions
+            DataFrame with historical data or None if unavailable
         """
-        if not hasattr(self, 'positions') or not self.positions:
-            return []
-            
-        actions = []
-        logger.info(f"Managing {len(self.positions)} open positions")
-        
-        # Track management time for performance
-        start_time = datetime.now()
-        
-        for position_id, position in self.positions.items():
-            try:
-                # Extract position details
-                symbol = position.get('symbol')
-                entry_price = position.get('entry_price')
-                position_type = position.get('position_type')  # straddle, strangle, etc.
-                entry_time = position.get('entry_time')
-                options_data = position.get('options', {})  # Contains legs of the spread
-                exit_conditions = position.get('exit_conditions', {})
-                
-                if not symbol:
-                    logger.warning(f"Position {position_id} missing symbol")
-                    continue
-                    
-                # Get current market data for the symbol
-                hist_data = self._get_historical_data(market_data, symbol)
-                if hist_data is None:
-                    logger.warning(f"No market data for {symbol}, skipping position check")
-                    continue
-                    
-                # Get current option chain if available
-                current_options = self._get_option_chain(option_chains, symbol)
-                    
-                # Evaluate position metrics
-                position_metrics = self._evaluate_position_metrics(position, hist_data, current_options)
-                
-                # Update position with latest metrics
-                self.positions[position_id].update({
-                    'current_metrics': position_metrics,
-                    'last_updated': datetime.now().isoformat()
-                })
-                
-                # Check exit conditions
-                exit_action = self._check_exit_conditions(position, position_metrics)
-                
-                if exit_action:
-                    exit_action.update({
-                        'position_id': position_id,
-                        'symbol': symbol,
-                        'position_type': position_type
-                    })
-                    actions.append(exit_action)
-                    
-                    # Mark position for potential closing
-                    self.positions[position_id]['pending_exit'] = True
-                    self.positions[position_id]['exit_signal'] = exit_action
-                    
-            except Exception as e:
-                logger.error(f"Error managing position {position_id}: {e}")
-                self.health_metrics['errors'].append({
-                    'timestamp': datetime.now().isoformat(),
-                    'position_id': position_id,
-                    'error': str(e),
-                    'component': 'manage_positions'
-                })
-                
-        # Log management results
-        management_time = (datetime.now() - start_time).total_seconds()
-        logger.info(f"Generated {len(actions)} position management actions in {management_time:.2f} seconds")
-        
-        # Update metrics
-        self.health_metrics['last_position_check'] = datetime.now().isoformat()
-        
-        # Publish to event bus if available
-        if self.event_bus and actions:
-            self.event_bus.publish('position_actions', {
-                'strategy_id': self.strategy_id,
-                'action_count': len(actions),
-                'actions': actions,
-                'timestamp': datetime.now().isoformat()
-            })
-            
-        return actions
-        
+        try:
+            # Try different methods to get historical data
+            if hasattr(market_data, 'get_historical_data'):
+                return market_data.get_historical_data(symbol)
+            elif hasattr(market_data, 'history') and callable(market_data.history):
+                return market_data.history(symbol)
+            elif isinstance(market_data, dict) and symbol in market_data:
+                return market_data[symbol]
+            else:
+                logger.warning(f"Unsupported market_data type for {symbol}")
+                return None
+        except Exception as e:
+            logger.error(f"Error getting historical data for {symbol}: {e}")
+            return None
     def _evaluate_position_metrics(self, position: Dict[str, Any], market_data: pd.DataFrame, 
                                   option_chain: Optional[Any] = None) -> Dict[str, Any]:
         """
@@ -1189,9 +1272,11 @@ class EnhancedStraddleStrangleStrategy:
         except Exception as e:
             logger.error(f"Error calculating days to expiry: {e}")
             return 999  # Error case, return a large number
-    
-    # Performance Tracking and Reporting
-    
+
+    # ========================================================================================
+    # PERFORMANCE & ANALYTICS
+    # ========================================================================================
+
     def calculate_strategy_performance(self) -> Dict[str, Any]:
         """
         Calculate comprehensive performance metrics for the strategy.

@@ -33,9 +33,17 @@ export const OrdersSvc = {
 
 export type StrategyCard = { id:string; name:string; active:boolean; exposure_pct:number; last_signal_time?:string; last_signal_strength?:number; p_l_30d:number; };
 export const StrategiesSvc = {
-  list: () => get<{ items: StrategyCard[] }>("/api/strategies").then(x => x.items || []),
-  activate: (id:string)   => post<{ok:boolean}>(`/api/strategies/${id}/activate`, {}),
-  deactivate: (id:string) => post<{ok:boolean}>(`/api/strategies/${id}/deactivate`, {}),
+  list: () => get<{ strategies: any[] }>("/api/live/strategies").then(x => (x.strategies || []).map(s => ({
+    id: s.id,
+    name: s.name,
+    active: s.status === 'active',
+    exposure_pct: (s.config?.allocated_capital || 0) / 100000, // Convert to percentage
+    last_signal_time: s.last_updated,
+    last_signal_strength: 0.5, // Default value
+    p_l_30d: s.performance?.total_return || 0,
+  }))),
+  activate: (id:string)   => post<{ok:boolean}>(`/api/live/strategies/${id}/activate`, {}),
+  deactivate: (id:string) => post<{ok:boolean}>(`/api/live/strategies/${id}/deactivate`, {}),
 };
 
 export type LiveSignal = { ts:string; strategy:string; symbol:string; action:string; size:number; reason:string; };

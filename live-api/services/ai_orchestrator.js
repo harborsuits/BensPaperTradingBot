@@ -131,11 +131,12 @@ class AIOrchestrator {
             this.marketContext = context;
 
             // Step 2: Get current roster and capacity
+            const allStrategies = this.strategyManager.getAllStrategies();
             const roster = this.getRosterSnapshot();
             const capacity = this.getCapacitySnapshot();
 
             // Step 3: Check for catastrophic conditions first
-            const circuitBreakers = this.policyEngine.checkCircuitBreakers(context, roster);
+            const circuitBreakers = this.policyEngine.checkCircuitBreakers(context, allStrategies);
             if (circuitBreakers.length > 0) {
                 console.log(`[AI_ORCHESTRATOR] 🚨 CIRCUIT BREAKERS ACTIVE: ${circuitBreakers.length}`);
                 circuitBreakers.forEach(cb => {

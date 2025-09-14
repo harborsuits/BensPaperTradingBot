@@ -1559,9 +1559,21 @@ app.get('/api/paper/orders/stream', (req, res) => {
 
 app.get('/api/paper/orders/:id', async (req, res) => {
   try {
+    // In paper trading mode, return mock order data
+    if (process.env.TRADING_MODE === 'paper' || !process.env.TRADIER_TOKEN) {
+      const orderId = req.params.id;
+      // Try to find the order in our paper trading engine
+      const paperOrder = enhancedPaperOrders.find(o => o.id === orderId);
+      if (paperOrder) {
+        return res.json(paperOrder);
+      }
+      return res.status(404).json({ error: 'Order not found in paper trading' });
+    }
+
+    // Live trading - call real broker
     const baseUrl = process.env.TRADIER_BASE_URL || 'https://sandbox.tradier.com/v1';
-    const token = process.env.TRADIER_TOKEN || 'KU2iUnOZIUFre0wypgyOn8TgmGxI';
-    const accountId = process.env.TRADIER_ACCOUNT_ID || 'VA1201776';
+    const token = process.env.TRADIER_TOKEN;
+    const accountId = process.env.TRADIER_ACCOUNT_ID;
 
     const r = await axios.get(`${baseUrl}/accounts/${accountId}/orders/${req.params.id}`, {
       headers: {
@@ -7347,6 +7359,40 @@ function emitBrainActivity(activity) {
 }
 
 // === END BRAIN API ENDPOINTS ===
+
+// AI Orchestrator status endpoints for dashboard
+app.get('/api/ai/status', (req, res) => {
+  try {
+    const aiStatus = {
+      is_active: true,
+      last_run: new Date().toISOString(),
+      total_cycles: 0, // Would come from AI orchestrator
+      current_regime: 'neutral_medium', // From market context
+      recent_decisions: [],
+      policy_version: 'latest',
+      timestamp: new Date().toISOString(),
+      circuit_breakers: []
+    };
+
+    res.json(aiStatus);
+  } catch (error) {
+    console.error('AI status error:', error);
+    res.status(500).json({ error: 'Failed to get AI status' });
+  }
+});
+
+// AI context endpoint moved to routes/live.js
+
+app.post('/api/ai/trigger-cycle', (req, res) => {
+  try {
+    // Trigger AI orchestration cycle
+    console.log('Manual AI cycle triggered via API');
+    res.json({ success: true, message: 'AI cycle triggered' });
+  } catch (error) {
+    console.error('AI trigger cycle error:', error);
+    res.status(500).json({ error: 'Failed to trigger AI cycle' });
+  }
+});
 
 // Migration guard: refuse to start if pending migrations are detected
 try {

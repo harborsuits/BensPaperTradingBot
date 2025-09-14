@@ -5,7 +5,7 @@
  * Provides indicators for trading decisions and market analysis.
  */
 
-const { marketRecorder } = require('./marketRecorder');
+const { recorder: marketRecorder } = require('./marketRecorder');
 
 class MarketIndicatorsService {
   constructor(config = {}) {

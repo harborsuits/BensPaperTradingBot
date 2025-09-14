@@ -78,14 +78,18 @@ class TimeFrame(Enum):
 
 class StrategyRegistry:
     _registry: Dict[str, Any] = {}
+    _metadata: Dict[str, Any] = {}
     _lock = threading.Lock()
 
     @classmethod
-    def register(cls, name: str, strategy_cls: Any):
+    def register(cls, name: str, strategy_cls: Any, **kwargs: Any):
         with cls._lock:
             if name in cls._registry:
                 logger.warning(f"Strategy '{name}' is already registered. Overwriting.")
             cls._registry[name] = strategy_cls
+            # Optionally store metadata without breaking older callers
+            if "metadata" in kwargs:
+                cls._metadata[name] = kwargs["metadata"]
             logger.info(f"Registered strategy: {name}")
 
     @classmethod
@@ -119,6 +123,11 @@ class StrategyRegistry:
     def create(cls, name: str, *args, **kwargs):
         strategy_cls = cls.get(name)
         return strategy_cls(*args, **kwargs)
+
+    @classmethod
+    def get_metadata(cls, name: str, default: Any = None) -> Any:
+        with cls._lock:
+            return cls._metadata.get(name, default)
 
 # Strategy initialization is now lazy - strategies are registered on demand
 # This prevents import-time hangs and TensorFlow mutex issues
