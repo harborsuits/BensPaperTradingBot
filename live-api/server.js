@@ -21,6 +21,18 @@ const { TradierBroker } = require('./lib/tradierBroker');
 // Import brain functions
 const { scoreSymbol, planTrade } = require('./src/services/BrainService.js');
 
+// Import enhanced coordination components
+const { DecisionCoordinator } = require('./lib/decisionCoordinator');
+const { EnhancedRiskGate } = require('./lib/enhancedGate');
+const { StrategyAllocator } = require('./lib/strategyAllocator');
+const { AutoLoop } = require('./lib/autoLoop');
+
+// Initialize audit components
+const auditCoordinator = new DecisionCoordinator();
+const auditRiskGate = new EnhancedRiskGate();
+const auditAllocator = new StrategyAllocator();
+const auditAutoLoop = new AutoLoop();
+
 const { currentFreshness } = require('./src/services/freshness.js');
 const { register, observeFreshness, scoreLatency, planLatency } = require('./src/services/metrics.js');
 const { withinEarningsWindow } = require('./src/services/policy.js');
@@ -7391,6 +7403,153 @@ app.post('/api/ai/trigger-cycle', (req, res) => {
   } catch (error) {
     console.error('AI trigger cycle error:', error);
     res.status(500).json({ error: 'Failed to trigger AI cycle' });
+  }
+});
+
+// ================================================================================
+// AUDIT ENDPOINTS - Enhanced Transparency & Monitoring
+// ================================================================================
+
+// Get coordination audit trail
+app.get('/api/audit/coordination', (req, res) => {
+  try {
+    const audit = auditCoordinator.getLastCycleAudit();
+    res.json({
+      success: true,
+      audit: audit,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get coordination audit' });
+  }
+});
+
+// Get coordination audit with detailed signal analysis
+app.get('/api/audit/coordination/detailed', (req, res) => {
+  try {
+    const audit = auditCoordinator.getLastCycleAudit();
+    const stats = auditCoordinator.getStats();
+
+    res.json({
+      success: true,
+      coordination_audit: audit,
+      stats: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get detailed coordination audit' });
+  }
+});
+
+// Get risk gate rejection statistics
+app.get('/api/audit/risk-rejections', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const rejections = auditRiskGate.getRecentRejections(limit);
+    const stats = auditRiskGate.getRejectionStats();
+
+    res.json({
+      success: true,
+      rejections: rejections,
+      stats: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get risk rejections' });
+  }
+});
+
+// Get current capital allocation
+app.get('/api/audit/allocations/current', (req, res) => {
+  try {
+    const allocation = auditAllocator.getCurrentAllocation();
+    const performance = auditAllocator.getAllocationPerformance();
+
+    res.json({
+      success: true,
+      current_allocation: allocation,
+      performance: performance,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get allocation audit' });
+  }
+});
+
+// Get AutoLoop coordination audit
+app.get('/api/audit/autoloop/status', (req, res) => {
+  try {
+    const coordinationAudit = auditAutoLoop.getCoordinationAudit();
+    const riskRejections = auditAutoLoop.getRiskRejections(10);
+    const allocationSummary = auditAutoLoop.getAllocationSummary();
+
+    res.json({
+      success: true,
+      autoloop_status: {
+        is_running: auditAutoLoop.isRunning,
+        status: auditAutoLoop.status,
+        last_run: auditAutoLoop.lastRun
+      },
+      coordination_audit: coordinationAudit,
+      risk_rejections: riskRejections,
+      allocation_summary: allocationSummary,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get AutoLoop audit' });
+  }
+});
+
+// Get comprehensive system audit
+app.get('/api/audit/system', (req, res) => {
+  try {
+    const systemAudit = {
+      timestamp: new Date().toISOString(),
+      coordination: auditCoordinator.getStats(),
+      risk_management: {
+        recent_rejections: auditRiskGate.getRecentRejections(5),
+        rejection_stats: auditRiskGate.getRejectionStats()
+      },
+      capital_allocation: auditAllocator.getAllocationPerformance(),
+      autoloop: {
+        is_running: auditAutoLoop.isRunning,
+        status: auditAutoLoop.status,
+        last_run: auditAutoLoop.lastRun
+      }
+    };
+
+    res.json({
+      success: true,
+      audit: systemAudit
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get system audit' });
+  }
+});
+
+// Emergency de-risk endpoint
+app.post('/api/audit/emergency-derisk', (req, res) => {
+  try {
+    const { reductionFactor = 0.5 } = req.body;
+
+    if (reductionFactor < 0 || reductionFactor > 1) {
+      return res.status(400).json({ error: 'Reduction factor must be between 0 and 1' });
+    }
+
+    const result = auditAllocator.emergencyDerisk(reductionFactor);
+
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+
+    res.json({
+      success: true,
+      message: `Emergency de-risk executed with ${reductionFactor}x reduction`,
+      result: result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to execute emergency de-risk' });
   }
 });
 
