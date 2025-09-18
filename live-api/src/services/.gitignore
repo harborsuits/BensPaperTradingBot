@@ -1,0 +1,11 @@
+# Logs
+logs/
+*.log
+*.out
+
+# Build artifacts
+dist/
+build/
+# Local databases
+*.sqlite
+*.db
