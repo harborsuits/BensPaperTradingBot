@@ -1,10 +1,23 @@
-node_modules/
-/data/
-.DS_Store
+# env
+.env
+.env.*
+
+# logs and pids
+logs/
 *.log
-/build/
-/dist/
-*.asar
-*.zip
-*.tar.gz
-*.tgz
+server_pid.txt
+
+# databases and state
+data/
+src/data/
+
+# evidence and reports
+EVIDENCE_REPORT.md
+evidence/
+evidence_*.json
+
+# backups and local variants
+server.js.*
+server_*.js
+*.backup
+*.out
