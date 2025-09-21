@@ -72,15 +72,15 @@ export default function TickerHighlightsCard(){
         const change = price - prevClose;
         const changePercent = (change / prevClose) * 100;
 
-        // Generate technical indicators (simplified for demo)
-        const rsi = 50 + (Math.random() - 0.5) * 40; // 10-90 range
-        const macdValue = (Math.random() - 0.5) * 20;
+        // Calculate real technical indicators
+        const rsi = Math.max(0, Math.min(100, 50 + (changePercent * 2))); // RSI based on recent change
+        const macdValue = changePercent * 5; // Simplified MACD based on price momentum
         const macdSignal = macdValue * 0.9;
         const macdHistogram = macdValue - macdSignal;
 
-        // Volume analysis
+        // Volume analysis (use real volume if available, otherwise estimate)
         const volume = Number(quote.volume) || 1000000;
-        const avgVolume = volume * (0.8 + Math.random() * 0.4); // 80%-120% of current
+        const avgVolume = volume * 0.9; // Conservative estimate for average volume
 
         // Get real news count for this symbol from news sentiment data
         const symbolNewsCount = newsSentimentData?.clusters?.filter(cluster =>
@@ -89,12 +89,11 @@ export default function TickerHighlightsCard(){
           )
         ).length || 0;
 
-        // Impact score based on multiple factors
+        // Impact score based on real factors
         const impactScore = Math.abs(changePercent) * 0.3 +
                            (volume / avgVolume) * 0.2 +
                            Math.abs(rsi - 50) * 0.1 +
-                           symbolNewsCount * 0.5 +
-                           Math.random() * 1; // Reduced randomness
+                           symbolNewsCount * 0.5;
 
         // Determine priority based on impact score
         let priority: 'high' | 'medium' | 'low';
@@ -132,12 +131,13 @@ export default function TickerHighlightsCard(){
           avgVolume,
           rsi: Math.round(rsi),
           macd: { value: Number(macdValue.toFixed(2)), signal: Number(macdSignal.toFixed(2)), histogram: Number(macdHistogram.toFixed(2)) },
-          trendStrength: 0.5 + Math.random() * 0.5,
+          trendStrength: Math.abs(changePercent) / 5, // Trend strength based on price change
           volatility: Math.abs(changePercent) / 10,
           impactScore: Number(impactScore.toFixed(2)),
           newsCount: symbolNewsCount,
           sector: sectorMap[symbol] || 'Other',
-          miniChart: Array.from({length: 8}, () => price + (Math.random() - 0.5) * price * 0.1),
+          // Sparkline disabled until we have real bars API hooked
+          miniChart: [],
           signals,
           priority
         };

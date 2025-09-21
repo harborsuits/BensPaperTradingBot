@@ -31,7 +31,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
-import { contextApi } from '@/services/api';
+import { contextApi, researchApi } from '@/services/api';
 
 interface ResearchDiscoveryHubProps {
   onStartEvolutionWithSymbols?: (symbols: string[], config: any) => void;
@@ -59,87 +59,28 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
     staleTime: 15000,
   });
 
-  // Mock fundamentals data since the API function doesn't exist yet
-  const fundamentalsData = { fundamentals: [] };
-  const fundamentalsLoading = false;
+  // Fundamentals (real via /api/fundamentals)
+  const { data: fundamentalsData, isLoading: fundamentalsLoading } = useQuery({
+    queryKey: ['fundamentals'],
+    queryFn: () => researchApi.getFundamentals().then(r => (r.success ? r.data : { items: [], asOf: new Date().toISOString() })),
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
 
-  // Mock market discovery data since the API function doesn't exist yet
-  const marketDiscovery = { discoveries: [] };
-  const discoveryLoading = false;
+  // Market discovery (real via /api/discovery/market)
+  const { data: marketDiscovery, isLoading: discoveryLoading } = useQuery({
+    queryKey: ['market-discovery'],
+    queryFn: () => researchApi.getMarketDiscovery().then(r => (r.success ? r.data : { items: [], asOf: new Date().toISOString() })),
+    refetchInterval: 45_000,
+    staleTime: 20_000,
+  });
 
-  // Real news data with fallback to mock data
-  const newsDiscoveries = newsData?.news || [
-    {
-      id: 'news_001',
-      title: 'NVIDIA Announces Breakthrough in AI Chip Technology',
-      source: 'TechCrunch',
-      sentiment: 0.85,
-      symbols: ['NVDA', 'AMD', 'INTC'],
-      impact: 'high',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      summary: 'NVIDIA reveals next-gen AI processors with 300% performance improvement'
-    },
-    {
-      id: 'news_002',
-      title: 'Tesla Battery Breakthrough Could Revolutionize EV Market',
-      source: 'Bloomberg',
-      sentiment: 0.92,
-      symbols: ['TSLA', 'GM', 'F'],
-      impact: 'high',
-      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      summary: 'New solid-state battery technology promises 500-mile range'
-    },
-    {
-      id: 'news_003',
-      title: 'Apple Supply Chain Issues Impact iPhone Production',
-      source: 'WSJ',
-      sentiment: -0.75,
-      symbols: ['AAPL', 'QCOM', 'TSM'],
-      impact: 'medium',
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      summary: 'Taiwan Semiconductor manufacturing delays affect Apple products'
-    }
-  ];
+  // Real news data (no mock fallback)
+  const newsDiscoveries = Array.isArray((newsData as any)?.data) ? (newsData as any).data : [];
 
   // Real fundamentals data with fallback
-  const fundamentalOpportunities = fundamentalsData?.fundamentals || [
-    {
-      symbol: 'NVDA',
-      company: 'NVIDIA Corporation',
-      sector: 'Technology',
-      marketCap: '2.8T',
-      peRatio: 65.2,
-      revenueGrowth: 0.265,
-      earningsGrowth: 0.345,
-      debtToEquity: 0.42,
-      researchScore: 9.2,
-      catalysts: ['AI Chip Demand', 'Data Center Growth', 'Gaming Revenue']
-    },
-    {
-      symbol: 'TSLA',
-      company: 'Tesla Inc.',
-      sector: 'Automotive',
-      marketCap: '650B',
-      peRatio: 45.8,
-      revenueGrowth: 0.198,
-      earningsGrowth: 0.156,
-      debtToEquity: 0.15,
-      researchScore: 8.7,
-      catalysts: ['Battery Breakthrough', 'Autonomous Driving', 'Energy Storage']
-    },
-    {
-      symbol: 'AMD',
-      company: 'Advanced Micro Devices',
-      sector: 'Technology',
-      marketCap: '180B',
-      peRatio: 185.4,
-      revenueGrowth: 0.089,
-      earningsGrowth: 0.234,
-      debtToEquity: 0.02,
-      researchScore: 8.1,
-      catalysts: ['AI Competition', 'Server Demand', 'Console Gaming']
-    }
-  ];
+  const fundamentalOpportunities = fundamentalsData?.items || [];
+  /* fallback removed to ensure empty/neutral state until real data exists */
 
   const strategyHypotheses = [
     {
@@ -313,7 +254,15 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
                         </Button>
                       ))}
                     </div>
-                    <Button size="sm" variant="outline">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        const url = (news as any).url || (news as any).link;
+                        if (url) window.open(url, '_blank', 'noopener,noreferrer');
+                      }}
+                      disabled={!(news as any).url && !(news as any).link}
+                    >
                       <Eye className="w-3 h-3 mr-1" />
                       Full Article
                     </Button>
@@ -337,6 +286,12 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {fundamentalsLoading && (
+                <div className="text-sm text-muted-foreground">Loading fundamentals…</div>
+              )}
+              {!fundamentalsLoading && fundamentalOpportunities.length === 0 && (
+                <div className="text-sm text-muted-foreground">No fundamentals available yet.</div>
+              )}
               {fundamentalOpportunities.map((company) => (
                 <div key={company.symbol} className="border rounded-lg p-4 bg-card">
                   <div className="flex items-center justify-between mb-3">
@@ -363,8 +318,8 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Revenue Growth:</span>
-                      <span className={`font-medium ${company.revenueGrowth > 0.2 ? 'text-green-600' : company.revenueGrowth > 0.1 ? 'text-yellow-600' : 'text-red-600'}`}>
-                        {(company.revenueGrowth * 100).toFixed(1)}%
+                      <span className={`font-medium ${Number(company.revenueGrowth || 0) > 0.2 ? 'text-green-600' : Number(company.revenueGrowth || 0) > 0.1 ? 'text-yellow-600' : 'text-red-600'}`}>
+                        {(Number(company.revenueGrowth || 0) * 100).toFixed(1)}%
                       </span>
                     </div>
                   </div>
@@ -556,11 +511,13 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
             <div className="space-y-4">
               <h4 className="font-medium">Emerging Opportunities</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { symbol: 'PLTR', company: 'Palantir', reason: 'AI Government Contracts', score: 8.9 },
-                  { symbol: 'SOFI', company: 'SoFi Technologies', reason: 'Digital Banking Growth', score: 8.3 },
-                  { symbol: 'RIVN', company: 'Rivian', reason: 'EV Market Expansion', score: 7.8 }
-                ].map((opportunity) => (
+                {discoveryLoading && (
+                  <div className="text-sm text-muted-foreground">Scanning market…</div>
+                )}
+                {!discoveryLoading && (marketDiscovery?.items?.length ?? 0) === 0 && (
+                  <div className="text-sm text-muted-foreground">No discoveries yet.</div>
+                )}
+                {(marketDiscovery?.items || []).map((opportunity) => (
                   <div key={opportunity.symbol} className="border rounded-lg p-3 bg-card">
                     <div className="flex items-center justify-between mb-2">
                       <div>

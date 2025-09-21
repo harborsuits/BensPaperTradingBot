@@ -66,7 +66,7 @@ export class TradingWebSocketManager {
   // Active subscriptions to resubscribe on reconnect
   private activeChannels: Set<WebSocketChannel> = new Set();
   
-  constructor(baseUrl: string = 'ws://localhost:4000/ws') {
+  constructor(baseUrl: string = '') {
     this.baseUrl = baseUrl;
   }
   

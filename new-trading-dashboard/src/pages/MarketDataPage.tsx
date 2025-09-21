@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useQuotesQuery } from "@/hooks/useQuotes";
+import { useUniverse } from "@/hooks/useUniverse";
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { useBars } from "@/hooks/useBars";
+import { useMarketOverview } from "@/hooks/useMarketOverview";
 import {
   TrendingUp,
   TrendingDown,
@@ -29,12 +33,17 @@ interface WatchlistItem {
 }
 
 export default function MarketDataPage(){
-  const [symbols, setSymbols] = useState<string[]>(["SPY", "QQQ", "AAPL", "NVDA", "TSLA"]);
+  const qc = useQueryClient();
+  const { watchlists } = useUniverse();
+  const current = watchlists.data?.find((w:any) => w.id === (watchlists as any)?.data?.currentId) || watchlists.data?.[0];
+  const symbols = current?.symbols || [];
   const [selectedSymbol, setSelectedSymbol] = useState<string>("SPY");
   const [timeframe, setTimeframe] = useState<Timeframe>("1Day");
   const [chartType, setChartType] = useState<ChartType>("candlestick");
   const [newSymbol, setNewSymbol] = useState<string>("");
   const [showAddSymbol, setShowAddSymbol] = useState<boolean>(false);
+
+  const overview = useMarketOverview();
 
   // Get quotes for watchlist
   const { data: quotes, isLoading: quotesLoading, refetch: refetchQuotes } = useQuotesQuery(symbols);
@@ -43,7 +52,7 @@ export default function MarketDataPage(){
   const { data: chartData, isLoading: chartLoading, refetch: refetchChart } = useBars(
     selectedSymbol,
     timeframe,
-    timeframe === "1Day" ? 90 : timeframe === "1Hour" ? 168 : 100
+    timeframe === "1Day" ? 180 : timeframe === "1Hour" ? 240 : 300
   );
 
   const timeframes: Timeframe[] = ["1Min", "5Min", "15Min", "1Hour", "1Day"];
@@ -61,21 +70,93 @@ export default function MarketDataPage(){
       );
     }
 
-    const bars = chartData.bars.slice(-50); // Show last 50 bars
+    const bars = chartData.bars.slice(-60);
     const maxPrice = Math.max(...bars.map(b => b.h));
     const minPrice = Math.min(...bars.map(b => b.l));
     const priceRange = maxPrice - minPrice || 1;
 
+    // Layman-friendly summary
+    const lastBar = bars[bars.length - 1];
+    const refBar = bars.length > 1 ? bars[bars.length - 2] : bars[0];
+    const lastPrice = Number(lastBar?.c ?? 0);
+    const refPrice = Number(refBar?.c ?? refBar?.o ?? 0);
+    const change = refPrice ? lastPrice - refPrice : 0;
+    const pct = refPrice ? (change / refPrice) * 100 : 0;
+    const dayLow = Math.min(...bars.map(b => b.l));
+    const dayHigh = Math.max(...bars.map(b => b.h));
+    const dayRange = dayHigh - dayLow || 1;
+    const pos = Math.min(1, Math.max(0, (lastPrice - dayLow) / dayRange));
+
+    // For intraday, render a simple line chart from closes
+    if (timeframe !== "1Day") {
+      const points = bars.map(b => Number(b.c));
+      const max = Math.max(...points);
+      const min = Math.min(...points);
+      const range = (max - min) || 1;
+      return (
+        <div className="h-64 border rounded-lg bg-card p-4 overflow-hidden">
+          <div className="flex justify-between items-center mb-3">
+            <div>
+              <h3 className="font-semibold">{selectedSymbol} · {timeframe}</h3>
+              <div className="text-xs text-muted-foreground">{bars.length} bars</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xl font-bold">${lastPrice.toFixed(2)}</div>
+              <div className={`${change >= 0 ? 'text-green-500' : 'text-red-500'} text-sm`}>
+                {change >= 0 ? '+' : ''}{change.toFixed(2)} ({pct.toFixed(2)}%)
+              </div>
+            </div>
+          </div>
+          <div className="relative h-48">
+            <svg width="100%" height="100%" viewBox={`0 0 ${bars.length - 1} 100`} preserveAspectRatio="none">
+              <polyline
+                fill="none"
+                stroke={change >= 0 ? "#22c55e" : "#ef4444"}
+                strokeWidth="1.5"
+                points={points.map((p, i) => `${i},${100 - ((p - min) / range) * 100}`).join(' ')}
+              />
+            </svg>
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground mt-2">
+            <span>${min.toFixed(2)}</span>
+            <span>${max.toFixed(2)}</span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="h-64 border rounded-lg bg-card p-4 overflow-hidden">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold">{selectedSymbol} - {timeframe}</h3>
-          <div className="text-sm text-muted-foreground">
-            {bars.length} bars
+        <div className="flex justify-between items-center mb-3">
+          <div>
+            <h3 className="font-semibold">{selectedSymbol} · {timeframe}</h3>
+            <div className="text-xs text-muted-foreground">{bars.length} bars</div>
+          </div>
+          <div className="text-right">
+            <div className="text-xl font-bold">${lastPrice.toFixed(2)}</div>
+            <div className={`text-sm ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {change >= 0 ? '+' : ''}{change.toFixed(2)} ({(pct).toFixed(2)}%)
+            </div>
           </div>
         </div>
 
-        {/* Simplified chart visualization */}
+        {/* Day range meter */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+            <span>Low ${dayLow.toFixed(2)}</span>
+            <span>High ${dayHigh.toFixed(2)}</span>
+          </div>
+          <div className="relative h-2 rounded bg-muted">
+            <div className="absolute top-0 bottom-0 left-0 right-0 rounded border border-border" />
+            <div
+              className="absolute -top-1 w-1.5 h-4 rounded bg-primary"
+              style={{ left: `${pos * 100}%`, transform: 'translateX(-50%)' }}
+              title={`Current ${selectedSymbol}: $${lastPrice.toFixed(2)}`}
+            />
+          </div>
+        </div>
+
+        {/* Daily candlesticks */}
         <div className="flex items-end h-48 gap-1">
           {bars.map((bar, i) => {
             const height = ((bar.h - bar.l) / priceRange) * 180;
@@ -112,25 +193,37 @@ export default function MarketDataPage(){
           <span>${minPrice.toFixed(2)}</span>
           <span>${maxPrice.toFixed(2)}</span>
         </div>
+
+        {/* Legend */}
+        <div className="mt-2 text-[11px] text-muted-foreground">
+          <span className="mr-3"><span className="inline-block w-2 h-2 bg-green-500 rounded mr-1 align-middle" />Up</span>
+          <span><span className="inline-block w-2 h-2 bg-red-500 rounded mr-1 align-middle" />Down</span>
+        </div>
       </div>
     );
   };
 
-  const addSymbol = () => {
-    if (newSymbol && !symbols.includes(newSymbol.toUpperCase())) {
-      setSymbols([...symbols, newSymbol.toUpperCase()]);
+  const addSymbol = async () => {
+    const s = newSymbol.trim().toUpperCase();
+    if (!s) return;
+    try {
+      await axios.post(`/api/watchlists/${current?.id || 'default'}/symbols`, { symbol: s });
       setNewSymbol("");
       setShowAddSymbol(false);
-    }
+      refetchQuotes();
+      qc.invalidateQueries({ queryKey: ["watchlists"] });
+    } catch {}
   };
 
-  const removeSymbol = (symbol: string) => {
-    if (symbols.length > 1) {
-      setSymbols(symbols.filter(s => s !== symbol));
-      if (selectedSymbol === symbol) {
-        setSelectedSymbol(symbols[0] === symbol ? symbols[1] : symbols[0]);
+  const removeSymbol = async (symbol: string) => {
+    try {
+      await axios.delete(`/api/watchlists/${current?.id || 'default'}/symbols/${encodeURIComponent(symbol)}`);
+      if (selectedSymbol === symbol && symbols.length > 1) {
+        setSelectedSymbol(symbols.find(s => s !== symbol) || 'SPY');
       }
-    }
+      refetchQuotes();
+      qc.invalidateQueries({ queryKey: ["watchlists"] });
+    } catch {}
   };
 
   return (
@@ -299,7 +392,7 @@ export default function MarketDataPage(){
             <Card className="card">
               <div className="card-header">
                 <h3 className="card-title">Market Overview</h3>
-                <div className="card-subtle">Key market indicators</div>
+                <div className="card-subtle">Updated {overview.data?.asOf ? new Date(overview.data.asOf).toLocaleTimeString() : ""}</div>
               </div>
               <div className="card-content">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -309,7 +402,7 @@ export default function MarketDataPage(){
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Market Status</p>
-                      <p className="font-semibold text-green-400">Open</p>
+                      <p className="font-semibold">{overview.data?.marketStatus || "Unknown"}</p>
                     </div>
                   </div>
 
@@ -318,8 +411,10 @@ export default function MarketDataPage(){
                       <TrendingUp className="w-6 h-6 text-green-400" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">S&P 500</p>
-                      <p className="font-semibold text-green-400">+0.45%</p>
+                      <p className="text-sm text-muted-foreground">S&P 500 (SPY)</p>
+                      <p className={`font-semibold ${((overview.data?.spx?.pct || 0) >= 0) ? 'text-green-400' : 'text-red-400'}`}>
+                        {overview.data?.spx ? `${overview.data.spx.pct >= 0 ? '+' : ''}${overview.data.spx.pct.toFixed(2)}%` : '—'}
+                      </p>
                     </div>
                   </div>
 
@@ -331,7 +426,7 @@ export default function MarketDataPage(){
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Volatility Index</p>
-                      <p className="font-semibold">17.2</p>
+                      <p className="font-semibold">{overview.data?.vix ? overview.data.vix.last.toFixed(2) : '—'}</p>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { TrendingUp, TrendingDown, DollarSign, Target, AlertCircle, CheckCircle } from "lucide-react";
+import { z } from "zod";
+import ProvenanceChip from "@/components/ProvenanceChip";
+import { getJSON } from "@/lib/fetchProvenance";
+import ErrorState from "@/components/ErrorState";
 
 interface PortfolioData {
   cash: number;
@@ -19,19 +23,57 @@ interface PortfolioData {
   mode: string;
 }
 
+// Zod schema for runtime validation - made more permissive
+const PortfolioSchema = z.object({
+  cash: z.number().default(0),
+  equity: z.number().default(0),
+  day_pnl: z.number().default(0),
+  open_pnl: z.number().default(0),
+  total_value: z.number().optional(), // Allow total_value if present
+  positions: z.array(z.object({
+    symbol: z.string().optional(),
+    qty: z.number().optional(),
+    avg_cost: z.number().optional(),
+    last: z.number().optional(),
+    pnl: z.number().optional(),
+  })).default([]),
+  asOf: z.string().default(new Date().toISOString()),
+  broker: z.string().default('unknown'),
+  mode: z.string().default('paper'),
+}).passthrough(); // Allow additional fields
+
+// Safe portfolio fetch with validation
+async function getPortfolioData(): Promise<{ data: PortfolioData; meta: any }> {
+  const { data, meta } = await getJSON<PortfolioData>("/api/portfolio/summary");
+  return { data: PortfolioSchema.parse(data as any), meta };
+}
+
 export default function PortfolioCard() {
-  const { data: portfolio, isLoading, error } = useQuery<PortfolioData>({
+  const { data: payload, isLoading, error } = useQuery<{ data: PortfolioData; meta: any}>({
     queryKey: ["portfolio", "summary"],
-    queryFn: async () => {
-      const response = await fetch("/api/portfolio/summary");
-      if (!response.ok) {
-        throw new Error("Failed to fetch portfolio");
-      }
-      return response.json();
-    },
+    queryFn: getPortfolioData, // Use safe fetch with validation
     refetchInterval: 5000, // Update every 5 seconds
     staleTime: 2000,
   });
+
+  // Centralized safe access with defaults
+  const portfolio = payload?.data as any;
+  const meta = payload?.meta as any;
+  const positions = Array.isArray(portfolio?.positions) ? portfolio.positions : [];
+  const equity = Number(portfolio?.equity ?? 0);
+  const cash = Number(portfolio?.cash ?? 0);
+  const dayPnl = Number(portfolio?.day_pnl ?? 0);
+  const openPnl = Number(portfolio?.open_pnl ?? 0);
+  const broker = portfolio?.broker ?? 'unknown';
+  const mode = portfolio?.mode ?? 'unknown';
+  const asOf = portfolio?.asOf ? new Date(portfolio.asOf).toLocaleTimeString() : 'N/A';
+  // Accept provenance fields if backend stamps them
+  const source = (portfolio as any)?.source as string | undefined;
+  const provider = (portfolio as any)?.provider as string | undefined;
+  const asof_ts = (portfolio as any)?.asof_ts as string | undefined;
+  const latency_ms = (portfolio as any)?.latency_ms as number | undefined;
+  const redFlag = Boolean((portfolio as any)?.reality_red_flag);
+  const metaAny = portfolio as any;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -56,11 +98,35 @@ export default function PortfolioCard() {
           </h3>
         </div>
         <div className="mt-4 space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="animate-pulse">
-              <div className="h-12 bg-gray-200 rounded"></div>
+          {/* Total Value skeleton */}
+          <div className="animate-pulse">
+            <div className="h-4 bg-muted rounded w-24 mb-1"></div>
+            <div className="h-8 bg-muted rounded w-32"></div>
+          </div>
+
+          {/* Cash and Equity skeleton */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="animate-pulse">
+              <div className="h-4 bg-muted rounded w-16 mb-1"></div>
+              <div className="h-6 bg-muted rounded w-20"></div>
             </div>
-          ))}
+            <div className="animate-pulse">
+              <div className="h-4 bg-muted rounded w-16 mb-1"></div>
+              <div className="h-6 bg-muted rounded w-20"></div>
+            </div>
+          </div>
+
+          {/* P&L skeleton */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="animate-pulse">
+              <div className="h-4 bg-muted rounded w-16 mb-1"></div>
+              <div className="h-6 bg-muted rounded w-20"></div>
+            </div>
+            <div className="animate-pulse">
+              <div className="h-4 bg-muted rounded w-16 mb-1"></div>
+              <div className="h-6 bg-muted rounded w-20"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -74,23 +140,22 @@ export default function PortfolioCard() {
             <DollarSign className="w-5 h-5" />
             Portfolio
           </h3>
-          <div className="flex items-center gap-1 text-xs text-red-600">
-            <AlertCircle className="w-3 h-3" />
-            Disconnected
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 text-xs text-red-600">
+              <AlertCircle className="w-3 h-3" />
+              Disconnected
+            </div>
+            <ProvenanceChip source={meta?.source} provider={meta?.provider} asof_ts={meta?.asof_ts} latency_ms={meta?.latency_ms} />
           </div>
         </div>
-        <div className="mt-4 text-center py-8 text-muted-foreground">
-          <AlertCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Portfolio data unavailable</p>
-          <p className="text-xs mt-1">Broker connection required</p>
-        </div>
+        <ErrorState text={(error as any)?.data?.error || 'Portfolio data unavailable'} />
       </div>
     );
   }
 
-  const totalValue = portfolio.cash + portfolio.equity;
-  const dayPnlPercent = totalValue > 0 ? (portfolio.day_pnl / totalValue) * 100 : 0;
-  const openPnlPercent = totalValue > 0 ? (portfolio.open_pnl / totalValue) * 100 : 0;
+  const totalValue = cash + equity;
+  const dayPnlPercent = totalValue > 0 ? (dayPnl / totalValue) * 100 : 0;
+  const openPnlPercent = totalValue > 0 ? (openPnl / totalValue) * 100 : 0;
 
   return (
     <div className="border rounded-2xl p-4">
@@ -102,11 +167,10 @@ export default function PortfolioCard() {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 text-xs text-green-600">
             <CheckCircle className="w-3 h-3" />
-            {portfolio.broker} {portfolio.mode}
+            {broker} {mode}
           </div>
-          <span className="text-xs text-muted-foreground">
-            {new Date(portfolio.asOf).toLocaleTimeString()}
-          </span>
+          <span className="text-xs text-muted-foreground">{asOf}</span>
+          <ProvenanceChip source={source || meta?.source} provider={provider || meta?.provider} asof_ts={asof_ts || meta?.asof_ts} latency_ms={latency_ms || meta?.latency_ms} />
         </div>
       </div>
 
@@ -119,7 +183,7 @@ export default function PortfolioCard() {
           </div>
           <div className="bg-muted/50 rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Cash</div>
-            <div className="text-xl font-bold">{formatCurrency(portfolio.cash)}</div>
+            <div className="text-xl font-bold">{formatCurrency(cash)}</div>
           </div>
         </div>
 
@@ -128,44 +192,56 @@ export default function PortfolioCard() {
           <div className="bg-muted/50 rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Day P&L</div>
             <div className={`text-lg font-bold flex items-center gap-1 ${
-              portfolio.day_pnl >= 0 ? 'text-green-600' : 'text-red-600'
+              dayPnl >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
-              {portfolio.day_pnl >= 0 ? (
+              {dayPnl >= 0 ? (
                 <TrendingUp className="w-4 h-4" />
               ) : (
                 <TrendingDown className="w-4 h-4" />
               )}
-              {formatCurrency(portfolio.day_pnl)}
+              {formatCurrency(dayPnl)}
               <span className="text-sm">({formatPercent(dayPnlPercent)})</span>
             </div>
           </div>
           <div className="bg-muted/50 rounded-lg p-3">
             <div className="text-sm text-muted-foreground">Open P&L</div>
             <div className={`text-lg font-bold flex items-center gap-1 ${
-              portfolio.open_pnl >= 0 ? 'text-green-600' : 'text-red-600'
+              openPnl >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
-              {portfolio.open_pnl >= 0 ? (
+              {openPnl >= 0 ? (
                 <TrendingUp className="w-4 h-4" />
               ) : (
                 <TrendingDown className="w-4 h-4" />
               )}
-              {formatCurrency(portfolio.open_pnl)}
+              {formatCurrency(openPnl)}
               <span className="text-sm">({formatPercent(openPnlPercent)})</span>
             </div>
           </div>
         </div>
 
+        {redFlag && (
+          <div className="text-xs text-red-600">Equity mismatch detected. Check broker vs derived valuation.</div>
+        )}
+
+        {(metaAny?.quotes_meta?.missing > 0 || metaAny?.stale_quotes_count > 0) && (
+          <div className="text-xs text-amber-600 mt-1">
+            {metaAny?.quotes_meta?.missing > 0 && <span>{metaAny.quotes_meta.missing} symbols valued via avg_price.</span>}
+            {metaAny?.quotes_meta?.missing > 0 && metaAny?.stale_quotes_count > 0 && <span> · </span>}
+            {metaAny?.stale_quotes_count > 0 && <span>{metaAny.stale_quotes_count} symbols valued with stale quotes.</span>}
+          </div>
+        )}
+
         {/* Positions */}
-        {portfolio.positions.length > 0 && (
+        {positions.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">Top Positions</span>
               <span className="text-xs text-muted-foreground">
-                {portfolio.positions.length} total
+                {positions.length} total
               </span>
             </div>
             <div className="space-y-2">
-              {portfolio.positions.slice(0, 3).map((position) => (
+              {positions.slice(0, 3).map((position) => (
                 <div key={position.symbol} className="flex items-center justify-between bg-muted/30 rounded-lg p-2">
                   <div className="flex items-center gap-2">
                     <Target className="w-4 h-4 text-muted-foreground" />
@@ -190,9 +266,11 @@ export default function PortfolioCard() {
           </div>
         )}
 
-        {portfolio.positions.length === 0 && (
-          <div className="text-center py-4 text-muted-foreground">
-            <div className="text-sm">No open positions</div>
+        {positions.length === 0 && (
+          <div className="text-center py-6 text-muted-foreground">
+            <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <div className="text-sm font-medium mb-1">No Open Positions</div>
+            <div className="text-xs">All cash is available for trading</div>
           </div>
         )}
       </div>

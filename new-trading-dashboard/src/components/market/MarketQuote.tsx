@@ -12,7 +12,7 @@ interface MarketQuoteProps {
 }
 
 export const MarketQuote: React.FC<MarketQuoteProps> = ({ symbol, className }) => {
-  const { quote, isLoading, refetch } = useQuote(symbol);
+  const { data, isLoading, refetch } = useQuote(symbol);
   
   if (isLoading) {
     return (
@@ -30,7 +30,7 @@ export const MarketQuote: React.FC<MarketQuoteProps> = ({ symbol, className }) =
     );
   }
   
-  if (!quote || !quote.quote) {
+  if (!data) {
     return (
       <Card className={className}>
         <CardContent className="p-4">
@@ -47,18 +47,14 @@ export const MarketQuote: React.FC<MarketQuoteProps> = ({ symbol, className }) =
     );
   }
   
-  const { quote: data } = quote;
-  
-  // Use mid price (average of bid and ask)
-  const price = data.ap && data.bp 
-    ? (data.ap + data.bp) / 2 
-    : data.ap || data.bp || 0;
-  
-  // Determine if price is up or down (mock implementation)
-  // In a real app, you'd compare to previous close
-  const direction = symbol.charCodeAt(0) % 2 === 0 ? 'up' : 'down';
-  const change = direction === 'up' ? 0.5 : -0.5;
-  const changePercent = direction === 'up' ? 0.8 : -0.8;
+  const last = Number((data as any)?.last ?? (data as any)?.price ?? 0);
+  const bid = Number((data as any)?.bid ?? 0);
+  const ask = Number((data as any)?.ask ?? 0);
+  const prevClose = Number((data as any)?.prevClose ?? (data as any)?.previousClose ?? 0);
+  const price = last || (bid && ask ? (bid + ask) / 2 : bid || ask || 0);
+  const change = prevClose ? price - prevClose : 0;
+  const changePercent = prevClose ? (change / prevClose) * 100 : 0;
+  const direction = change >= 0 ? 'up' : 'down';
   
   return (
     <Card className={className}>
@@ -67,8 +63,7 @@ export const MarketQuote: React.FC<MarketQuoteProps> = ({ symbol, className }) =
           <div>
             <h3 className="text-lg font-bold">{symbol}</h3>
             <p className="text-sm text-muted-foreground">
-              {quote.stale && "(Stale) "}
-              Bid: {fmtNum(data.bp, 2)} Ask: {fmtNum(data.ap, 2)}
+              Bid: {fmtNum(bid, 2)} Ask: {fmtNum(ask, 2)}
             </p>
           </div>
           <div className="text-right">

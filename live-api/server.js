@@ -17,6 +17,15 @@ const { saveBundle, getBundle, replayBundle } = require('./lib/trace');
 const { AutoRefresh } = require('./lib/autoRefresh');
 const { TradierBroker } = require('./lib/tradierBroker');
 
+// --- Paper-only safety rail ---
+const TRADIER_BASE = process.env.TRADIER_BASE_URL || process.env.TRADIER_API_URL || 'https://sandbox.tradier.com/v1';
+const LIVE_TRADIER = /^https:\/\/api\.tradier\.com\/v1/.test(TRADIER_BASE);
+if (LIVE_TRADIER) {
+  try { console.error('[Safety] Live Tradier base URL detected but live trading is disabled. Forcing TRADING_PAUSED=1'); } catch {}
+  process.env.TRADING_PAUSED = process.env.TRADING_PAUSED || '1';
+}
+const PAPER_ONLY = true;
+
 // Import brain functions
 const { scoreSymbol, planTrade } = require('./src/services/BrainService.js');
 
@@ -610,6 +619,13 @@ app.get('/api/health', async (req, res) => {
     slo_error_budget: h.slo_error_budget,
     asOf: new Date().toISOString(), // Use current timestamp instead of asOf()
     broker: brokerHealth,
+    reasons: (() => {
+      const reasons = [];
+      try {
+        if (PAPER_ONLY && LIVE_TRADIER) reasons.push('live_trading_disabled');
+      } catch {}
+      return reasons;
+    })(),
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     version: process.env.npm_package_version || '1.0.0'
@@ -628,6 +644,8 @@ app.get('/api/health', async (req, res) => {
 });
 
 // --- BROKER ENDPOINTS ---
+const provenance = require('./middleware/provenance');
+const brokerTag = (TRADIER_BASE.includes('sandbox') ? 'broker:tradier:paper' : 'broker:tradier:live');
 
 // Broker Health
 app.get('/api/broker/health', async (req, res) => {
@@ -764,6 +782,51 @@ app.post('/api/broker/order', async (req, res) => {
       error: error.message,
       status: 'failed'
     });
+  }
+});
+
+// === Broker-authoritative unified Orders API ===
+// POST /api/orders → place via Tradier (paper by default); respects PAPER_ONLY and TRADING_PAUSED
+app.post('/api/orders', provenance(brokerTag), async (req, res) => {
+  try {
+    if (String(process.env.TRADING_PAUSED).toLowerCase() === 'true' || process.env.TRADING_PAUSED === '1') {
+      return res.status(409).json({ error: 'trading_paused' });
+    }
+    if (PAPER_ONLY && LIVE_TRADIER) {
+      return res.status(503).json({ error: 'live_trading_disabled' });
+    }
+
+    const { symbol, side, qty, type = 'market', duration = 'day', price } = req.body || {};
+    if (!symbol || !side || !qty) return res.status(400).json({ error: 'missing_fields' });
+
+    const broker = new TradierBroker();
+    const placed = await broker.placeOrder({ symbol, side, quantity: qty, type, duration, price });
+
+    return res.json({ source: 'broker', broker: 'tradier', env: brokerTag.endsWith(':paper') ? 'paper' : 'live', order: placed });
+  } catch (e) {
+    return res.status(500).json({ error: 'broker_order_failed', detail: String(e?.message || e) });
+  }
+});
+
+// GET /api/orders → broker orders list
+app.get('/api/orders', provenance(brokerTag), async (_req, res) => {
+  try {
+    const broker = new TradierBroker();
+    const orders = await broker.getOrders();
+    res.json({ source: 'broker', broker: 'tradier', env: brokerTag.endsWith(':paper') ? 'paper' : 'live', items: orders });
+  } catch (e) {
+    res.status(502).json({ error: 'broker_down' });
+  }
+});
+
+// GET /api/positions → broker positions list
+app.get('/api/positions', provenance(brokerTag), async (_req, res) => {
+  try {
+    const broker = new TradierBroker();
+    const positions = await broker.getPositions();
+    res.json({ source: 'broker', broker: 'tradier', env: brokerTag.endsWith(':paper') ? 'paper' : 'live', items: positions });
+  } catch (e) {
+    res.status(502).json({ error: 'broker_down' });
   }
 });
 // Enhanced Orders with Metrics
@@ -2146,6 +2209,10 @@ app.post('/api/paper/orders', async (req, res) => {
     if (!bootReady()) return res.status(503).json({ error: 'boot_not_ready' });
     if (String(process.env.TRADING_PAUSED).toLowerCase() === 'true' || process.env.TRADING_PAUSED === '1') {
       return res.status(423).json({ error: 'trading_paused' });
+    }
+    if (String(process.env.SIM_DISABLE_LOCAL_PAPER).toLowerCase() === 'true' || process.env.SIM_DISABLE_LOCAL_PAPER === '1') {
+      try { return res.redirect(307, '/api/orders'); } catch {}
+      return res.status(503).json({ error: 'sim_disabled' });
     }
     const isMockMode = process.env.PAPER_MOCK_MODE === 'true';
     console.log(`[PaperOrders] Mock mode: ${isMockMode}`);

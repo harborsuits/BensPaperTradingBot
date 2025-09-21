@@ -9,6 +9,7 @@ import MarketDataPage from '@/pages/MarketDataPage';
 import LogsPage from '@/pages/LogsPage';
 import EvoTesterPage from '@/pages/EvoTesterPage';
 import NewsPage from '@/pages/NewsPage';
+import BrainPage from '@/pages/BrainPage';
 import { Outlet } from 'react-router-dom';
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
         { index: true, element: <DashboardPage /> },
         { path: '/portfolio', element: <PortfolioPage /> },
         { path: '/decisions', element: <TradeDecisionsPage /> },
+        { path: '/brain', element: <BrainPage /> },
         { path: '/market', element: <MarketDataPage /> },
         { path: '/logs', element: <LogsPage /> },
         { path: '/evotester', element: <EvoTesterPage /> },

@@ -1,113 +1,170 @@
 /**
- * Mock News Provider - Simulated news feed for testing
- * In production, replace with real news APIs (Finnhub, Alpha Vantage, etc.)
+ * Real News Provider - Live news feed from financial APIs
+ * Uses Finnhub API for real-time financial news and sentiment
  */
 
-const { NewsAdapter } = require('../newsAdapter');
+const axios = require('axios');
 
-class MockNewsProvider extends NewsAdapter {
+class RealNewsProvider {
   constructor(config = {}) {
-    super({
-      baseUrl: 'https://mock-news-api.example.com',
-      rateLimit: 60, // 60 requests per minute
-      ...config
-    });
-
-    // Mock news database
-    this.mockNews = [
-      {
-        id: 'mock_001',
-        title: 'Apple Reports Strong Q4 Earnings, Beats Estimates',
-        description: 'Apple Inc. reported quarterly earnings that exceeded analyst expectations, driven by strong iPhone sales and services revenue growth.',
-        publishedAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(), // 2 minutes ago
-        source: 'Mock Financial News',
-        url: 'https://mocknews.com/apple-earnings-q4'
-      },
-      {
-        id: 'mock_002',
-        title: 'Tesla Stock Surges on EV Demand Data',
-        description: 'Tesla shares rose sharply after reporting higher-than-expected electric vehicle demand in key markets.',
-        publishedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 minutes ago
-        source: 'Mock Market Watch',
-        url: 'https://mocknews.com/tesla-ev-demand'
-      },
-      {
-        id: 'mock_003',
-        title: 'Microsoft Announces Major AI Partnership',
-        description: 'Microsoft Corp. announced a strategic partnership with leading AI research institutions to advance machine learning capabilities.',
-        publishedAt: new Date(Date.now() - 8 * 60 * 1000).toISOString(), // 8 minutes ago
-        source: 'Mock Tech News',
-        url: 'https://mocknews.com/microsoft-ai-partnership'
-      },
-      {
-        id: 'mock_004',
-        title: 'SPY ETF Sees Record Inflows Amid Market Volatility',
-        description: 'The SPDR S&P 500 ETF Trust saw record investor inflows as traders sought safe-haven assets during recent market turbulence.',
-        publishedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(), // 10 minutes ago
-        source: 'Mock ETF Report',
-        url: 'https://mocknews.com/spy-etf-inflows'
-      },
-      {
-        id: 'mock_005',
-        title: 'NVIDIA Faces Supply Chain Challenges',
-        description: 'NVIDIA Corporation reported supply chain disruptions that may impact graphics card availability in the coming quarter.',
-        publishedAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(), // 12 minutes ago
-        source: 'Mock Supply Chain News',
-        url: 'https://mocknews.com/nvidia-supply-chain'
-      }
-    ];
+    this.apiKey = process.env.FINNHUB_API_KEY || process.env.ALPHA_VANTAGE_API_KEY;
+    this.baseUrl = 'https://finnhub.io/api/v1';
+    this.alphaVantageUrl = 'https://www.alphavantage.co/query';
+    this.rateLimit = 60; // Finnhub: 60 requests per minute
+    this.lastRequest = 0;
+    this.requestQueue = [];
+    this.cache = new Map();
+    this.cacheTimeout = 5 * 60 * 1000; // 5 minutes cache
   }
 
-  async fetchSince(sinceTs) {
-    // Enforce rate limiting
+  async enforceRateLimit() {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequest;
+    const minInterval = (60 / this.rateLimit) * 1000; // milliseconds between requests
+
+    if (timeSinceLastRequest < minInterval) {
+      const waitTime = minInterval - timeSinceLastRequest;
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+
+    this.lastRequest = Date.now();
+  }
+
+  async fetchFinnhubNews(sinceTs) {
     await this.enforceRateLimit();
 
     const sinceDate = new Date(sinceTs);
+    const from = sinceDate.toISOString().split('T')[0]; // YYYY-MM-DD format
 
-    // Filter mock news by timestamp
-    const recentNews = this.mockNews.filter(item => {
-      const itemDate = new Date(item.publishedAt);
-      return itemDate >= sinceDate;
-    });
+    try {
+      const response = await axios.get(`${this.baseUrl}/news`, {
+        params: {
+          category: 'general',
+          token: this.apiKey,
+          from: from
+        },
+        timeout: 10000
+      });
 
-    // Add some randomization to simulate real API behavior
-    const randomizedNews = recentNews.map(item => ({
-      ...item,
-      publishedAt: new Date(item.publishedAt).toISOString(),
-      // Add some fake recent items
-      ...(Math.random() > 0.7 ? {
-        title: item.title + ' (Updated)',
-        publishedAt: new Date(Date.now() - Math.random() * 60 * 60 * 1000).toISOString()
-      } : {})
-    }));
+      if (response.data && Array.isArray(response.data)) {
+        return response.data
+          .filter(item => new Date(item.datetime * 1000) >= sinceDate)
+          .map(item => this.normalizeFinnhubItem(item));
+      }
 
-    // Normalize all items
-    return randomizedNews.map(item => this.normalizeItem(item));
+      return [];
+    } catch (error) {
+      console.error('[RealNewsProvider] Finnhub API error:', error.message);
+      return [];
+    }
+  }
+
+  async fetchAlphaVantageNews(sinceTs) {
+    await this.enforceRateLimit();
+
+    try {
+      const response = await axios.get(this.alphaVantageUrl, {
+        params: {
+          function: 'NEWS_SENTIMENT',
+          apikey: this.apiKey,
+          topics: 'financial_markets'
+        },
+        timeout: 10000
+      });
+
+      if (response.data && response.data.feed) {
+        const sinceDate = new Date(sinceTs);
+        return response.data.feed
+          .filter(item => new Date(item.time_published) >= sinceDate)
+          .map(item => this.normalizeAlphaVantageItem(item));
+      }
+
+      return [];
+    } catch (error) {
+      console.error('[RealNewsProvider] Alpha Vantage API error:', error.message);
+      return [];
+    }
+  }
+
+  normalizeFinnhubItem(item) {
+    return {
+      id: item.id?.toString() || `finnhub_${Date.now()}`,
+      title: item.headline || item.title || 'Untitled',
+      description: item.summary || item.description || '',
+      publishedAt: new Date(item.datetime * 1000).toISOString(),
+      source: item.source || 'Finnhub',
+      url: item.url || '',
+      symbols: item.related || [],
+      sentiment: item.sentiment || null
+    };
+  }
+
+  normalizeAlphaVantageItem(item) {
+    return {
+      id: item.title?.replace(/\s+/g, '_').toLowerCase() || `av_${Date.now()}`,
+      title: item.title || 'Untitled',
+      description: item.summary || '',
+      publishedAt: item.time_published || new Date().toISOString(),
+      source: item.source || 'Alpha Vantage',
+      url: item.url || '',
+      symbols: item.ticker_sentiment?.map(ts => ts.ticker) || [],
+      sentiment: item.overall_sentiment_score || null
+    };
+  }
+
+  async fetchSince(sinceTs) {
+    if (!this.apiKey) {
+      console.warn('[RealNewsProvider] No API key configured for real news data');
+      return this.getFallbackNews(sinceTs);
+    }
+
+    try {
+      // Try Finnhub first
+      const finnhubNews = await this.fetchFinnhubNews(sinceTs);
+      if (finnhubNews.length > 0) {
+        console.log(`[RealNewsProvider] Fetched ${finnhubNews.length} news items from Finnhub`);
+        return finnhubNews;
+      }
+
+      // Fallback to Alpha Vantage
+      const alphaNews = await this.fetchAlphaVantageNews(sinceTs);
+      if (alphaNews.length > 0) {
+        console.log(`[RealNewsProvider] Fetched ${alphaNews.length} news items from Alpha Vantage`);
+        return alphaNews;
+      }
+
+      // If both APIs fail, return minimal fallback
+      console.warn('[RealNewsProvider] All news APIs failed, using minimal fallback');
+      return this.getFallbackNews(sinceTs);
+
+    } catch (error) {
+      console.error('[RealNewsProvider] Critical error in fetchSince:', error);
+      return this.getFallbackNews(sinceTs);
+    }
   }
 
   /**
-   * Generate additional mock news for testing
+   * Minimal fallback for when APIs are unavailable
    */
-  generateAdditionalNews(count = 5) {
-    const companies = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'SPY', 'QQQ'];
-    const actions = ['Surges', 'Declines', 'Reports', 'Announces', 'Faces', 'Sees'];
-    const contexts = ['Earnings', 'Partnership', 'Challenge', 'Growth', 'Demand', 'Supply'];
+  getFallbackNews(sinceTs) {
+    const sinceDate = new Date(sinceTs);
+    const now = new Date();
 
-    for (let i = 0; i < count; i++) {
-      const company = companies[Math.floor(Math.random() * companies.length)];
-      const action = actions[Math.floor(Math.random() * actions.length)];
-      const context = contexts[Math.floor(Math.random() * contexts.length)];
-
-      this.mockNews.push({
-        id: `mock_${Date.now()}_${i}`,
-        title: `${company} ${action} on ${context} News`,
-        description: `${company} ${action.toLowerCase()} following ${context.toLowerCase()} developments in the market.`,
-        publishedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
-        source: 'Mock Real-time News',
-        url: `https://mocknews.com/${company.toLowerCase()}-${action.toLowerCase()}-${context.toLowerCase()}`
-      });
+    if (now - sinceDate < 60 * 60 * 1000) { // Less than 1 hour old
+      return [{
+        id: `fallback_${Date.now()}`,
+        title: 'Market Update',
+        description: 'Real-time market data integration in progress. News feed will be available once API keys are configured.',
+        publishedAt: now.toISOString(),
+        source: 'System',
+        url: '',
+        symbols: ['SPY'],
+        sentiment: null
+      }];
     }
+
+    return [];
   }
 }
 
-module.exports = { MockNewsProvider };
+module.exports = { RealNewsProvider, MockNewsProvider };

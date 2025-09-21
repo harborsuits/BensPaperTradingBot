@@ -3,7 +3,7 @@
  * Builds statistical profiles for event types with validation gates
  */
 
-const sqlite3 = require('sqlite3').verbose();
+// const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 class ReactionStatsBuilder {

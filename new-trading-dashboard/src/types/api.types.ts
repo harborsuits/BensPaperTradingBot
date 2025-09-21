@@ -236,6 +236,38 @@ export interface EvoTesterResult {
   status: 'running' | 'completed' | 'failed' | 'paused';
 }
 
+// EvoTester real-mode provenance (from alias status endpoint)
+export interface EvoProvenanceStatus {
+  session_id: string;
+  mode: 'real' | 'sim' | string;
+  data_source: string;
+  sim_ticks: boolean;
+  state: 'running' | 'completed' | 'paused' | string;
+  generation: number;
+  population?: number;
+  started_at?: string;
+  last_update?: string;
+  metrics?: any;
+}
+
+// Detailed results item (from alias results endpoint)
+export interface EvoResultDetailedItem {
+  strategy_id: string;
+  template: string;
+  genome: Record<string, any>;
+  train_window: { start: string; end: string };
+  oos_window: { start: string; end: string };
+  data: { source: string; adjustments: string[]; rth_only: boolean };
+  metrics: {
+    train: { sharpe: number; pf: number; dd: number; trades: number };
+    oos: { sharpe: number; pf: number; dd: number; trades: number; expectancy?: number };
+  };
+  leak_checks: { lookahead: boolean; survivorship: boolean; nan_gaps: number };
+  breaches: { risk: number; position: number };
+  costs: { slippage_bps: number; commission: number };
+  backtest_hash: string;
+}
+
 // WebSocket message types
 export type WebSocketChannel = 
   'data' |

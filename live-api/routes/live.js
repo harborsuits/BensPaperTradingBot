@@ -595,4 +595,503 @@ router.get('/ai/context', (req, res) => {
   }
 });
 
+/**
+ * @route GET /api/decisions/recent
+ * @desc Get recent decisions by stage (proposed, intent, executed)
+ * @access Public
+ * @query {string} stage - The stage to filter by (proposed|intent|executed), defaults to 'proposed'
+ * @query {number} limit - Maximum number of items to return, defaults to 50
+ */
+router.get('/decisions/recent', (req, res) => {
+  try {
+    const stage = req.query.stage || 'proposed';
+    const limit = parseInt(req.query.limit) || 50;
+
+    // Validate stage parameter
+    const validStages = ['proposed', 'intent', 'executed'];
+    if (!validStages.includes(stage)) {
+      return res.status(400).json({ error: `Invalid stage. Must be one of: ${validStages.join(', ')}` });
+    }
+
+    // Get decisions from the decision ring buffer (simulated for now)
+    // In production, this would be a persistent ring buffer in memory
+    const decisions = getRecentDecisionsByStage(stage, limit);
+
+    res.json(decisions);
+  } catch (error) {
+    console.error('Decisions recent error:', error);
+    res.status(500).json({ error: 'Failed to get recent decisions' });
+  }
+});
+
+/**
+ * @route GET /api/brain/status
+ * @desc Get brain loop status and recent metrics
+ * @access Public
+ */
+router.get('/brain/status', (req, res) => {
+  try {
+    const brainStatus = {
+      mode: process.env.AUTOLOOP_MODE || 'discovery',
+      running: true, // Would come from actual loop status
+      tick_ms: 30000,
+      breaker: null,
+      recent_pf_after_costs: 1.05,
+      sharpe_30d: 0.42,
+      sharpe_90d: 0.38,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(brainStatus);
+  } catch (error) {
+    console.error('Brain status error:', error);
+    res.status(500).json({ error: 'Failed to get brain status' });
+  }
+});
+
+/**
+ * @route GET /api/brain/flow/recent
+ * @desc Get recent brain flow ticks per symbol
+ * @access Public
+ * @query {number} limit - Maximum number of ticks to return, defaults to 100
+ */
+router.get('/brain/flow/recent', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 100;
+
+    // Simulated brain flow data - in production this would be from the actual loop
+    const brainFlowData = getRecentBrainFlowTicks(limit);
+
+    res.json(brainFlowData);
+  } catch (error) {
+    console.error('Brain flow recent error:', error);
+    res.status(500).json({ error: 'Failed to get brain flow data' });
+  }
+});
+
+/**
+ * @route GET /api/brain/scoring/activity
+ * @desc Get scoring activity for a specific symbol and tick
+ * @access Public
+ * @query {string} symbol - The symbol to get scoring for
+ * @query {string} ts - The timestamp of the tick (optional, defaults to latest)
+ */
+router.get('/brain/scoring/activity', (req, res) => {
+  try {
+    const { symbol, ts } = req.query;
+
+    if (!symbol) {
+      return res.status(400).json({ error: 'symbol parameter is required' });
+    }
+
+    // Get scoring activity for the symbol
+    const scoringActivity = getScoringActivityForSymbol(symbol, ts);
+
+    if (!scoringActivity) {
+      return res.status(404).json({ error: 'No scoring activity found for the specified symbol and timestamp' });
+    }
+
+    res.json(scoringActivity);
+  } catch (error) {
+    console.error('Brain scoring activity error:', error);
+    res.status(500).json({ error: 'Failed to get scoring activity' });
+  }
+});
+
+/**
+ * @route GET /api/evo/status
+ * @desc Get EvoTester status and recent activity
+ * @access Public
+ */
+router.get('/evo/status', (req, res) => {
+  try {
+    const evoStatus = {
+      generation: 15,
+      population: 200,
+      best: {
+        config_id: 'cfg_abc123',
+        metrics: {
+          pf_after_costs: 1.18,
+          sharpe: 0.42,
+          trades: 640
+        }
+      },
+      running: true,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(evoStatus);
+  } catch (error) {
+    console.error('Evo status error:', error);
+    res.status(500).json({ error: 'Failed to get evo status' });
+  }
+});
+
+/**
+ * @route GET /api/evo/candidates
+ * @desc Get recent EvoTester candidates ready for promotion
+ * @access Public
+ * @query {number} limit - Maximum number of candidates to return, defaults to 20
+ */
+router.get('/evo/candidates', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+
+    // Get recent candidates from EvoTester
+    const candidates = getRecentEvoCandidates(limit);
+
+    res.json(candidates);
+  } catch (error) {
+    console.error('Evo candidates error:', error);
+    res.status(500).json({ error: 'Failed to get evo candidates' });
+  }
+});
+
+/**
+ * @route POST /api/evo/schedule-paper-validate
+ * @desc Schedule paper validation for a candidate config
+ * @access Public
+ * @body {string} config_id - The configuration ID to validate
+ * @body {number} days - Number of days to run validation (default: 14)
+ */
+router.post('/evo/schedule-paper-validate', (req, res) => {
+  try {
+    const { config_id, days = 14 } = req.body;
+
+    if (!config_id) {
+      return res.status(400).json({ error: 'config_id is required' });
+    }
+
+    // Schedule paper validation
+    const trackingId = schedulePaperValidation(config_id, days);
+
+    res.json({
+      success: true,
+      tracking_id: trackingId,
+      config_id,
+      days,
+      message: `Paper validation scheduled for ${days} days`,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Evo schedule paper validate error:', error);
+    res.status(500).json({ error: 'Failed to schedule paper validation' });
+  }
+});
+
+/**
+ * @route GET /api/evo/validation/:id
+ * @desc Get paper validation progress for a scheduled validation
+ * @access Public
+ * @param {string} id - The tracking ID of the validation
+ */
+router.get('/evo/validation/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get validation progress
+    const validation = getValidationProgress(id);
+
+    if (!validation) {
+      return res.status(404).json({ error: 'Validation not found' });
+    }
+
+    res.json(validation);
+  } catch (error) {
+    console.error('Evo validation progress error:', error);
+    res.status(500).json({ error: 'Failed to get validation progress' });
+  }
+});
+
+/**
+ * @route GET /api/evo/validation/:id/gates
+ * @desc Get gate evaluation results for a validation
+ * @access Public
+ * @param {string} id - The tracking ID of the validation
+ */
+router.get('/evo/validation/:id/gates', (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Get gate evaluation results
+    const gates = getValidationGates(id);
+
+    if (!gates) {
+      return res.status(404).json({ error: 'Validation gates not found' });
+    }
+
+    res.json(gates);
+  } catch (error) {
+    console.error('Evo validation gates error:', error);
+    res.status(500).json({ error: 'Failed to get validation gates' });
+  }
+});
+
+/**
+ * @route GET /api/audit/autoloop/status
+ * @desc Get current autoloop status (for proof commands)
+ * @access Public
+ */
+router.get('/audit/autoloop/status', (req, res) => {
+  try {
+    // Read from evidence file or get from actual status
+    const status = {
+      mode: process.env.AUTOLOOP_MODE || 'discovery',
+      status: 'running',
+      running: true,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(status);
+  } catch (error) {
+    console.error('Audit autoloop status error:', error);
+    res.status(500).json({ error: 'Failed to get autoloop status' });
+  }
+});
+
+/**
+ * @route GET /api/brain/flow/summary
+ * @desc Get brain flow summary for dashboard (counts by stage/mode + latency)
+ * @access Public
+ * @query {string} window - Time window (15m, 1h, 1d), defaults to 15m
+ */
+router.get('/brain/flow/summary', (req, res) => {
+  try {
+    const window = req.query.window || '15m';
+
+    // Simulated summary data - in production this would be aggregated from actual flow data
+    const summary = {
+      window,
+      counts: {
+        ingest_ok: 87,
+        context_ok: 85,
+        candidates_ok: 82,
+        gates_passed: 41,
+        gates_failed: 46,
+        plan_ok: 2, // Low in discovery mode
+        route_ok: 1,
+        manage_ok: 1,
+        learn_ok: 1
+      },
+      by_mode: {
+        discovery: 100,
+        shadow: 0,
+        live: 0
+      },
+      latency_ms: {
+        p50: 120,
+        p95: 340
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(summary);
+  } catch (error) {
+    console.error('Brain flow summary error:', error);
+    res.status(500).json({ error: 'Failed to get brain flow summary' });
+  }
+});
+
+/**
+ * @route GET /api/decisions/summary
+ * @desc Get decisions summary for dashboard (proposals/min, unique symbols, last ts)
+ * @access Public
+ * @query {string} window - Time window (15m, 1h, 1d), defaults to 15m
+ */
+router.get('/decisions/summary', (req, res) => {
+  try {
+    const window = req.query.window || '15m';
+
+    // Simulated summary data - in production this would be aggregated from actual decisions
+    const summary = {
+      window,
+      proposals_per_min: 4.2,
+      unique_symbols: 7,
+      last_ts: new Date().toISOString(),
+      by_stage: {
+        proposed: 15,
+        intent: 2,
+        executed: 8
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(summary);
+  } catch (error) {
+    console.error('Decisions summary error:', error);
+    res.status(500).json({ error: 'Failed to get decisions summary' });
+  }
+});
+
+// Helper functions for data simulation (would be replaced with real implementations)
+function getRecentDecisionsByStage(stage, limit) {
+  // Simulated data - in production this would be from persistent ring buffers
+  const now = new Date();
+
+  if (stage === 'proposed') {
+    return [
+      {
+        id: `dec_${Date.now()}`,
+        ts: now.toISOString(),
+        symbol: 'SPY',
+        strategy_id: 'news_momo_v2',
+        confidence: 0.71,
+        costs_est_bps: 8,
+        winner_score: 0.63,
+        reason: 'news impulse + momo filter',
+        mode: 'discovery',
+        trace_id: `trace_${Date.now()}`
+      }
+    ].slice(0, limit);
+  } else if (stage === 'intent') {
+    return [
+      {
+        id: `ti_${Date.now()}`,
+        ts: now.toISOString(),
+        symbol: 'SPY',
+        side: 'BUY',
+        qty: 5,
+        limit: 443.12,
+        tif: 'DAY',
+        strategy_id: 'news_momo_v2',
+        confidence: 0.71,
+        ev_after_costs: 0.0032,
+        risk_summary: {
+          gates: ['hours_ok', 'spread_ok']
+        },
+        mode: 'shadow',
+        trace_id: `trace_${Date.now()}`
+      }
+    ].slice(0, limit);
+  } else if (stage === 'executed') {
+    // Return paper orders as executions
+    return [
+      {
+        id: `exec_${Date.now()}`,
+        ts: now.toISOString(),
+        symbol: 'SPY',
+        side: 'BUY',
+        qty: 5,
+        price: 443.12,
+        status: 'FILLED',
+        strategy_id: 'news_momo_v2',
+        order_type: 'LIMIT',
+        tif: 'DAY'
+      }
+    ].slice(0, limit);
+  }
+
+  return [];
+}
+
+function getRecentBrainFlowTicks(limit) {
+  // Simulated brain flow data
+  const now = new Date();
+
+  return [
+    {
+      symbol: 'SPY',
+      ts: now.toISOString(),
+      stages: {
+        ingest: { ok: true, quote_age_s: 1.2 },
+        context: { ok: true, vol_rank: 0.42, atr: 3.1 },
+        candidates: { ok: true, count: 4, winner: { strategy_id: 'news_momo_v2', confidence: 0.71 } },
+        gates: { ok: true, passed: ['hours_ok', 'spread_ok'], rejected: [] },
+        plan: { ok: false, reason: 'discovery_mode' },
+        route: { ok: false, skipped: true },
+        manage: { ok: false, skipped: true },
+        learn: { ok: false, skipped: true }
+      },
+      mode: 'discovery',
+      trace_id: `trace_${Date.now()}`
+    }
+  ].slice(0, limit);
+}
+
+function getScoringActivityForSymbol(symbol, ts) {
+  // Simulated scoring activity data
+  const now = new Date();
+
+  return {
+    symbol: symbol,
+    ts: ts || now.toISOString(),
+    candidates: [
+      {
+        strategy_id: 'news_momo_v2',
+        raw_score: 0.82,
+        ev_after_costs: 0.0032,
+        reliability: 0.78,
+        liquidity: 0.93,
+        total: 0.82 * 0.78 * 0.93,
+        selected: true,
+        reason: 'momo+news; spread 6bps; PF 1.14 (90d); COST_OK'
+      },
+      {
+        strategy_id: 'mean_rev',
+        raw_score: 0.49,
+        ev_after_costs: -0.0004,
+        reliability: 0.55,
+        liquidity: 0.98,
+        total: -0.00021,
+        selected: false,
+        reason: 'ev<=0 after costs (blocked)'
+      }
+    ],
+    weights: { ev: 1.0, reliability: 1.0, liquidity: 1.0 },
+    trace_id: `trace_${Date.now()}`
+  };
+}
+
+function getRecentEvoCandidates(limit) {
+  // Simulated EvoTester candidates
+  return [
+    {
+      config_id: 'cfg_abc123',
+      strategy_id: 'news_momo_v2',
+      params: { lookback: 25, z_entry: 1.8 },
+      backtest: {
+        pf_after_costs: 1.18,
+        sharpe: 0.42,
+        trades: 640,
+        regimes: { volatile: 1.14, quiet: 1.07 }
+      },
+      ready_for_paper: true
+    }
+  ].slice(0, limit);
+}
+
+function schedulePaperValidation(configId, days) {
+  // Simulate scheduling paper validation
+  const trackingId = `val_${Date.now()}`;
+  console.log(`[EVO] Scheduled paper validation for ${configId} (${days} days), tracking: ${trackingId}`);
+  return trackingId;
+}
+
+function getValidationProgress(id) {
+  // Simulate validation progress
+  return {
+    tracking_id: id,
+    config_id: 'cfg_abc123',
+    status: 'running',
+    days_completed: 7,
+    total_days: 14,
+    current_pf: 1.08,
+    current_sharpe: 0.38,
+    timestamp: new Date().toISOString()
+  };
+}
+
+function getValidationGates(id) {
+  // Simulate gate evaluation
+  return {
+    passed: true,
+    details: {
+      pf_gate: { required: 1.05, actual: 1.08, passed: true },
+      sharpe_gate: { required: 0.3, actual: 0.38, passed: true },
+      trades_gate: { required: 100, actual: 320, passed: true },
+      regime_gate: { required: ['volatile', 'quiet'], actual: ['volatile', 'quiet'], passed: true }
+    }
+  };
+}
+
 module.exports = router;

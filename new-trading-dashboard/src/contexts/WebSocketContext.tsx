@@ -173,7 +173,15 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       reconnectAttemptsRef.current = 0; // Reset reconnection attempts on successful pong
       return; // Don't process further
     }
+    // Some servers echo messages without a type; ignore those
+    if (!message || typeof message.type !== 'string') return;
     switch (message.type) {
+      case 'hello':
+        // Dev server handshake message; treat as keepalive and ignore
+        return;
+      case 'connected':
+        // Server handshake/echo message; ignore
+        return;
       case 'market_data':
         // Market data updates (e.g., price changes)
         // Invalidate queries that depend on market data
@@ -291,14 +299,16 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         pingTimeoutRef.current = setTimeout(() => {
           console.warn('WebSocket ping timeout - connection may be dead');
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            wsRef.current.close(1001, 'ping timeout'); // Going away
+            // Use an application-defined close code in the allowed range (3000-4999)
+            wsRef.current.close(4001, 'ping timeout');
           }
         }, PING_TIMEOUT);
       } catch (error) {
         console.error('Error sending ping:', error);
         // Force reconnection on ping send error
         if (wsRef.current) {
-          wsRef.current.close(1001, 'ping send error');
+          // Use an application-defined close code in the allowed range (3000-4999)
+          wsRef.current.close(4002, 'ping send error');
         }
       }
     }

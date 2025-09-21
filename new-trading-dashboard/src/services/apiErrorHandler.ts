@@ -47,24 +47,14 @@ export const handleApiError = (error: unknown): Promise<any> => {
     return Promise.reject(error);
   }
   
-  // Handle 404s with fallbacks for known endpoints
+  // Do not fabricate data for 404s — surface errors to callers
   if (status === 404) {
-    // Log once per endpoint
     const requestKey = getRequestKey(err.config);
     if (!logged404s[requestKey]) {
       console.warn(`API 404: ${url || '[unknown path]'}`);
       logged404s[requestKey] = true;
     }
-    
-    // Return graceful fallbacks for common endpoints
-    if (isContextEndpoint(url) || url?.includes('/strategies') || url?.includes('/trades')) {
-      return Promise.resolve({ 
-        data: fallbackFor(url), 
-        status: 200, 
-        headers: {}, 
-        config: err.config 
-      });
-    }
+    return Promise.reject(error);
   }
   
   return Promise.reject(error);

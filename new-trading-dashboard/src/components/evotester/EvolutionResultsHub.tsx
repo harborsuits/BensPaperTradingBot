@@ -5,7 +5,7 @@
  * ============================================
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -34,7 +34,7 @@ import {
   RefreshCw,
   Loader2
 } from 'lucide-react';
-import { EvoStrategy } from '@/types/api.types';
+import { EvoStrategy, EvoResultDetailedItem } from '@/types/api.types';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
 import { useLabDiamonds, DiamondSymbol } from '@/hooks/useLabDiamonds';
 import { evoTesterApi, strategyApi } from '@/services/api';
@@ -45,6 +45,7 @@ interface EvolutionResultsHubProps {
   onSaveStrategy?: (strategy: EvoStrategy) => void;
   onAddToEvolution?: (symbols: string[]) => void;
   className?: string;
+  sessionId?: string;
 }
 
 export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
@@ -52,7 +53,8 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
   onSelectStrategy,
   onSaveStrategy,
   onAddToEvolution,
-  className = ''
+  className = '',
+  sessionId
 }) => {
   // Real-time data connections
   const { data: liveStrategies, isLoading: strategiesLoading } = useQuery({
@@ -73,6 +75,19 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
 
   const [selectedTab, setSelectedTab] = useState('strategies');
   const [selectedDiamonds, setSelectedDiamonds] = useState<string[]>([]);
+
+  // Fetch detailed results for real-mode proof
+  const { data: detailedResultsResp, isLoading: detailedLoading } = useQuery({
+    queryKey: ['evoTester', 'detailedResults', sessionId],
+    queryFn: async () => {
+      if (!sessionId) return [] as EvoResultDetailedItem[];
+      const r = await evoTesterApi.getDetailedResults(sessionId, 20);
+      return r.success ? (r.data || []) : [];
+    },
+    enabled: Boolean(sessionId),
+    refetchInterval: 60000,
+  });
+  const detailedResults: EvoResultDetailedItem[] = useMemo(() => detailedResultsResp || [], [detailedResultsResp]);
 
   // Use the live diamonds data with proper fallback
   const diamondsData = labDiamonds || [];
@@ -104,6 +119,42 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
       onAddToEvolution(selectedDiamonds);
       showSuccessToast(`Added ${selectedDiamonds.length} diamonds to evolution candidates`);
       setSelectedDiamonds([]);
+    }
+  };
+
+  const handlePromote = async (item: EvoResultDetailedItem) => {
+    try {
+      const payload = {
+        strategy_id: item.strategy_id,
+        session_id: sessionId!,
+        guardrails: {
+          oos_sharpe_min: 0.9,
+          oos_pf_min: 1.2,
+          max_dd_max: 0.12,
+          min_trades: 40,
+          leaks_disallowed: true,
+        },
+        role: 'candidate',
+        env: 'paper',
+      };
+      const res = await evoTesterApi.promoteCandidate(payload as any);
+      if ((res as any)?.success || (res as any)?.data?.success) {
+        showSuccessToast('Candidate promoted to paper');
+      } else {
+        showErrorToast('Promotion failed');
+      }
+    } catch (e) {
+      showErrorToast('Promotion error');
+    }
+  };
+
+  const handleReproduce = async (item: EvoResultDetailedItem) => {
+    try {
+      const json = JSON.stringify(item, null, 2);
+      await navigator.clipboard.writeText(json);
+      showSuccessToast(`Copied backtest JSON (hash ${item.backtest_hash})`);
+    } catch (e) {
+      showErrorToast('Clipboard copy failed');
     }
   };
 
@@ -231,6 +282,63 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
                 <Award className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                 <p className="text-lg font-medium mb-2">No Strategies Yet</p>
                 <p className="text-sm">Run an evolution session to generate winning strategies</p>
+              </div>
+            )}
+
+            {sessionId && (
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">Results Hub</h4>
+                  {detailedLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                </div>
+                {detailedResults.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm">
+                      <thead>
+                        <tr className="text-left border-b border-border">
+                          <th className="py-2 pr-4">Template</th>
+                          <th className="py-2 pr-4">OOS Sharpe</th>
+                          <th className="py-2 pr-4">OOS PF</th>
+                          <th className="py-2 pr-4">OOS MaxDD</th>
+                          <th className="py-2 pr-4">OOS Trades</th>
+                          <th className="py-2 pr-4">Train Sharpe</th>
+                          <th className="py-2 pr-4">Leaks</th>
+                          <th className="py-2 pr-4">Data Src</th>
+                          <th className="py-2 pr-4">Hash</th>
+                          <th className="py-2 pr-4">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detailedResults
+                          .sort((a, b) => (b.metrics.oos.sharpe - a.metrics.oos.sharpe))
+                          .map((item) => {
+                            const leaks = item.leak_checks?.lookahead || item.leak_checks?.survivorship;
+                            const breaches = (item.breaches?.risk || 0) + (item.breaches?.position || 0);
+                            const eligible = item.metrics.oos.trades >= 40 && !leaks && breaches === 0;
+                            return (
+                              <tr key={item.strategy_id} className="border-b border-border">
+                                <td className="py-2 pr-4">{item.template}</td>
+                                <td className="py-2 pr-4 font-medium">{item.metrics.oos.sharpe.toFixed(2)}</td>
+                                <td className="py-2 pr-4">{item.metrics.oos.pf.toFixed(2)}</td>
+                                <td className="py-2 pr-4">{(item.metrics.oos.dd * 100).toFixed(1)}%</td>
+                                <td className="py-2 pr-4">{item.metrics.oos.trades}</td>
+                                <td className="py-2 pr-4">{item.metrics.train.sharpe.toFixed(2)}</td>
+                                <td className="py-2 pr-4">{leaks ? 'yes' : 'no'}</td>
+                                <td className="py-2 pr-4">{item.data.source}</td>
+                                <td className="py-2 pr-4">{item.backtest_hash}</td>
+                                <td className="py-2 pr-4 space-x-2">
+                                  <Button size="xs" variant="outline" onClick={() => handleReproduce(item)}>Reproduce</Button>
+                                  <Button size="xs" disabled={!eligible} onClick={() => handlePromote(item)}>Promote</Button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-foreground text-sm">No detailed results yet.</div>
+                )}
               </div>
             )}
           </TabsContent>

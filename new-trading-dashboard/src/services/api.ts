@@ -15,6 +15,8 @@ import {
   EvoTesterConfig,
   EvoTesterProgress,
   EvoStrategy,
+  EvoProvenanceStatus,
+  EvoResultDetailedItem,
   DataSourceStatusModel,
   IngestionMetricsModel,
   DataStatusSummary,
@@ -134,36 +136,16 @@ export const authApi = {
 // Context endpoints
 export const contextApi = {
   getMarketContext: async () =>
-    tryRequests<MarketContext>(
-      [
-        // Prefer canonical /context first
-        () => apiRequest<MarketContext>({ url: '/context', method: 'GET' }),
-        // Fallback to /news if /context is unavailable
-        () => apiRequest<any>({ url: '/news', method: 'GET' }) as any,
-      ],
-      {} as unknown as MarketContext
-    ),
+    apiRequest<MarketContext>({ url: '/context', method: 'GET' }),
   
   getMarketFeatures: () => 
     apiRequest<Record<string, { value: number, change: number }>>({ url: '/context/features', method: 'GET' }),
   
   getNews: (limit = 10) => 
-    tryRequests<NewsItem[]>(
-      [
-        () => apiRequest<NewsItem[]>({ url: `/context/news?limit=${limit}`, method: 'GET' }),
-        () => apiRequest<NewsItem[]>({ url: `/news?limit=${limit}`, method: 'GET' }),
-      ],
-      []
-    ),
+    apiRequest<NewsItem[]>({ url: `/context/news?limit=${limit}`, method: 'GET' }),
     
   getNewsForSymbol: (symbol: string, limit = 10) => 
-    tryRequests<NewsItem[]>(
-      [
-        () => apiRequest<NewsItem[]>({ url: `/context/news/${symbol}?limit=${limit}`, method: 'GET' }),
-        () => apiRequest<NewsItem[]>({ url: `/news/${symbol}?limit=${limit}`, method: 'GET' }),
-      ],
-      []
-    ),
+    apiRequest<NewsItem[]>({ url: `/context/news/${symbol}?limit=${limit}`, method: 'GET' }),
 };
 
 // Import Zod schema for strategies
@@ -254,24 +236,10 @@ export const strategyApi = {
 // Trade decision endpoints
 export const decisionApi = {
   getLatestDecisions: () => 
-    tryRequests<TradeCandidate[]>(
-      [
-        // Prefer decisions first to avoid fail-closed /trades 503 noise until first trade exists
-        () => apiRequest<TradeCandidate[]>({ url: '/decisions', method: 'GET' }),
-        () => apiRequest<TradeCandidate[]>({ url: '/decisions/latest', method: 'GET' }),
-        () => apiRequest<any[]>({ url: '/trades', method: 'GET' }) as any,
-      ],
-      []
-    ),
+    apiRequest<TradeCandidate[]>({ url: '/decisions', method: 'GET' }),
     
   getDecisionsHistory: (date: string) => 
-    tryRequests<TradeCandidate[]>(
-      [
-        () => apiRequest<TradeCandidate[]>({ url: `/decisions?date=${date}`, method: 'GET' }),
-        () => apiRequest<TradeCandidate[]>({ url: `/trades?date=${date}`, method: 'GET' }),
-      ],
-      []
-    ),
+    apiRequest<TradeCandidate[]>({ url: `/decisions?date=${date}`, method: 'GET' }),
 };
 
 // Portfolio endpoints
@@ -529,6 +497,17 @@ export const evoTesterApi = {
     apiRequest<EvoStrategy[]>({ 
       url: `/evotester/${sessionId}/results`, method: 'GET' 
     }),
+
+  // Real-mode proof alias endpoints
+  getProvenanceStatus: (sessionId: string) =>
+    apiRequest<EvoProvenanceStatus>({
+      url: `/evotester/status`, method: 'GET', params: { session_id: sessionId }
+    }),
+
+  getDetailedResults: (sessionId: string, limit = 20) =>
+    apiRequest<EvoResultDetailedItem[]>({
+      url: `/evotester/results`, method: 'GET', params: { session_id: sessionId, limit }
+    }),
     
   getEvoHistory: () => 
     apiRequest<{id: string, date: string, bestFitness: number}[]>({ 
@@ -550,10 +529,48 @@ export const evoTesterApi = {
       url: '/strategies', method: 'POST', data: strategy
     }),
 
+  // Promotion with guardrails to Strategy Manager
+  promoteCandidate: (payload: {
+    strategy_id: string;
+    session_id: string;
+    guardrails: {
+      oos_sharpe_min: number;
+      oos_pf_min: number;
+      max_dd_max: number;
+      min_trades: number;
+      leaks_disallowed: boolean;
+    };
+    role: string;
+    env: 'paper' | 'live';
+  }) => apiRequest<{ success: boolean; message?: string }>({
+    url: '/strategies/promote', method: 'POST', data: payload
+  }),
+
   getGenerations: (sessionId: string) =>
     apiRequest<EvoTesterProgress[]>({
       url: `/evotester/${sessionId}/generations`, method: 'GET'
     }),
+  getGenerationsAlias: (sessionId: string, page = 1) =>
+    apiRequest<Array<{ g: number; best: any; avg_oos_sharpe: number; timestamp: string }>>({
+      url: `/evotester/generations`, method: 'GET', params: { session_id: sessionId, page }
+    }),
+};
+
+// Research & Discovery endpoints
+export const researchApi = {
+  getFundamentals: (symbols?: string[]) =>
+    apiRequest<{ items: Array<{ symbol: string; company: string; sector: string; marketCap: string; peRatio: number; revenueGrowth: number; earningsGrowth: number; debtToEquity: number; researchScore: number; catalysts: string[] }>; asOf: string }>(
+      {
+        url: '/fundamentals',
+        method: 'GET',
+        params: symbols && symbols.length ? { symbols: symbols.join(',') } : undefined,
+      }
+    ),
+
+  getMarketDiscovery: () =>
+    apiRequest<{ items: Array<{ symbol: string; company: string; reason: string; score: number; changePct: number }>; asOf: string }>(
+      { url: '/discovery/market', method: 'GET' }
+    ),
 };
 
 // Safety endpoints  
@@ -619,6 +636,7 @@ export default {
   portfolio: portfolioApi,
   logging: loggingApi,
   evoTester: evoTesterApi,
+  research: researchApi,
   ingestion: ingestionApi,
   safety: safetyApi,
 };

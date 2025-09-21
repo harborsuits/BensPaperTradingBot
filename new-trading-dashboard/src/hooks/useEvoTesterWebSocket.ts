@@ -50,6 +50,48 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
       });
     }
   });
+
+  // New schema messages for real-mode proof
+  useWebSocketMessage<any>('session_started', (message) => {
+    createToast({
+      title: 'Evolution Started',
+      description: `Session ${message.data.session_id} mode=${message.data.mode}, data_source=${message.data.data_source}`,
+      variant: 'info',
+      duration: 3000,
+    });
+  });
+
+  useWebSocketMessage<any>('gen_complete', (message) => {
+    // Lightweight toast for first few gens only to avoid noise
+    const g = Number(message.data?.g || 0);
+    if (g <= 3) {
+      createToast({
+        title: `Generation ${g} complete`,
+        description: `Best OOS Sharpe: ${message.data?.best?.oos_sharpe ?? 'n/a'}`,
+        variant: 'info', duration: 2000,
+      });
+    }
+  });
+
+  useWebSocketMessage<any>('checkpoint', (message) => {
+    // No UI noise; could drive a progress bar if needed
+  });
+
+  useWebSocketMessage<any>('session_completed', (message) => {
+    createToast({
+      title: 'Evolution Completed',
+      description: `Best strategy: ${message.data?.best_strategy_id}`,
+      variant: 'success', duration: 4000,
+    });
+  });
+
+  useWebSocketMessage<any>('error', (message) => {
+    createToast({
+      title: 'EvoTester Error',
+      description: String(message.data?.message || 'Unknown error'),
+      variant: 'destructive', duration: 5000,
+    });
+  });
   
   // Handle new strategy notifications
   useWebSocketMessage<EvoStrategy>('evotester_new_strategy', (message) => {

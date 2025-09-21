@@ -63,7 +63,7 @@ export function useDecisionFeed({
   // WebSocket live stream - Connect to backend API server
   useEffect(() => {
     // Always connect to backend API server (port 4000), not frontend dev server
-    const url = `ws://localhost:4000/ws/decisions`;
+    const url = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/decisions`;
     setStatus('connecting');
     const ws = new WebSocket(url);
     wsRef.current = ws;

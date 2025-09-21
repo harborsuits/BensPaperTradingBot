@@ -21,7 +21,7 @@ export function useDecisionsStream() {
 
   useEffect(() => {
     // Create WebSocket connection to backend server
-    const ws = new WebSocket(`ws://localhost:4000/ws/decisions`);
+    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/decisions`);
 
     ws.onopen = () => {
       console.log('Connected to decisions stream');

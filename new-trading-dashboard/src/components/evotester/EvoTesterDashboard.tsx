@@ -28,7 +28,7 @@ import { evoTesterApi } from '@/services/api';
 import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
 import useEvoTesterWebSocket from '@/hooks/useEvoTesterWebSocket';
 import { useEvoTesterUpdates } from '@/hooks/useEvoTesterUpdates';
-import { EvoStrategy, EvoTesterConfig } from '@/types/api.types';
+import { EvoStrategy, EvoTesterConfig, EvoProvenanceStatus } from '@/types/api.types';
 // Import components with explicit file extensions to help TypeScript resolution
 import FitnessTrendChart from './FitnessTrendChart';
 import StrategyParametersView from './StrategyParametersView';
@@ -49,6 +49,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'active' | 'history'>('active');
   const [selectedStrategy, setSelectedStrategy] = useState<EvoStrategy | null>(null);
+  const [provenance, setProvenance] = useState<EvoProvenanceStatus | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -111,6 +112,9 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
             // Cache the response for future reference
             queryClient.setQueryData(['evoTester', 'status', activeSessionId], response.data);
           }
+          // Also fetch provenance status from alias for proof badges
+          const prov = await evoTesterApi.getProvenanceStatus(activeSessionId);
+          if (prov.success && prov.data) setProvenance(prov.data);
         } catch (err) {
           console.error('Error fetching session details:', err);
         }
@@ -267,6 +271,10 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
         activeSymbols={['SPY', 'QQQ', 'AAPL']}
         sentimentScore={0.67}
         newsImpactScore={0.45}
+        // Provenance badges
+        mode={provenance?.mode}
+        dataSource={provenance?.data_source}
+        simTicks={provenance?.sim_ticks}
       />
 
       {/* Vertical Card Layout - Clear Separation */}
@@ -537,6 +545,7 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
             topStrategies={result?.topStrategies || []}
             onSelectStrategy={setSelectedStrategy}
             onSaveStrategy={handleSaveStrategy}
+            sessionId={activeSessionId || undefined}
           />
         </div>
 

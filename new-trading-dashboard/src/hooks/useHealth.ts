@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export type HealthResponse = { status?: string; ok?: boolean; asOf?: string, breaker?: 'GREEN'|'AMBER'|'RED', meta?: { asOf?: string } } | null;
+export type HealthResponse = { env?: string; status?: string; ok?: boolean; asOf?: string, breaker?: 'GREEN'|'AMBER'|'RED', gitSha?: string; meta?: { asOf?: string } } | null;
 
 export function useHealth() {
   return useQuery<HealthResponse>({

@@ -4,7 +4,10 @@
   "description": "This repository contains a complete trading system with backend, API, and frontend components.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:api": "cd live-api && node minimal_server.js",
+    "dev:ui": "cd new-trading-dashboard && npm run dev --silent",
+    "dev": "npx concurrently -k -n API,UI -c green,cyan \"npm:dev:api\" \"npx wait-on tcp:4000 && npm:dev:ui\""
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,9 @@
   "dependencies": {
     "axios": "^1.11.0",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "wait-on": "^9.0.0"
   }
 }

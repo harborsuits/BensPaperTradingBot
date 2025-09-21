@@ -40,26 +40,31 @@ const AutoRunnerStrip = () => {
     }
   });
 
-  const nextCheckIn = status?.lastRun
-    ? status.interval - (new Date().getTime() - new Date(status.lastRun).getTime())
-    : status?.interval;
+  // Normalize backend variants
+  const isRunning = (status as any)?.isRunning ?? (status as any)?.is_running ?? (status as any)?.running ?? false;
+  const interval = (status as any)?.interval ?? (status as any)?.interval_ms ?? (status as any)?.tick_ms ?? 30000;
+  const lastRunRaw = (status as any)?.lastRun ?? (status as any)?.last_run ?? (status as any)?.timestamp ?? null;
+
+  const nextCheckIn = lastRunRaw
+    ? interval - (new Date().getTime() - new Date(lastRunRaw).getTime())
+    : interval;
 
   const nextCheckSeconds = Math.max(0, Math.floor((nextCheckIn || 0) / 1000));
   
-  const StatusIcon = status?.isRunning ? CheckCircle : status?.status?.startsWith('BLOCKED') ? XCircle : AlertCircle;
+  const StatusIcon = isRunning ? CheckCircle : (status?.status?.startsWith('BLOCKED') ? XCircle : AlertCircle);
 
   return (
     <div className="bg-card border border-border rounded-md p-2 text-xs flex items-center justify-between">
       <div className="flex items-center space-x-4">
-        <span className={`flex items-center font-bold ${status?.isRunning ? 'text-green-500' : 'text-muted-foreground'}`}>
+        <span className={`flex items-center font-bold ${isRunning ? 'text-green-500' : 'text-muted-foreground'}`}>
           <Power size={14} className="mr-1" />
-          Auto: {status?.isRunning ? 'ON' : 'OFF'}
+          Auto: {isRunning ? 'ON' : 'OFF'}
         </span>
         <span>
           Next check: 00:{nextCheckSeconds.toString().padStart(2, '0')}
         </span>
         <span>
-          Last: {status?.lastRun ? formatDistanceToNow(new Date(status.lastRun), { addSuffix: true }) : 'never'}
+          Last: {lastRunRaw ? formatDistanceToNow(new Date(lastRunRaw), { addSuffix: true }) : 'never'}
         </span>
         <span className="flex items-center">
             Status: {status?.status || '...'}

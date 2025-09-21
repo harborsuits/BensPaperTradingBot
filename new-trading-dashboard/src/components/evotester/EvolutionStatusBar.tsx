@@ -22,6 +22,9 @@ interface EvolutionStatusBarProps {
   activeSymbols?: string[];
   sentimentScore?: number;
   newsImpactScore?: number;
+  mode?: string;
+  dataSource?: string;
+  simTicks?: boolean;
 }
 
 const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
@@ -32,7 +35,10 @@ const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
   lastDeployment,
   activeSymbols: initialActiveSymbols = ['SPY', 'QQQ', 'AAPL'],
   sentimentScore: initialSentimentScore = 0.67,
-  newsImpactScore: initialNewsImpactScore = 0.45
+  newsImpactScore: initialNewsImpactScore = 0.45,
+  mode,
+  dataSource,
+  simTicks
 }) => {
   // Setup cross-component dependency management
   const { dependencies } = useCrossComponentDependencies('EvolutionStatusBar');
@@ -116,6 +122,19 @@ const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
           </div>
 
           <div className="flex items-center space-x-4 text-sm">
+            {/* Provenance Badges */}
+            {mode && (
+              <Badge variant="outline" className="text-foreground border-border">mode: {mode}</Badge>
+            )}
+            {dataSource && (
+              <Badge variant="outline" className="text-foreground border-border">data: {dataSource}</Badge>
+            )}
+            {simTicks !== undefined && (
+              <Badge variant={simTicks ? 'destructive' : 'outline'} className={simTicks ? 'border-red-300' : 'border-green-300'}>
+                sim_ticks: {String(simTicks)}
+              </Badge>
+            )}
+
             {/* Active Sessions */}
             <div className="flex items-center space-x-1">
               <Activity className="h-4 w-4 text-green-600" />

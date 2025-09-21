@@ -193,9 +193,11 @@ const MainLayout: React.FC = () => {
           <div className="flex items-center gap-4">
             <WebSocketIndicator className="mr-2" showText={false} size={20} />
             {/* Hide environment chip per request */}
-            {health && (
-              <HealthBadge state={(health as any).breaker || 'AMBER'} asOf={(health as any)?.meta?.asOf || (health as any)?.asOf} />
-            )}
+            {health && (() => {
+              const hbState = (health as any)?.breaker ?? ((health as any)?.ok ? 'GREEN' : 'AMBER');
+              const asOf = (health as any)?.meta?.asOf || (health as any)?.asOf;
+              return <HealthBadge state={hbState} asOf={asOf} />
+            })()}
             
             <NotificationBell />
             

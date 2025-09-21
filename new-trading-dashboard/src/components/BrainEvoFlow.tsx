@@ -54,17 +54,46 @@ interface BrainEvoFlowProps {
 }
 
 export const BrainEvoFlow: React.FC<BrainEvoFlowProps> = ({ className = '' }) => {
-  const { data: tournamentData, isLoading, error } = useQuery<TournamentData>({
-    queryKey: ['tournament'],
+  // Brain status query
+  const { data: brainStatus, isLoading: brainLoading, error: brainError, refetch: refetchBrain } = useQuery({
+    queryKey: ['brain', 'status'],
     queryFn: async () => {
-      const response = await fetch('/api/live/tournament');
+      const response = await fetch('/api/brain/status');
       if (!response.ok) {
-        throw new Error('Failed to fetch tournament data');
+        throw new Error('Failed to fetch brain status');
       }
       return response.json();
     },
-    refetchInterval: 15000, // Update every 15 seconds
-    staleTime: 5000,
+    refetchInterval: 30000, // Update every 30 seconds
+    staleTime: 15000,
+  });
+
+  // Evo status query
+  const { data: evoStatus, isLoading: evoLoading, error: evoError, refetch: refetchEvo } = useQuery({
+    queryKey: ['evo', 'status'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/status');
+      if (!response.ok) {
+        throw new Error('Failed to fetch evo status');
+      }
+      return response.json();
+    },
+    refetchInterval: 30000, // Update every 30 seconds
+    staleTime: 15000,
+  });
+
+  // Evo candidates query
+  const { data: evoCandidates, isLoading: candidatesLoading, refetch: refetchCandidates } = useQuery({
+    queryKey: ['evo', 'candidates'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/candidates?limit=20');
+      if (!response.ok) {
+        throw new Error('Failed to fetch evo candidates');
+      }
+      return response.json();
+    },
+    refetchInterval: 60000, // Update every minute
+    staleTime: 30000,
   });
 
   const getStageColor = (stage: string) => {
@@ -97,19 +126,53 @@ export const BrainEvoFlow: React.FC<BrainEvoFlowProps> = ({ className = '' }) =>
     return `${diffHours}h ago`;
   };
 
+  const [schedulingValidation, setSchedulingValidation] = useState(false);
+
+  const handleScheduleValidation = async (configId: string, days: number = 14) => {
+    setSchedulingValidation(true);
+    try {
+      const response = await fetch('/api/evo/schedule-paper-validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ config_id: configId, days }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to schedule validation');
+      }
+
+      const result = await response.json();
+      console.log('Validation scheduled:', result);
+      // Could add toast notification here
+      refetchCandidates(); // Refresh candidates list
+    } catch (error) {
+      console.error('Error scheduling validation:', error);
+      // Could add error toast here
+    } finally {
+      setSchedulingValidation(false);
+    }
+  };
+
+  const formatPercent = (value: number) => `${(value * 100).toFixed(1)}%`;
+
+  const isLoading = brainLoading || evoLoading || candidatesLoading;
+  const hasError = brainError || evoError;
+
   if (isLoading) {
     return (
       <div className="border rounded-2xl p-4">
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <Brain className="w-5 h-5" />
-            Brain & Evo Flow
+            Brain & EvoFlow
           </h3>
         </div>
         <div className="mt-4 space-y-4">
           {[1, 2, 3].map(i => (
             <div key={i} className="animate-pulse">
-              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-16 bg-muted rounded"></div>
             </div>
           ))}
         </div>
@@ -117,145 +180,201 @@ export const BrainEvoFlow: React.FC<BrainEvoFlowProps> = ({ className = '' }) =>
     );
   }
 
-  if (error || !tournamentData) {
+  if (hasError) {
     return (
       <div className="border rounded-2xl p-4">
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <Brain className="w-5 h-5" />
-            Brain & Evo Flow
+            Brain & EvoFlow
           </h3>
           <div className="flex items-center gap-1 text-xs text-red-600">
             <AlertTriangle className="w-3 h-3" />
-            Disconnected
+            Connection Error
           </div>
         </div>
         <div className="mt-4 text-center py-8 text-muted-foreground">
           <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Tournament data unavailable</p>
-          <p className="text-xs mt-1">Strategy manager connection required</p>
+          <p className="text-sm">Brain/EvoFlow data unavailable</p>
+          <p className="text-xs mt-1">Check API connections</p>
         </div>
       </div>
     );
   }
 
-  const totalActive = tournamentData.rounds.reduce((sum, r) => sum + r.active_strategies, 0);
-
   return (
-    <div className={`border rounded-2xl p-4 w-full max-w-full overflow-x-auto ${className}`}>
+    <div className={`border rounded-2xl p-4 w-full max-w-full ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <Brain className="w-5 h-5" />
-          Brain & Evo Flow
+          Brain & EvoFlow
         </h3>
-        <div className="text-xs text-muted-foreground">
-          {totalActive} active • Gen {tournamentData.current_generation} • auto-refreshing
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-muted-foreground">
+            Live pilot + Offline R&D
+          </div>
+          <button
+            onClick={() => { refetchBrain(); refetchEvo(); refetchCandidates(); }}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            <RefreshCw className="w-3 h-3" />
+          </button>
         </div>
       </div>
 
-      {/* Tournament Ladder */}
-      <div className="mt-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Trophy className="w-4 h-4" />
-          <span className="text-sm font-medium">Tournament Ladder</span>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {tournamentData.rounds.map((round) => (
-            <div key={round.stage} className="border rounded-xl p-3 bg-card">
-              <div className="flex items-center justify-between mb-2">
-                <div className={`px-2 py-1 rounded text-xs font-medium border ${getStageColor(round.stage)}`}>
-                  {round.stage}
-                </div>
-                <span className="text-lg font-bold">{round.active_strategies}</span>
-              </div>
-
-              <h4 className="font-medium text-sm mb-2">{round.name}</h4>
-
-              <div className="space-y-1 text-xs text-muted-foreground">
-                {round.criteria.minSharpe && (
-                  <div>Sharpe ≥ {round.criteria.minSharpe}</div>
-                )}
-                {round.criteria.minPf && (
-                  <div>P/F ≥ {round.criteria.minPf}</div>
-                )}
-                {round.criteria.maxDd && (
-                  <div>DD ≤ {(round.criteria.maxDd * 100).toFixed(1)}%</div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Tournament Decisions */}
-      {tournamentData.recent_decisions && tournamentData.recent_decisions.length > 0 && (
-        <div className="mt-6">
+      {/* Two-panel layout */}
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Brain Panel (Live Pilot) */}
+        <div className="border rounded-lg p-4 bg-card">
           <div className="flex items-center gap-2 mb-3">
-            <Zap className="w-4 h-4" />
-            <span className="text-sm font-medium">Recent Decisions</span>
+            <Brain className="w-4 h-4 text-blue-600" />
+            <h4 className="font-medium">Brain (Live Pilot)</h4>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${brainStatus?.running ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className="text-xs text-muted-foreground">
+                {brainStatus?.running ? 'Running' : 'Stopped'}
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/30">
-            {tournamentData.recent_decisions.slice(0, 5).map((decision, index) => (
-              <div key={index} className="border rounded-lg p-2 bg-card/50">
-                <div className="flex items-center gap-2">
-                  {getDecisionIcon(decision.decision)}
-                  <div className="flex-grow min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {decision.strategyId}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {decision.fromStage} → {decision.toStage} • {decision.reason}
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {formatTimeAgo(decision.timestamp)}
-                  </span>
-                </div>
+          {brainStatus && (
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Mode:</span>
+                <span className="font-medium">{brainStatus.mode}</span>
               </div>
-            ))}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Tick Rate:</span>
+                <span>{brainStatus.tick_ms}ms</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">PF (after costs):</span>
+                <span className={brainStatus.recent_pf_after_costs >= 1 ? 'text-green-600' : 'text-red-600'}>
+                  {formatPercent(brainStatus.recent_pf_after_costs)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Sharpe 30d:</span>
+                <span className={brainStatus.sharpe_30d >= 0.5 ? 'text-green-600' : brainStatus.sharpe_30d >= 0 ? 'text-yellow-600' : 'text-red-600'}>
+                  {brainStatus.sharpe_30d.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Sharpe 90d:</span>
+                <span className={brainStatus.sharpe_90d >= 0.5 ? 'text-green-600' : brainStatus.sharpe_90d >= 0 ? 'text-yellow-600' : 'text-red-600'}>
+                  {brainStatus.sharpe_90d.toFixed(2)}
+                </span>
+              </div>
+              {brainStatus.breaker && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Circuit Breaker:</span>
+                  <span className="text-red-600 text-xs">{brainStatus.breaker}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* EvoFlow Panel (Offline R&D) */}
+        <div className="border rounded-lg p-4 bg-card">
+          <div className="flex items-center gap-2 mb-3">
+            <Dna className="w-4 h-4 text-purple-600" />
+            <h4 className="font-medium">EvoFlow (Offline R&D)</h4>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${evoStatus?.running ? 'bg-green-500' : 'bg-yellow-500'}`} />
+              <span className="text-xs text-muted-foreground">
+                {evoStatus?.running ? 'Running' : 'Idle'}
+              </span>
+            </div>
+          </div>
+
+          {evoStatus && (
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Generation:</span>
+                <span className="font-medium">{evoStatus.generation}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Population:</span>
+                <span>{evoStatus.population}</span>
+              </div>
+              {evoStatus.best && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Best Config:</span>
+                    <span className="font-medium text-xs">{evoStatus.best.config_id}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Best PF:</span>
+                    <span className={evoStatus.best.metrics.pf_after_costs >= 1 ? 'text-green-600' : 'text-red-600'}>
+                      {formatPercent(evoStatus.best.metrics.pf_after_costs)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Best Sharpe:</span>
+                    <span className={evoStatus.best.metrics.sharpe >= 0.5 ? 'text-green-600' : 'text-yellow-600'}>
+                      {evoStatus.best.metrics.sharpe.toFixed(2)}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* EvoFlow Candidates Table */}
+      {evoCandidates && evoCandidates.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Trophy className="w-4 h-4" />
+            <span className="text-sm font-medium">Recent Candidates</span>
+            <Badge variant="outline" className="text-xs">
+              Ready for Paper Validation
+            </Badge>
+          </div>
+
+          <div className="border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="text-left py-2 px-3">Strategy</th>
+                  <th className="text-left py-2 px-3">Config ID</th>
+                  <th className="text-right py-2 px-3">PF (after costs)</th>
+                  <th className="text-right py-2 px-3">Sharpe</th>
+                  <th className="text-right py-2 px-3">Trades</th>
+                  <th className="text-center py-2 px-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {evoCandidates.map((candidate: any, index: number) => (
+                  <tr key={candidate.config_id} className="border-t">
+                    <td className="py-2 px-3 font-medium">{candidate.strategy_id}</td>
+                    <td className="py-2 px-3 text-xs font-mono">{candidate.config_id}</td>
+                    <td className={`py-2 px-3 text-right font-mono ${candidate.backtest.pf_after_costs >= 1 ? 'text-green-600' : 'text-red-600'}`}>
+                      {formatPercent(candidate.backtest.pf_after_costs)}
+                    </td>
+                    <td className={`py-2 px-3 text-right font-mono ${candidate.backtest.sharpe >= 0.5 ? 'text-green-600' : 'text-yellow-600'}`}>
+                      {candidate.backtest.sharpe.toFixed(2)}
+                    </td>
+                    <td className="py-2 px-3 text-right font-mono">{candidate.backtest.trades}</td>
+                    <td className="py-2 px-3 text-center">
+                      <button
+                        onClick={() => handleScheduleValidation(candidate.config_id)}
+                        disabled={schedulingValidation}
+                        className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-50"
+                      >
+                        {schedulingValidation ? '...' : 'Validate'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Evolution Stats */}
-      <div className="mt-6">
-        <div className="flex items-center gap-2 mb-3">
-          <BarChart3 className="w-4 h-4" />
-          <span className="text-sm font-medium">Evolution Stats</span>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="border rounded-xl p-3 bg-card text-center">
-            <div className="text-xl font-bold text-green-600">
-              {tournamentData.stats.totalPromotions}
-            </div>
-            <div className="text-xs text-muted-foreground">Promotions</div>
-          </div>
-
-          <div className="border rounded-xl p-3 bg-card text-center">
-            <div className="text-xl font-bold text-red-600">
-              {tournamentData.stats.totalDemotions}
-            </div>
-            <div className="text-xs text-muted-foreground">Demotions</div>
-          </div>
-
-          <div className="border rounded-xl p-3 bg-card text-center">
-            <div className="text-xl font-bold text-blue-600">
-              {totalActive}
-            </div>
-            <div className="text-xs text-muted-foreground">Active</div>
-          </div>
-
-          <div className="border rounded-xl p-3 bg-card text-center">
-            <div className="text-xl font-bold text-purple-600">
-              {tournamentData.current_generation}
-            </div>
-            <div className="text-xs text-muted-foreground">Generation</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

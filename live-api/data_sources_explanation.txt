@@ -1,0 +1,34 @@
+
+=== CURRENT DATA SOURCES ===
+
+1. Mock Server (server_simple.js) - WHAT YOU'RE USING NOW:
+   - Uses hardcoded realistic base prices  
+   - NVDA: ~, TSLA: ~, SPY: ~
+   - Updates every 3 seconds with ±3% variation
+   - ✅ Fast, reliable, always works
+   - ❌ Not connected to real market data
+
+2. Real Tradier Integration (server.js) - WHAT YOU HAVE SET UP:
+   - Connects to real Tradier API
+   - Gets actual live market prices
+   - Uses real trading accounts  
+   - ⚠️ Requires valid TRADIER_TOKEN
+   - ✅ Real market data but needs token
+
+3. Other Real Providers Available:
+   - Coinbase (crypto)
+   - Binance (crypto) 
+   - Gemini (crypto)
+
+=== TO SWITCH TO REAL DATA ===
+
+1. Get your Tradier API token from: https://developer.tradier.com/
+2. Update your .env file:
+   TRADIER_TOKEN=your_real_token_here
+   QUOTES_PROVIDER=tradier
+   AUTOREFRESH_ENABLED=1
+3. Fix server.js syntax error and start it instead of server_simple.js
+
+=== CURRENT STATUS ===
+You're using mock data with realistic prices, but not real live market data.
+

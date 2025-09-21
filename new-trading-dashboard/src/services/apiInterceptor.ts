@@ -37,47 +37,12 @@ export const fallbackForEndpoint = (url?: string): unknown => {
 export const handleApiError = (error: unknown): Promise<any> => {
   const err = error as AxiosError;
   const status = err?.response?.status;
-  const config = err?.config;
-  const url = config?.url;
   
   // Handle 401 Unauthorized
   if (status === 401) {
     localStorage.removeItem('auth_token');
     window.location.href = '/login';
     return Promise.reject(error);
-  }
-  
-  // Handle 404s with deduplication and fallbacks
-  if (status === 404) {
-    // Create a unique key for this request
-    const requestKey = keyFromRequest(config ?? {});
-    
-    // Only log once per unique request
-    if (!seen404s.has(requestKey)) {
-      console.warn(`API 404: ${url || '[unknown path]'}`);
-      seen404s.add(requestKey);
-      
-      // Cap the size of the set to avoid memory leaks
-      if (seen404s.size > 100) {
-        const iterator = seen404s.values();
-        seen404s.delete(iterator.next().value);
-      }
-    }
-    
-    // Return graceful fallbacks for common endpoints
-    if (url && (
-      url.includes('/context') || 
-      url.includes('/strategies') || 
-      url.includes('/evotester')
-    )) {
-      return Promise.resolve({
-        data: fallbackForEndpoint(url),
-        status: 200,
-        statusText: 'OK (Fallback)',
-        headers: {},
-        config: config
-      });
-    }
   }
   
   // Let other errors pass through

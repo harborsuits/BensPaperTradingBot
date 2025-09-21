@@ -4,7 +4,8 @@ import { computeStaleness, formatAsOf } from '@/lib/staleness';
 
 export const HealthPill: React.FC = () => {
   const { data, isLoading, isError } = useHealth();
-  const state = data?.asOf ? computeStaleness(data.asOf) : isError ? 'stale' : 'active';
+  const asOf = (data as any)?.asOf || (data as any)?.meta?.asOf || (data as any)?.ts;
+  const state = asOf ? computeStaleness(asOf) : isError ? 'stale' : 'active';
   const classes =
     state === 'active'
       ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
@@ -15,12 +16,12 @@ export const HealthPill: React.FC = () => {
     ? 'Checking…'
     : isError
     ? 'Unhealthy'
-    : `${data?.env ?? 'env?'}${data?.gitSha ? ` • ${String(data.gitSha).slice(0, 7)}` : ''}`;
+    : `${(data as any)?.env ?? 'env?'}${(data as any)?.gitSha ? ` • ${String((data as any).gitSha).slice(0, 7)}` : ''}`;
 
   return (
     <div
       className={`px-3 py-1 rounded-full text-xs font-semibold ${classes}`}
-      title={data?.asOf ? `as of ${formatAsOf(data.asOf)}` : undefined}
+      title={asOf ? `as of ${formatAsOf(asOf)}` : undefined}
     >
       {label}
     </div>
