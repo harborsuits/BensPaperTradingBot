@@ -100,127 +100,46 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
     checkInterval: 30000
   });
 
-  // Mock trigger rules data
-  const [triggerRules] = useState([
-    {
-      id: 'volatility_spike',
-      name: 'Volatility Spike',
-      description: 'Market volatility exceeds 2.5σ threshold',
-      active: true,
-      priority: 1,
-      triggerCount: 12,
-      successRate: 73.2,
-      lastTriggered: '2024-04-30T14:32:00Z',
-      cooldownMinutes: 30
+  // Fetch trigger rules from API or use empty array
+  const { data: triggerRulesData } = useQuery({
+    queryKey: ['evo', 'trigger-rules'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/trigger-rules');
+      if (!response.ok) return [];
+      return response.json();
     },
-    {
-      id: 'volume_anomaly',
-      name: 'Volume Anomaly',
-      description: 'Unusual trading volume detected',
-      active: true,
-      priority: 2,
-      triggerCount: 8,
-      successRate: 65.4,
-      lastTriggered: '2024-04-29T10:15:00Z',
-      cooldownMinutes: 15
-    },
-    {
-      id: 'sentiment_shift',
-      name: 'Sentiment Shift',
-      description: 'Market sentiment changes significantly',
-      active: false,
-      priority: 3,
-      triggerCount: 5,
-      successRate: 58.7,
-      lastTriggered: '2024-04-28T16:45:00Z',
-      cooldownMinutes: 60
-    }
-  ]);
-
-  // Capital pools state
-  const [capitalPools] = useState([
-    {
-      id: 'research_pool',
-      name: 'Research Pool',
-      type: 'research',
-      totalCapital: 50000,
-      allocatedCapital: 12500,
-      availableCapital: 37500,
-      maxAllocation: 5000,
-      riskLevel: 'medium',
-      activeStrategies: 8,
-      pnl: 1250.75,
-      pnlPercent: 10.0,
-      lastUpdate: new Date().toISOString()
-    },
-    {
-      id: 'competition_pool',
-      name: 'Competition Pool',
-      type: 'competition',
-      totalCapital: 25000,
-      allocatedCapital: 18750,
-      availableCapital: 6250,
-      maxAllocation: 3000,
-      riskLevel: 'high',
-      activeStrategies: 12,
-      pnl: -750.25,
-      pnlPercent: -4.0,
-      lastUpdate: new Date().toISOString()
-    },
-    {
-      id: 'validation_pool',
-      name: 'Validation Pool',
-      type: 'validation',
-      totalCapital: 15000,
-      allocatedCapital: 7500,
-      availableCapital: 7500,
-      maxAllocation: 2000,
-      riskLevel: 'low',
-      activeStrategies: 5,
-      pnl: 375.50,
-      pnlPercent: 5.0,
-      lastUpdate: new Date().toISOString()
-    }
-  ]);
-
-  // Capital limits state
-  const [capitalLimits] = useState({
-    maxPerExperiment: {
-      low: 2000,
-      medium: 5000,
-      high: 10000
-    },
-    maxPerStrategy: 2500,
-    totalDailyLimit: 25000,
-    maxConcurrentExperiments: 15,
-    maxTotalDrawdown: 0.15,
-    emergencyStopLoss: 0.20
+    refetchInterval: 30000,
+    staleTime: 15000,
   });
+  const triggerRules = triggerRulesData || [];
 
-  // Capital transactions state
-  const [capitalTransactions] = useState([
-    {
-      id: 'txn_001',
-      type: 'allocation',
-      description: 'Strategy S1 allocated $2,500',
-      amount: -2500,
-      timestamp: '2024-04-30T14:32:00Z'
+  // Use real EVO pool status data from API when available
+  // TODO: Map evoPoolStatus to capital pools format when API provides this data
+  const capitalPools = [];
+
+  // Use real capital limits when API provides this data
+  // For now, using safe defaults
+  const capitalLimits = {
+    maxPerExperiment: {
+      low: 1000,
+      medium: 2500,
+      high: 5000
     },
-    {
-      id: 'txn_002',
-      type: 'return',
-      description: 'Strategy S1 returned $2,750 (+10%)',
-      amount: 2750,
-      timestamp: '2024-04-30T16:15:00Z'
-    },
-    {
-      id: 'txn_003',
-      type: 'allocation',
-      description: 'Strategy S2 allocated $1,800',
-      amount: -1800,
-      timestamp: '2024-04-29T10:45:00Z'
-    }
-  ]);
+    maxPerStrategy: 2000,
+    totalDailyLimit: 10000,
+    maxConcurrentExperiments: 10,
+    maxTotalDrawdown: 0.10,
+    emergencyStopLoss: 0.15
+  };
+
+  // Map EVO ledger allocations to transactions format
+  const capitalTransactions = evoLedger?.rows?.slice(0, 10).map((row: EvoAllocation) => ({
+    id: row.strategyRef,
+    type: 'allocation' as const,
+    description: `${row.strategy} allocated $${row.allocation}`,
+    amount: -row.allocation,
+    timestamp: row.allocatedAt
+  })) || [];
 
   // Capital pool utility functions
   const getPoolAnalytics = (poolId: string) => {
@@ -307,54 +226,9 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
     ];
   };
 
-  // Mock data for demonstration
+  // No mock bootstrap; render empty until real EVO data arrives
   useEffect(() => {
-    const mockExperiments: SandboxExperiment[] = [
-      {
-        id: 'evo_sandbox_001',
-        name: 'Volatility Spike Research',
-        status: 'running',
-        triggerCondition: 'Market Volatility > 2.5σ',
-        startTime: '2024-04-30T09:30:00Z',
-        allocatedCapital: 500,
-        currentPnl: 47.23,
-        bestStrategy: 'adaptive_volatility_v7',
-        generations: 12,
-        successRate: 73.2,
-        riskLevel: 'low',
-        marketCondition: 'High Volatility'
-      },
-      {
-        id: 'evo_sandbox_002',
-        name: 'Bear Market Adaptation',
-        status: 'running',
-        triggerCondition: 'Market Regime Change',
-        startTime: '2024-04-30T08:15:00Z',
-        allocatedCapital: 750,
-        currentPnl: -23.45,
-        bestStrategy: 'defensive_ma_crossover_v3',
-        generations: 8,
-        successRate: 65.8,
-        riskLevel: 'medium',
-        marketCondition: 'Bear Trend'
-      },
-      {
-        id: 'evo_sandbox_003',
-        name: 'News Impact Study',
-        status: 'completed',
-        triggerCondition: 'High News Sentiment',
-        startTime: '2024-04-30T07:00:00Z',
-        allocatedCapital: 300,
-        currentPnl: 89.12,
-        bestStrategy: 'sentiment_aware_v5',
-        generations: 15,
-        successRate: 81.4,
-        riskLevel: 'low',
-        marketCondition: 'News Driven'
-      }
-    ];
-
-    setActiveExperiments(mockExperiments);
+    setActiveExperiments([]);
   }, []);
 
   const getStatusIcon = (status: string) => {
@@ -446,7 +320,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
         <div className="flex items-center space-x-2">
           {evoPoolStatus && (
             <div className="text-sm text-gray-600">
-              Pool: {evoPoolStatus.capPct * 100}% cap, {evoPoolStatus.utilizationPct * 100}% used
+              Pool: {(evoPoolStatus.capPct || 0) * 100}% cap, {(evoPoolStatus.utilizationPct || 0) * 100}% used
             </div>
           )}
           <Button size="sm" variant="outline">
@@ -487,8 +361,8 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                 </div>
                 <div>
                   <span className="text-xs text-gray-500">Realized P&L</span>
-                  <div className={`font-medium ${allocation.realizedPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    ${allocation.realizedPnl.toFixed(2)}
+                  <div className={`font-medium ${(allocation.realizedPnl || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    ${(allocation.realizedPnl || 0).toFixed(2)}
                   </div>
                 </div>
                 <div>
@@ -552,7 +426,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-green-600 mb-1">
-                {evoPoolStatus.capPct * 100}%
+                {((evoPoolStatus.capPct || 0) * 100).toFixed(1)}%
               </div>
               <div className="text-sm text-gray-600">Pool Cap</div>
             </CardContent>
@@ -560,7 +434,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-600 mb-1">
-                {evoPoolStatus.utilizationPct * 100}%
+                {((evoPoolStatus.utilizationPct || 0) * 100).toFixed(1)}%
               </div>
               <div className="text-sm text-gray-600">Utilization</div>
             </CardContent>
@@ -568,7 +442,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-purple-600 mb-1">
-                {evoPoolStatus.activeCount}
+                {evoPoolStatus.activeCount || 0}
               </div>
               <div className="text-sm text-gray-600">Active Allocs</div>
             </CardContent>
@@ -576,7 +450,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-orange-600 mb-1">
-                ${evoPoolStatus.poolPnl.toFixed(2)}
+                ${(evoPoolStatus.poolPnl || 0).toFixed(2)}
               </div>
               <div className="text-sm text-gray-600">Total P&L</div>
             </CardContent>
@@ -637,8 +511,8 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                 </div>
                 <div>
                   <span className="text-xs text-gray-500">Current P&L</span>
-                  <div className={`font-medium ${experiment.currentPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    ${experiment.currentPnl.toFixed(2)}
+                  <div className={`font-medium ${(experiment.currentPnl || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    ${(experiment.currentPnl || 0).toFixed(2)}
                   </div>
                 </div>
                 <div>
@@ -714,7 +588,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-purple-600 mb-1">
-              {activeExperiments.reduce((sum, exp) => sum + exp.currentPnl, 0).toFixed(2)}
+              {activeExperiments.reduce((sum, exp) => sum + (exp.currentPnl || 0), 0).toFixed(2)}
             </div>
             <div className="text-sm text-gray-600">Total Research P&L</div>
           </CardContent>
@@ -813,7 +687,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                   </div>
                   <div>
                     <span className="text-gray-500">Success Rate</span>
-                    <div className="font-medium text-green-600">{trigger.successRate.toFixed(1)}%</div>
+                    <div className="font-medium text-green-600">{(trigger.successRate || 0).toFixed(1)}%</div>
                   </div>
                   <div>
                     <span className="text-gray-500">Last Triggered</span>
@@ -892,7 +766,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                         style={{ width: `${Math.min(trigger.successRate, 100)}%` }}
                       />
                     </div>
-                    <span className="text-sm text-gray-600 w-12">{trigger.successRate.toFixed(1)}%</span>
+                    <span className="text-sm text-gray-600 w-12">{(trigger.successRate || 0).toFixed(1)}%</span>
                   </div>
                 </div>
               ))}
@@ -947,7 +821,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Utilization:</span>
-                      <span className="font-medium">{(utilization * 100).toFixed(1)}%</span>
+                      <span className="font-medium">{((utilization || 0) * 100).toFixed(1)}%</span>
                     </div>
                   </div>
 
@@ -971,7 +845,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                       </div>
                       <div className="flex justify-between">
                         <span>Win Rate:</span>
-                        <span className="font-medium text-green-600">{(analytics.winRate * 100).toFixed(1)}%</span>
+                        <span className="font-medium text-green-600">{((analytics.winRate || 0) * 100).toFixed(1)}%</span>
                       </div>
                     </div>
                   )}
@@ -1017,11 +891,11 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Max Drawdown:</span>
-                    <span className="font-medium">{(capitalLimits.maxTotalDrawdown * 100).toFixed(1)}%</span>
+                    <span className="font-medium">{((capitalLimits.maxTotalDrawdown || 0) * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Emergency Stop:</span>
-                    <span className="font-medium text-red-600">{(capitalLimits.emergencyStopLoss * 100).toFixed(1)}%</span>
+                    <span className="font-medium text-red-600">{((capitalLimits.emergencyStopLoss || 0) * 100).toFixed(1)}%</span>
                   </div>
                 </div>
               </div>
@@ -1049,7 +923,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
                       <div className={`font-medium ${
                         transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
                       }`}>
-                        {transaction.amount >= 0 ? '+' : ''}${transaction.amount.toFixed(2)}
+                        {(transaction.amount || 0) >= 0 ? '+' : ''}${(transaction.amount || 0).toFixed(2)}
                       </div>
                       <div className="text-xs text-gray-500">
                         {new Date(transaction.timestamp).toLocaleTimeString()}

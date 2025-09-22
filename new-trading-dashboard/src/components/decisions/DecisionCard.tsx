@@ -36,7 +36,20 @@ export default function DecisionCard({ d, context, onOpenEvidence }:{ d: (Decisi
 
       <div className="flex gap-2 mt-4">
         <button onClick={handleOpen} className="px-2 py-1 text-xs rounded bg-slate-200 text-slate-900">Open Evidence</button>
-        <button disabled={anyGateRed} className="px-2 py-1 text-xs rounded bg-blue-600 text-white disabled:opacity-50">Send to Paper</button>
+        <button 
+          disabled={anyGateRed} 
+          onClick={() => {
+            if (!anyGateRed) {
+              console.log('TODO: Implement send to paper trading for decision:', d);
+              // TODO: Call API to send this decision to paper trading
+              // api.sendToPaperTrading(d);
+            }
+          }}
+          title={anyGateRed ? 'Decision blocked by gates' : 'Send this decision to paper trading'}
+          className="px-2 py-1 text-xs rounded bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Send to Paper
+        </button>
         {anyGateRed && <span className="text-[11px] text-amber-400">Blocked by gates</span>}
       </div>
     </div>

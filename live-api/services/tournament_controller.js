@@ -80,7 +80,12 @@ class TournamentController {
 
         // Auto-run tournament decisions every 15 minutes during market hours
         setInterval(() => this.runTournamentCycle(), 15 * 60 * 1000);
-        this.runTournamentCycle(); // Initial run
+        
+        // Delay initial run to allow strategies to register
+        setTimeout(() => {
+            console.log('[TOURNAMENT] Starting initial tournament cycle...');
+            this.runTournamentCycle();
+        }, 10000); // 10 second delay
     }
 
     /**
@@ -110,14 +115,33 @@ class TournamentController {
     evaluateStrategies(strategies) {
         const decisions = [];
         const now = new Date();
+        const MAX_PROMOTIONS_PER_CYCLE = 10; // Limit to 10 promotions per cycle
+        
+        // Skip if no strategies
+        if (!strategies || strategies.length === 0) {
+            console.log('[TOURNAMENT] No strategies to evaluate');
+            return decisions;
+        }
 
-        strategies.forEach(strategy => {
+        let promotionCount = 0;
+        
+        for (const strategy of strategies) {
             const decision = this.evaluateStrategy(strategy, now);
             if (decision) {
+                // Only allow MAX_PROMOTIONS_PER_CYCLE promotions per cycle
+                if (decision.action === 'promote' && promotionCount >= MAX_PROMOTIONS_PER_CYCLE) {
+                    continue; // Skip this promotion
+                }
+                
                 decisions.push(decision);
+                
+                if (decision.action === 'promote') {
+                    promotionCount++;
+                }
             }
-        });
+        }
 
+        console.log(`[TOURNAMENT] Evaluated ${strategies.length} strategies, made ${decisions.length} decisions (${promotionCount} promotions)`);
         return decisions;
     }
 
@@ -148,7 +172,7 @@ class TournamentController {
 
             if (nextStage) {
                 return {
-                    strategyId: strategy.id,
+                    strategyId: strategy.id || strategy.name,
                     decision: 'promote',
                     fromStage: stage,
                     toStage: nextStage,
@@ -166,7 +190,7 @@ class TournamentController {
         // Check for demotion (Live strategies only)
         if (stage === 'LIVE' && this.shouldDemoteLiveStrategy(strategy)) {
             return {
-                strategyId: strategy.id,
+                strategyId: strategy.id || strategy.name,
                 decision: 'demote',
                 fromStage: stage,
                 toStage: 'R1',
@@ -382,11 +406,15 @@ class TournamentController {
             activeRounds: this.getActiveRoundsSummary()
         };
 
-        // Emit via event bus (could also emit SSE)
-        this.eventBus.publish({
-            type: 'tournament_update',
-            data: update
-        });
+        // Emit via event bus (if available) or through ordersEmitter
+        if (this.eventBus && this.eventBus.publish) {
+            this.eventBus.publish({
+                type: 'tournament_update',
+                data: update
+            });
+        } else if (this.ordersEmitter) {
+            this.ordersEmitter.emit('tournament_update', update);
+        }
 
         console.log(`[TOURNAMENT] Emitted update: ${decisions.length} decisions`);
     }
@@ -412,11 +440,15 @@ class TournamentController {
      * Register new phenotype from EvoTester
      */
     registerPhenotype(phenotypeData) {
-        // This would be called by the AI brain when EvoTester produces new strategies
-        const strategyConfig = {
-            name: phenotypeData.label,
-            parameters: phenotypeData.params,
-            constraints: phenotypeData.constraints,
+        // Import EvolvedStrategy class
+        const { EvolvedStrategy } = require('../lib/strategies/EvolvedStrategy');
+        
+        // Create evolved strategy instance
+        const evolvedStrategy = new EvolvedStrategy(phenotypeData);
+        
+        // Add metadata to the strategy
+        evolvedStrategy.config = {
+            ...evolvedStrategy.config,
             promotion_criteria: this.rounds.R1.criteria,
             tournament_stage: 'R1',
             allocated_capital: 100, // R1 minimum
@@ -424,9 +456,10 @@ class TournamentController {
             generation: this.currentGeneration
         };
 
+        // Register the strategy with its run() method
         const strategy = this.strategyManager.registerStrategy(
             phenotypeData.id,
-            strategyConfig
+            evolvedStrategy
         );
 
         console.log(`[TOURNAMENT] Registered EvoTester phenotype: ${phenotypeData.id} (Gen ${this.currentGeneration})`);

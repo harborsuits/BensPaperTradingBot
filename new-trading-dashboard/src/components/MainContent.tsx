@@ -97,9 +97,14 @@ const MainContent: React.FC<MainContentProps> = () => {
         />
       </div>
       
-      {/* Floating AI Co-Pilot Button */}
+      {/* Floating AI Co-Pilot Button - Removed until AI assistant is implemented */}
+      {/* TODO: Add AI assistant functionality
       <div className="fixed bottom-4 right-4">
-        <button className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => console.log('AI Assistant not yet implemented')}
+          className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+          title="AI Assistant (Coming Soon)"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 8V4H8"></path>
             <rect width="16" height="12" x="4" y="8" rx="2"></rect>
@@ -110,6 +115,7 @@ const MainContent: React.FC<MainContentProps> = () => {
           </svg>
         </button>
       </div>
+      */}
     </div>
   )
 }

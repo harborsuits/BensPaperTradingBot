@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -42,10 +42,11 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
   onStartEvolutionWithSymbols,
   className = ''
 }) => {
-  const [selectedTab, setSelectedTab] = useState('news');
+  const queryClient = useQueryClient();
+  const [selectedTab, setSelectedTab] = useState('sentiment');
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [researchFilter, setResearchFilter] = useState({
-    sentimentThreshold: 0.7,
+    sentimentThreshold: 0.05, // Lower threshold to show more symbols
     volumeThreshold: 1000000,
     sector: 'all',
     timeFrame: '24h'
@@ -56,6 +57,18 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
     queryKey: ['news', researchFilter.timeFrame],
     queryFn: () => contextApi.getNews(25), // Use existing getNews function
     refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 15000,
+  });
+
+  // Fetch scanner candidates for sentiment-based symbols
+  const { data: scannerData, isLoading: scannerLoading } = useQuery({
+    queryKey: ['scanner-candidates'],
+    queryFn: async () => {
+      const response = await fetch('/api/scanner/candidates');
+      if (!response.ok) throw new Error('Failed to fetch scanner candidates');
+      return response.json();
+    },
+    refetchInterval: 30000,
     staleTime: 15000,
   });
 
@@ -82,41 +95,29 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
   const fundamentalOpportunities = fundamentalsData?.items || [];
   /* fallback removed to ensure empty/neutral state until real data exists */
 
-  const strategyHypotheses = [
-    {
-      id: 'hyp_001',
-      name: 'AI Momentum Breakout',
-      description: 'Capitalize on AI sector momentum with breakout strategies',
-      symbols: ['NVDA', 'AMD', 'GOOGL', 'MSFT'],
-      strategyType: 'momentum_breakout',
-      expectedSharpe: 2.1,
-      expectedWinRate: 0.68,
-      riskLevel: 'medium',
-      timeHorizon: '3-6 months'
+  // Fetch strategy hypotheses from API
+  const { data: strategyHypothesesData } = useQuery({
+    queryKey: ['evo', 'strategy-hypotheses'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/strategy-hypotheses');
+      if (!response.ok) return [];
+      return response.json();
     },
-    {
-      id: 'hyp_002',
-      name: 'EV Revolution Mean Reversion',
-      description: 'Mean reversion strategies for volatile EV stocks',
-      symbols: ['TSLA', 'NIO', 'RIVN', 'LCID'],
-      strategyType: 'mean_reversion',
-      expectedSharpe: 1.8,
-      expectedWinRate: 0.62,
-      riskLevel: 'high',
-      timeHorizon: '1-3 months'
-    },
-    {
-      id: 'hyp_003',
-      name: 'Semiconductor Supply Chain',
-      description: 'Long/short strategies around semiconductor supply dynamics',
-      symbols: ['TSM', 'ASML', 'QCOM', 'INTC'],
-      strategyType: 'pairs_trading',
-      expectedSharpe: 1.9,
-      expectedWinRate: 0.65,
-      riskLevel: 'medium',
-      timeHorizon: '2-4 months'
-    }
-  ];
+    refetchInterval: 60000,
+    staleTime: 30000,
+  });
+  // Map API response to expected format
+  const strategyHypotheses = (strategyHypothesesData || []).map((h: any) => ({
+    id: h.id,
+    name: h.id?.replace('_', ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+    description: h.hypothesis,
+    strategyType: h.id,
+    expectedSharpe: h.backtestResults?.sharpe || 0,
+    expectedWinRate: h.backtestResults?.winRate || 0,
+    riskLevel: h.confidence > 0.8 ? 'low' : h.confidence > 0.6 ? 'medium' : 'high',
+    status: h.status,
+    symbols: h.symbols || [] // Add empty array as default
+  }));
 
   const handleSymbolToggle = (symbol: string) => {
     setSelectedCandidates(prev =>
@@ -174,12 +175,88 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
       </CardHeader>
       <CardContent>
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="sentiment">Sentiment Leaders</TabsTrigger>
             <TabsTrigger value="news">News Intelligence</TabsTrigger>
             <TabsTrigger value="fundamentals">Fundamentals</TabsTrigger>
             <TabsTrigger value="strategies">Strategy Lab</TabsTrigger>
             <TabsTrigger value="discovery">Market Discovery</TabsTrigger>
           </TabsList>
+
+          {/* Sentiment Leaders Tab */}
+          <TabsContent value="sentiment" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2" />
+                Bullish Sentiment Leaders
+                {scannerLoading && <Loader2 className="w-4 h-4 ml-2 animate-spin text-blue-500" />}
+              </h3>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => queryClient.invalidateQueries(['scanner-candidates'])}
+              >
+                <RefreshCw className="w-4 h-4 mr-1" />
+                Refresh
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {scannerData && Array.isArray(scannerData) ? (
+                scannerData
+                  .filter(candidate => candidate.confidence > researchFilter.sentimentThreshold)
+                  .sort((a, b) => b.confidence - a.confidence)
+                  .map((candidate) => (
+                    <div 
+                      key={candidate.symbol}
+                      className={`border rounded-lg p-4 hover:shadow-md transition-all ${
+                        selectedCandidates.includes(candidate.symbol) ? 'border-blue-500 bg-blue-50 dark:bg-blue-950' : ''
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="text-lg font-semibold">{candidate.symbol}</h4>
+                            <Badge variant={candidate.confidence > 0.8 ? "default" : "secondary"}>
+                              {(candidate.confidence * 100).toFixed(0)}% Confidence
+                            </Badge>
+                            <Badge variant="outline">
+                              ${candidate.last?.toFixed(2) || 'N/A'}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                            <span>Volume: {(candidate.volume / 1000000).toFixed(1)}M</span>
+                            <span>Change: {candidate.change_pct?.toFixed(2) || 0}%</span>
+                            <span>Spread: {candidate.spread_bps?.toFixed(1) || 'N/A'} bps</span>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant={selectedCandidates.includes(candidate.symbol) ? "default" : "outline"}
+                          onClick={() => handleSymbolToggle(candidate.symbol)}
+                        >
+                          {selectedCandidates.includes(candidate.symbol) ? (
+                            <>
+                              <Eye className="w-3 h-3 mr-1" />
+                              Selected
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-3 h-3 mr-1" />
+                              Add
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  No sentiment data available. Markets may be closed.
+                </div>
+              )}
+            </div>
+          </TabsContent>
 
           {/* News Intelligence Tab */}
           <TabsContent value="news" className="space-y-6">
@@ -382,7 +459,7 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                         <div>
                           <div className="text-xs text-muted-foreground">Strategy Type</div>
-                          <div className="font-medium capitalize">{hypothesis.strategyType.replace('_', ' ')}</div>
+                          <div className="font-medium capitalize">{(hypothesis.strategyType || '').replace('_', ' ')}</div>
                         </div>
                         <div>
                           <div className="text-xs text-muted-foreground">Expected Sharpe</div>
@@ -390,7 +467,7 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
                         </div>
                         <div>
                           <div className="text-xs text-muted-foreground">Win Rate</div>
-                          <div className="font-medium">{(hypothesis.expectedWinRate * 100).toFixed(0)}%</div>
+                          <div className="font-medium">{((hypothesis.expectedWinRate || 0) * 100).toFixed(0)}%</div>
                         </div>
                         <div>
                           <div className="text-xs text-muted-foreground">Risk Level</div>
@@ -398,7 +475,7 @@ export const ResearchDiscoveryHub: React.FC<ResearchDiscoveryHubProps> = ({
                             hypothesis.riskLevel === 'low' ? 'outline' :
                             hypothesis.riskLevel === 'medium' ? 'secondary' : 'destructive'
                           }>
-                            {hypothesis.riskLevel.toUpperCase()}
+                            {(hypothesis.riskLevel || 'unknown').toUpperCase()}
                           </Badge>
                         </div>
                       </div>

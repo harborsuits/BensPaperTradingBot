@@ -28,11 +28,14 @@ import { useWebSocketChannel, useWebSocketMessage } from '@/services/websocket';
 import { MarketContext, Strategy, LogEvent, TradeCandidate, DataStatusSummary, DataSourceStatusModel, IngestionMetricsModel, SafetyStatus } from '@/types/api.types';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import SafetyControls from '@/components/trading/SafetyControls';
+import { DATA_REFRESH_CONFIG } from '@/config/dataRefreshConfig';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
 import { SimpleCard } from '@/components/ui/SimpleCard';
 import PortfolioCard from '@/components/dashboard/PortfolioCard';
 import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
 import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
+import { DataSyncDashboard } from '@/components/DataSyncDashboard';
+import { useSyncedHealth, useSyncedAutoloop, useSyncedStrategies, useSyncedPipelineHealth, useSyncedDecisionsSummary, useSyncedOrders, useSyncedBrainStatus, useSyncedEvoStatus } from '@/hooks/useSyncedData';
 import BrainScoringActivityCard from '@/components/dashboard/BrainScoringActivityCard';
 import BrainEvoFlow from '@/components/BrainEvoFlow';
 import NewsSentimentDashboard from '@/components/dashboard/NewsSentimentDashboard';
@@ -55,16 +58,7 @@ const numberOr = (v: unknown, d = 0): number => (typeof v === 'number' && !Numbe
 // Dashboard Card Components
 
 const HealthCard: React.FC = () => {
-  const { data: healthData, isLoading, error } = useQuery({
-    queryKey: ['health'],
-    queryFn: async () => {
-      const response = await fetch('/api/health');
-      if (!response.ok) throw new Error('Failed to fetch health');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
+  const { data: healthData, isLoading, error } = useSyncedHealth();
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -104,6 +98,12 @@ const HealthCard: React.FC = () => {
             })()}
           </div>
           <div className="flex justify-between">
+            <span className="text-muted-foreground">WebSocket:</span>
+            <span className={healthData?.wsConnected ? 'text-green-600' : 'text-red-600'}>
+              {healthData?.wsConnected ? 'Connected' : 'Disconnected'}
+            </span>
+          </div>
+          <div className="flex justify-between">
             <span className="text-muted-foreground">As of:</span>
             {(() => {
               const t = healthData.asOf || healthData.timestamp;
@@ -121,16 +121,7 @@ const HealthCard: React.FC = () => {
 };
 
 const AutopilotCard: React.FC = () => {
-  const { data: autopilotData, isLoading, error } = useQuery({
-    queryKey: ['audit', 'autoloop', 'status'],
-    queryFn: async () => {
-      const response = await fetch('/api/audit/autoloop/status');
-      if (!response.ok) throw new Error('Failed to fetch autopilot status');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
+  const { data: autopilotData, isLoading, error } = useSyncedAutoloop();
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -148,18 +139,26 @@ const AutopilotCard: React.FC = () => {
       ) : autopilotData ? (
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Mode:</span>
-            <span className="font-medium">{autopilotData.mode}</span>
-          </div>
-          <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
-            <span className={autopilotData.running ? 'text-green-600' : 'text-red-600'}>
-              {autopilotData.running ? 'Running' : 'Stopped'}
+            <span className={`font-medium ${autopilotData.status === 'IDLE' ? 'text-green-600' : 'text-yellow-600'}`}>
+              {autopilotData.status}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Tick:</span>
-            <span>{autopilotData.tick_ms}ms</span>
+            <span className="text-muted-foreground">Running:</span>
+            <span className={autopilotData.is_running ? 'text-green-600' : 'text-red-600'}>
+              {autopilotData.is_running ? 'Yes' : 'No'}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Interval:</span>
+            <span>{autopilotData.interval_ms ? `${autopilotData.interval_ms/1000}s` : '—'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Last run:</span>
+            <span className="text-xs">
+              {autopilotData.last_cycle ? new Date(autopilotData.last_cycle).toLocaleTimeString() : '—'}
+            </span>
           </div>
         </div>
       ) : (
@@ -170,19 +169,11 @@ const AutopilotCard: React.FC = () => {
 };
 
 const StrategySpotlightCard: React.FC = () => {
-  const { data: strategies, isLoading, error } = useQuery({
-    queryKey: ['strategies'],
-    queryFn: async () => {
-      const response = await fetch('/api/strategies?limit=5');
-      if (!response.ok) throw new Error('Failed to fetch strategies');
-      const data = await response.json();
-      return Array.isArray(data) ? data : data.items || [];
-    },
-    refetchInterval: 60000,
-    staleTime: 30000,
-  });
-
-  const topStrategy = strategies?.[0];
+  const { data: strategiesData, isLoading, error } = useSyncedStrategies();
+  
+  // Handle both array and object with items property
+  const strategies = Array.isArray(strategiesData) ? strategiesData : strategiesData?.items || [];
+  const topStrategy = strategies[0];
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -199,22 +190,28 @@ const StrategySpotlightCard: React.FC = () => {
         <div className="text-red-500 text-sm">Error loading strategies</div>
       ) : topStrategy ? (
         <div className="space-y-1 text-sm">
-          <div className="font-medium">{topStrategy.id || topStrategy.name}</div>
+          <div className="font-medium">{topStrategy.name || topStrategy.id}</div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Win Rate:</span>
-            <span className={(topStrategy.win_rate || 0) > 0.6 ? 'text-green-600' : 'text-yellow-600'}>
-              {((topStrategy.win_rate || 0) * 100).toFixed(1)}%
+            <span className="text-muted-foreground">Status:</span>
+            <span className={topStrategy.active ? 'text-green-600' : 'text-red-600'}>
+              {topStrategy.active ? 'Active' : 'Inactive'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Sharpe:</span>
-            <span className={(topStrategy.sharpe_ratio || 0) > 0.5 ? 'text-green-600' : 'text-yellow-600'}>
-              {(topStrategy.sharpe_ratio || 0).toFixed(2)}
+            <span className={(topStrategy.performance?.sharpe_ratio || 0) > 0.5 ? 'text-green-600' : 'text-yellow-600'}>
+              {(topStrategy.performance?.sharpe_ratio || 0).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Trades:</span>
-            <span>{topStrategy.trades_count || 0}</span>
+            <span>{topStrategy.performance?.trades_count || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Profit Factor:</span>
+            <span className={(topStrategy.performance?.profit_factor || 0) > 1 ? 'text-green-600' : 'text-red-600'}>
+              {(topStrategy.performance?.profit_factor || 0).toFixed(2)}
+            </span>
           </div>
         </div>
       ) : (
@@ -228,16 +225,7 @@ const StrategySpotlightCard: React.FC = () => {
 };
 
 const PipelineHealthCard: React.FC = () => {
-  const { data: pipelineData, isLoading, error } = useQuery({
-    queryKey: ['brain', 'flow', 'summary'],
-    queryFn: async () => {
-      const response = await fetch('/api/brain/flow/summary?window=15m');
-      if (!response.ok) throw new Error('Failed to fetch pipeline health');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
+  const { data: pipelineData, isLoading, error } = useSyncedPipelineHealth('15m');
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -252,23 +240,25 @@ const PipelineHealthCard: React.FC = () => {
         </div>
       ) : error ? (
         <div className="text-red-500 text-sm">Error loading pipeline</div>
-      ) : pipelineData && pipelineData.counts && pipelineData.by_mode && pipelineData.latency_ms ? (
+      ) : pipelineData ? (
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Gates Passed:</span>
-            <span className="text-green-600">{pipelineData.counts.gates_passed || 0}</span>
+            <span className="text-muted-foreground">Total Scores:</span>
+            <span className="font-medium">{pipelineData.total_scores || 0}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Gates Failed:</span>
-            <span className="text-red-600">{pipelineData.counts.gates_failed || 0}</span>
+            <span className="text-muted-foreground">Avg Score:</span>
+            <span className={pipelineData.avg_score > 0.5 ? 'text-green-600' : 'text-yellow-600'}>
+              {((pipelineData.avg_score || 0) * 100).toFixed(0)}%
+            </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Mode:</span>
-            <span className="font-medium">{Object.keys(pipelineData.by_mode).find(mode => pipelineData.by_mode[mode] > 0) || 'mixed'}</span>
+            <span className="text-muted-foreground">High Conf:</span>
+            <span className="text-blue-600">{pipelineData.high_confidence || 0}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">P50 Latency:</span>
-            <span>{pipelineData.latency_ms.p50 || 0}ms</span>
+            <span className="text-muted-foreground">Window:</span>
+            <span className="text-xs">{pipelineData.window || '15m'}</span>
           </div>
         </div>
       ) : (
@@ -282,16 +272,7 @@ const PipelineHealthCard: React.FC = () => {
 };
 
 const DecisionsSummaryCard: React.FC = () => {
-  const { data: decisionsData, isLoading, error } = useQuery({
-    queryKey: ['decisions', 'summary'],
-    queryFn: async () => {
-      const response = await fetch('/api/decisions/summary?window=15m');
-      if (!response.ok) throw new Error('Failed to fetch decisions summary');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
+  const { data: decisionsData, isLoading, error } = useSyncedDecisionsSummary('15m');
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -318,11 +299,15 @@ const DecisionsSummaryCard: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Proposed:</span>
-            <span>{decisionsData.by_stage.proposed || 0}</span>
+            <span className="text-blue-600">{decisionsData.by_stage.proposed || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Intent:</span>
+            <span className="text-yellow-600">{decisionsData.by_stage.intent || 0}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Executed:</span>
-            <span>{decisionsData.by_stage.executed || 0}</span>
+            <span className="text-green-600">{decisionsData.by_stage.executed || 0}</span>
           </div>
         </div>
       ) : (
@@ -336,17 +321,11 @@ const DecisionsSummaryCard: React.FC = () => {
 };
 
 const OrdersSnapshotCard: React.FC = () => {
-  const { data: ordersData, isLoading, error } = useQuery({
-    queryKey: ['paper', 'orders'],
-    queryFn: async () => {
-      const response = await fetch('/api/paper/orders?limit=3');
-      if (!response.ok) throw new Error('Failed to fetch orders');
-      const data = await response.json();
-      return Array.isArray(data) ? data : data.items || [];
-    },
-    refetchInterval: 15000,
-    staleTime: 10000,
-  });
+  const { data: ordersData, isLoading, error } = useSyncedOrders();
+
+  // Ensure ordersData is an array
+  const orders = Array.isArray(ordersData) ? ordersData : [];
+  const openOrders = orders.filter((order: any) => order.status === 'pending' || order.status === 'open');
 
   return (
     <div className="border rounded-lg p-4 bg-card">
@@ -361,12 +340,12 @@ const OrdersSnapshotCard: React.FC = () => {
         </div>
       ) : error ? (
         <div className="text-red-500 text-sm">Error loading orders</div>
-      ) : ordersData ? (
+      ) : (
         <div className="space-y-2">
           <div className="text-sm font-medium">
-            Open Orders: {ordersData.length}
+            Open Orders: {openOrders.length}
           </div>
-          {ordersData.slice(0, 3).map((order: any, idx: number) => (
+          {openOrders.slice(0, 3).map((order: any, idx: number) => (
             <div key={order.id || idx} className="text-xs border-t pt-2">
               <div className="flex justify-between">
                 <span className="font-medium">{order.symbol}</span>
@@ -388,14 +367,12 @@ const OrdersSnapshotCard: React.FC = () => {
               </div>
             </div>
           ))}
-          {ordersData.length === 0 && (
+          {openOrders.length === 0 && (
             <div className="text-muted-foreground text-sm text-center py-4">
               No open orders
             </div>
           )}
         </div>
-      ) : (
-        <div className="text-muted-foreground text-sm">No orders data</div>
       )}
       <Link to="/decisions?tab=executions" className="text-xs text-primary hover:text-primary/80 mt-2 inline-block">
         See all orders →
@@ -405,27 +382,8 @@ const OrdersSnapshotCard: React.FC = () => {
 };
 
 const LiveRnDCard: React.FC = () => {
-  const { data: brainData, isLoading: brainLoading } = useQuery({
-    queryKey: ['brain', 'status'],
-    queryFn: async () => {
-      const response = await fetch('/api/brain/status');
-      if (!response.ok) throw new Error('Failed to fetch brain status');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
-
-  const { data: evoData, isLoading: evoLoading } = useQuery({
-    queryKey: ['evo', 'status'],
-    queryFn: async () => {
-      const response = await fetch('/api/evo/status');
-      if (!response.ok) throw new Error('Failed to fetch evo status');
-      return response.json();
-    },
-    refetchInterval: 30000,
-    staleTime: 15000,
-  });
+  const { data: brainData, isLoading: brainLoading } = useSyncedBrainStatus();
+  const { data: evoData, isLoading: evoLoading } = useSyncedEvoStatus();
 
   const isLoading = brainLoading || evoLoading;
 
@@ -442,19 +400,23 @@ const LiveRnDCard: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-2 text-sm">
-          {brainData && typeof brainData.recent_pf_after_costs === 'number' && typeof brainData.sharpe_30d === 'number' && (
+          {brainData && (
             <div>
               <div className="font-medium text-xs text-muted-foreground mb-1">BRAIN (Live)</div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">PF:</span>
-                <span className={brainData.recent_pf_after_costs >= 1 ? 'text-green-600' : 'text-red-600'}>
-                  {brainData.recent_pf_after_costs.toFixed(3)}
+                <span className="text-muted-foreground">Status:</span>
+                <span className={brainData.status === 'active' ? 'text-green-600' : 'text-yellow-600'}>
+                  {brainData.status || 'unknown'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Sharpe:</span>
-                <span className={brainData.sharpe_30d >= 0.5 ? 'text-green-600' : 'text-yellow-600'}>
-                  {brainData.sharpe_30d.toFixed(2)}
+                <span className="text-muted-foreground">Symbols:</span>
+                <span className="text-xs">{brainData.current_symbols?.length || 0}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Python:</span>
+                <span className={brainData.python_brain_config?.configured ? 'text-green-600' : 'text-red-600'}>
+                  {brainData.python_brain_config?.configured ? 'Connected' : 'Disconnected'}
                 </span>
               </div>
             </div>
@@ -501,12 +463,12 @@ const DashboardPage: React.FC = () => {
   useWebSocketChannel('safety', true);
   const { isConnected: isDataConnected } = useWebSocketChannel('data', true);
   
-  // Initial data fetching
+  // Initial data fetching with centralized refresh config
   useQuery({
     queryKey: qk.context,
     queryFn: () => contextApi.getMarketContext(),
-    refetchInterval: 45_000,
-    staleTime: 30_000,
+    refetchInterval: DATA_REFRESH_CONFIG.context.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.context.staleTime,
     onSuccess: (response) => {
       if (response.success && response.data) {
         setMarketContext(response.data);
@@ -520,15 +482,15 @@ const DashboardPage: React.FC = () => {
     onSuccess: (response) => {
       if (response.success && response.data) setDataStatus(response.data);
     },
-    refetchInterval: 30_000,
-    staleTime: 20_000,
+    refetchInterval: DATA_REFRESH_CONFIG.metrics.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.metrics.staleTime,
   });
 
   useQuery({
     queryKey: qk.strategies,
     queryFn: () => strategyApi.getActiveStrategies(),
-    refetchInterval: 60_000,
-    staleTime: 45_000,
+    refetchInterval: DATA_REFRESH_CONFIG.strategies.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.strategies.staleTime,
     onSuccess: (response) => {
       if (response.success && response.data) {
         setActiveStrategies(response.data);
@@ -539,8 +501,8 @@ const DashboardPage: React.FC = () => {
   useQuery({
     queryKey: qk.decisions(50),
     queryFn: () => decisionApi.getLatestDecisions(),
-    refetchInterval: 7_000,
-    staleTime: 5_000,
+    refetchInterval: DATA_REFRESH_CONFIG.decisions.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.decisions.staleTime,
     onSuccess: (response) => {
       if (response.success && response.data) {
         setRecentDecisions(response.data);
@@ -551,8 +513,8 @@ const DashboardPage: React.FC = () => {
   const { data: portfolioData } = useQuery({
     queryKey: qk.portfolio('paper'),
     queryFn: () => portfolioApi.getPortfolio('paper'),
-    refetchInterval: 15_000,
-    staleTime: 10_000,
+    refetchInterval: DATA_REFRESH_CONFIG.paperAccount.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.paperAccount.staleTime,
   });
   
   // Live portfolio disabled for now; focusing on paper trading only
@@ -695,6 +657,11 @@ const DashboardPage: React.FC = () => {
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <PositionsTable />
           <TradesTable />
+        </div>
+        
+        {/* Data Synchronization Status */}
+        <div className="mt-8">
+          <DataSyncDashboard />
         </div>
       </div>
     </div>

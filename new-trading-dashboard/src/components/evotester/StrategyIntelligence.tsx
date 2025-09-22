@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -63,82 +64,31 @@ const StrategyIntelligence: React.FC<StrategyIntelligenceProps> = ({ className =
   const [activeTab, setActiveTab] = useState('parameters');
   const [expandedStrategy, setExpandedStrategy] = useState<string | null>(null);
 
-  const parameterImportance: ParameterImportance[] = [
-    {
-      name: 'RSI Period',
-      importance: 0.85,
-      impact: 'high',
-      optimalRange: '12-16',
-      frequency: 78
+  // Fetch parameter importance from API
+  const { data: parameterImportanceData } = useQuery({
+    queryKey: ['evo', 'parameter-importance'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/parameter-importance');
+      if (!response.ok) return [];
+      return response.json();
     },
-    {
-      name: 'Stop Loss %',
-      importance: 0.72,
-      impact: 'high',
-      optimalRange: '1.8-2.3%',
-      frequency: 65
-    },
-    {
-      name: 'Take Profit %',
-      importance: 0.68,
-      impact: 'high',
-      optimalRange: '3.5-4.2%',
-      frequency: 59
-    },
-    {
-      name: 'SMA Fast Period',
-      importance: 0.55,
-      impact: 'medium',
-      optimalRange: '8-12',
-      frequency: 42
-    },
-    {
-      name: 'SMA Slow Period',
-      importance: 0.43,
-      impact: 'medium',
-      optimalRange: '18-25',
-      frequency: 38
-    }
-  ];
+    refetchInterval: 120000,
+    staleTime: 60000,
+  });
+  const parameterImportance: ParameterImportance[] = parameterImportanceData || [];
 
-  const marketConditions: MarketConditionPreference[] = [
-    {
-      condition: 'Bull Trending (SPY +15%)',
-      performance: 2.34,
-      frequency: 45,
-      strategies: 89
+  // Fetch market conditions performance from API
+  const { data: marketConditionsData } = useQuery({
+    queryKey: ['evo', 'market-conditions'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/market-conditions');
+      if (!response.ok) return [];
+      return response.json();
     },
-    {
-      condition: 'High Volatility (VIX > 25)',
-      performance: 1.87,
-      frequency: 32,
-      strategies: 67
-    },
-    {
-      condition: 'Bear Trending (SPY -10%)',
-      performance: 1.23,
-      frequency: 18,
-      strategies: 34
-    },
-    {
-      condition: 'Positive Sentiment (>70%)',
-      performance: 2.45,
-      frequency: 28,
-      strategies: 52
-    },
-    {
-      condition: 'Negative News Impact',
-      performance: 1.67,
-      frequency: 22,
-      strategies: 41
-    },
-    {
-      condition: 'Low Volatility (VIX < 15)',
-      performance: 0.95,
-      frequency: 15,
-      strategies: 28
-    }
-  ];
+    refetchInterval: 300000,
+    staleTime: 120000,
+  });
+  const marketConditions: MarketConditionPreference[] = marketConditionsData || [];
 
   const riskReturnProfiles: RiskReturnProfile[] = [
     {

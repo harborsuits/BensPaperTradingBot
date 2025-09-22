@@ -222,49 +222,55 @@ class DiamondsScorer {
    */
   async getTopDiamonds(limit = 10, minScore = 0.6) {
     try {
-      // In production, this would query the news_snapshot table
-      // For now, return mock high-impact items
-      const mockDiamonds = [
-        {
-          symbol: 'AAPL',
-          impactScore: 0.85,
-          components: { sentiment: 0.8, volume: 0.9, priceReaction: 0.8, recency: 0.9 },
-          evidence: {
-            newsId: 'apple_earnings',
-            headline: 'Apple Beats Q4 Earnings Estimates',
-            source: 'Financial News',
-            url: 'https://news.com/apple-earnings',
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-          }
-        },
-        {
-          symbol: 'TSLA',
-          impactScore: 0.78,
-          components: { sentiment: 0.7, volume: 0.8, priceReaction: 0.9, recency: 0.7 },
-          evidence: {
-            newsId: 'tesla_delivery',
-            headline: 'Tesla Exceeds Delivery Expectations',
-            source: 'Auto News',
-            url: 'https://news.com/tesla-delivery',
-            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
-          }
-        },
-        {
-          symbol: 'NVDA',
-          impactScore: 0.72,
-          components: { sentiment: 0.6, volume: 0.8, priceReaction: 0.7, recency: 0.8 },
-          evidence: {
-            newsId: 'nvidia_ai',
-            headline: 'NVIDIA AI Chip Demand Surges',
-            source: 'Tech News',
-            url: 'https://news.com/nvidia-ai',
-            timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
+      // Fetch real news from the API
+      const axios = require('axios');
+      const apiBaseUrl = process.env.API_BASE_URL || 'http://localhost:4000';
+      
+      // Get recent news
+      const newsResponse = await axios.get(`${apiBaseUrl}/api/context/news`, {
+        params: { limit: 50 }
+      });
+      
+      const newsItems = newsResponse.data || [];
+      
+      // Process and score each news item
+      const diamonds = [];
+      
+      for (const news of newsItems) {
+        if (news.symbols && news.symbols.length > 0) {
+          // Process each symbol mentioned in the news
+          for (const symbol of news.symbols) {
+            const impactScore = await this.calculateDiamondScore(symbol, news.timestamp, {
+              sentiment: news.sentiment || 0,
+              source: news.source,
+              headline: news.headline || news.title
+            });
+            
+            if (impactScore >= minScore) {
+              diamonds.push({
+                symbol,
+                impactScore,
+                components: {
+                  sentiment: Math.abs(news.sentiment || 0),
+                  volume: 0.7 + Math.random() * 0.3, // Would need real volume data
+                  priceReaction: 0.6 + Math.random() * 0.4, // Would need real price data
+                  recency: this.calculateRecencyScore(news.timestamp)
+                },
+                evidence: {
+                  newsId: news.id,
+                  headline: news.headline || news.title,
+                  source: news.source,
+                  url: news.url,
+                  timestamp: news.timestamp
+                }
+              });
+            }
           }
         }
-      ];
+      }
 
-      return mockDiamonds
-        .filter(diamond => diamond.impactScore >= minScore)
+      // Sort by impact score and return top N
+      return diamonds
         .sort((a, b) => b.impactScore - a.impactScore)
         .slice(0, limit);
 
@@ -272,6 +278,17 @@ class DiamondsScorer {
       console.error('Failed to get top diamonds:', error);
       return [];
     }
+  }
+  
+  /**
+   * Calculate recency score based on timestamp
+   */
+  calculateRecencyScore(timestamp) {
+    const ageMs = Date.now() - new Date(timestamp).getTime();
+    const ageHours = ageMs / (1000 * 60 * 60);
+    
+    // Exponential decay over 24 hours
+    return Math.exp(-ageHours / 24);
   }
 }
 

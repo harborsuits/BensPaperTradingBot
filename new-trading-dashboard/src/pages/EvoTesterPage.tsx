@@ -3,9 +3,24 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 
 // Lazy load complex components to avoid import issues
-const EvoTesterDashboard = lazy(() => import('@/components/evotester/EvoTesterDashboard'));
-const EvoTesterPanel = lazy(() => import('@/components/evotester/EvoTesterPanel'));
-const AIBotCompetition = lazy(() => import('@/components/evotester/AIBotCompetition'));
+const EvoTesterDashboard = lazy(() => 
+  import('@/components/evotester/EvoTesterDashboard').catch(err => {
+    console.error('Failed to load EvoTesterDashboard:', err);
+    return { default: () => <div className="p-4 text-red-600">Failed to load EvoTesterDashboard: {err.message}</div> };
+  })
+);
+const EvoTesterPanel = lazy(() => 
+  import('@/components/evotester/EvoTesterPanel').catch(err => {
+    console.error('Failed to load EvoTesterPanel:', err);
+    return { default: () => <div className="p-4 text-red-600">Failed to load EvoTesterPanel: {err.message}</div> };
+  })
+);
+const AIBotCompetition = lazy(() => 
+  import('@/components/evotester/AIBotCompetition').catch(err => {
+    console.error('Failed to load AIBotCompetition:', err);
+    return { default: () => <div className="p-4 text-red-600">Failed to load AIBotCompetition: {err.message}</div> };
+  })
+);
 
 /**
  * EvoTesterPage - Main component for the evolutionary testing page

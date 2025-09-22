@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Power, Timer, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { Power } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const AutoRunnerStrip = () => {
@@ -23,20 +23,13 @@ const AutoRunnerStrip = () => {
       return res.json();
     },
     refetchInterval: 5000,
-    retry: (failureCount, error) => {
+    retry: (failureCount, error: unknown) => {
       // Don't retry on 4xx errors (client errors)
-      if (error.message.includes(' 4') || error.message.includes('404')) {
+      const msg = typeof error === 'object' && error && 'message' in error ? String((error as any).message) : '';
+      if (msg.includes(' 4') || msg.includes('404')) {
         return false;
       }
       return failureCount < 3;
-    },
-    // Provide fallback data if the request fails
-    placeholderData: {
-      enabled: false,
-      isRunning: false,
-      status: 'Disabled',
-      lastRun: null,
-      interval: 30000
     }
   });
 
@@ -51,7 +44,7 @@ const AutoRunnerStrip = () => {
 
   const nextCheckSeconds = Math.max(0, Math.floor((nextCheckIn || 0) / 1000));
   
-  const StatusIcon = isRunning ? CheckCircle : (status?.status?.startsWith('BLOCKED') ? XCircle : AlertCircle);
+  // Status icon suppressed when not needed
 
   return (
     <div className="bg-card border border-border rounded-md p-2 text-xs flex items-center justify-between">

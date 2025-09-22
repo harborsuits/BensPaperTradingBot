@@ -54,11 +54,39 @@ export const BrainFlow: React.FC<BrainFlowProps> = ({ className = '' }) => {
   const { data: brainFlowData, isLoading, error, refetch } = useQuery<BrainFlowTick[]>({
     queryKey: ['brain', 'flow', 'recent'],
     queryFn: async () => {
-      const response = await fetch('/api/brain/flow/recent?limit=100');
-      if (!response.ok) {
-        throw new Error('Failed to fetch brain flow data');
+      try {
+        // Try the new brain/flow endpoint first
+        const response = await fetch('/api/brain/flow');
+        if (response.ok) {
+          const data = await response.json();
+          // Transform the data to match expected format if needed
+          if (data.flow) {
+            return [{
+              symbol: 'SYSTEM',
+              ts: data.timestamp,
+              stages: {
+                ingest: { ok: data.flow.input?.symbols > 0, count: data.flow.input?.symbols },
+                context: { ok: data.flow.input?.signals > 0, count: data.flow.input?.signals },
+                candidates: { ok: data.flow.processing?.active > 0, count: data.flow.processing?.active },
+                gates: { ok: data.flow.processing?.completed > 0, passed: [], rejected: [] },
+                plan: { ok: data.flow.output?.decisions > 0, count: data.flow.output?.decisions },
+                route: { ok: true, skipped: false },
+                manage: { ok: true, skipped: false },
+                learn: { ok: true, skipped: false }
+              },
+              mode: 'live',
+              trace_id: 'brain-flow'
+            }];
+          }
+        }
+      } catch (e) {
+        // Fall back to the original endpoint
+        const fallbackResponse = await fetch('/api/brain/flow/recent?limit=100');
+        if (!fallbackResponse.ok) {
+          throw new Error('Failed to fetch brain flow data');
+        }
+        return fallbackResponse.json();
       }
-      return response.json();
     },
     refetchInterval: 15000, // Update every 15 seconds
     staleTime: 5000,

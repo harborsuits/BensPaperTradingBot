@@ -328,34 +328,59 @@ const PromotionPipeline: React.FC<PromotionPipelineProps> = ({ className = '' })
     </div>
   );
 
-  const renderPipelineOverview = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <Card>
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600 mb-1">
-            {stats.totalCandidates}
-          </div>
-          <div className="text-sm text-foreground">Candidates</div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-600 mb-1">
-            {stats.totalPromoted}
-          </div>
-          <div className="text-sm text-foreground">Promoted</div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600 mb-1">
-            {(stats.successRate * 100).toFixed(1)}%
-          </div>
-          <div className="text-sm text-gray-600">Success Rate</div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  const renderPipelineOverview = () => {
+    // Calculate real stats from evoHistory
+    const totalCandidates = evoHistory?.experiments?.filter((exp: any) => exp.topStrategies?.[0])?.length || 0;
+    const totalPromoted = evoHistory?.experiments?.filter((exp: any) => 
+      exp.topStrategies?.[0] && exp.status === 'completed' && exp.topStrategies[0].performance?.sharpeRatio > 1.0
+    )?.length || 0;
+    const successRate = totalCandidates > 0 ? (totalPromoted / totalCandidates) : 0;
+
+    // Show loading state
+    if (evoLoading) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardContent className="p-4 text-center">
+                <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-gray-400" />
+                <div className="text-sm text-gray-400">Loading...</div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600 mb-1">
+              {totalCandidates}
+            </div>
+            <div className="text-sm text-foreground">Candidates</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600 mb-1">
+              {totalPromoted}
+            </div>
+            <div className="text-sm text-foreground">Promoted</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600 mb-1">
+              {(successRate * 100).toFixed(1)}%
+            </div>
+            <div className="text-sm text-gray-600">Success Rate</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   const renderPipelineDetails = () => (
     <div className="space-y-4">

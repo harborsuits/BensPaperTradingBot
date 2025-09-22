@@ -36,6 +36,15 @@ export const showInfoToast = (message: string, options: ToastOptions = {}) => {
   });
 };
 
+export const showWarningToast = (message: string, options: ToastOptions = {}) => {
+  return toast(message, {
+    ...defaultOptions,
+    ...options,
+    className: 'bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500',
+    icon: '⚠️',
+  });
+};
+
 export const showLoadingToast = (message: string, options: ToastOptions = {}) => {
   return toast.loading(message, {
     ...defaultOptions,
@@ -48,7 +57,7 @@ export const dismissToast = (id: string) => {
   toast.dismiss(id);
 };
 
-export const updateToast = (id: string, message: string, type: 'success' | 'error' | 'loading' | 'info' = 'info') => {
+export const updateToast = (id: string, message: string, type: 'success' | 'error' | 'loading' | 'info' | 'warning' = 'info') => {
   toast.dismiss(id);
   
   switch (type) {
@@ -60,6 +69,9 @@ export const updateToast = (id: string, message: string, type: 'success' | 'erro
       break;
     case 'loading':
       showLoadingToast(message, { id });
+      break;
+    case 'warning':
+      showWarningToast(message, { id });
       break;
     default:
       showInfoToast(message, { id });

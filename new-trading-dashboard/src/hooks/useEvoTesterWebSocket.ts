@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useWebSocketMessage } from '@/services/websocket';
 import { EvoTesterProgress, EvoStrategy } from '@/types/api.types';
-import { createToast } from '@/components/ui/Toast';
+import { showInfoToast, showSuccessToast, showErrorToast, showWarningToast } from '@/utils/toast';
 
 /**
  * Hook to handle WebSocket messages for EvoTester progress and updates
@@ -29,47 +29,22 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
     
     // If the status changed to completed/failed, show a toast notification
     if (progressData.status === 'completed') {
-      createToast({
-        title: 'Evolution Completed',
-        description: `Session ${progressData.sessionId} has completed after ${progressData.currentGeneration} generations.`,
-        variant: 'success',
-        duration: 5000,
-        action: {
-          label: 'View Results',
-          onClick: () => {
-            window.location.href = `/evotester/results/${progressData.sessionId}`;
-          }
-        }
-      });
+      showSuccessToast(`Session ${progressData.sessionId} has completed after ${progressData.currentGeneration} generations.`);
     } else if (progressData.status === 'failed') {
-      createToast({
-        title: 'Evolution Failed',
-        description: progressData.errorMessage || 'The evolution process failed to complete.',
-        variant: 'destructive',
-        duration: 7000,
-      });
+      showErrorToast(progressData.errorMessage || 'The evolution process failed to complete.');
     }
   });
 
   // New schema messages for real-mode proof
   useWebSocketMessage<any>('session_started', (message) => {
-    createToast({
-      title: 'Evolution Started',
-      description: `Session ${message.data.session_id} mode=${message.data.mode}, data_source=${message.data.data_source}`,
-      variant: 'info',
-      duration: 3000,
-    });
+    showInfoToast(`Session ${message.data.session_id} mode=${message.data.mode}, data_source=${message.data.data_source}`);
   });
 
   useWebSocketMessage<any>('gen_complete', (message) => {
     // Lightweight toast for first few gens only to avoid noise
     const g = Number(message.data?.g || 0);
     if (g <= 3) {
-      createToast({
-        title: `Generation ${g} complete`,
-        description: `Best OOS Sharpe: ${message.data?.best?.oos_sharpe ?? 'n/a'}`,
-        variant: 'info', duration: 2000,
-      });
+      showInfoToast(`Generation ${g} complete - Best OOS Sharpe: ${message.data?.best?.oos_sharpe ?? 'n/a'}`);
     }
   });
 
@@ -78,39 +53,21 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
   });
 
   useWebSocketMessage<any>('session_completed', (message) => {
-    createToast({
-      title: 'Evolution Completed',
-      description: `Best strategy: ${message.data?.best_strategy_id}`,
-      variant: 'success', duration: 4000,
-    });
+    showSuccessToast(`Evolution Completed - Best strategy: ${message.data?.best_strategy_id}`);
   });
 
   useWebSocketMessage<any>('error', (message) => {
-    createToast({
-      title: 'EvoTester Error',
-      description: String(message.data?.message || 'Unknown error'),
-      variant: 'destructive', duration: 5000,
-    });
+    showErrorToast(String(message.data?.message || 'Unknown error'));
   });
   
   // Handle new strategy notifications
   useWebSocketMessage<EvoStrategy>('evotester_new_strategy', (message) => {
     const strategy = message.data;
     
-    createToast({
-      title: 'New Evolved Strategy',
-      description: `A new strategy "${strategy.name}" has been evolved with fitness ${strategy.fitness.toFixed(3)}.`,
-      variant: 'info',
-      duration: 5000,
-      action: {
-        label: 'Inspect',
-        onClick: () => {
-          // This would typically open a modal or navigate to a details page
-          queryClient.setQueryData(['evoTester', 'strategy', strategy.id], strategy);
-          window.dispatchEvent(new CustomEvent('openStrategyInspector', { detail: strategy }));
-        }
-      }
-    });
+    showInfoToast(`A new strategy "${strategy.name}" has been evolved with fitness ${strategy.fitness.toFixed(3)}.`);
+    // Store strategy in cache for potential inspection
+    queryClient.setQueryData(['evoTester', 'strategy', strategy.id], strategy);
+    window.dispatchEvent(new CustomEvent('openStrategyInspector', { detail: strategy }));
   });
   
   // Handle status change notifications
@@ -127,19 +84,9 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
 
     // Show a toast for significant status changes
     if (statusData.status === 'paused') {
-      createToast({
-        title: 'Evolution Paused',
-        description: statusData.message || `Session ${statusData.sessionId} has been paused.`,
-        variant: 'warning',
-        duration: 3000,
-      });
+      showWarningToast(statusData.message || `Session ${statusData.sessionId} has been paused.`);
     } else if (statusData.status === 'running' && statusData.message?.includes('resumed')) {
-      createToast({
-        title: 'Evolution Resumed',
-        description: `Session ${statusData.sessionId} has been resumed.`,
-        variant: 'info',
-        duration: 3000,
-      });
+      showInfoToast(`Session ${statusData.sessionId} has been resumed.`);
     }
   });
 
@@ -152,19 +99,7 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
   }>('evo_trigger_activated', (message) => {
     const triggerData = message.data;
 
-    createToast({
-      title: 'Auto-Trigger Activated',
-      description: `Evolution experiment started for trigger rule "${triggerData.ruleId}".`,
-      variant: 'info',
-      duration: 4000,
-      action: {
-        label: 'View Experiment',
-        onClick: () => {
-          queryClient.invalidateQueries(['evoTester', 'sessions']);
-          // Could navigate to the specific experiment
-        }
-      }
-    });
+    showInfoToast(`Evolution experiment started for trigger rule "${triggerData.ruleId}".`);
 
     // Invalidate sessions to show the new auto-triggered experiment
     queryClient.invalidateQueries(['evoTester', 'sessions']);
@@ -180,23 +115,12 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
   }>('strategy_promoted', (message) => {
     const promotionData = message.data;
 
-    createToast({
-      title: promotionData.success ? 'Strategy Promoted!' : 'Strategy Rejected',
-      description: `Strategy "${promotionData.candidateName}" has been ${
-        promotionData.success ? 'promoted to competition' : 'rejected during validation'
-      }.`,
-      variant: promotionData.success ? 'success' : 'warning',
-      duration: 5000,
-      action: promotionData.success ? {
-        label: 'View in Competition',
-        onClick: () => {
-          // Could navigate to competition view or strategy details
-          window.dispatchEvent(new CustomEvent('strategy_promoted', {
-            detail: promotionData
-          }));
-        }
-      } : undefined
-    });
+    if (promotionData.success) {
+      showSuccessToast(`Strategy "${promotionData.candidateName}" has been promoted to competition.`);
+      window.dispatchEvent(new CustomEvent('strategy_promoted', { detail: promotionData }));
+    } else {
+      showWarningToast(`Strategy "${promotionData.candidateName}" has been rejected during validation.`);
+    }
 
     // Invalidate relevant queries
     queryClient.invalidateQueries(['strategies']);
@@ -219,13 +143,14 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
       emergency_stop: `Emergency stop triggered for experiment ${allocationData.experimentId.slice(-8)}`
     };
 
-    createToast({
-      title: 'Capital Update',
-      description: `${messages[allocationData.type]}: $${allocationData.amount.toFixed(2)}`,
-      variant: allocationData.type === 'emergency_stop' ? 'destructive' :
-               allocationData.type === 'allocated' ? 'info' : 'success',
-      duration: 3000
-    });
+    const notificationMessage = `${messages[allocationData.type]}: $${allocationData.amount.toFixed(2)}`;
+    if (allocationData.type === 'emergency_stop') {
+      showErrorToast(notificationMessage);
+    } else if (allocationData.type === 'allocated') {
+      showInfoToast(notificationMessage);
+    } else {
+      showSuccessToast(notificationMessage);
+    }
 
     // Invalidate capital-related queries
     queryClient.invalidateQueries(['capital']);
@@ -253,13 +178,8 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
         generation_milestone: `Reached generation ${milestoneData.generation}`
       };
 
-      createToast({
-        title: 'Evolution Milestone',
-        description: descriptions[milestoneData.milestone as keyof typeof descriptions] ||
-                    `Generation ${milestoneData.generation} completed`,
-        variant: 'info',
-        duration: 3000
-      });
+      showInfoToast(descriptions[milestoneData.milestone as keyof typeof descriptions] ||
+                    `Generation ${milestoneData.generation} completed`);
     }
 
     // Update progress data
@@ -275,24 +195,18 @@ export const useEvoTesterWebSocket = (sessionId?: string) => {
   }>('market_condition_alert', (message) => {
     const alertData = message.data;
 
-    createToast({
-      title: 'Market Condition Alert',
-      description: alertData.message,
-      variant: alertData.severity === 'high' ? 'destructive' :
-               alertData.severity === 'medium' ? 'warning' : 'info',
-      duration: alertData.severity === 'high' ? 7000 : 5000,
-      action: alertData.recommendation ? {
-        label: 'View Recommendation',
-        onClick: () => {
-          createToast({
-            title: 'Recommendation',
-            description: alertData.recommendation,
-            variant: 'info',
-            duration: 8000
-          });
-        }
-      } : undefined
-    });
+    if (alertData.severity === 'high') {
+      showErrorToast(alertData.message);
+    } else if (alertData.severity === 'medium') {
+      showWarningToast(alertData.message);
+    } else {
+      showInfoToast(alertData.message);
+    }
+    
+    // Show recommendation in console if available
+    if (alertData.recommendation) {
+      console.log('Market Recommendation:', alertData.recommendation);
+    }
   });
 
   return null;

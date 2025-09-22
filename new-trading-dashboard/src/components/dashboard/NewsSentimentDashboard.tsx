@@ -1,6 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, Clock, BarChart3, AlertTriangle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { DATA_REFRESH_CONFIG } from '@/config/dataRefreshConfig';
 
 interface OutletData {
   count: number;
@@ -33,8 +34,8 @@ const NewsSentimentDashboard: React.FC = () => {
       if (!response.ok) throw new Error('Failed to fetch news insights');
       return response.json() as Promise<NewsInsightsData>;
     },
-    refetchInterval: 10000, // Refresh every 10 seconds
-    staleTime: 5000,
+    refetchInterval: DATA_REFRESH_CONFIG.news.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.news.staleTime,
   });
 
   const getSentimentIcon = (sentiment: string) => {

@@ -72,45 +72,131 @@ const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
     staleTime: 120000,
   });
 
-  // Extract real data from API responses
-  const realMarketRegime = marketContext?.data?.regime?.type || initialMarketRegime;
-  const realSentimentScore = marketContext?.data?.sentiment?.score || initialSentimentScore;
-  const realVolatility = marketContext?.data?.volatility?.value || 17.2;
+  // Normalize evo history to a flat array regardless of backend shape
+  const evoSessions: any[] = Array.isArray(evoHistory)
+    ? evoHistory
+    : Array.isArray(evoHistory?.data)
+      ? evoHistory.data
+      : Array.isArray(evoHistory?.experiments)
+        ? evoHistory.experiments
+        : [];
 
-  const realActiveStrategies = activeStrategies?.data?.length || initialTotalStrategies;
-  const realBestFitness = Math.max(
-    ...(evoHistory?.data?.map(s => s.bestFitness || 0) || [initialBestFitness])
-  );
+  // Extract real data from API responses - handle both flat and nested structures
+  const realMarketRegime = marketContext?.data?.regime?.type || 
+    marketContext?.market_regime || 
+    marketContext?.regime || 
+    initialMarketRegime;
+    
+  // Convert sentiment string to score (0-1)
+  const getSentimentScore = () => {
+    if (marketContext?.data?.sentiment?.score) return marketContext.data.sentiment.score;
+    if (typeof marketContext?.sentiment === 'number') return marketContext.sentiment;
+    if (marketContext?.sentiment === 'positive') return 0.7;
+    if (marketContext?.sentiment === 'negative') return 0.3;
+    if (marketContext?.sentiment === 'neutral') return 0.5;
+    return initialSentimentScore;
+  };
+  const realSentimentScore = getSentimentScore();
+  
+  // Get volatility value
+  const getVolatility = () => {
+    if (marketContext?.data?.volatility?.value) return marketContext.data.volatility.value;
+    if (typeof marketContext?.volatility === 'number') return marketContext.volatility;
+    // Map volatility strings to VIX-like values
+    if (marketContext?.volatility === 'low') return 12.5;
+    if (marketContext?.volatility === 'medium') return 17.2;
+    if (marketContext?.volatility === 'high') return 25.0;
+    return 17.2;
+  };
+  const realVolatility = getVolatility();
+
+  // Count strategies from the items array if present
+  const strategyCount = activeStrategies?.items?.length || activeStrategies?.data?.length || activeStrategies?.length || 0;
+  const realActiveStrategies = strategyCount || initialTotalStrategies;
+  
+  // Calculate best fitness, avoiding -Infinity
+  const fitnessValues = evoSessions.map(s => s.bestFitness || 0).filter(f => f > 0);
+  const realBestFitness = fitnessValues.length > 0 
+    ? Math.max(...fitnessValues)
+    : initialBestFitness;
 
   // Calculate improvement rate from historical data
   const calculateImprovementRate = () => {
-    if (!evoHistory?.data || evoHistory.data.length < 2) return 5.2; // fallback
+    if (!evoSessions || evoSessions.length < 2) return 5.2; // fallback
 
-    const recentSessions = evoHistory.data.slice(0, 5); // Last 5 sessions
-    const fitnessValues = recentSessions.map(s => s.bestFitness || 0).filter(f => f > 0);
+    const recentSessions = evoSessions.slice(0, 5); // Last 5 sessions
+    const fitnessValues = recentSessions.map(s => s.bestFitness || 0).filter((f: number) => f > 0);
 
     if (fitnessValues.length < 2) return 5.2;
 
     const latest = Math.max(...fitnessValues);
-    const average = fitnessValues.reduce((a, b) => a + b, 0) / fitnessValues.length;
+    const average = fitnessValues.reduce((a: number, b: number) => a + b, 0) / fitnessValues.length;
 
     return average > 0 ? ((latest - average) / average) * 100 : 5.2;
   };
 
   const improvementRate = calculateImprovementRate();
 
-  // Get active symbols from portfolio or fallback
-  const activeSymbols = portfolio?.data?.positions?.slice(0, 3).map(p => p.symbol) || initialActiveSymbols;
+  // Get active symbols from portfolio or universe
+  const getActiveSymbols = () => {
+    // Try portfolio positions first
+    if (portfolio?.data?.positions?.length > 0) {
+      return portfolio.data.positions.slice(0, 3).map(p => p.symbol);
+    }
+    if (portfolio?.positions?.length > 0) {
+      return portfolio.positions.slice(0, 3).map(p => p.symbol);
+    }
+    // Check active strategies
+    if (activeStrategies?.items?.length > 0) {
+      const symbols = activeStrategies.items
+        .map(s => s.symbol || s.params?.symbol)
+        .filter(Boolean)
+        .slice(0, 3);
+      if (symbols.length > 0) return symbols;
+    }
+    return initialActiveSymbols;
+  };
+  const activeSymbols = getActiveSymbols();
 
-  // Calculate time since last deployment (use last strategy modification or fallback)
-  const timeSinceDeployment = lastDeployment ?
-    Math.floor((Date.now() - lastDeployment.getTime()) / (1000 * 60 * 60)) :
-    Math.floor((Date.now() - new Date(Date.now() - 2 * 60 * 60 * 1000).getTime()) / (1000 * 60 * 60));
+  // Calculate time since last deployment - use most recent evolution session
+  const getMostRecentDeployment = () => {
+    if (evoSessions.length > 0) {
+      const mostRecent = evoSessions[0];
+      if (mostRecent.date) {
+        return Math.floor((Date.now() - new Date(mostRecent.date).getTime()) / (1000 * 60 * 60));
+      }
+    }
+    return 2; // Default 2 hours
+  };
+  const timeSinceDeployment = getMostRecentDeployment();
 
-  // Calculate news impact score from market context
-  const newsImpactScore = marketContext?.data?.sentiment?.sources ?
-    Object.values(marketContext.data.sentiment.sources).reduce((acc, src: any) => acc + (src.score || 0), 0) / Object.keys(marketContext.data.sentiment.sources).length :
-    initialNewsImpactScore;
+  // Calculate news impact score (simplified as we don't have detailed sources)
+  const newsImpactScore = realSentimentScore > 0.6 ? 0.65 : 
+                         realSentimentScore < 0.4 ? 0.35 : 
+                         0.45;
+
+  // Format market regime for display
+  const formatMarketRegime = (regime: string) => {
+    if (!regime) return 'Unknown';
+    
+    // Handle compound regimes like "bull_low"
+    const parts = regime.toLowerCase().split('_');
+    const trend = parts[0];
+    
+    switch (trend) {
+      case 'bull':
+        return 'Bull Market';
+      case 'bear':
+        return 'Bear Market';
+      case 'neutral':
+        return 'Neutral Market';
+      default:
+        // Capitalize first letter if unknown format
+        return regime.charAt(0).toUpperCase() + regime.slice(1).toLowerCase();
+    }
+  };
+  
+  const displayMarketRegime = formatMarketRegime(realMarketRegime);
 
   return (
     <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
@@ -138,7 +224,7 @@ const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
             {/* Active Sessions */}
             <div className="flex items-center space-x-1">
               <Activity className="h-4 w-4 text-green-600" />
-              <span className="text-gray-600">{initialActiveSessions} sessions</span>
+              <span className="text-gray-600">{evoSessions.length} sessions</span>
             </div>
 
             {/* Total Strategies */}
@@ -158,7 +244,7 @@ const EvolutionStatusBar: React.FC<EvolutionStatusBarProps> = ({
             {/* Market Regime */}
             <div className="flex items-center space-x-1">
               <Zap className="h-4 w-4 text-purple-600" />
-              <span className="text-gray-600">{realMarketRegime}</span>
+              <span className="text-gray-600">{displayMarketRegime}</span>
             </div>
 
             {/* Active Symbols */}

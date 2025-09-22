@@ -25,10 +25,11 @@ import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { evoTesterApi } from '@/services/api';
-import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
+import { showSuccessToast, showErrorToast } from '@/utils/toast';
 import useEvoTesterWebSocket from '@/hooks/useEvoTesterWebSocket';
 import { useEvoTesterUpdates } from '@/hooks/useEvoTesterUpdates';
 import { EvoStrategy, EvoTesterConfig, EvoProvenanceStatus } from '@/types/api.types';
+import { DATA_REFRESH_CONFIG } from '@/config/dataRefreshConfig';
 // Import components with explicit file extensions to help TypeScript resolution
 import FitnessTrendChart from './FitnessTrendChart';
 import StrategyParametersView from './StrategyParametersView';
@@ -77,19 +78,24 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
     queryKey: ['evoTester', 'sessions'],
     queryFn: async () => {
       const response = await evoTesterApi.getEvoHistory();
+      const data = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.experiments)
+            ? response.experiments
+            : [];
       // Filter only recent sessions that are still running
-      if (response.success && response.data) {
-        return response.data.filter(session => {
-          // Consider sessions from the last 24 hours
-          const sessionDate = new Date(session.date);
-          const oneDayAgo = new Date();
-          oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-          return sessionDate > oneDayAgo;
-        });
-      }
-      return [];
+      const recent = data.filter((session: any) => {
+        const sessionDate = new Date(session.date);
+        const oneDayAgo = new Date();
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+        return sessionDate > oneDayAgo;
+      });
+      return recent;
     },
-    refetchInterval: 60000, // Refetch every minute
+    refetchInterval: DATA_REFRESH_CONFIG.evoHistory.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.evoHistory.staleTime,
   });
 
   // Fetch history of completed sessions
@@ -97,9 +103,18 @@ const EvoTesterDashboard: React.FC<EvoTesterDashboardProps> = ({ className = '' 
     queryKey: ['evoTester', 'history'],
     queryFn: async () => {
       const response = await evoTesterApi.getEvoHistory();
-      return response.success ? response.data : [];
+      const data = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.experiments)
+            ? response.experiments
+            : [];
+      return data;
     },
     enabled: viewMode === 'history',
+    refetchInterval: DATA_REFRESH_CONFIG.evoHistory.refetchInterval,
+    staleTime: DATA_REFRESH_CONFIG.evoHistory.staleTime,
   });
 
   // Load session details when a session is selected

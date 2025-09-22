@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ProvenanceChip from './ProvenanceChip';
 import StalePill from './StalePill';
-import { getJSON } from '@/lib/fetchProvenance';
+import { useSyncedPositions } from '@/hooks/useSyncedData';
 
 type Position = {
   symbol: string;
@@ -13,30 +13,21 @@ type Position = {
 };
 
 export default function PositionsTable() {
-  const [rows, setRows] = useState<Position[]>([]);
-  const [meta, setMeta] = useState<any>(null);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      const { data, meta } = await getJSON<{ positions: Position[] }>('/api/positions');
-      if (!alive) return;
-      setRows(data.positions || []);
-      setMeta(meta || {});
-    })();
-    return () => { alive = false; };
-  }, []);
-
-  if (!meta) return null;
+  const { data: positions, isLoading } = useSyncedPositions();
+  
+  if (isLoading || !positions) return null;
+  
+  const rows = positions || [];
+  const meta = { source: 'tradier', provider: 'tradier' };
 
   return (
-    <div style={{ padding: 16, borderRadius: 12, border: '1px solid #e5e7eb', background: '#fff' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0 }}>Positions</h3>
+    <div className="p-4 rounded-xl border bg-card text-foreground border-border">
+      <div className="flex items-center justify-between">
+        <h3 className="m-0">Positions</h3>
         <ProvenanceChip source={meta.source} provider={meta.provider} asof_ts={meta.asof_ts} latency_ms={meta.latency_ms} />
       </div>
 
-      <table style={{ width: '100%', marginTop: 12, fontSize: 14 }}>
+      <table className="w-full mt-3 text-sm">
         <thead>
           <tr>
             <th align="left">Symbol</th>

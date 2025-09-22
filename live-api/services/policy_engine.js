@@ -142,7 +142,7 @@ class PolicyEngine {
         // Check budget threshold
         if (budgetUtilization < (1 - budgetThreshold)) {
             const availableBudgetSlots = Math.floor(capacity.paperBudget.available / 100); // Assume $100 per strategy
-            spawnR1 = Math.max(spawnR1, availableBudgetSlots);
+            spawnR1 = Math.max(spawnR1, Math.min(availableBudgetSlots, 10)); // Cap at 10 to prevent over-spawning
         }
 
         // Check roster utilization threshold
@@ -151,7 +151,7 @@ class PolicyEngine {
             spawnR1 = Math.max(spawnR1, Math.min(availableSlots, 10)); // Cap at 10 per cycle
         }
 
-        return { spawnR1: Math.min(spawnR1, capacity.slots.R1.available) };
+        return { spawnR1: Math.min(spawnR1, 10, capacity.slots.R1.available) }; // Hard cap at 10 strategies per cycle
     }
 
     /**
@@ -165,8 +165,11 @@ class PolicyEngine {
 
         let demoteLive = 0;
 
+        // Handle both roster formats - array of strategies or roster object
+        const strategies = Array.isArray(roster) ? roster : [];
+        
         // Count strategies that have decayed significantly
-        roster.forEach(strategy => {
+        strategies.forEach(strategy => {
             if (strategy.status === 'live') {
                 const perf = strategy.performance || {};
                 const currentSharpe = perf.sharpe_ratio || 0;
@@ -311,8 +314,11 @@ class PolicyEngine {
 
         const families = {};
 
+        // Handle both array and object roster formats
+        const strategies = Array.isArray(roster) ? roster : [];
+        
         // Get current family distribution in roster
-        const currentDistribution = this.getCurrentFamilyDistribution(roster);
+        const currentDistribution = this.getCurrentFamilyDistribution(strategies);
 
         regimeConfig.families.forEach(family => {
             const baseWeight = this.policy.families?.[family]?.weight || 0.33;

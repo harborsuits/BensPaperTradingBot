@@ -8,6 +8,8 @@ import TradeDecisionsPage from '@/pages/TradeDecisions';
 import MarketDataPage from '@/pages/MarketDataPage';
 import LogsPage from '@/pages/LogsPage';
 import EvoTesterPage from '@/pages/EvoTesterPage';
+import TestEvoPage from '@/pages/TestEvoPage';
+import EvoTesterSimple from '@/pages/EvoTesterSimple';
 import NewsPage from '@/pages/NewsPage';
 import BrainPage from '@/pages/BrainPage';
 import { Outlet } from 'react-router-dom';
@@ -24,6 +26,8 @@ export default function App() {
         { path: '/market', element: <MarketDataPage /> },
         { path: '/logs', element: <LogsPage /> },
         { path: '/evotester', element: <EvoTesterPage /> },
+        { path: '/evotester-simple', element: <EvoTesterSimple /> },
+        { path: '/testevo', element: <TestEvoPage /> },
         { path: '/news', element: <NewsPage /> },
         { path: '/news/:symbol', element: <NewsPage /> },
       ],

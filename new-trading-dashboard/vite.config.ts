@@ -18,6 +18,19 @@ export default defineConfig(({ mode }) => {
       port: 3003,
       strictPort: true,
       proxy: {
+        // Handle SSE endpoints specifically
+        '/api/paper/orders/stream': {
+          target: 'http://localhost:4000',
+          changeOrigin: true,
+          // Configure for SSE
+          configure: (proxy, options) => {
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              // Ensure SSE headers are preserved
+              proxyReq.setHeader('Accept', 'text/event-stream');
+              proxyReq.setHeader('Cache-Control', 'no-cache');
+            });
+          }
+        },
         '/api':    { target: 'http://localhost:4000', changeOrigin: true },
         '/auth':   { target: 'http://localhost:4000', changeOrigin: true },
         '/metrics':{ target: 'http://localhost:4000', changeOrigin: true },

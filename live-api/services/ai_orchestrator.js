@@ -162,7 +162,8 @@ class AIOrchestrator {
             }
 
             // Step 4: Evaluate normal triggers and compute needs
-            const needs = await this.computeOrchestrationNeeds(context, roster, capacity);
+            // Pass allStrategies for decay trigger evaluation
+            const needs = await this.computeOrchestrationNeeds(context, allStrategies, capacity);
 
             // Step 5: Execute orchestration decisions
             const decisions = await this.executeOrchestrationDecisions(needs, context, roster, capacity);
@@ -515,8 +516,8 @@ class AIOrchestrator {
      * Select families based on market context
      */
     selectFamiliesForContext(context) {
-        const roster = this.getRosterSnapshot();
-        return this.policyEngine.selectFamiliesForContext(context, roster);
+        const allStrategies = this.strategyManager.getAllStrategies();
+        return this.policyEngine.selectFamiliesForContext(context, allStrategies);
     }
 
     /**

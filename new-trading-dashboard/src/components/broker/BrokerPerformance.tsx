@@ -58,39 +58,7 @@ const BrokerPerformance: React.FC<BrokerPerformanceProps> = ({ className }) => {
     },
     staleTime: 60000, // 1 minute
     retry: 2,
-    // Fallback to mock data for development
-    placeholderData: {
-      'Primary Broker (Tradier)': {
-        pnl: 1250.75,
-        fillRate: 0.98,
-        slippage: 0.12,
-        latency: 42,
-        errorRate: 0.02,
-        uptime: 0.999,
-        status: 'online',
-        isActive: true
-      },
-      'Secondary Broker (Alpaca)': {
-        pnl: 950.25,
-        fillRate: 0.96,
-        slippage: 0.18,
-        latency: 48,
-        errorRate: 0.04,
-        uptime: 0.995,
-        status: 'online',
-        isActive: false
-      },
-      'Backup Broker': {
-        pnl: 0,
-        fillRate: 0.95,
-        slippage: 0.20,
-        latency: 56,
-        errorRate: 0.05,
-        uptime: 0.990,
-        status: 'circuit_broken',
-        isActive: false
-      }
-    }
+    // No placeholder mock data
   });
 
   // Function to trigger broker failover

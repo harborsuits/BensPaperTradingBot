@@ -35,7 +35,9 @@ interface WatchlistItem {
 export default function MarketDataPage(){
   const qc = useQueryClient();
   const { watchlists } = useUniverse();
-  const current = watchlists.data?.find((w:any) => w.id === (watchlists as any)?.data?.currentId) || watchlists.data?.[0];
+  const watchlistItems = watchlists.data?.items || watchlists.data || [];
+  const currentId = watchlists.data?.currentId || watchlistItems[0]?.id;
+  const current = watchlistItems.find((w:any) => w.id === currentId) || watchlistItems[0];
   const symbols = current?.symbols || [];
   const [selectedSymbol, setSelectedSymbol] = useState<string>("SPY");
   const [timeframe, setTimeframe] = useState<Timeframe>("1Day");

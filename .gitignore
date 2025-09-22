@@ -156,3 +156,6 @@ pids/
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+# API Credentials - Never commit these!
+config/credentials/
+

@@ -1,10 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { TrendingUp, TrendingDown, DollarSign, Target, AlertCircle, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import ProvenanceChip from "@/components/ProvenanceChip";
-import { getJSON } from "@/lib/fetchProvenance";
 import ErrorState from "@/components/ErrorState";
+import { useSyncedPortfolio } from "@/hooks/useSyncedData";
 
 interface PortfolioData {
   cash: number;
@@ -49,16 +48,10 @@ async function getPortfolioData(): Promise<{ data: PortfolioData; meta: any }> {
 }
 
 export default function PortfolioCard() {
-  const { data: payload, isLoading, error } = useQuery<{ data: PortfolioData; meta: any}>({
-    queryKey: ["portfolio", "summary"],
-    queryFn: getPortfolioData, // Use safe fetch with validation
-    refetchInterval: 5000, // Update every 5 seconds
-    staleTime: 2000,
-  });
-
-  // Centralized safe access with defaults
-  const portfolio = payload?.data as any;
-  const meta = payload?.meta as any;
+  const { data: portfolio, isLoading, error } = useSyncedPortfolio();
+  
+  // Metadata is part of the portfolio object from Tradier
+  const meta = portfolio as any;
   const positions = Array.isArray(portfolio?.positions) ? portfolio.positions : [];
   const equity = Number(portfolio?.equity ?? 0);
   const cash = Number(portfolio?.cash ?? 0);

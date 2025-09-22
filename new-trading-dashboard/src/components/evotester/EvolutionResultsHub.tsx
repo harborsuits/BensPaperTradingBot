@@ -32,10 +32,11 @@ import {
   Plus,
   Eye,
   RefreshCw,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 import { EvoStrategy, EvoResultDetailedItem } from '@/types/api.types';
-import { showSuccessToast, showErrorToast } from '@/utils/toast.js';
+import { showSuccessToast, showErrorToast } from '@/utils/toast';
 import { useLabDiamonds, DiamondSymbol } from '@/hooks/useLabDiamonds';
 import { evoTesterApi, strategyApi } from '@/services/api';
 
@@ -152,31 +153,50 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
     try {
       const json = JSON.stringify(item, null, 2);
       await navigator.clipboard.writeText(json);
-      showSuccessToast(`Copied backtest JSON (hash ${item.backtest_hash})`);
+      showSuccessToast(`Copied backtest JSON (hash ${item?.backtest_hash || 'unknown'})`);
     } catch (e) {
       showErrorToast('Clipboard copy failed');
     }
   };
 
-  // Mock pipeline data - in real implementation, this would come from props
-  const pipelineStages = [
-    { name: 'INGEST', status: 'completed', progress: 100, description: 'Data collection & preprocessing' },
-    { name: 'CONTEXT', status: 'completed', progress: 100, description: 'Market context analysis' },
-    { name: 'CANDIDATES', status: 'completed', progress: 100, description: 'Strategy generation' },
-    { name: 'GATES', status: 'completed', progress: 100, description: 'Risk & validation checks' },
-    { name: 'PLAN', status: 'completed', progress: 100, description: 'Execution planning' },
-    { name: 'ROUTE', status: 'running', progress: 75, description: 'Order routing' },
-    { name: 'MANAGE', status: 'pending', progress: 0, description: 'Position management' },
-    { name: 'LEARN', status: 'pending', progress: 0, description: 'Performance learning' }
-  ];
+  // Fetch pipeline stages from API
+  const { data: pipelineStagesData } = useQuery({
+    queryKey: ['pipeline', 'stages'],
+    queryFn: async () => {
+      const response = await fetch('/api/pipeline/stages');
+      if (!response.ok) return [];
+      return response.json();
+    },
+    refetchInterval: 10000,
+    staleTime: 5000,
+  });
+  const pipelineStages = pipelineStagesData || [];
 
-  const deploymentMetrics = {
-    totalStrategies: 156,
-    deployedStrategies: 23,
-    pendingStrategies: 8,
-    failedStrategies: 2,
-    averageFitness: 2.145,
-    successRate: 87.5
+  // Fetch deployment metrics from API
+  const { data: deploymentMetricsData } = useQuery({
+    queryKey: ['evo', 'deployment-metrics'],
+    queryFn: async () => {
+      const response = await fetch('/api/evo/deployment-metrics');
+      if (!response.ok) return {
+        totalStrategies: 0,
+        deployedStrategies: 0,
+        pendingStrategies: 0,
+        failedStrategies: 0,
+        averageFitness: 0,
+        successRate: 0
+      };
+      return response.json();
+    },
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+  const deploymentMetrics = deploymentMetricsData || {
+    totalStrategies: 0,
+    deployedStrategies: 0,
+    pendingStrategies: 0,
+    failedStrategies: 0,
+    averageFitness: 0,
+    successRate: 0
   };
 
   return (
@@ -310,22 +330,26 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
                       </thead>
                       <tbody>
                         {detailedResults
-                          .sort((a, b) => (b.metrics.oos.sharpe - a.metrics.oos.sharpe))
+                          .sort((a, b) => {
+                            const aSharpe = a?.metrics?.oos?.sharpe || 0;
+                            const bSharpe = b?.metrics?.oos?.sharpe || 0;
+                            return bSharpe - aSharpe;
+                          })
                           .map((item) => {
-                            const leaks = item.leak_checks?.lookahead || item.leak_checks?.survivorship;
-                            const breaches = (item.breaches?.risk || 0) + (item.breaches?.position || 0);
-                            const eligible = item.metrics.oos.trades >= 40 && !leaks && breaches === 0;
+                            const leaks = item?.leak_checks?.lookahead || item?.leak_checks?.survivorship;
+                            const breaches = (item?.breaches?.risk || 0) + (item?.breaches?.position || 0);
+                            const eligible = (item?.metrics?.oos?.trades || 0) >= 40 && !leaks && breaches === 0;
                             return (
-                              <tr key={item.strategy_id} className="border-b border-border">
-                                <td className="py-2 pr-4">{item.template}</td>
-                                <td className="py-2 pr-4 font-medium">{item.metrics.oos.sharpe.toFixed(2)}</td>
-                                <td className="py-2 pr-4">{item.metrics.oos.pf.toFixed(2)}</td>
-                                <td className="py-2 pr-4">{(item.metrics.oos.dd * 100).toFixed(1)}%</td>
-                                <td className="py-2 pr-4">{item.metrics.oos.trades}</td>
-                                <td className="py-2 pr-4">{item.metrics.train.sharpe.toFixed(2)}</td>
+                              <tr key={item?.strategy_id || Math.random().toString(36)} className="border-b border-border">
+                                <td className="py-2 pr-4">{item?.template || 'N/A'}</td>
+                                <td className="py-2 pr-4 font-medium">{(item?.metrics?.oos?.sharpe || 0).toFixed(2)}</td>
+                                <td className="py-2 pr-4">{(item?.metrics?.oos?.pf || 0).toFixed(2)}</td>
+                                <td className="py-2 pr-4">{((item?.metrics?.oos?.dd || 0) * 100).toFixed(1)}%</td>
+                                <td className="py-2 pr-4">{item?.metrics?.oos?.trades || 0}</td>
+                                <td className="py-2 pr-4">{(item?.metrics?.train?.sharpe || 0).toFixed(2)}</td>
                                 <td className="py-2 pr-4">{leaks ? 'yes' : 'no'}</td>
-                                <td className="py-2 pr-4">{item.data.source}</td>
-                                <td className="py-2 pr-4">{item.backtest_hash}</td>
+                                <td className="py-2 pr-4">{item?.data?.source || 'N/A'}</td>
+                                <td className="py-2 pr-4">{item?.backtest_hash || 'N/A'}</td>
                                 <td className="py-2 pr-4 space-x-2">
                                   <Button size="xs" variant="outline" onClick={() => handleReproduce(item)}>Reproduce</Button>
                                   <Button size="xs" disabled={!eligible} onClick={() => handlePromote(item)}>Promote</Button>
@@ -591,33 +615,35 @@ export const EvolutionResultsHub: React.FC<EvolutionResultsHubProps> = ({
 
               <div className="space-y-3">
                 {pipelineStages.map((stage, index) => (
-                  <div key={stage.name} className="flex items-center space-x-4 p-3 bg-card border border-border rounded-lg">
+                  <div key={stage.stage || `stage-${index}`} className="flex items-center space-x-4 p-3 bg-card border border-border rounded-lg">
                     <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      stage.status === 'completed' ? 'bg-green-500 text-white' :
-                      stage.status === 'running' ? 'bg-blue-500 text-white' :
+                      stage.status === 'healthy' ? 'bg-green-500 text-white' :
+                      stage.status === 'degraded' ? 'bg-yellow-500 text-white' :
                       'bg-gray-300 text-gray-600'
                     }`}>
-                      {stage.status === 'completed' ? <CheckCircle className="w-4 h-4" /> :
-                       stage.status === 'running' ? <Clock className="w-4 h-4" /> :
+                      {stage.status === 'healthy' ? <CheckCircle className="w-4 h-4" /> :
+                       stage.status === 'degraded' ? <AlertTriangle className="w-4 h-4" /> :
                        index + 1}
                     </div>
 
                     <div className="flex-grow">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-medium">{stage.name}</span>
-                        <span className="text-sm text-foreground">{stage.progress}%</span>
+                        <span className="font-medium capitalize">{(stage.stage || '').replace('_', ' ')}</span>
+                        <span className="text-sm text-foreground">{stage.processed || 0} processed</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full ${
-                            stage.status === 'completed' ? 'bg-green-500' :
-                            stage.status === 'running' ? 'bg-blue-500' :
+                            stage.status === 'healthy' ? 'bg-green-500' :
+                            stage.status === 'degraded' ? 'bg-yellow-500' :
                             'bg-gray-300'
                           }`}
-                          style={{ width: `${stage.progress}%` }}
+                          style={{ width: `${stage.processed > 0 ? Math.round((stage.passed / stage.processed) * 100) : 0}%` }}
                         ></div>
                       </div>
-                      <p className="text-sm text-foreground mt-1">{stage.description}</p>
+                      <p className="text-sm text-foreground mt-1">
+                        {stage.passed || 0} passed • {stage.failed || 0} failed • {(stage.avgLatency || 0).toFixed(1)}ms avg
+                      </p>
                     </div>
 
                     {index < pipelineStages.length - 1 && (

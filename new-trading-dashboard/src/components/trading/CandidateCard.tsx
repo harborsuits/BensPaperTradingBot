@@ -11,22 +11,50 @@ import { useHealth } from '@/hooks/useHealth';
 import { useTopCandidate } from '@/queries/useCandidates';
 import EmptyState from '@/components/ui/EmptyState';
 import { CardSkeleton } from '@/components/ui/CardSkeleton';
-// Mock planning function (move to shared utils later)
+// Build trade plan based on real candidate data and policy
 const buildTradePlan = (candidate: any, policy: any) => {
-  const entry = candidate.last || 100;
-  const risk_dollars = Math.min(policy.max_risk_dollars, 25);
-  const stop_price = candidate.side === 'buy' ? entry - 1.2 : entry + 1.2;
-  const target_price = candidate.side === 'buy' ? entry + (risk_dollars * 2) / (entry - stop_price) : entry - (risk_dollars * 2) / (stop_price - entry);
-  const position_size = Math.floor(risk_dollars / Math.abs(entry - stop_price));
+  // Use actual price from candidate or market quote
+  const entry = candidate.last || candidate.price || candidate.marketPrice || 0;
+  
+  // Use actual risk from policy or default to a small percentage of account
+  const risk_dollars = Math.min(
+    policy?.max_risk_dollars || 100,
+    policy?.max_position_size || 1000
+  );
+  
+  // Use actual ATR from candidate data for stop calculation
+  const atr = candidate.atr || candidate.volatility || (entry * 0.02); // 2% as fallback
+  const stopDistance = atr * (policy?.stop_atr_multiplier || 1.5);
+  const stop_price = candidate.side === 'buy' 
+    ? entry - stopDistance 
+    : entry + stopDistance;
+  
+  // Calculate target based on risk/reward ratio from policy
+  const riskRewardRatio = policy?.risk_reward_ratio || 2;
+  const target_price = candidate.side === 'buy' 
+    ? entry + (stopDistance * riskRewardRatio)
+    : entry - (stopDistance * riskRewardRatio);
+  
+  // Calculate position size based on actual risk
+  const position_size = stopDistance > 0 
+    ? Math.floor(risk_dollars / stopDistance) 
+    : 0;
+  
+  // Use actual commission/fee data if available
+  const commission = policy?.commission_per_share || 0.005;
+  const expected_cost_per_100 = (commission * 100).toFixed(2);
+  
+  // Use actual time horizon from policy or candidate
+  const timebox_days = policy?.max_hold_days || candidate.timeHorizon || 5;
 
   return {
     risk_dollars: risk_dollars.toFixed(2),
     stop_price: stop_price.toFixed(2),
     target_price: target_price.toFixed(2),
     position_size: position_size,
-    expected_cost_per_100: '0.09',
-    timebox_days: 2,
-    rationale_text: `Risk $${risk_dollars.toFixed(2)} (R). Stop ~1.2×ATR, target +2R. Time-box 2 days. Cash-only.`,
+    expected_cost_per_100: expected_cost_per_100,
+    timebox_days: timebox_days,
+    rationale_text: `Risk $${risk_dollars.toFixed(2)} (R). Stop ~${(stopDistance/atr).toFixed(1)}×ATR, target +${riskRewardRatio}R. Time-box ${timebox_days} days. Cash-only.`,
   };
 };
 
@@ -129,8 +157,16 @@ const CandidateCard = () => {
   const score = candidate.score || 0;
   const confidence = candidate.confidence || 0;
 
-  // Mock policy for planning
-  const policy = { max_risk_dollars: 25, equity: 50000, risk_pct_equity: 0.0025, atr_stop_mult: 1.2, target_r_mult: 2 };
+  // Get policy from candidate or use defaults based on account data
+  const policy = candidate.policy || {
+    max_risk_dollars: candidate.maxRisk || 50,
+    equity: candidate.accountEquity || 100000,
+    risk_pct_equity: candidate.riskPercent || 0.005,
+    atr_stop_mult: candidate.stopMultiplier || 1.5,
+    target_r_mult: candidate.targetMultiplier || 2,
+    commission_per_share: candidate.commission || 0.005,
+    max_hold_days: candidate.maxHoldDays || 5
+  };
   const plan = buildTradePlan(candidate, policy);
   
   // Get watermark timestamp if available

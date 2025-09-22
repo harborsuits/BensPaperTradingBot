@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProvenanceChip from './ProvenanceChip';
 import { getJSON } from '@/lib/fetchProvenance';
+import { sseManager } from '@/services/sseManager';
 
 type Trade = {
   trade_id?: string;
@@ -31,27 +32,31 @@ export default function TradesTable() {
   }, []);
 
   useEffect(() => {
-    const es = new EventSource('/api/paper/orders/stream');
-    const onUpdate = (evt: MessageEvent) => {
+    const sseService = sseManager.getConnection(`${window.location.origin}/api/paper/orders/stream`);
+    
+    const handleOrderUpdate = (message: any) => {
       try {
-        const data = JSON.parse(evt.data);
-        setRows(prev => [data, ...prev].slice(0, 500));
+        setRows(prev => [message.data, ...prev].slice(0, 500));
       } catch {}
     };
-    es.addEventListener('order_update', onUpdate as any);
-    return () => es.close();
+    
+    sseService.on('order_update', handleOrderUpdate);
+    
+    return () => {
+      sseService.off('order_update', handleOrderUpdate);
+    };
   }, []);
 
   if (!meta) return null;
 
   return (
-    <div style={{ padding: 16, borderRadius: 12, border: '1px solid #e5e7eb', background: '#fff' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0 }}>Trades</h3>
+    <div className="p-4 rounded-xl border bg-card text-foreground border-border">
+      <div className="flex items-center justify-between">
+        <h3 className="m-0">Trades</h3>
         <ProvenanceChip source={meta.source} provider={meta.provider} asof_ts={meta.asof_ts} latency_ms={meta.latency_ms} />
       </div>
 
-      <table style={{ width: '100%', marginTop: 12, fontSize: 14 }}>
+      <table className="w-full mt-3 text-sm">
         <thead>
           <tr>
             <th>Time</th><th>Mode</th><th>Symbol</th><th>Side</th>

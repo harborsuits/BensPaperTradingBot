@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { createSSEConnection } from '@/services/improvedSSE';
+import { sseManager } from '@/services/sseManager';
 import {
   Clock,
   TrendingUp,
@@ -67,34 +69,25 @@ const PaperExecutionMonitor: React.FC = () => {
   const orders = data?.items || [];
   const metrics = data?.metrics;
 
-  // SSE for live updates
+  // SSE for live updates using singleton manager
   useEffect(() => {
-    const eventSource = new EventSource('/api/paper/orders/stream');
-
-    eventSource.onmessage = (event) => {
-      try {
-        const update = JSON.parse(event.data);
-        if (update.type === 'order_update') {
-          setLiveOrders(prev => {
-            const existing = prev.find(o => o.order_id === update.data.order_id);
-            if (existing) {
-              return prev.map(o => o.order_id === update.data.order_id ? update.data : o);
-            } else {
-              return [update.data, ...prev].slice(0, 50);
-            }
-          });
+    const sseService = sseManager.getConnection(`${window.location.origin}/api/paper/orders/stream`);
+    
+    const handleOrderUpdate = (message: any) => {
+      setLiveOrders(prev => {
+        const existing = prev.find(o => o.order_id === message.data.order_id);
+        if (existing) {
+          return prev.map(o => o.order_id === message.data.order_id ? message.data : o);
+        } else {
+          return [message.data, ...prev].slice(0, 50);
         }
-      } catch (e) {
-        console.error('Failed to parse SSE message:', e);
-      }
+      });
     };
-
-    eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-    };
+    
+    sseService.on('order_update', handleOrderUpdate);
 
     return () => {
-      eventSource.close();
+      sseService.off('order_update', handleOrderUpdate);
     };
   }, []);
 

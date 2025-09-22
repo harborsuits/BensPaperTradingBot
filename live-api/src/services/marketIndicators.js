@@ -5,16 +5,17 @@
  * Provides indicators for trading decisions and market analysis.
  */
 
-const { recorder: marketRecorder } = require('./marketRecorder');
+const axios = require('axios');
 
 class MarketIndicatorsService {
   constructor(config = {}) {
     this.config = {
       cacheExpiryMs: 30000, // 30 seconds
       minDataPoints: 50,
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:4000',
       ...config
     };
-
+    
     this.indicatorsCache = new Map();
     this.regimeCache = new Map();
   }
@@ -32,15 +33,23 @@ class MarketIndicatorsService {
     }
 
     try {
-      // Get recent quotes from MarketRecorder
-      const quotes = await marketRecorder.getRecentQuotes(symbol, lookback);
-
-      if (!quotes || quotes.length < this.config.minDataPoints) {
-        throw new Error(`Insufficient data for ${symbol}: ${quotes?.length || 0} points`);
+      // Get real historical bars from Tradier
+      const response = await axios.get(`${this.config.apiBaseUrl}/api/bars`, {
+        params: {
+          symbol,
+          timeframe: '1Day',
+          limit: lookback
+        }
+      });
+      
+      const bars = response.data;
+      
+      if (!bars || bars.length < this.config.minDataPoints) {
+        throw new Error(`Insufficient data for ${symbol}: ${bars?.length || 0} bars`);
       }
 
-      // Compute indicators
-      const indicators = this.computeAllIndicators(quotes);
+      // Compute real indicators from bars
+      const indicators = this.computeAllIndicators(bars);
 
       // Cache result
       this.indicatorsCache.set(cacheKey, {
@@ -51,8 +60,18 @@ class MarketIndicatorsService {
       return indicators;
 
     } catch (error) {
-      console.error(`Failed to compute indicators for ${symbol}:`, error);
-      throw error;
+      console.error(`Failed to compute indicators for ${symbol}:`, error.message);
+      
+      // Return neutral indicators on error
+      return {
+        rsi: 50,
+        macd: { macd: 0, signal: 0, histogram: 0 },
+        ma_20: null,
+        ma_50: null,
+        volume_ratio: 1.0,
+        bb_position: 0.5,
+        latest: { price: null, volume: null }
+      };
     }
   }
 
@@ -70,13 +89,21 @@ class MarketIndicatorsService {
 
     try {
       // Get longer lookback for regime detection
-      const quotes = await marketRecorder.getRecentQuotes(symbol, 200);
+      const response = await axios.get(`${this.config.apiBaseUrl}/api/bars`, {
+        params: {
+          symbol,
+          timeframe: '1Day',
+          limit: 200
+        }
+      });
+      
+      const bars = response.data;
 
-      if (!quotes || quotes.length < 100) {
-        throw new Error(`Insufficient data for regime detection: ${quotes?.length || 0} points`);
+      if (!bars || bars.length < 100) {
+        throw new Error(`Insufficient data for regime detection: ${bars?.length || 0} bars`);
       }
 
-      const regime = this.detectMarketRegime(quotes);
+      const regime = this.detectMarketRegime(bars);
 
       // Cache result
       this.regimeCache.set(cacheKey, {
@@ -87,7 +114,7 @@ class MarketIndicatorsService {
       return regime;
 
     } catch (error) {
-      console.error(`Failed to detect market regime for ${symbol}:`, error);
+      console.error(`Failed to detect market regime for ${symbol}:`, error.message);
       // Return neutral regime as fallback
       return {
         trend: 'neutral',
@@ -102,334 +129,233 @@ class MarketIndicatorsService {
   /**
    * Compute all technical indicators
    */
-  computeAllIndicators(quotes) {
-    const closes = quotes.map(q => q.close);
-    const highs = quotes.map(q => q.high);
-    const lows = quotes.map(q => q.low);
-    const volumes = quotes.map(q => q.volume);
+  computeAllIndicators(bars) {
+    const closes = bars.map(b => b.c);
+    const highs = bars.map(b => b.h);
+    const lows = bars.map(b => b.l);
+    const volumes = bars.map(b => b.v);
+
+    // RSI
+    const rsi = this.calculateRSI(closes, 14);
+    
+    // MACD
+    const macd = this.calculateMACD(closes);
+    
+    // Moving Averages
+    const ma_20 = this.calculateSMA(closes, 20);
+    const ma_50 = this.calculateSMA(closes, 50);
+    
+    // Bollinger Bands
+    const bb = this.calculateBollingerBands(closes, 20, 2);
+    const lastClose = closes[closes.length - 1];
+    const bb_position = bb.upper > bb.lower ? 
+      (lastClose - bb.lower) / (bb.upper - bb.lower) : 0.5;
+    
+    // Volume Ratio
+    const avgVolume = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
+    const lastVolume = volumes[volumes.length - 1];
+    const volume_ratio = avgVolume > 0 ? lastVolume / avgVolume : 1.0;
 
     return {
-      symbol: quotes[0]?.symbol || 'unknown',
-      timestamp: new Date().toISOString(),
-
-      // Trend Indicators
-      sma: {
-        sma20: this.calculateSMA(closes, 20),
-        sma50: this.calculateSMA(closes, 50),
-        sma200: this.calculateSMA(closes, 200)
+      rsi: rsi[rsi.length - 1] || 50,
+      macd: {
+        macd: macd.macd[macd.macd.length - 1] || 0,
+        signal: macd.signal[macd.signal.length - 1] || 0,
+        histogram: macd.histogram[macd.histogram.length - 1] || 0
       },
-
-      ema: {
-        ema12: this.calculateEMA(closes, 12),
-        ema26: this.calculateEMA(closes, 26),
-        ema50: this.calculateEMA(closes, 50)
-      },
-
-      // Momentum Indicators
-      rsi: this.calculateRSI(closes, 14),
-      macd: this.calculateMACD(closes),
-      stoch: this.calculateStochastic(highs, lows, closes, 14),
-
-      // Volatility Indicators
-      bollinger: this.calculateBollingerBands(closes, 20, 2),
-      atr: this.calculateATR(highs, lows, closes, 14),
-
-      // Volume Indicators
-      volume: {
-        volumeSMA20: this.calculateSMA(volumes, 20),
-        volumeRatio: this.calculateVolumeRatio(volumes),
-        obv: this.calculateOBV(closes, volumes)
-      },
-
-      // Support/Resistance
-      pivot: this.calculatePivotPoints(highs[highs.length - 1], lows[lows.length - 1], closes[closes.length - 1]),
-
-      // Market Breadth (if we have multiple symbols)
-      breadth: this.calculateMarketBreadth(quotes),
-
-      // Raw data for additional calculations
+      ma_20: ma_20[ma_20.length - 1] || null,
+      ma_50: ma_50[ma_50.length - 1] || null,
+      volume_ratio,
+      bb_position,
       latest: {
-        price: closes[closes.length - 1],
-        volume: volumes[volumes.length - 1],
-        high: highs[highs.length - 1],
-        low: lows[lows.length - 1]
+        price: lastClose,
+        volume: lastVolume
       }
     };
   }
 
   /**
-   * Detect market regime based on trend and volatility
+   * Detect market regime from historical data
    */
-  detectMarketRegime(quotes) {
-    const closes = quotes.map(q => q.close);
-    const highs = quotes.map(q => q.high);
-    const lows = quotes.map(q => q.low);
-
-    // Calculate trend using EMA slope
-    const ema50 = this.calculateEMA(closes, 50);
-    const ema200 = this.calculateEMA(closes, 200);
-
-    if (!ema50 || !ema200) {
-      return this.createRegimeResult('neutral', 'medium', 0.3);
+  detectMarketRegime(bars) {
+    const closes = bars.map(b => b.c);
+    const volumes = bars.map(b => b.v);
+    
+    // Calculate returns
+    const returns = [];
+    for (let i = 1; i < closes.length; i++) {
+      returns.push((closes[i] - closes[i-1]) / closes[i-1]);
     }
-
-    // Trend detection: compare recent EMA50 vs EMA200
-    const recentEMA50 = ema50.slice(-10).filter(x => x !== null);
-    const recentEMA200 = ema200.slice(-10).filter(x => x !== null);
-
-    if (recentEMA50.length < 5 || recentEMA200.length < 5) {
-      return this.createRegimeResult('neutral', 'medium', 0.3);
+    
+    // Trend detection using 50-day SMA
+    const sma50 = this.calculateSMA(closes, 50);
+    const lastClose = closes[closes.length - 1];
+    const lastSMA50 = sma50[sma50.length - 1];
+    const sma50_10daysAgo = sma50[sma50.length - 11];
+    
+    let trend = 'neutral';
+    if (lastClose > lastSMA50 * 1.02 && lastSMA50 > sma50_10daysAgo) {
+      trend = 'bull';
+    } else if (lastClose < lastSMA50 * 0.98 && lastSMA50 < sma50_10daysAgo) {
+      trend = 'bear';
     }
-
-    const avgEMA50 = recentEMA50.reduce((a, b) => a + b, 0) / recentEMA50.length;
-    const avgEMA200 = recentEMA200.reduce((a, b) => a + b, 0) / recentEMA200.length;
-
-    const trend = avgEMA50 > avgEMA200 ? 'bull' : avgEMA50 < avgEMA200 ? 'bear' : 'neutral';
-
-    // Volatility detection using ATR percentile
-    const atr = this.calculateATR(highs, lows, closes, 14);
-    if (atr && atr.length > 0) {
-      const recentATR = atr.slice(-20).filter(x => x !== null);
-      if (recentATR.length > 0) {
-        const avgATR = recentATR.reduce((a, b) => a + b, 0) / recentATR.length;
-        const atrPercentile = this.calculateATRPercentile(avgATR, closes);
-
-        let volatility = 'low';
-        if (atrPercentile > 80) volatility = 'high';
-        else if (atrPercentile > 60) volatility = 'medium';
-        else if (atrPercentile > 40) volatility = 'medium';
-        else volatility = 'low';
-
-        return this.createRegimeResult(trend, volatility, 0.8);
-      }
+    
+    // Volatility detection using standard deviation of returns
+    const recentReturns = returns.slice(-20);
+    const avgReturn = recentReturns.reduce((a, b) => a + b, 0) / recentReturns.length;
+    const variance = recentReturns.reduce((sum, r) => sum + Math.pow(r - avgReturn, 2), 0) / recentReturns.length;
+    const stdDev = Math.sqrt(variance);
+    const annualizedVol = stdDev * Math.sqrt(252) * 100; // Annualized volatility percentage
+    
+    let volatility = 'medium';
+    if (annualizedVol < 15) {
+      volatility = 'low';
+    } else if (annualizedVol > 30) {
+      volatility = 'high';
     }
-
-    return this.createRegimeResult(trend, 'medium', 0.6);
-  }
-
-  createRegimeResult(trend, volatility, confidence) {
+    
+    // Confidence based on data quality and trend strength
+    const trendStrength = Math.abs((lastClose - lastSMA50) / lastSMA50);
+    const confidence = Math.min(0.9, 0.5 + trendStrength * 2);
+    
     return {
       trend,
       volatility,
       regime: `${trend}_${volatility}`,
       confidence,
+      metrics: {
+        annualizedVol,
+        trendStrength,
+        sma50: lastSMA50
+      },
       timestamp: new Date().toISOString()
     };
   }
 
-  // Technical Indicator Calculations
-
-  calculateSMA(prices, period) {
-    if (prices.length < period) return null;
-
+  /**
+   * Calculate Simple Moving Average
+   */
+  calculateSMA(values, period) {
     const result = [];
-    for (let i = period - 1; i < prices.length; i++) {
-      const sum = prices.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
-      result.push(sum / period);
+    for (let i = 0; i < values.length; i++) {
+      if (i < period - 1) {
+        result.push(null);
+      } else {
+        const sum = values.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+        result.push(sum / period);
+      }
     }
-    return result[result.length - 1]; // Return latest value
+    return result;
   }
 
-  calculateEMA(prices, period) {
-    if (prices.length < period) return [];
-
-    const multiplier = 2 / (period + 1);
+  /**
+   * Calculate Exponential Moving Average
+   */
+  calculateEMA(values, period) {
     const result = [];
-    let ema = prices.slice(0, period).reduce((a, b) => a + b, 0) / period;
-
-    for (let i = period; i < prices.length; i++) {
-      ema = (prices[i] - ema) * multiplier + ema;
+    const multiplier = 2 / (period + 1);
+    
+    // Start with SMA for first value
+    let ema = values.slice(0, period).reduce((a, b) => a + b, 0) / period;
+    result.push(ema);
+    
+    // Calculate EMA for remaining values
+    for (let i = period; i < values.length; i++) {
+      ema = (values[i] - ema) * multiplier + ema;
       result.push(ema);
     }
-
-    return result;
+    
+    // Pad beginning with nulls
+    return new Array(period - 1).fill(null).concat(result);
   }
 
-  calculateRSI(prices, period = 14) {
-    if (prices.length < period + 1) return null;
-
+  /**
+   * Calculate RSI (Relative Strength Index)
+   */
+  calculateRSI(values, period = 14) {
+    if (values.length < period + 1) return [50];
+    
     const gains = [];
     const losses = [];
-
-    for (let i = 1; i < prices.length; i++) {
-      const change = prices[i] - prices[i - 1];
-      gains.push(change > 0 ? change : 0);
-      losses.push(change < 0 ? -change : 0);
+    
+    for (let i = 1; i < values.length; i++) {
+      const diff = values[i] - values[i - 1];
+      gains.push(diff > 0 ? diff : 0);
+      losses.push(diff < 0 ? -diff : 0);
     }
-
-    const avgGain = gains.slice(-period).reduce((a, b) => a + b, 0) / period;
-    const avgLoss = losses.slice(-period).reduce((a, b) => a + b, 0) / period;
-
-    if (avgLoss === 0) return 100;
-
-    const rs = avgGain / avgLoss;
-    return 100 - (100 / (1 + rs));
-  }
-
-  calculateMACD(prices, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) {
-    const fastEMA = this.calculateEMA(prices, fastPeriod);
-    const slowEMA = this.calculateEMA(prices, slowPeriod);
-
-    if (fastEMA.length === 0 || slowEMA.length === 0) return null;
-
-    const macdLine = fastEMA[fastEMA.length - 1] - slowEMA[slowEMA.length - 1];
-    const signalLine = this.calculateEMA(fastEMA.slice(-signalPeriod * 2), signalPeriod);
-    const histogram = signalLine ? macdLine - signalLine[signalLine.length - 1] : 0;
-
-    return {
-      macd: macdLine,
-      signal: signalLine ? signalLine[signalLine.length - 1] : null,
-      histogram: histogram
-    };
-  }
-
-  calculateStochastic(highs, lows, closes, period = 14) {
-    if (closes.length < period) return null;
-
-    const recentHighs = highs.slice(-period);
-    const recentLows = lows.slice(-period);
-    const currentClose = closes[closes.length - 1];
-
-    const highest = Math.max(...recentHighs);
-    const lowest = Math.min(...recentLows);
-
-    const k = ((currentClose - lowest) / (highest - lowest)) * 100;
-
-    return {
-      k: k,
-      d: k // Simplified - in practice you'd smooth this
-    };
-  }
-
-  calculateBollingerBands(prices, period = 20, stdDev = 2) {
-    if (prices.length < period) return null;
-
-    const recentPrices = prices.slice(-period);
-    const sma = recentPrices.reduce((a, b) => a + b, 0) / period;
-
-    const variance = recentPrices.reduce((sum, price) => {
-      return sum + Math.pow(price - sma, 2);
-    }, 0) / period;
-
-    const std = Math.sqrt(variance);
-
-    return {
-      upper: sma + (stdDev * std),
-      middle: sma,
-      lower: sma - (stdDev * std),
-      bandwidth: (std * stdDev * 2) / sma
-    };
-  }
-
-  calculateATR(highs, lows, closes, period = 14) {
-    if (closes.length < period + 1) return [];
-
-    const trueRanges = [];
-
-    for (let i = 1; i < closes.length; i++) {
-      const tr1 = highs[i] - lows[i];
-      const tr2 = Math.abs(highs[i] - closes[i - 1]);
-      const tr3 = Math.abs(lows[i] - closes[i - 1]);
-
-      trueRanges.push(Math.max(tr1, tr2, tr3));
-    }
-
-    // Simple ATR calculation (could be improved with Wilder's smoothing)
+    
+    let avgGain = gains.slice(0, period).reduce((a, b) => a + b, 0) / period;
+    let avgLoss = losses.slice(0, period).reduce((a, b) => a + b, 0) / period;
+    
     const result = [];
-    for (let i = period - 1; i < trueRanges.length; i++) {
-      const avg = trueRanges.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0) / period;
-      result.push(avg);
+    
+    for (let i = period; i < gains.length; i++) {
+      avgGain = ((avgGain * (period - 1)) + gains[i]) / period;
+      avgLoss = ((avgLoss * (period - 1)) + losses[i]) / period;
+      
+      const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+      const rsi = avgLoss === 0 ? 100 : 100 - (100 / (1 + rs));
+      result.push(rsi);
     }
-
+    
     return result;
   }
 
-  calculateVolumeRatio(volumes) {
-    if (volumes.length < 20) return null;
-
-    const recentVolume = volumes[volumes.length - 1];
-    const avgVolume = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
-
-    return recentVolume / avgVolume;
-  }
-
-  calculateOBV(closes, volumes) {
-    if (closes.length !== volumes.length || closes.length < 2) return null;
-
-    let obv = 0;
-    for (let i = 1; i < closes.length; i++) {
-      if (closes[i] > closes[i - 1]) {
-        obv += volumes[i];
-      } else if (closes[i] < closes[i - 1]) {
-        obv -= volumes[i];
+  /**
+   * Calculate MACD
+   */
+  calculateMACD(values, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) {
+    const emaFast = this.calculateEMA(values, fastPeriod);
+    const emaSlow = this.calculateEMA(values, slowPeriod);
+    
+    const macdLine = [];
+    for (let i = 0; i < values.length; i++) {
+      if (emaFast[i] !== null && emaSlow[i] !== null) {
+        macdLine.push(emaFast[i] - emaSlow[i]);
+      } else {
+        macdLine.push(null);
       }
-      // If price unchanged, OBV remains the same
     }
-
-    return obv;
-  }
-
-  calculatePivotPoints(high, low, close) {
-    const pivot = (high + low + close) / 3;
+    
+    const signalLine = this.calculateEMA(macdLine.filter(v => v !== null), signalPeriod);
+    const histogram = [];
+    
+    let signalIndex = 0;
+    for (let i = 0; i < macdLine.length; i++) {
+      if (macdLine[i] !== null && signalIndex < signalLine.length) {
+        histogram.push(macdLine[i] - signalLine[signalIndex]);
+        signalIndex++;
+      } else {
+        histogram.push(null);
+      }
+    }
+    
     return {
-      pivot,
-      r1: (2 * pivot) - low,
-      r2: pivot + (high - low),
-      s1: (2 * pivot) - high,
-      s2: pivot - (high - low)
+      macd: macdLine,
+      signal: signalLine,
+      histogram
     };
   }
 
-  calculateMarketBreadth(quotes) {
-    // This would be more sophisticated with multiple symbols
-    // For now, return basic breadth metrics
+  /**
+   * Calculate Bollinger Bands
+   */
+  calculateBollingerBands(values, period = 20, stdDev = 2) {
+    const sma = this.calculateSMA(values, period);
+    const lastSMA = sma[sma.length - 1];
+    
+    if (!lastSMA) return { upper: 0, middle: 0, lower: 0 };
+    
+    // Calculate standard deviation
+    const recentValues = values.slice(-period);
+    const variance = recentValues.reduce((sum, val) => sum + Math.pow(val - lastSMA, 2), 0) / period;
+    const std = Math.sqrt(variance);
+    
     return {
-      advancing: 0, // Would count symbols above their SMA
-      declining: 0, // Would count symbols below their SMA
-      unchanged: 0,
-      advanceDeclineRatio: 1.0
+      upper: lastSMA + (std * stdDev),
+      middle: lastSMA,
+      lower: lastSMA - (std * stdDev)
     };
-  }
-
-  calculateATRPercentile(atr, closes) {
-    // Simplified percentile calculation
-    // In practice, you'd compare against historical ATR distribution
-    const currentPrice = closes[closes.length - 1];
-    const atrPercent = (atr / currentPrice) * 100;
-
-    // Rough percentile mapping based on typical ATR ranges
-    if (atrPercent > 3) return 90;
-    if (atrPercent > 2) return 75;
-    if (atrPercent > 1.5) return 60;
-    if (atrPercent > 1) return 45;
-    if (atrPercent > 0.5) return 25;
-    return 10;
-  }
-
-  /**
-   * Get bulk indicators for multiple symbols
-   */
-  async getBulkIndicators(symbols, lookback = 100) {
-    const results = {};
-
-    for (const symbol of symbols) {
-      try {
-        results[symbol] = await this.getIndicators(symbol, lookback);
-      } catch (error) {
-        console.error(`Failed to get indicators for ${symbol}:`, error);
-        results[symbol] = null;
-      }
-    }
-
-    return results;
-  }
-
-  /**
-   * Clear caches (useful for testing or memory management)
-   */
-  clearCache() {
-    this.indicatorsCache.clear();
-    this.regimeCache.clear();
   }
 }
 

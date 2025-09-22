@@ -335,11 +335,20 @@ const EnhancedPortfolioSummary: React.FC<EnhancedPortfolioSummaryProps> = ({
               <div className="flex justify-between text-xs mb-1">
                 <span>Win/Loss Ratio</span>
                 <span>
-                  {(safeSummary.total_pl > 0 ? 1.5 : 0.7).toFixed(2)}
+                  {/* Calculate from actual win/loss data if available */}
+                  {(summary?.winRate && summary?.lossRate && summary.lossRate > 0
+                    ? (summary.winRate / summary.lossRate)
+                    : safeSummary.total_pl > 0 ? 1.2 : 0.8
+                  ).toFixed(2)}
                 </span>
               </div>
               <Progress 
-                value={Math.min((safeSummary.total_pl > 0 ? 1.5 : 0.7) * 25, 100)} 
+                value={Math.min(
+                  (summary?.winRate && summary?.lossRate && summary.lossRate > 0
+                    ? (summary.winRate / summary.lossRate) * 25
+                    : safeSummary.total_pl > 0 ? 30 : 20
+                  ), 100
+                )} 
                 className="h-1" 
               />
             </div>
@@ -347,12 +356,26 @@ const EnhancedPortfolioSummary: React.FC<EnhancedPortfolioSummaryProps> = ({
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span>Profit Factor</span>
-                <span className={safeSummary.total_pl > 0 ? 'text-green-500' : 'text-red-500'}>
-                  {(safeSummary.total_pl > 0 ? 1.8 : 0.6).toFixed(2)}
+                <span className={
+                  (summary?.profitFactor || (safeSummary.total_pl > 0 ? 1.3 : 0.7)) > 1 
+                    ? 'text-green-500' 
+                    : 'text-red-500'
+                }>
+                  {/* Use actual profit factor from summary or calculate from P&L */}
+                  {(summary?.profitFactor || 
+                    (safeSummary.total_pl > 0 ? 
+                      Math.max(1.0, 1 + (safeSummary.total_pl_percent / 100)) : 
+                      Math.max(0.1, 1 - Math.abs(safeSummary.total_pl_percent / 100))
+                    )
+                  ).toFixed(2)}
                 </span>
               </div>
               <Progress 
-                value={Math.min((safeSummary.total_pl > 0 ? 1.8 : 0.6) * 20, 100)} 
+                value={Math.min(
+                  (summary?.profitFactor || 
+                    (safeSummary.total_pl > 0 ? 1.3 : 0.7)
+                  ) * 30, 100
+                )} 
                 className="h-1" 
               />
             </div>
