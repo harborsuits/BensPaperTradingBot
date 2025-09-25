@@ -1,9 +1,9 @@
 import React from 'react';
 import { RefreshCw, Wifi, WifiOff, Clock } from 'lucide-react';
 import { useSyncStatus, useRefreshData } from '@/hooks/useSyncedData';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip';
 
 export function SyncStatusIndicator() {
   const { isConnected, lastSync, timeSinceSync } = useSyncStatus();

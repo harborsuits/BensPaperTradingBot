@@ -34,6 +34,25 @@ class AutoEvolutionManager extends EventEmitter {
   }
   
   /**
+   * Set configuration options
+   */
+  setConfig(options) {
+    if (options.tradeTriggerThreshold) {
+      this.config.tradesPerCycle = options.tradeTriggerThreshold;
+    }
+    if (options.timeTriggerHours) {
+      this.config.scheduleInterval = options.timeTriggerHours * 60 * 60 * 1000;
+    }
+    if (options.newsEventTrigger !== undefined) {
+      this.config.newsEventTrigger = options.newsEventTrigger;
+    }
+    if (options.minBotCount) {
+      this.config.minBotCount = options.minBotCount;
+    }
+    console.log('[AutoEvolution] Config updated:', this.config);
+  }
+  
+  /**
    * Start the auto evolution manager
    */
   start() {

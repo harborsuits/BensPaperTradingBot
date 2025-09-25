@@ -146,7 +146,8 @@ export default function PortfolioCard() {
     );
   }
 
-  const totalValue = cash + equity;
+  // Equity already includes cash, so total value is just equity
+  const totalValue = equity;
   const dayPnlPercent = totalValue > 0 ? (dayPnl / totalValue) * 100 : 0;
   const openPnlPercent = totalValue > 0 ? (openPnl / totalValue) * 100 : 0;
 
@@ -228,13 +229,16 @@ export default function PortfolioCard() {
         {positions.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Top Positions</span>
+              <span className="text-sm font-medium">Top Performers</span>
               <span className="text-xs text-muted-foreground">
                 {positions.length} total
               </span>
             </div>
             <div className="space-y-2">
-              {positions.slice(0, 3).map((position) => (
+              {positions
+                .sort((a, b) => (b.pnl || 0) - (a.pnl || 0)) // Sort by P&L descending (best first)
+                .slice(0, 3)
+                .map((position) => (
                 <div key={position.symbol} className="flex items-center justify-between bg-muted/30 rounded-lg p-2">
                   <div className="flex items-center gap-2">
                     <Target className="w-4 h-4 text-muted-foreground" />

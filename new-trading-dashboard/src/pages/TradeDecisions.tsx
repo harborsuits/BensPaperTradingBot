@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 import {
   BarChart3, 
   Activity,
@@ -11,11 +13,15 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown
 } from 'lucide-react';
 import { useDecisionsRecent } from '@/hooks/useDecisionsRecent';
 import { useSyncedStrategies, useSyncedOrders, useSyncedPipelineHealth, useSyncedEvoStatus } from '@/hooks/useSyncedData';
 import { PipelineFlowDiagram } from '@/components/ui/PipelineFlowDiagram';
+import { performanceApi, pipelineApi } from '@/services/api';
+import { formatCurrency, formatNumber, formatTimestamp } from '@/utils/formatters';
 
 const TradeDecisionsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,6 +92,14 @@ const TradeDecisionsPage: React.FC = () => {
 const StrategiesTab: React.FC = () => {
   const { data: strategiesData, isLoading } = useSyncedStrategies();
   const strategies = Array.isArray(strategiesData) ? strategiesData : strategiesData?.items || [];
+  
+  // Fetch performance data for all strategies
+  const { data: performanceData } = useQuery({
+    queryKey: ['performance', 'strategies'],
+    queryFn: () => performanceApi.getAllStrategiesPerformance(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+    enabled: strategies.length > 0
+  });
 
   if (isLoading) {
     return <div className="text-center py-8">Loading strategies...</div>;
@@ -167,9 +181,23 @@ const StrategiesTab: React.FC = () => {
 // Pipeline Tab
 const PipelineTab: React.FC = () => {
   const { data: pipelineData, isLoading, error } = useSyncedPipelineHealth('15m');
+  
+  // Fetch real pipeline health data
+  const { data: pipelineHealth } = useQuery({
+    queryKey: ['pipeline', 'health'],
+    queryFn: () => pipelineApi.getHealth(),
+    refetchInterval: 15000, // Refresh every 15 seconds
+  });
+  
+  // Fetch brain flow data
+  const { data: brainFlow } = useQuery({
+    queryKey: ['brain', 'flow'],
+    queryFn: () => pipelineApi.getBrainFlow(),
+    refetchInterval: 10000, // Refresh every 10 seconds
+  });
 
   // Debug logging
-  console.log('Pipeline Tab State:', { pipelineData, isLoading, error });
+  console.log('Pipeline Tab State:', { pipelineData, pipelineHealth, brainFlow, isLoading, error });
 
   if (isLoading) {
     return <div className="text-center py-8">Loading pipeline data...</div>;
@@ -206,33 +234,33 @@ const PipelineTab: React.FC = () => {
               stages={[
                 { 
                   name: 'Input', 
-                  count: pipelineData.total_scores || 0, 
-                  status: pipelineData.total_scores > 0 ? 'success' : 'warning',
-                  details: `${pipelineData.unique_symbols || 0} symbols`
+                  count: brainFlow?.flow?.input?.symbols || pipelineHealth?.rosterSize || pipelineData?.total_scores || 0, 
+                  status: (brainFlow?.flow?.input?.symbols || pipelineHealth?.rosterSize || 0) > 0 ? 'success' : 'warning',
+                  details: `${brainFlow?.flow?.input?.dataPoints || pipelineData?.unique_symbols || 0} data points`
                 },
                 { 
-                  name: 'Validation', 
-                  count: Math.floor((pipelineData.total_scores || 0) * 0.8), 
-                  status: 'success',
-                  details: 'Format & range checks'
+                  name: 'Processing', 
+                  count: brainFlow?.flow?.processing?.active || Math.floor((pipelineData?.total_scores || 0) * 0.8), 
+                  status: brainFlow?.flow?.processing?.active > 0 ? 'processing' : 'success',
+                  details: `${brainFlow?.flow?.processing?.queued || 0} queued`
                 },
                 { 
                   name: 'Scoring', 
-                  count: Math.floor((pipelineData.total_scores || 0) * 0.7), 
-                  status: pipelineData.avg_score > 0.5 ? 'success' : 'warning',
-                  details: `Avg: ${((pipelineData.avg_score || 0) * 100).toFixed(0)}%`
+                  count: brainFlow?.flow?.processing?.completed || Math.floor((pipelineData?.total_scores || 0) * 0.7), 
+                  status: pipelineData?.avg_score > 0.5 ? 'success' : 'warning',
+                  details: `Confidence: ${brainFlow?.flow?.output?.confidence || ((pipelineData?.avg_score || 0) * 100).toFixed(0)}%`
                 },
                 { 
                   name: 'Gates', 
-                  count: pipelineData.high_confidence || 0, 
-                  status: pipelineData.high_confidence > 0 ? 'success' : 'error',
+                  count: pipelineData?.high_confidence || 0, 
+                  status: pipelineData?.high_confidence > 0 ? 'success' : 'error',
                   details: 'Risk & confidence'
                 },
                 { 
                   name: 'Output', 
-                  count: pipelineData.high_confidence || 0, 
-                  status: 'processing',
-                  details: 'Ready to trade'
+                  count: brainFlow?.flow?.output?.decisions || pipelineHealth?.decisionsRecent || pipelineData?.high_confidence || 0, 
+                  status: (brainFlow?.flow?.output?.decisions || pipelineHealth?.decisionsRecent || 0) > 0 ? 'success' : 'idle',
+                  details: brainFlow?.flow?.output?.actions || 'Ready to trade'
                 }
               ]}
               className="mb-6"
@@ -245,24 +273,36 @@ const PipelineTab: React.FC = () => {
             <div className="grid grid-cols-4 gap-4 mb-4">
             <div>
               <span className="text-muted-foreground text-sm">Total Processed</span>
-              <p className="text-2xl font-bold">{pipelineData.total_scores || 0}</p>
+              <p className="text-2xl font-bold">{
+                brainFlow?.flow?.processing?.completed || 
+                pipelineData?.total_scores || 
+                0
+              }</p>
             </div>
             <div>
-              <span className="text-muted-foreground text-sm">Avg Score</span>
+              <span className="text-muted-foreground text-sm">Avg Latency</span>
               <p className={`text-2xl font-bold ${
-                (pipelineData.avg_score || 0) > 0.7 ? 'text-green-600' : 
-                (pipelineData.avg_score || 0) > 0.5 ? 'text-yellow-600' : 'text-red-600'
+                (brainFlow?.flow?.latency?.avg_ms || 0) < 100 ? 'text-green-600' : 
+                (brainFlow?.flow?.latency?.avg_ms || 0) < 200 ? 'text-yellow-600' : 'text-red-600'
               }`}>
-                {((pipelineData.avg_score || 0) * 100).toFixed(0)}%
+                {brainFlow?.flow?.latency?.avg_ms || 0}ms
               </p>
         </div>
             <div>
-              <span className="text-muted-foreground text-sm">High Confidence</span>
-              <p className="text-2xl font-bold text-blue-600">{pipelineData.high_confidence || 0}</p>
+              <span className="text-muted-foreground text-sm">Active Symbols</span>
+              <p className="text-2xl font-bold text-blue-600">{
+                pipelineHealth?.rosterSize || 
+                brainFlow?.flow?.input?.symbols || 
+                0
+              }</p>
             </div>
             <div>
-              <span className="text-muted-foreground text-sm">Last Update</span>
-              <p className="text-sm">{pipelineData.asOf ? new Date(pipelineData.asOf).toLocaleTimeString() : 'N/A'}</p>
+              <span className="text-muted-foreground text-sm">Data Freshness</span>
+              <p className="text-sm">{
+                pipelineHealth?.quotesFreshSec ? 
+                  `${pipelineHealth.quotesFreshSec}s ago` : 
+                  'N/A'
+              }</p>
             </div>
           </div>
 

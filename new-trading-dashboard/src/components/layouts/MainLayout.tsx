@@ -22,7 +22,8 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  TrendingUp
+  TrendingUp,
+  BookOpen
 } from 'lucide-react';
 
 const MainLayout: React.FC = () => {
@@ -42,10 +43,12 @@ const MainLayout: React.FC = () => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/portfolio', label: 'Portfolio', icon: <Briefcase size={20} /> },
+    { path: '/options', label: 'Options', icon: <LineChart size={20} /> },
     { path: '/decisions', label: 'Trade Decisions', icon: <BarChart3 size={20} /> },
     { path: '/market', label: 'Market Data', icon: <TrendingUp size={20} /> },
     { path: '/evotester', label: 'EvoTester', icon: <Brain size={20} /> },
     { path: '/logs', label: 'Logs & Alerts', icon: <FileText size={20} /> },
+    { path: '/story', label: "Today's Story", icon: <BookOpen size={20} /> },
   ];
 
   const toggleSidebar = () => {

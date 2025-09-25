@@ -50,6 +50,7 @@ import TradesTable from '@/components/TradesTable';
 import ScannerCandidatesCard from '@/components/cards/ScannerCandidatesCard';
 import RealtimeBanner from '@/components/Banners/RealtimeBanner';
 import EvoTestCard from '@/components/ui/EvoTestCard';
+import OptionsSummaryCard from '@/components/options/OptionsSummaryCard';
 
 // Helpers to make rendering resilient to undefined data
 const asArray = <T,>(v: T[] | undefined | null): T[] => (Array.isArray(v) ? v : []);
@@ -648,8 +649,8 @@ const DashboardPage: React.FC = () => {
             {/* 7. Orders Snapshot Card */}
             <OrdersSnapshotCard />
 
-            {/* 8. Live & R&D Card */}
-            <LiveRnDCard />
+            {/* 8. Options Trading Card */}
+            {/* <OptionsSummaryCard /> */}
           </div>
         </ErrorBoundary>
 

@@ -162,7 +162,7 @@ class TournamentController {
             return null; // Not enough time yet
         }
 
-        if (perf.total_trades < roundConfig.minTrades) {
+        if (!perf.total_trades || perf.total_trades < roundConfig.minTrades) {
             return null; // Not enough trades yet
         }
 
@@ -212,10 +212,25 @@ class TournamentController {
     meetsPromotionCriteria(strategy, criteria) {
         const perf = strategy.performance || {};
 
+        // First check if we have meaningful performance data
+        // A strategy needs at least some trades to be evaluated
+        if (!perf.total_trades || perf.total_trades < 10) {
+            return false; // Not enough data to evaluate
+        }
+
+        // Check if performance metrics are actually calculated (not default/null values)
+        if (perf.sharpe_ratio === undefined || perf.sharpe_ratio === null || perf.sharpe_ratio === 0) {
+            return false; // No meaningful Sharpe ratio yet
+        }
+        
+        if (perf.profit_factor === undefined || perf.profit_factor === null || perf.profit_factor === 0) {
+            return false; // No meaningful profit factor yet
+        }
+
         // Basic metrics check
         if (perf.sharpe_ratio < criteria.minSharpe) return false;
         if (perf.profit_factor < criteria.minPf) return false;
-        if (perf.max_drawdown > criteria.maxDd) return false;
+        if (Math.abs(perf.max_drawdown || 0) > criteria.maxDd) return false;
 
         // Breach check
         if (criteria.maxBreaches !== undefined) {

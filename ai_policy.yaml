@@ -1,0 +1,45 @@
+name: default_policy
+description: Default trading policy for AI orchestrator
+version: 1.0.0
+
+rules:
+  # Risk management rules
+  - name: max_position_size
+    type: position
+    condition: "position_value > account_equity * 0.1"
+    action: reject
+    reason: "Position too large (>10% of equity)"
+    
+  - name: daily_loss_limit
+    type: portfolio
+    condition: "daily_pnl < -account_equity * 0.02"
+    action: halt_trading
+    reason: "Daily loss limit reached (-2%)"
+    
+  # Market condition rules
+  - name: high_volatility_reduction
+    type: market
+    condition: "vix > 25"
+    action: reduce_size
+    factor: 0.5
+    reason: "High volatility - reducing position sizes"
+    
+  # Trading strategy rules
+  - name: allow_momentum_trading
+    type: strategy
+    strategies: ["momentum", "trend_following"]
+    condition: "market_trend == 'bullish'"
+    action: allow
+    
+  - name: enable_mean_reversion
+    type: strategy
+    strategies: ["mean_reversion", "pairs_trading"]
+    condition: "market_trend == 'sideways'"
+    action: allow
+
+# Default parameters
+defaults:
+  max_trades_per_day: 50
+  min_trade_interval_ms: 5000
+  risk_per_trade: 0.01
+  confidence_threshold: 0.55

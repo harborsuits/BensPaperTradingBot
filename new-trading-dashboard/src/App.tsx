@@ -12,6 +12,8 @@ import TestEvoPage from '@/pages/TestEvoPage';
 import EvoTesterSimple from '@/pages/EvoTesterSimple';
 import NewsPage from '@/pages/NewsPage';
 import BrainPage from '@/pages/BrainPage';
+import OptionsPage from '@/pages/OptionsPage';
+import StoryReportPage from '@/pages/StoryReportPage';
 import { Outlet } from 'react-router-dom';
 
 export default function App() {
@@ -21,6 +23,7 @@ export default function App() {
       children: [
         { index: true, element: <DashboardPage /> },
         { path: '/portfolio', element: <PortfolioPage /> },
+        { path: '/options', element: <OptionsPage /> },
         { path: '/decisions', element: <TradeDecisionsPage /> },
         { path: '/brain', element: <BrainPage /> },
         { path: '/market', element: <MarketDataPage /> },
@@ -30,6 +33,7 @@ export default function App() {
         { path: '/testevo', element: <TestEvoPage /> },
         { path: '/news', element: <NewsPage /> },
         { path: '/news/:symbol', element: <NewsPage /> },
+        { path: '/story', element: <StoryReportPage /> },
       ],
     },
     { path: '*', element: <Navigate to="/" replace /> },

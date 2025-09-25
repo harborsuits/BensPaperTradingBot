@@ -2,6 +2,7 @@ ai_policy:
   # Global paper trading budget and concurrency limits
   paper_cap_max: 20000
   exploration_quota: 0.10
+  options_allocation: 0.15  # 15% of capital for options strategies
   rounds:
     R1: { max_slots: 50, cap_total: 5000, criteria: { trades_min: 40, sharpe_min: 0.9, pf_min: 1.15, dd_max: 0.08, breaches_max: 0 } }
     R2: { max_slots: 20, cap_total: 8000, criteria: { sharpe_min: 1.1, pf_min: 1.25, dd_max: 0.07, slip_bps_over_model_max: 5 } }
@@ -47,6 +48,24 @@ families:
       min_vol_x: [1.2,2.0]
       slippage_bps_max: [10,25]
       sl_atr: [0.9,1.5]
+
+  options_covered:
+    weight: 0.1
+    genes:
+      min_delta: [0.25,0.40]
+      days_to_exp: [21,45]
+      min_iv: [0.15,0.30]
+      target_premium_pct: [0.015,0.025]
+      contracts_limit: [1,5]
+
+  options_puts:
+    weight: 0.1
+    genes:
+      min_delta: [0.20,0.35]
+      days_to_exp: [21,45]
+      min_iv: [0.18,0.35]
+      otm_pct: [0.03,0.08]
+      contracts_limit: [1,3]
 
 # Trigger thresholds for autonomous decisions
 triggers:

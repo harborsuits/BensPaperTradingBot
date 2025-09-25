@@ -12,7 +12,7 @@ const SeedGenerator = require('./seed_generator');
 const PolicyEngine = require('./policy_engine');
 
 class AIOrchestrator {
-    constructor(strategyManager, tournamentController, marketIndicators, configPath = './ai_policy.yaml') {
+    constructor(strategyManager, tournamentController, marketIndicators, configPath = path.join(__dirname, '../../ai_policy.yaml')) {
         this.strategyManager = strategyManager;
         this.tournamentController = tournamentController;
         this.marketIndicators = marketIndicators;

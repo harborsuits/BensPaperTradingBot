@@ -4,6 +4,7 @@
  */
 
 const { recorder } = require('./marketRecorder');
+const rateLimiter = require('../../services/rateLimiter');
 
 class DiamondsScorer {
   constructor() {
@@ -226,10 +227,14 @@ class DiamondsScorer {
       const axios = require('axios');
       const apiBaseUrl = process.env.API_BASE_URL || 'http://localhost:4000';
       
-      // Get recent news
-      const newsResponse = await axios.get(`${apiBaseUrl}/api/context/news`, {
-        params: { limit: 50 }
-      });
+      // Get recent news with rate limiting
+      const newsResponse = await rateLimiter.executeWithLimit(
+        'finnhub',
+        'news',
+        async () => axios.get(`${apiBaseUrl}/api/context/news`, {
+          params: { limit: 50 }
+        })
+      );
       
       const newsItems = newsResponse.data || [];
       
@@ -240,30 +245,17 @@ class DiamondsScorer {
         if (news.symbols && news.symbols.length > 0) {
           // Process each symbol mentioned in the news
           for (const symbol of news.symbols) {
-            const impactScore = await this.calculateDiamondScore(symbol, news.timestamp, {
-              sentiment: news.sentiment || 0,
+            const diamond = await this.calculateImpactScore(symbol, {
+              id: news.id,
+              headline: news.headline || news.title,
               source: news.source,
-              headline: news.headline || news.title
+              url: news.url,
+              ts_feed: news.timestamp || news.published_at,
+              sentiment: news.sentiment || 0
             });
             
-            if (impactScore >= minScore) {
-              diamonds.push({
-                symbol,
-                impactScore,
-                components: {
-                  sentiment: Math.abs(news.sentiment || 0),
-                  volume: 0.7 + Math.random() * 0.3, // Would need real volume data
-                  priceReaction: 0.6 + Math.random() * 0.4, // Would need real price data
-                  recency: this.calculateRecencyScore(news.timestamp)
-                },
-                evidence: {
-                  newsId: news.id,
-                  headline: news.headline || news.title,
-                  source: news.source,
-                  url: news.url,
-                  timestamp: news.timestamp
-                }
-              });
+            if (diamond.impactScore >= minScore) {
+              diamonds.push(diamond);
             }
           }
         }

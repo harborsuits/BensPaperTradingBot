@@ -242,6 +242,30 @@ export const decisionApi = {
     apiRequest<TradeCandidate[]>({ url: `/decisions?date=${date}`, method: 'GET' }),
 };
 
+// Performance tracking API
+export const performanceApi = {
+  getAllStrategiesPerformance: () => 
+    apiRequest<any>({ url: '/performance/strategies', method: 'GET' }),
+  getStrategyPerformance: (id: string) => 
+    apiRequest<any>({ url: `/performance/strategies/${id}`, method: 'GET' }),
+  getDecisionPerformance: () => 
+    apiRequest<any>({ url: '/performance/decisions', method: 'GET' }),
+  getLiveMetrics: (strategy: string) => 
+    apiRequest<any>({ url: `/metrics/live?strategy=${strategy}`, method: 'GET' })
+};
+
+// Pipeline API
+export const pipelineApi = {
+  getHealth: () => 
+    apiRequest<any>({ url: '/pipeline/health', method: 'GET' }),
+  getStatus: () => 
+    apiRequest<any>({ url: '/pipeline/status', method: 'GET' }),
+  getBrainFlow: () => 
+    apiRequest<any>({ url: '/brain/flow', method: 'GET' }),
+  getBrainFlowSummary: (window: string = '15m') => 
+    apiRequest<any>({ url: `/brain/flow/summary?window=${window}`, method: 'GET' })
+};
+
 // Portfolio endpoints
 export const portfolioApi = {
   getPortfolio: (account: 'live' | 'paper') => 
@@ -364,21 +388,17 @@ export const ingestionApi = {
     () => apiRequest<DataSourceStatusModel[]>({ url: '/data/sources/status', method: 'GET' }),
   ], []),
   getMetrics: async () => tryRequests<IngestionMetricsModel>([
-    // Prefer same-origin /metrics in dev; fall back to /data/metrics
-    async () => {
-      const apiBase = import.meta.env.DEV ? '' : (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}` : '');
-      const direct = await axios.get(apiBase + '/metrics');
-      return { success: true, data: direct.data } as ApiResponse<IngestionMetricsModel>;
-    },
+    // Try /api/metrics first, then fall back to /data/metrics
+    () => apiRequest<IngestionMetricsModel>({ url: '/api/metrics', method: 'GET' }),
     () => apiRequest<IngestionMetricsModel>({ url: '/data/metrics', method: 'GET' }),
   ], {} as unknown as IngestionMetricsModel),
   getDataStatus: async () => {
     // Resilient metrics: JSON /metrics → Prometheus /metrics/prom → /data/status → safe fallback
-    const apiBase = import.meta.env.DEV ? '' : (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}` : '');
     const res = await tryRequests<DataStatusSummary>([
-      // 1) JSON /metrics
+      // 1) JSON /api/metrics
       async () => {
-        const r = await axios.get(apiBase + '/metrics');
+        // Use the configured API instance which already handles base URLs properly
+        const r = await api.get('/metrics');
         const m = r?.data ?? {};
         const now = new Date().toISOString();
         const data: DataStatusSummary = {
@@ -633,6 +653,8 @@ export default {
   context: contextApi,
   strategy: strategyApi,
   decision: decisionApi,
+  performance: performanceApi,
+  pipeline: pipelineApi,
   portfolio: portfolioApi,
   logging: loggingApi,
   evoTester: evoTesterApi,

@@ -1,0 +1,423 @@
+[CircuitBreaker] Initialized with config: {
+  maxFailuresPerWindow: 5,
+  windowSizeMs: 60000,
+  cooldownPeriodMs: 300000,
+  halfOpenTestLimit: 3,
+  maxApiErrors: 3,
+  maxOrderFailures: 5,
+  maxDataStaleness: 30000,
+  maxDrawdownPercent: 0.05,
+  maxDailyLossPercent: 0.02,
+  maxPositionLossPercent: 0.1
+}
+[AutoLoop] Circuit breaker initialized
+[DataValidator] Initialized with config: {
+  maxQuoteAgeMs: 5000,
+  maxBarAgeMs: 300000,
+  maxNewsAgeMs: 3600000,
+  maxSpreadPercent: 0.05,
+  minPrice: 0.01,
+  maxPrice: 100000,
+  maxPriceChangePercent: 0.2,
+  minVolume: 1000,
+  minAvgVolume: 100000,
+  haltDetectionWindowMs: 300000,
+  noTradeThresholdMs: 60000
+}
+[AutoLoop] Data validator initialized
+[PerformanceRecorder] Loaded 57 trades, 225 decisions
+[StrategyManager] Registered strategy: rsi_reversion
+[StrategyManager] Registered strategy: ma_crossover
+[StrategyManager] Registered strategy: options_covered_calls
+[StrategyManager] Registered strategy: options_cash_puts
+[StrategyManager] Started strategy: rsi_reversion
+[StrategyManager] Started strategy: ma_crossover
+[StrategyManager] Started strategy: options_covered_calls
+[StrategyManager] Started strategy: options_cash_puts
+[Options] Options strategies enabled
+[CapitalTracker] Initialized
+[CapitalTracker] Started tracking
+[CapitalTracker] Initialized and started
+[CircuitBreaker] Initialized with config: {
+  maxFailuresPerWindow: 5,
+  windowSizeMs: 60000,
+  cooldownPeriodMs: 300000,
+  halfOpenTestLimit: 3,
+  maxApiErrors: 3,
+  maxOrderFailures: 5,
+  maxDataStaleness: 30000,
+  maxDrawdownPercent: 0.05,
+  maxDailyLossPercent: 0.02,
+  maxPositionLossPercent: 0.1
+}
+[CircuitBreaker] Initialized for system protection
+[RateLimiter] Initialized with provider limits
+[RateLimiter] Initialized for API rate management
+[AI_ORCHESTRATOR] Policy loaded: [
+  'ai_policy',
+  'families',
+  'triggers',
+  'guardrails',
+  'regimes',
+  'learning'
+]
+[AI_ORCHESTRATOR] Initialized with policy version: latest
+[AI] Initialized AI Orchestrator and Tournament Controller
+[EvolutionBridge] Initialized
+[GeneticInheritance] Initialized
+[AutoEvolution] Starting automatic evolution cycling
+[AutoEvolution] Checking evolution triggers...
+[AutoEvolution] Started automatic evolution cycling
+Enhanced Minimal Live-API server listening on http://localhost:4000
+Available endpoints:
+- /api/health
+- /api/alerts
+- /api/autoloop/status
+- /api/bars
+- /api/brain/flow/summary
+- /api/brain/status
+- /api/brain/activity
+- /api/context/news
+- /api/decisions/*
+- /api/decisions/summary
+- /api/evotester/history
+- /api/evo/status
+- /api/lab/diamonds
+- /api/logs
+- /api/events/logs
+- /api/portfolio/*
+- /api/paper/*
+- /api/strategies
+- /api/quotes
+- /api/competition/poolStatus
+- /metrics
+- WebSocket endpoints: /ws, /ws/prices, /ws/decisions
+[AutoLoop] Enabled but market is closed. Will start at 9:30 AM ET.
+[StrategyManager] Strategies started
+[AI_ORCHESTRATOR] Starting autonomous operation...
+[AI_ORCHESTRATOR] Starting orchestration cycle...
+[AI_ORCHESTRATOR] Orchestration loop started (900s intervals)
+[AI Orchestrator] Started autonomous operation
+[AutoEvolution] Triggers active: scheduled_time, performance_stagnation
+[AutoEvolution] Starting new evolution cycle, trigger: scheduled_time
+[AutoEvolution] Started competition comp-1758522960121 with 100 evolved bots
+[Database] Connected to SQLite database
+[2025-09-22T06:36:00.126Z] GET /api/bars?symbol=SPY&timeframe=1Day&limit=200
+[Database] All tables created successfully
+[PerformanceRecorder] Database initialized
+[2025-09-22T06:36:00.601Z] GET /api/bars?symbol=VIX&timeframe=1Day&limit=50
+Failed to compute indicators for VIX: Insufficient data for VIX: 0 bars
+[AI_ORCHESTRATOR] Market context: bull_low regime, low volatility
+[POLICY_ENGINE] Evaluated triggers: capacity
+[AI_ORCHESTRATOR] Active triggers: capacity
+[AI_ORCHESTRATOR] Spawning 10 R1 strategies with families: [ 'trend', 'meanrev', 'breakout' ]
+[SEED_GENERATOR] Generating 10 phenotypes for families: [ 'trend', 'meanrev', 'breakout' ]
+[SEED_GENERATOR] Generated 10 phenotypes
+[EvolvedStrategy] Initialized evo_1758522960649_0_ozvt65e6z (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_0_ozvt65e6z
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_0_ozvt65e6z (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_1_qpjkblvw6 (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_1_qpjkblvw6
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_1_qpjkblvw6 (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_2_x0rhhdn7c (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_2_x0rhhdn7c
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_2_x0rhhdn7c (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_3_d4y14y18o (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_3_d4y14y18o
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_3_d4y14y18o (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_4_ls5qjqo34 (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_4_ls5qjqo34
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_4_ls5qjqo34 (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_5_b94exqerl (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_5_b94exqerl
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_5_b94exqerl (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_6_pn9dga5ch (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_6_pn9dga5ch
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_6_pn9dga5ch (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_7_uhy5ezu8p (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_7_uhy5ezu8p
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_7_uhy5ezu8p (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_8_3r239gs59 (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_8_3r239gs59
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_8_3r239gs59 (Gen 1)
+[EvolvedStrategy] Initialized evo_1758522960649_9_hxcq7avi6 (unknown family)
+[StrategyManager] Registered strategy: evo_1758522960649_9_hxcq7avi6
+[TOURNAMENT] Registered EvoTester phenotype: evo_1758522960649_9_hxcq7avi6 (Gen 1)
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Evaluated 14 strategies, made 0 decisions (0 promotions)
+[TOURNAMENT] Cycle complete. 0 decisions made.
+[AI_ORCHESTRATOR] Cycle complete. Triggered: spawnR1
+[TOURNAMENT] Starting initial tournament cycle...
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Evaluated 14 strategies, made 0 decisions (0 promotions)
+[TOURNAMENT] Cycle complete. 0 decisions made.
+[2025-09-22T06:36:19.074Z] GET /api/database/status
+[2025-09-22T06:36:26.977Z] GET /api/rate-limiter/status
+[2025-09-22T06:36:34.321Z] GET /api/rate-limiter/status?provider=tradier
+[2025-09-22T06:36:44.255Z] GET /api/circuit-breaker/status
+[2025-09-22T06:36:44.264Z] GET /api/capital/status
+[2025-09-22T06:36:44.272Z] GET /api/database/status
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[2025-09-22T06:47:44.767Z] GET /api/paper/positions
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[TOURNAMENT] Running tournament cycle...
+[TOURNAMENT] Evaluated 14 strategies, made 0 decisions (0 promotions)
+[TOURNAMENT] Cycle complete. 0 decisions made.
+[2025-09-22T06:51:57.931Z] GET /api/ai/policy
+[2025-09-22T06:52:03.024Z] GET /api/health
+WebSocket connected: /ws/prices
+WebSocket connected: /ws/decisions
+[2025-09-22T06:52:59.523Z] GET /api/paper/orders/stream
+WebSocket connected: /ws
+[2025-09-22T06:52:59.536Z] GET /api/alerts?limit=10
+[2025-09-22T06:52:59.536Z] GET /api/autoloop/status
+[2025-09-22T06:52:59.537Z] GET /api/ingestion/events?limit=30
+[2025-09-22T06:52:59.537Z] GET /api/roster/active
+[2025-09-22T06:52:59.540Z] GET /api/quotes?symbols=SPY%2CAAPL%2CQQQ%2CMSFT%2CNVDA%2CTSLA%2CAMD%2CMETA%2CGOOGL%2CAVGO%2CCOST%2CCRM%2CPLTR%2CIWM%2CSMH%2CAMZN%2CNFLX%2CDIS%2CJNJ%2CJPM%2CV%2CPG%2CKO%2CXOM%2CBAC%2CBTC%2CETH%2CGLD%2CSLV
+[2025-09-22T06:52:59.543Z] GET /api/quotes/status
+[2025-09-22T06:52:59.544Z] GET /api/health
+[2025-09-22T06:52:59.546Z] GET /api/decisions/summary?window=15m
+[2025-09-22T06:52:59.547Z] GET /api/brain/flow/summary?window=15m
+[2025-09-22T06:52:59.548Z] GET /api/trades
+[2025-09-22T06:52:59.550Z] GET /metrics
+[2025-09-22T06:52:59.551Z] GET /api/decisions
+[2025-09-22T06:52:59.552Z] GET /api/portfolio/summary
+[2025-09-22T06:52:59.553Z] GET /api/paper/orders?limit=100
+[2025-09-22T06:52:59.555Z] GET /api/strategies
+[2025-09-22T06:52:59.557Z] GET /api/context
+[2025-09-22T06:52:59.558Z] GET /api/alerts?limit=20&severity=5
+[2025-09-22T06:52:59.560Z] GET /api/portfolio?mode=paper
+[2025-09-22T06:52:59.807Z] GET /api/alerts?limit=10
+[2025-09-22T06:52:59.809Z] GET /api/trades
+[2025-09-22T06:52:59.811Z] GET /api/decisions
+[2025-09-22T06:52:59.813Z] GET /api/strategies
+[2025-09-22T06:52:59.815Z] GET /api/context
+[2025-09-22T06:52:59.817Z] GET /api/trades
+[2025-09-22T06:52:59.818Z] GET /api/decisions
+[2025-09-22T06:52:59.820Z] GET /api/strategies
+[2025-09-22T06:52:59.821Z] GET /api/context
+[2025-09-22T06:52:59.823Z] GET /api/trades
+[2025-09-22T06:52:59.926Z] GET /api/quotes?symbols=SPY%2CAAPL%2CQQQ%2CMSFT%2CNVDA%2CTSLA%2CAMD%2CMETA%2CGOOGL%2CAVGO%2CCOST%2CCRM%2CPLTR%2CIWM%2CSMH%2CAMZN%2CNFLX%2CDIS%2CJNJ%2CJPM%2CV%2CPG%2CKO%2CXOM%2CBAC%2CBTC%2CETH%2CGLD%2CSLV
+[2025-09-22T06:52:59.961Z] GET /api/portfolio/summary
+[2025-09-22T06:53:00.232Z] GET /api/paper/orders?limit=100
+Generic WebSocket disconnected
+Decision WebSocket disconnected
+Price WebSocket disconnected
+WebSocket connected: /ws/prices
+WebSocket connected: /ws/decisions
+WebSocket connected: /ws
+[2025-09-22T06:55:42.260Z] GET /api/paper/orders/stream
+[2025-09-22T06:55:42.261Z] GET /api/alerts?limit=10
+[2025-09-22T06:55:42.261Z] GET /api/ingestion/events?limit=30
+[2025-09-22T06:55:42.262Z] GET /api/autoloop/status
+[2025-09-22T06:55:42.262Z] GET /api/roster/active
+[2025-09-22T06:55:42.263Z] GET /api/quotes?symbols=SPY%2CAAPL%2CQQQ%2CMSFT%2CNVDA%2CTSLA%2CAMD%2CMETA%2CGOOGL%2CAVGO%2CCOST%2CCRM%2CPLTR%2CIWM%2CSMH%2CAMZN%2CNFLX%2CDIS%2CJNJ%2CJPM%2CV%2CPG%2CKO%2CXOM%2CBAC%2CBTC%2CETH%2CGLD%2CSLV
+[2025-09-22T06:55:42.266Z] GET /api/quotes/status
+[2025-09-22T06:55:42.267Z] GET /api/brain/flow/summary?window=15m
+[2025-09-22T06:55:42.267Z] GET /api/decisions/summary?window=15m
+[2025-09-22T06:55:42.268Z] GET /api/health
+[2025-09-22T06:55:42.270Z] GET /api/trades
+[2025-09-22T06:55:42.271Z] GET /metrics
+[2025-09-22T06:55:42.271Z] GET /api/strategies
+[2025-09-22T06:55:42.273Z] GET /api/portfolio/summary
+[2025-09-22T06:55:42.273Z] GET /api/decisions
+[2025-09-22T06:55:42.274Z] GET /api/context
+[2025-09-22T06:55:42.275Z] GET /api/paper/orders?limit=100
+[2025-09-22T06:55:42.275Z] GET /api/portfolio?mode=paper
+[2025-09-22T06:55:42.661Z] GET /api/alerts?limit=20&severity=5
+[2025-09-22T06:55:42.663Z] GET /api/alerts?limit=10
+[2025-09-22T06:55:42.666Z] GET /api/trades
+[2025-09-22T06:55:42.670Z] GET /api/strategies
+[2025-09-22T06:55:42.671Z] GET /api/decisions
+[2025-09-22T06:55:42.672Z] GET /api/context
+[2025-09-22T06:55:42.674Z] GET /api/trades
+[2025-09-22T06:55:42.675Z] GET /api/strategies
+[2025-09-22T06:55:42.678Z] GET /api/decisions
+[2025-09-22T06:55:42.679Z] GET /api/context
+[2025-09-22T06:55:42.680Z] GET /api/trades
+[2025-09-22T06:55:42.703Z] GET /api/quotes?symbols=SPY%2CAAPL%2CQQQ%2CMSFT%2CNVDA%2CTSLA%2CAMD%2CMETA%2CGOOGL%2CAVGO%2CCOST%2CCRM%2CPLTR%2CIWM%2CSMH%2CAMZN%2CNFLX%2CDIS%2CJNJ%2CJPM%2CV%2CPG%2CKO%2CXOM%2CBAC%2CBTC%2CETH%2CGLD%2CSLV
+[2025-09-22T06:55:42.810Z] GET /api/portfolio/summary
+[2025-09-22T06:55:43.219Z] GET /api/paper/orders?limit=100
+Generic WebSocket disconnected
+Decision WebSocket disconnected
+Price WebSocket disconnected
+[2025-09-22T06:56:36.568Z] GET /api/health
+[2025-09-22T06:56:45.054Z] GET /api/trades
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[2025-09-22T06:58:01.196Z] GET /api/paper/positions
+[2025-09-22T06:58:07.781Z] GET /api/ai/policy
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[2025-09-22T06:58:53.766Z] GET /api/ai/policy
+[CapitalTracker] State: {
+  total: '100000.00',
+  committed: '0.00',
+  available: '100000.00',
+  utilization: '0.0%',
+  positions: 0,
+  pending: 0
+}
+[2025-09-22T06:58:58.921Z] GET /api/ai/policy

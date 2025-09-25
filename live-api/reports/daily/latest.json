@@ -1,0 +1,365 @@
+{
+  "date": "2025-09-24",
+  "generated_at": "2025-09-24T20:10:34.439Z",
+  "trading_activity": {
+    "total_trades": 232,
+    "winning_trades": 0,
+    "losing_trades": 0,
+    "total_volume": null,
+    "symbols_traded": [
+      "AAPL",
+      "SPY",
+      "QQQ",
+      "AVGO",
+      "GOOGL",
+      "SENS",
+      "OCGN",
+      "WKHS",
+      "SNDL",
+      "BNGO",
+      "META",
+      "MSFT",
+      "NVDA",
+      "DKNG",
+      "RKT",
+      "AAL",
+      "LYFT",
+      "AMD",
+      "RBLX",
+      "CLOV",
+      "CTRM",
+      "PENN",
+      "COIN",
+      "SPCE",
+      "HOOD",
+      "PATH",
+      "SNAP",
+      "IBIO",
+      "TSLA",
+      "GE",
+      "AFRM",
+      "PYPL",
+      "UBER",
+      "SHOP",
+      "CCL",
+      "FCX",
+      "INTC",
+      "CSCO",
+      "PFE",
+      "MRNA",
+      "T",
+      "OXY",
+      "NNDM",
+      "ATOS",
+      "BA",
+      "SLB",
+      "GM",
+      "VZ",
+      "TXMD",
+      "VALE",
+      "XELA",
+      "SHIP",
+      "TOPS",
+      "JAGX",
+      "OPEN",
+      "RIG",
+      "BBIG",
+      "XOM",
+      "ROOT",
+      "VISL",
+      "ANY"
+    ],
+    "trades_by_hour": {
+      "2": 136,
+      "8": 87,
+      "10": 4,
+      "23": 5
+    }
+  },
+  "performance_metrics": {
+    "daily_pnl": 0,
+    "daily_pnl_percent": 0,
+    "sharpe_30d": 0,
+    "sharpe_90d": 0,
+    "sortino_30d": 0,
+    "profit_factor_30d": 0,
+    "total_pnl": null,
+    "win_rate": 0,
+    "average_win": 0,
+    "average_loss": 0,
+    "max_drawdown": 0
+  },
+  "positions": {
+    "open_positions": 56,
+    "total_exposure": null,
+    "exposure_percent": null,
+    "unrealized_pnl": null,
+    "positions": [
+      {
+        "symbol": "SOFI",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "PLTR",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "BB",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "NOK",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "F",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "AAPL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SPY",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "QQQ",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "AVGO",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "GOOGL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SENS",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "OCGN",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "WKHS",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SNDL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "BNGO",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "META",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "MSFT",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "NVDA",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "DKNG",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "RKT",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "AAL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "LYFT",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "AMD",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "RBLX",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "CLOV",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "CTRM",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "PENN",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "COIN",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SPCE",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "HOOD",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "PATH",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SNAP",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "IBIO",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "TSLA",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "GE",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "AFRM",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "PYPL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "UBER",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SHOP",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "U",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "CCL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "FCX",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "INTC",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "CSCO",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "PFE",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "MRNA",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "T",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "OXY",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "NNDM",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "ATOS",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "BA",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "SLB",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "GM",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "VZ",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "VISL",
+        "pnl_percent": null
+      },
+      {
+        "symbol": "ANY",
+        "pnl_percent": null
+      }
+    ]
+  },
+  "risk_metrics": {
+    "capital_at_risk": null,
+    "max_position_size": null,
+    "concentration_risk": null,
+    "daily_var": null,
+    "risk_limits": {
+      "max_position_percent": 10,
+      "max_daily_loss_percent": 2,
+      "max_drawdown_percent": 15
+    }
+  },
+  "system_health": {
+    "autoloop_status": "STOPPED",
+    "autoloop_enabled": true,
+    "last_autoloop_run": null,
+    "errors_today": 0,
+    "quote_quality": "good",
+    "broker_connection": "active",
+    "api_latency_ms": 50
+  },
+  "strategy_performance": [
+    {
+      "strategy_id": "unknown",
+      "trades": 170,
+      "win_rate": 0,
+      "sharpe": -0.5
+    },
+    {
+      "strategy_id": "undefined",
+      "trades": 2,
+      "win_rate": 0,
+      "sharpe": 0
+    }
+  ],
+  "notable_events": [
+    {
+      "type": "losing_streak",
+      "message": "Only 0 wins in last 10 trades",
+      "timestamp": "2025-09-24T20:10:34.442Z"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { EventEmitter } = require('events');
+const { getInstance: getDatabase } = require('./database');
 
 class PerformanceRecorder extends EventEmitter {
   constructor(options = {}) {
@@ -14,8 +15,17 @@ class PerformanceRecorder extends EventEmitter {
     this.performance = {};
     this.strategyMetrics = new Map();
     
+    // Database connection
+    this.db = null;
+    this.useDatabase = options.useDatabase !== false; // Default to true
+    
     // Ensure data directory exists
     this.ensureDataDir();
+    
+    // Initialize database if enabled
+    if (this.useDatabase) {
+      this.initializeDatabase();
+    }
     
     // Load existing data
     this.loadData();
@@ -24,13 +34,24 @@ class PerformanceRecorder extends EventEmitter {
     this.saveInterval = setInterval(() => this.saveData(), 60000); // Save every minute
   }
   
+  async initializeDatabase() {
+    try {
+      this.db = getDatabase();
+      await this.db.initialize();
+      console.log('[PerformanceRecorder] Database initialized');
+    } catch (error) {
+      console.error('[PerformanceRecorder] Failed to initialize database:', error);
+      this.useDatabase = false; // Fall back to file storage
+    }
+  }
+  
   ensureDataDir() {
     if (!fs.existsSync(this.dataDir)) {
       fs.mkdirSync(this.dataDir, { recursive: true });
     }
   }
   
-  recordDecision(decision) {
+  async recordDecision(decision) {
     const timestamp = new Date();
     const record = {
       id: `decision_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -56,11 +77,28 @@ class PerformanceRecorder extends EventEmitter {
       this.decisions = this.decisions.slice(-this.maxHistorySize);
     }
     
+    // Save to database if available
+    if (this.useDatabase && this.db && this.db.isInitialized) {
+      try {
+        await this.db.recordDecision({
+          ...record,
+          action: record.side,
+          brain_score: record.context.brain_score || null,
+          reason: decision.reason || null,
+          analysis: decision.analysis || {},
+          market_context: record.context,
+          metadata: record.meta
+        });
+      } catch (error) {
+        console.error('[PerformanceRecorder] Failed to save decision to database:', error);
+      }
+    }
+    
     this.emit('decisionRecorded', record);
     return record;
   }
   
-  recordTrade(trade) {
+  async recordTrade(trade) {
     const timestamp = new Date();
     const record = {
       id: trade.id || `trade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -86,6 +124,23 @@ class PerformanceRecorder extends EventEmitter {
     // Trim if too large
     if (this.trades.length > this.maxHistorySize) {
       this.trades = this.trades.slice(-this.maxHistorySize);
+    }
+    
+    // Save to database if available
+    if (this.useDatabase && this.db && this.db.isInitialized) {
+      try {
+        await this.db.recordTrade({
+          ...record,
+          decision_id: trade.decision_id || null,
+          fees: record.commission,
+          slippage: trade.slippage || 0,
+          executed_at: record.fill_time || record.timestamp,
+          pnl_percent: trade.pnl_percent || null,
+          metadata: trade.metadata || {}
+        });
+      } catch (error) {
+        console.error('[PerformanceRecorder] Failed to save trade to database:', error);
+      }
     }
     
     this.emit('tradeRecorded', record);
@@ -399,6 +454,82 @@ class PerformanceRecorder extends EventEmitter {
       this.saveInterval = null;
     }
     this.saveData();
+  }
+  
+  // Get current portfolio P&L and drawdown
+  async getCurrentPortfolioStatus() {
+    try {
+      // Get account info
+      const accountResp = await fetch('http://localhost:4000/api/paper/account');
+      const account = await accountResp.json();
+      
+      const currentEquity = account.balances?.total_equity || 100000;
+      const startingEquity = 100000; // Initial capital
+      
+      // Calculate P&L
+      const totalPnL = currentEquity - startingEquity;
+      const pnlPercent = (totalPnL / startingEquity) * 100;
+      
+      // Get positions for detailed breakdown
+      const positionsResp = await fetch('http://localhost:4000/api/paper/positions');
+      const positions = await positionsResp.json();
+      
+      let unrealizedPnL = 0;
+      let positionCount = 0;
+      
+      if (positions && Array.isArray(positions)) {
+        positionCount = positions.length;
+        // Get quotes for accurate P&L
+        const symbols = positions.map(p => p.symbol).join(',');
+        if (symbols) {
+          const quotesResp = await fetch(`http://localhost:4000/api/quotes?symbols=${symbols}`);
+          const quotes = await quotesResp.json();
+          
+          positions.forEach(pos => {
+            const quote = Array.isArray(quotes) ? 
+              quotes.find(q => q.symbol === pos.symbol) : 
+              quotes[pos.symbol];
+            if (quote && quote.last) {
+              const currentValue = pos.qty * quote.last;
+              const costBasis = pos.qty * (pos.avg_price || pos.price);
+              unrealizedPnL += (currentValue - costBasis);
+            }
+          });
+        }
+      }
+      
+      // Store for quick access
+      this.lastKnownDrawdown = Math.min(0, pnlPercent);
+      
+      return {
+        currentEquity,
+        totalPnL,
+        pnlPercent,
+        unrealizedPnL,
+        positionCount,
+        isLosingMoney: totalPnL < 0,
+        drawdown: Math.min(0, pnlPercent), // Negative if losing
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('[PerformanceRecorder] Error getting portfolio status:', error);
+      return {
+        currentEquity: 100000,
+        totalPnL: 0,
+        pnlPercent: 0,
+        unrealizedPnL: 0,
+        positionCount: 0,
+        isLosingMoney: false,
+        drawdown: 0,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+  
+  // Simple method for enhanced recorder
+  getCurrentDrawdown() {
+    // Returns a percentage (0.05 = 5% drawdown)
+    return Math.abs(this.lastKnownDrawdown || 0) / 100;
   }
 }
 

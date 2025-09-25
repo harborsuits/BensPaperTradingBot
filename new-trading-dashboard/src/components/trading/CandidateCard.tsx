@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/Card';
 import { format } from 'date-fns';
 
 import { CheckCircle, XCircle, Beaker, Send, AlertTriangle, RefreshCw } from 'lucide-react';

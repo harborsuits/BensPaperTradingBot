@@ -6,6 +6,7 @@
  */
 
 const axios = require('axios');
+const rateLimiter = require('../../services/rateLimiter');
 
 class MarketIndicatorsService {
   constructor(config = {}) {
@@ -33,14 +34,18 @@ class MarketIndicatorsService {
     }
 
     try {
-      // Get real historical bars from Tradier
-      const response = await axios.get(`${this.config.apiBaseUrl}/api/bars`, {
-        params: {
-          symbol,
-          timeframe: '1Day',
-          limit: lookback
-        }
-      });
+      // Get real historical bars from Tradier with rate limiting
+      const response = await rateLimiter.executeWithLimit(
+        'tradier',
+        'bars',
+        async () => axios.get(`${this.config.apiBaseUrl}/api/bars`, {
+          params: {
+            symbol,
+            timeframe: '1Day',
+            limit: lookback
+          }
+        })
+      );
       
       const bars = response.data;
       
@@ -89,13 +94,17 @@ class MarketIndicatorsService {
 
     try {
       // Get longer lookback for regime detection
-      const response = await axios.get(`${this.config.apiBaseUrl}/api/bars`, {
-        params: {
-          symbol,
-          timeframe: '1Day',
-          limit: 200
-        }
-      });
+      const response = await rateLimiter.executeWithLimit(
+        'tradier',
+        'bars',
+        async () => axios.get(`${this.config.apiBaseUrl}/api/bars`, {
+          params: {
+            symbol,
+            timeframe: '1Day',
+            limit: 200
+          }
+        })
+      );
       
       const bars = response.data;
 

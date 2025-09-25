@@ -22,7 +22,8 @@
   "homepage": "https://github.com/TheClitCommander/BensTradingBotaugust21#readme",
   "dependencies": {
     "axios": "^1.11.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "node-schedule": "^2.1.1"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
