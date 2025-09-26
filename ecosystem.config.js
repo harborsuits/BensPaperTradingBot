@@ -20,7 +20,7 @@ if (fs.existsSync(envFile)) {
 module.exports = {
   apps: [{
     name: 'benbot-backend',
-    script: './live-api/minimal_server.js',
+    script: './live-api/server.js',
     cwd: './',
     env: {
       NODE_ENV: 'development',

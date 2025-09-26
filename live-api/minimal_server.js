@@ -390,7 +390,7 @@ const brainIntegrator = new BrainIntegrator({
 
 // Initialize AutoLoop (disabled by default, enable with AUTOLOOP_ENABLED=1)
 const autoLoop = new AutoLoop({
-  interval: parseInt(process.env.AUTOLOOP_INTERVAL_MS || '30000', 10),
+  interval: parseInt(process.env.AUTOLOOP_INTERVAL_MS || '15000', 10), // 15 seconds for faster reaction
   symbols: ['SPY', 'QQQ', 'AAPL', 'MSFT', 'NVDA'], // Start with major symbols, will be expanded
   quantity: parseFloat(process.env.AUTOLOOP_QTY || '1'),
   enabled: true, // Always enabled for autonomous trading
@@ -467,13 +467,11 @@ try {
   // Connect AI Orchestrator to AutoLoop for capital controls
   if (autoLoop) {
     autoLoop.aiOrchestrator = aiOrchestrator;
-    autoLoop.capitalLimits = {
-      maxTotalCapital: aiOrchestrator.policy?.ai_policy?.paper_cap_max || 20000,
-      maxPerTrade: 1000,
-      maxOpenTrades: 10,
-      maxDailyTrades: 50,
-      minCashBuffer: 1000
-    };
+    // Don't override the capitalLimits that were already set in autoLoop.js
+    // Just update the maxTotalCapital from AI policy if available
+    if (aiOrchestrator.policy?.ai_policy?.paper_cap_max) {
+      autoLoop.capitalLimits.maxTotalCapital = aiOrchestrator.policy.ai_policy.paper_cap_max;
+    }
   }
   
   console.log('[AI] Initialized AI Orchestrator and Tournament Controller');
@@ -847,10 +845,132 @@ const storyReportGenerator = new EnhancedStoryReport(
   brainIntegrator
 );
 
+// Add Learning Insights Generator
+const { LearningInsights } = require('./lib/learningInsights');
+const learningInsights = new LearningInsights(performanceRecorder, enhancedRecorder);
+
+// Add Risk Management System
+const { RiskManager } = require('./lib/riskManager');
+const riskManager = new RiskManager(performanceRecorder, paperBroker);
+
+// Connect risk manager to autoLoop
+autoLoop.riskManager = riskManager;
+
+// Initialize Enhanced Brain Integrator that uses ALL tools
+console.log('[EnhancedBrain] Loading modules...');
+let EnhancedBrainIntegrator, EnhancedIntelligence, enhancedIntelligence, enhancedBrain;
+
+try {
+  const { EnhancedBrainIntegrator: EBI } = require('./lib/enhancedBrainIntegrator');
+  EnhancedBrainIntegrator = EBI;
+  console.log('[EnhancedBrain] Loaded EnhancedBrainIntegrator');
+} catch (e) {
+  console.error('[EnhancedBrain] Failed to load EnhancedBrainIntegrator:', e.message);
+}
+
+try {
+  const { EnhancedIntelligence: EI } = require('./lib/enhancedIntelligence');
+  EnhancedIntelligence = EI;
+  console.log('[EnhancedBrain] Loaded EnhancedIntelligence');
+  
+  // Create enhanced intelligence module
+  enhancedIntelligence = new EnhancedIntelligence(brainIntegrator, performanceRecorder);
+  console.log('[EnhancedBrain] Created enhanced intelligence instance');
+} catch (e) {
+  console.error('[EnhancedBrain] Failed to load EnhancedIntelligence:', e.message);
+}
+
+// Create the enhanced brain with ALL components
+if (EnhancedBrainIntegrator && enhancedIntelligence) {
+  try {
+    enhancedBrain = new EnhancedBrainIntegrator(brainIntegrator, {
+      // Market analysis tools
+      technicalIndicators: enhancedIntelligence,
+      enhancedIntelligence: enhancedIntelligence,
+      newsNudge: null, // Will try to load below
+      diamondsScorer: null, // Will connect if available
+      scanner: null, // Will connect if available
+      
+      // Risk & portfolio management
+      riskManager: riskManager,
+      positionSizer: null, // Using risk manager's sizing
+      evCalculator: null, // Will connect from autoLoop
+      capitalTracker: capitalTracker,
+      
+      // Learning & optimization
+      learningInsights: learningInsights,
+      enhancedRecorder: enhancedRecorder,
+      performanceRecorder: performanceRecorder,
+      
+      // Execution & safety
+      paperBroker: paperBroker,
+      circuitBreaker: null, // Will load below
+      aiOrchestrator: aiOrchestrator,
+      
+      // Strategy management
+      strategyManager: strategyManager,
+      decisionCoordinator: null // Will set after initialization
+    });
+
+    console.log('[EnhancedBrain] ✅ Initialized with tools:', Object.keys(enhancedBrain.tools).filter(k => enhancedBrain.tools[k]).join(', '));
+  } catch (e) {
+    console.error('[EnhancedBrain] Failed to create enhanced brain:', e.message);
+  }
+} else {
+  console.log('[EnhancedBrain] Skipping - required modules not loaded');
+}
+
+// Connect enhanced brain to the original brain integrator
+if (enhancedBrain) {
+  brainIntegrator.enhancedBrain = enhancedBrain;
+  
+  // Connect diamonds scorer if available
+  try {
+    const DiamondsScorer = require('./lib/diamonds_scorer');
+    enhancedBrain.tools.diamondsScorer = new DiamondsScorer();
+    console.log('[EnhancedBrain] Connected diamonds scorer');
+  } catch (e) {
+    console.log('[EnhancedBrain] Diamonds scorer not available');
+  }
+
+  // Connect scanner if available
+  if (autoLoop.scanner) {
+    enhancedBrain.tools.scanner = autoLoop.scanner;
+    console.log('[EnhancedBrain] Connected market scanner');
+  }
+
+  // Connect EVCalculator
+  if (autoLoop.evCalculator) {
+    enhancedBrain.tools.evCalculator = autoLoop.evCalculator;
+    console.log('[EnhancedBrain] Connected EV calculator');
+  }
+
+  // Try to load NewsNudge service
+  try {
+    const { NewsNudge } = require('./services/newsNudge');
+    enhancedBrain.tools.newsNudge = new NewsNudge();
+    console.log('[EnhancedBrain] Connected news nudge service');
+  } catch (e) {
+    console.log('[EnhancedBrain] News nudge service not available');
+  }
+
+  // Try to load circuit breaker
+  try {
+    const circuitBreaker = require('./services/circuitBreaker');
+    enhancedBrain.tools.circuitBreaker = circuitBreaker;
+    console.log('[EnhancedBrain] Connected circuit breaker');
+  } catch (e) {
+    console.log('[EnhancedBrain] Circuit breaker not available');
+  }
+}
+
 // Story Report endpoint (honest daily report with actionable insights)
 app.get('/api/report/story', async (req, res) => {
   try {
     const report = await storyReportGenerator.generateReport();
+    // Add learning insights to the report
+    const insights = await learningInsights.generateInsights();
+    report.learningInsights = insights;
     res.json(report);
   } catch (error) {
     console.error('[Story Report] Error:', error);
@@ -879,6 +999,182 @@ app.get('/api/report/story', async (req, res) => {
     };
     
     res.json(fallbackReport);
+  }
+});
+
+// Enhanced Learning Insights endpoint
+app.get('/api/learning/insights', async (req, res) => {
+  try {
+    const insights = await learningInsights.generateInsights();
+    res.json(insights);
+  } catch (error) {
+    console.error('[Learning Insights] Error:', error);
+    res.status(500).json({ error: 'Failed to generate learning insights' });
+  }
+});
+
+// ========== ENHANCED BRAIN ENDPOINTS ==========
+
+// Get enhanced brain status and available tools
+app.get('/api/enhanced-brain/status', (req, res) => {
+  try {
+    if (!enhancedBrain) {
+      return res.status(503).json({ 
+        status: 'not_available',
+        error: 'Enhanced brain not initialized',
+        fallback: 'Using standard brain integrator'
+      });
+    }
+    
+    const toolsStatus = enhancedBrain.getToolsStatus();
+    const availableCount = Object.values(toolsStatus).filter(t => t.available).length;
+    const totalCount = Object.keys(toolsStatus).length;
+    
+    res.json({
+      status: 'active',
+      toolsAvailable: `${availableCount}/${totalCount}`,
+      tools: toolsStatus,
+      layers: enhancedBrain.layers
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Test enhanced decision on a symbol
+app.post('/api/enhanced-brain/analyze', async (req, res) => {
+  try {
+    const { symbol, action = 'buy', price } = req.body;
+    
+    if (!symbol) {
+      return res.status(400).json({ error: 'Symbol required' });
+    }
+    
+    if (!enhancedBrain) {
+      return res.status(503).json({ error: 'Enhanced brain not available' });
+    }
+    
+    // Get full analysis from enhanced brain
+    const decision = await enhancedBrain.makeEnhancedDecision({
+      symbol,
+      action,
+      currentPrice: price || 100,
+      strategy: 'manual_test',
+      hasPosition: action === 'sell',
+      candidateData: { symbol, price, last: price }
+    });
+    
+    res.json({
+      decision: {
+        symbol,
+        action: decision.action,
+        score: decision.score,
+        confidence: decision.confidence,
+        reasoning: decision.reasoning
+      },
+      metadata: decision.metadata,
+      tools_used: Object.keys(enhancedBrain.tools).filter(k => enhancedBrain.tools[k]).length
+    });
+  } catch (error) {
+    console.error('[Brain Analyze] Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Compare regular vs enhanced brain decisions
+app.post('/api/enhanced-brain/compare', async (req, res) => {
+  try {
+    const { symbol, price = 100 } = req.body;
+    
+    if (!symbol) {
+      return res.status(400).json({ error: 'Symbol required' });
+    }
+    
+    const context = {
+      symbol,
+      action: 'buy',
+      currentPrice: price,
+      strategy: 'comparison_test',
+      hasPosition: false,
+      candidateData: { symbol, price, last: price }
+    };
+    
+    // Get regular decision (temporarily disable enhanced)
+    brainIntegrator.enhancedBrain = null;
+    const regularDecision = await brainIntegrator.makeDecision(context);
+    
+    // Re-enable and get enhanced decision
+    brainIntegrator.enhancedBrain = enhancedBrain;
+    const enhancedDecision = await enhancedBrain.makeEnhancedDecision(context);
+    
+    res.json({
+      symbol,
+      regular: {
+        action: regularDecision.action,
+        score: regularDecision.score,
+        confidence: regularDecision.confidence,
+        reasoning: regularDecision.reasoning || 'Basic scoring'
+      },
+      enhanced: {
+        action: enhancedDecision.action,
+        score: enhancedDecision.score,
+        confidence: enhancedDecision.confidence,
+        reasoning: enhancedDecision.reasoning,
+        tools_used: enhancedDecision.metadata
+      },
+      improvement: {
+        score_diff: (enhancedDecision.score - regularDecision.score).toFixed(3),
+        confidence_diff: (enhancedDecision.confidence - regularDecision.confidence).toFixed(3),
+        same_action: regularDecision.action === enhancedDecision.action
+      }
+    });
+  } catch (error) {
+    console.error('[Brain Compare] Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ========== RISK MANAGEMENT ENDPOINTS ==========
+
+// Get current risk metrics
+app.get('/api/risk/metrics', async (req, res) => {
+  try {
+    const metrics = await riskManager.getRiskMetrics();
+    res.json(metrics);
+  } catch (error) {
+    console.error('[Risk Metrics] Error:', error);
+    res.status(500).json({ error: 'Failed to get risk metrics' });
+  }
+});
+
+// Get optimal position size for a symbol
+app.post('/api/risk/position-size', async (req, res) => {
+  try {
+    const { symbol, price, confidence = 0.5 } = req.body;
+    
+    if (!symbol || !price) {
+      return res.status(400).json({ error: 'Symbol and price required' });
+    }
+    
+    const sizing = await riskManager.calculateOptimalSize(symbol, price, confidence);
+    res.json(sizing);
+  } catch (error) {
+    console.error('[Position Sizing] Error:', error);
+    res.status(500).json({ error: 'Failed to calculate position size' });
+  }
+});
+
+// Check stop losses manually
+app.post('/api/risk/check-stops', async (req, res) => {
+  try {
+    const stopsToExecute = await riskManager.checkStopLosses();
+    res.json({
+      count: stopsToExecute.length,
+      stops: stopsToExecute
+    });
+  } catch (error) {
+    console.error('[Stop Check] Error:', error);
+    res.status(500).json({ error: 'Failed to check stop losses' });
   }
 });
 
@@ -4148,6 +4444,53 @@ app.post('/api/autoloop/stop', async (req, res) => {
   });
 });
 
+// Circuit breaker reset endpoint
+app.post('/api/circuit-breaker/reset', async (req, res) => {
+  try {
+    // Get the circuit breaker instance from autoLoop module
+    const autoLoopModule = require.cache[require.resolve('./lib/autoLoop')];
+    if (autoLoopModule && autoLoopModule.exports) {
+      // Access the module-level circuitBreaker
+      const cb = autoLoopModule.exports.circuitBreaker || autoLoopModule.exports.getCircuitBreaker?.();
+      
+      if (cb) {
+        cb.close();
+        res.json({
+          success: true,
+          message: 'Circuit breaker reset to CLOSED state',
+          state: 'CLOSED',
+          metrics: cb.getMetrics()
+        });
+      } else {
+        // Try to reset via autoLoop
+        if (autoLoop && autoLoop.resetCircuitBreaker) {
+          autoLoop.resetCircuitBreaker();
+          res.json({
+            success: true,
+            message: 'Circuit breaker reset via AutoLoop',
+            state: 'CLOSED'
+          });
+        } else {
+          res.status(404).json({
+            success: false,
+            message: 'Circuit breaker not accessible'
+          });
+        }
+      }
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'AutoLoop module not found'
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Test autoloop trigger
 app.post('/api/test/autoloop/runonce', async (req, res) => {
   try {
@@ -5046,6 +5389,84 @@ console.log('[LearningReport] ✅ Learning insights available at /api/learning/r
     console.log('[PREMARKET] Running pre-market analysis...');
     
     try {
+      // CRITICAL: Revalidate all pending orders for overnight news
+      console.log('[PREMARKET] Checking pending orders for overnight news...');
+      
+      // Get all pending orders
+      const ordersResp = await fetch('http://localhost:4000/api/paper/orders?status=pending');
+      if (ordersResp.ok) {
+        const pendingOrders = await ordersResp.json();
+        console.log(`[PREMARKET] Found ${pendingOrders.length} pending orders to revalidate`);
+        
+        let cancelCount = 0;
+        for (const order of pendingOrders) {
+          try {
+            // Check overnight news for this symbol
+            const newsResp = await fetch(`http://localhost:4000/api/news/recent?symbol=${order.symbol}&limit=5`);
+            const news = newsResp.ok ? await newsResp.json() : [];
+            
+            // Re-score the symbol with current data
+            if (brainIntegrator) {
+              const decision = await brainIntegrator.makeDecision({
+                symbol: order.symbol,
+                action: 'buy',
+                strategy: order.strategy_id || 'unknown',
+                hasPosition: false
+              });
+              
+              // Cancel if score dropped below threshold or bad news
+              const shouldCancel = decision.score < 0.40 || decision.action === 'reject';
+              
+              if (shouldCancel) {
+                console.log(`[PREMARKET] Cancelling ${order.symbol} - score: ${decision.score}, news items: ${news.length}`);
+                await fetch(`http://localhost:4000/api/paper/orders/${order.id}`, { method: 'DELETE' });
+                cancelCount++;
+              } else {
+                console.log(`[PREMARKET] Keeping ${order.symbol} - score: ${decision.score}, still valid`);
+              }
+            }
+          } catch (e) {
+            console.error(`[PREMARKET] Error revalidating ${order.symbol}:`, e.message);
+          }
+          
+          // Small delay to avoid overload
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        console.log(`[PREMARKET] Cancelled ${cancelCount} orders due to overnight changes`);
+      }
+      
+      // Check filled positions for emergency exits
+      const positionsResp = await fetch('http://localhost:4000/api/paper/positions');
+      if (positionsResp.ok) {
+        const positions = await positionsResp.json();
+        const openPositions = positions.filter(p => p.qty > 0);
+        
+        for (const position of openPositions) {
+          try {
+            // Check for emergency news
+            const newsResp = await fetch(`http://localhost:4000/api/news/recent?symbol=${position.symbol}&limit=5`);
+            const news = newsResp.ok ? await newsResp.json() : [];
+            
+            // Flag positions that need immediate attention
+            const hasEmergencyNews = news.some(n => 
+              n.title?.toLowerCase().includes('halt') ||
+              n.title?.toLowerCase().includes('delisted') ||
+              n.title?.toLowerCase().includes('bankruptcy') ||
+              n.title?.toLowerCase().includes('sec investigation') ||
+              n.title?.toLowerCase().includes('fraud')
+            );
+            
+            if (hasEmergencyNews) {
+              console.log(`[PREMARKET] ⚠️ EMERGENCY: ${position.symbol} has critical news - flagged for immediate exit`);
+              // Could place a market sell order here or alert
+            }
+          } catch (e) {
+            console.error(`[PREMARKET] Error checking ${position.symbol}:`, e.message);
+          }
+        }
+      }
+      
       // Analyze market context
       if (aiOrchestrator) {
         const context = await aiOrchestrator.getMarketContext();
@@ -5089,6 +5510,28 @@ console.log('[LearningReport] ✅ Learning insights available at /api/learning/r
       console.log('[MARKET CLOSE] Daily report generated successfully');
     } catch (error) {
       console.error('[MARKET CLOSE] Daily report generation failed:', error);
+    }
+    
+    // Generate comprehensive learning insights
+    try {
+      console.log('[MARKET CLOSE] Generating learning insights...');
+      const insights = await learningInsights.generateInsights();
+      console.log('[MARKET CLOSE] Learning insights:');
+      console.log(`  - Patterns found: ${insights.patterns.length}`);
+      console.log(`  - Lessons learned: ${insights.lessons.length}`);
+      console.log(`  - Recommendations: ${insights.recommendations.length}`);
+      
+      // Log top recommendations
+      if (insights.recommendations.length > 0) {
+        console.log('[MARKET CLOSE] Top recommendations:');
+        insights.recommendations
+          .filter(r => r.priority === 'high')
+          .forEach(r => {
+            console.log(`  - ${r.action}: ${r.reason}`);
+          });
+      }
+    } catch (error) {
+      console.error('[MARKET CLOSE] Learning insights generation failed:', error);
     }
   });
   

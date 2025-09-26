@@ -71,7 +71,7 @@ const PaperExecutionMonitor: React.FC = () => {
 
   // SSE for live updates using singleton manager
   useEffect(() => {
-    const sseService = sseManager.getConnection(`${window.location.origin}/api/paper/orders/stream`);
+    const sseService = sseManager.getConnection('/api/paper/orders/stream');
     
     const handleOrderUpdate = (message: any) => {
       setLiveOrders(prev => {

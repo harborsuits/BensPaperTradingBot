@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { pricesStream, decisionsStream } from './lib/streams'
+// import { pricesStream, decisionsStream } from './lib/streams' // Commented out - file doesn't exist
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { AuthProvider } from './context/AuthContext'
@@ -12,8 +12,8 @@ import { DataSyncProvider } from './contexts/DataSyncContext'
 import { DATA_REFRESH_CONFIG } from './config/dataRefreshConfig'
 
 // Initialize WebSocket connections
-pricesStream.start();
-decisionsStream.start();
+// pricesStream.start(); // Commented out - pricesStream not imported
+// decisionsStream.start(); // Commented out - decisionsStream not imported
 
 // MSW (Mock Service Worker) setup - conditionally enable
 if (import.meta.env.VITE_USE_MSW === 'true') {
@@ -39,7 +39,7 @@ const queryClient = new QueryClient({
         return failureCount < 3;
       },
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      staleTime: DATA_REFRESH_CONFIG.default.staleTime,
+      staleTime: DATA_REFRESH_CONFIG.default?.staleTime || 20000,
       gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
     },
   },

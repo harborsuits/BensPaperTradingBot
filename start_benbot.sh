@@ -9,10 +9,12 @@ echo "Starting servers..."
 
 # Kill any existing processes
 echo "Stopping any existing servers..."
-lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+lsof -ti:4000 | xargs kill -9 2>/dev/null || true
 lsof -ti:3003 | xargs kill -9 2>/dev/null || true
 pkill -f "python simple_server.py" 2>/dev/null || true
 pkill -f "python3 simple_server.py" 2>/dev/null || true
+pkill -f "node server.js" 2>/dev/null || true
+pkill -f "minimal_server.js" 2>/dev/null || true
 pkill -f "vite --port 3003" 2>/dev/null || true
 pkill -f "npm run dev" 2>/dev/null || true
 sleep 2
@@ -25,17 +27,17 @@ echo "  API: $API_LOG"
 echo "  UI:  $UI_LOG"
 
 # Start API server
-echo "Starting API server on port 3000..."
-cd "$(dirname "$0")"
+echo "Starting API server on port 4000..."
+cd "$(dirname "$0")/live-api"
 echo "$(date): Starting API server" > "$API_LOG"
-python3 simple_server.py >> "$API_LOG" 2>&1 &
+node server.js >> "$API_LOG" 2>&1 &
 API_PID=$!
 echo "API server PID: $API_PID"
 
 # Wait for API to be ready
 echo "Waiting for API to start..."
 for i in {1..10}; do
-    if curl -s http://localhost:3000/api/v1/health > /dev/null; then
+    if curl -s http://localhost:4000/health > /dev/null; then
         echo "✓ API server is ready!"
         break
     fi
@@ -72,7 +74,7 @@ done
 
 echo ""
 echo "=== Servers Started Successfully ==="
-echo "API: http://localhost:3000 (PID: $API_PID)"
+echo "API: http://localhost:4000 (PID: $API_PID)"
 echo "UI:  http://localhost:3003 (PID: $UI_PID)"
 echo ""
 echo "Opening browser..."
@@ -90,10 +92,10 @@ echo "Starting monitoring service..."
     while true; do
         sleep 30
         # Check if API is still running
-        if ! curl -s http://localhost:3000/api/v1/health > /dev/null; then
+        if ! curl -s http://localhost:4000/health > /dev/null; then
             echo "$(date): API server down, restarting..." >> "$API_LOG"
-            cd "$(dirname "$0")"
-            python3 simple_server.py >> "$API_LOG" 2>&1 &
+            cd "$(dirname "$0")/live-api"
+            node server.js >> "$API_LOG" 2>&1 &
         fi
         
         # Check if UI is still running

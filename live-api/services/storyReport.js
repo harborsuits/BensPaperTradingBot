@@ -10,6 +10,15 @@ class StoryReportGenerator {
     this.autoLoop = autoLoop;
     this.decisionLogger = decisionLogger;
   }
+  
+  // Helper method to format money
+  formatMoney(amount) {
+    if (typeof amount !== 'number') return '0';
+    return Math.abs(amount).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
 
   async generateStoryReport() {
     const report = {

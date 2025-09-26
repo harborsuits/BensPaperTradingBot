@@ -1,1 +1,401 @@
-{}
+{
+  "AAL": {
+    "symbol": "AAL",
+    "quantity": 1,
+    "avg_price": 12.17,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "AFRM": {
+    "symbol": "AFRM",
+    "quantity": 1,
+    "avg_price": 84.99,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "AMD": {
+    "symbol": "AMD",
+    "quantity": 1,
+    "avg_price": 164.15,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "ANY": {
+    "symbol": "ANY",
+    "quantity": 1,
+    "avg_price": 0.69,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "ATOS": {
+    "symbol": "ATOS",
+    "quantity": 1,
+    "avg_price": 0.83,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "BA": {
+    "symbol": "BA",
+    "quantity": 1,
+    "avg_price": 217.05,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "BB": {
+    "symbol": "BB",
+    "quantity": 316,
+    "avg_price": 4.1899999999999995,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "BBIG": {
+    "symbol": "BBIG",
+    "quantity": 1,
+    "avg_price": 2.4,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "CCL": {
+    "symbol": "CCL",
+    "quantity": 1,
+    "avg_price": 30.62,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "CLOV": {
+    "symbol": "CLOV",
+    "quantity": 1,
+    "avg_price": 3.34,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "COIN": {
+    "symbol": "COIN",
+    "quantity": 1,
+    "avg_price": 322.41,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "CSCO": {
+    "symbol": "CSCO",
+    "quantity": 1,
+    "avg_price": 67.48,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "CTRM": {
+    "symbol": "CTRM",
+    "quantity": 1,
+    "avg_price": 2.25,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "DKNG": {
+    "symbol": "DKNG",
+    "quantity": 1,
+    "avg_price": 43.38,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "F": {
+    "symbol": "F",
+    "quantity": 129,
+    "avg_price": 11.58,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "FCX": {
+    "symbol": "FCX",
+    "quantity": 1,
+    "avg_price": 41.87,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "GE": {
+    "symbol": "GE",
+    "quantity": 1,
+    "avg_price": 307.21,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "GM": {
+    "symbol": "GM",
+    "quantity": 1,
+    "avg_price": 59.89,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "HOOD": {
+    "symbol": "HOOD",
+    "quantity": 1,
+    "avg_price": 128.15,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "IBIO": {
+    "symbol": "IBIO",
+    "quantity": 1,
+    "avg_price": 0.8,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "INTC": {
+    "symbol": "INTC",
+    "quantity": 1,
+    "avg_price": 29.5,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "JAGX": {
+    "symbol": "JAGX",
+    "quantity": 1,
+    "avg_price": 2.01,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "LYFT": {
+    "symbol": "LYFT",
+    "quantity": 1,
+    "avg_price": 22.84,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "META": {
+    "symbol": "META",
+    "quantity": 1,
+    "avg_price": 760.09,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "MRNA": {
+    "symbol": "MRNA",
+    "quantity": 1,
+    "avg_price": 26.23,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "MSFT": {
+    "symbol": "MSFT",
+    "quantity": 1,
+    "avg_price": 511.91,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "NNDM": {
+    "symbol": "NNDM",
+    "quantity": 1,
+    "avg_price": 1.56,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "NOK": {
+    "symbol": "NOK",
+    "quantity": 309,
+    "avg_price": 4.74,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "NVDA": {
+    "symbol": "NVDA",
+    "quantity": 1,
+    "avg_price": 179.13,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "OPEN": {
+    "symbol": "OPEN",
+    "quantity": 1,
+    "avg_price": 7.52,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "OXY": {
+    "symbol": "OXY",
+    "quantity": 1,
+    "avg_price": 47,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "PATH": {
+    "symbol": "PATH",
+    "quantity": 1,
+    "avg_price": 12.5,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "PENN": {
+    "symbol": "PENN",
+    "quantity": 1,
+    "avg_price": 19.75,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "PFE": {
+    "symbol": "PFE",
+    "quantity": 1,
+    "avg_price": 24.15,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "PLTR": {
+    "symbol": "PLTR",
+    "quantity": 6,
+    "avg_price": 181.38,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "PYPL": {
+    "symbol": "PYPL",
+    "quantity": 1,
+    "avg_price": 68.07,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "RBLX": {
+    "symbol": "RBLX",
+    "quantity": 1,
+    "avg_price": 134.64,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "RIG": {
+    "symbol": "RIG",
+    "quantity": 1,
+    "avg_price": 3.71,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "RKT": {
+    "symbol": "RKT",
+    "quantity": 1,
+    "avg_price": 19.46,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "ROOT": {
+    "symbol": "ROOT",
+    "quantity": 1,
+    "avg_price": 99.35,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SHIP": {
+    "symbol": "SHIP",
+    "quantity": 1,
+    "avg_price": 9.08,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SHOP": {
+    "symbol": "SHOP",
+    "quantity": 1,
+    "avg_price": 151.29,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SLB": {
+    "symbol": "SLB",
+    "quantity": 1,
+    "avg_price": 34.8,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SNAP": {
+    "symbol": "SNAP",
+    "quantity": 1,
+    "avg_price": 8.44,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SOFI": {
+    "symbol": "SOFI",
+    "quantity": 55,
+    "avg_price": 29.21,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "SPCE": {
+    "symbol": "SPCE",
+    "quantity": 1,
+    "avg_price": 4.03,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "T": {
+    "symbol": "T",
+    "quantity": 1,
+    "avg_price": 28.64,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "TOPS": {
+    "symbol": "TOPS",
+    "quantity": 1,
+    "avg_price": 5.69,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "TSLA": {
+    "symbol": "TSLA",
+    "quantity": 1,
+    "avg_price": 430.8,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "TXMD": {
+    "symbol": "TXMD",
+    "quantity": 1,
+    "avg_price": 1.07,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "U": {
+    "symbol": "U",
+    "quantity": 1,
+    "avg_price": 45,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "UBER": {
+    "symbol": "UBER",
+    "quantity": 1,
+    "avg_price": 99.37,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "VALE": {
+    "symbol": "VALE",
+    "quantity": 1,
+    "avg_price": 10.9,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "VISL": {
+    "symbol": "VISL",
+    "quantity": 1,
+    "avg_price": 2,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "VZ": {
+    "symbol": "VZ",
+    "quantity": 1,
+    "avg_price": 43.25,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "XELA": {
+    "symbol": "XELA",
+    "quantity": 1,
+    "avg_price": 0.43,
+    "current_price": 0,
+    "pnl": 0
+  },
+  "XOM": {
+    "symbol": "XOM",
+    "quantity": 1,
+    "avg_price": 115.02,
+    "current_price": 0,
+    "pnl": 0
+  }
+}

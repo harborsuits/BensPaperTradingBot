@@ -83,7 +83,7 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Use existing WebSocket context
   const wsContext = useWebSocket();
   const orderStreamSSE = useMemo(() => 
-    sseManager.getConnection(`${window.location.origin}/api/paper/orders/stream`), 
+    sseManager.getConnection('/api/paper/orders/stream'), 
   []);
   
   // Refresh portfolio data
@@ -91,23 +91,27 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       // Fetch portfolio summary
       const portfolioResp = await fetch('/api/portfolio/summary');
-      const portfolioData = await portfolioResp.json();
-      setPortfolio(portfolioData);
+      if (portfolioResp.ok && portfolioResp.headers.get('content-length') !== '0') {
+        const portfolioData = await portfolioResp.json();
+        setPortfolio(portfolioData);
+        queryClient.setQueryData(['portfolio', 'summary'], portfolioData);
+      }
       
       // Fetch account details
       const accountResp = await fetch('/api/paper/account');
-      const accountData = await accountResp.json();
-      setAccount(accountData.balances);
+      if (accountResp.ok && accountResp.headers.get('content-length') !== '0') {
+        const accountData = await accountResp.json();
+        setAccount(accountData.balances);
+        queryClient.setQueryData(['paper', 'account'], accountData);
+      }
       
       // Fetch positions
       const positionsResp = await fetch('/api/paper/positions');
-      const positionsData = await positionsResp.json();
-      setPositions(positionsData);
-      
-      // Update React Query cache
-      queryClient.setQueryData(['portfolio', 'summary'], portfolioData);
-      queryClient.setQueryData(['paper', 'account'], accountData);
-      queryClient.setQueryData(['paper', 'positions'], positionsData);
+      if (positionsResp.ok && positionsResp.headers.get('content-length') !== '0') {
+        const positionsData = await positionsResp.json();
+        setPositions(positionsData);
+        queryClient.setQueryData(['paper', 'positions'], positionsData);
+      }
       
       setLastSync(new Date());
     } catch (error) {
@@ -125,15 +129,15 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       refreshPortfolio(),
       
       // Orders and trades
-      fetch('/api/paper/orders?limit=100').then(r => r.json()),
-      fetch('/api/trades').then(r => r.json()),
+      fetch('/api/paper/orders?limit=100').then(r => r.ok && r.headers.get('content-length') !== '0' ? r.json() : { items: [] }),
+      fetch('/api/trades').then(r => r.ok && r.headers.get('content-length') !== '0' ? r.json() : { items: [] }),
       
       // Decisions and strategies
-      fetch('/api/decisions').then(r => r.json()),
-      fetch('/api/strategies').then(r => r.json()),
+      fetch('/api/decisions').then(r => r.ok && r.headers.get('content-length') !== '0' ? r.json() : []),
+      fetch('/api/strategies').then(r => r.ok && r.headers.get('content-length') !== '0' ? r.json() : { items: [] }),
       
       // Market context
-      fetch('/api/context').then(r => r.json()),
+      fetch('/api/context').then(r => r.ok && r.headers.get('content-length') !== '0' ? r.json() : null),
     ];
     
     try {
@@ -235,7 +239,7 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const interval = setInterval(() => {
       refreshAll();
-    }, DATA_REFRESH_CONFIG.default.refetchInterval);
+    }, DATA_REFRESH_CONFIG.default?.refetchInterval || 30000);
     
     return () => clearInterval(interval);
   }, [refreshAll]);

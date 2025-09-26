@@ -49,30 +49,35 @@ async function syncPaperBroker() {
     
     // Update the paper broker data file
     const fs = require('fs');
-    const paperBrokerData = {
-      account: {
-        cash: balanceData.balances.total_cash || 0,
-        equity: balanceData.balances.total_equity || 0
-      },
-      positions: {},
-      orderHistory: []
-    };
+    const path = require('path');
     
-    // Add positions
+    // Format positions for Map reconstruction
+    const positionsArray = [];
     positionArray.filter(p => p).forEach(pos => {
-      paperBrokerData.positions[pos.symbol] = {
-        symbol: pos.symbol,
-        quantity: pos.quantity,
-        avg_price: pos.cost_basis / pos.quantity,
-        current_price: pos.last || 0,
-        pnl: 0
-      };
+      positionsArray.push([pos.symbol, {
+        quantity: Number(pos.quantity),
+        avg_price: Number(pos.cost_basis) / Number(pos.quantity),
+        total_cost: Number(pos.cost_basis)
+      }]);
     });
     
-    // Write to paper broker data files
-    fs.writeFileSync('../data/paper-account.json', JSON.stringify(paperBrokerData.account, null, 2));
-    fs.writeFileSync('../data/paper-positions.json', JSON.stringify(paperBrokerData.positions, null, 2));
-    fs.writeFileSync('../data/paper-orders.json', JSON.stringify([], null, 2)); // Clear orders
+    // Format data to match paperTradingEngine expectations
+    const paperAccountData = {
+      usd_balance: balanceData.balances.total_cash || 0,
+      positions: positionsArray,
+      orders: [],
+      orderHistory: [],
+      trades: [],
+      lastOrderId: 1000
+    };
+    
+    // Write to paper-account.json in the format expected by paperTradingEngine
+    const dataDir = path.join(__dirname, '../data');
+    fs.writeFileSync(path.join(dataDir, 'paper-account.json'), JSON.stringify(paperAccountData, null, 2));
+    
+    // Also save separate files for reference
+    fs.writeFileSync(path.join(dataDir, 'paper-positions.json'), JSON.stringify(paperAccountData.positions, null, 2));
+    fs.writeFileSync(path.join(dataDir, 'paper-orders.json'), JSON.stringify([], null, 2)); // Clear orders
     
     console.log('✅ Sync complete!');
     console.log('Cash:', paperBrokerData.account.cash);

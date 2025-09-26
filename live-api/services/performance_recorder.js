@@ -100,6 +100,31 @@ class PerformanceRecorder extends EventEmitter {
   
   async recordTrade(trade) {
     const timestamp = new Date();
+    
+    // Get current market context for learning
+    let marketContext = null;
+    let learningContext = null;
+    
+    try {
+      // Fetch market context
+      const contextResp = await fetch('http://localhost:4000/api/context/regime');
+      if (contextResp.ok) {
+        marketContext = await contextResp.json();
+      }
+      
+      // Add learning context
+      learningContext = {
+        hour: timestamp.getHours(),
+        dayOfWeek: timestamp.getDay(),
+        minutesIntoDay: timestamp.getHours() * 60 + timestamp.getMinutes(),
+        recentVolatility: marketContext?.volatility || 'normal',
+        marketTrend: marketContext?.trend || 'neutral',
+        recordedAt: timestamp.toISOString()
+      };
+    } catch (e) {
+      console.log('[PerformanceRecorder] Could not get market context:', e.message);
+    }
+    
     const record = {
       id: trade.id || `trade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp,
@@ -109,6 +134,8 @@ class PerformanceRecorder extends EventEmitter {
       quantity: trade.quantity,
       price: trade.price,
       order_id: trade.order_id,
+      market_context: marketContext,
+      learning_context: learningContext,
       status: trade.status,
       fill_price: trade.fill_price,
       fill_time: trade.fill_time,

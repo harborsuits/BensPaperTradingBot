@@ -14,9 +14,11 @@ import NewsPage from '@/pages/NewsPage';
 import BrainPage from '@/pages/BrainPage';
 import OptionsPage from '@/pages/OptionsPage';
 import StoryReportPage from '@/pages/StoryReportPage';
+import SimpleDashboard from '@/pages/SimpleDashboard';
 import { Outlet } from 'react-router-dom';
 
 export default function App() {
+  console.log('[App] Starting app initialization...');
   const router = createBrowserRouter([
     {
       element: <MainLayout />,
@@ -34,6 +36,7 @@ export default function App() {
         { path: '/news', element: <NewsPage /> },
         { path: '/news/:symbol', element: <NewsPage /> },
         { path: '/story', element: <StoryReportPage /> },
+        { path: '/test', element: <SimpleDashboard /> },
       ],
     },
     { path: '*', element: <Navigate to="/" replace /> },

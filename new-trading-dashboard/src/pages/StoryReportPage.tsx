@@ -125,7 +125,7 @@ export default function StoryReportPage() {
                   <div 
                     className="whitespace-pre-wrap text-gray-700"
                     dangerouslySetInnerHTML={{ 
-                      __html: section.story
+                      __html: (section.story || section.content || '')
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         .replace(/\n/g, '<br>')
                         .replace(/([0-9]+\.)/g, '<br>$1')
@@ -141,7 +141,7 @@ export default function StoryReportPage() {
                   <div className="mt-3 text-sm text-blue-800 font-mono">
                     <div 
                       dangerouslySetInnerHTML={{ 
-                        __html: section.whatThisMeans
+                        __html: (section.whatThisMeans || section.explanation || 'This section demonstrates how our trading system analyzes market data and makes intelligent decisions.')
                           .replace(/\n/g, '<br>')
                           .replace(/([a-zA-Z_]+\.js)/g, '<code class="bg-blue-100 px-1 py-0.5 rounded">$1</code>')
                           .replace(/([a-zA-Z_]+\(\))/g, '<code class="bg-blue-100 px-1 py-0.5 rounded">$1</code>')

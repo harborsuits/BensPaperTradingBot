@@ -10,7 +10,7 @@ module.exports = {
   brainScore: {
     // Original thresholds: 0.94 buy, 0.88 sell (extremely restrictive)
     // Adjusted for more reasonable trading activity with news awareness
-  buyThreshold: 0.45,    // More aggressive: lowered from 0.52 to 0.45
+  buyThreshold: 0.40,    // Lowered to 0.40 to allow more trading activity
   sellThreshold: 0.35,   // More aggressive: lowered from 0.40 to 0.35
   minConfidence: 0.30,   // More aggressive: lowered from 0.35 to 0.30
     
@@ -26,9 +26,9 @@ module.exports = {
   
   // AutoLoop specific settings
   autoLoop: {
-    scanInterval: 30000,        // 30 seconds
+    scanInterval: 15000,        // 15 seconds - optimized for news reaction
     maxPositionsPerSymbol: 1,   // Only one position per symbol
-    maxTotalPositions: 10,      // Maximum 10 concurrent positions
+    maxTotalPositions: 1000,    // No artificial limit - managed by capital/risk
   },
   
   // Risk management

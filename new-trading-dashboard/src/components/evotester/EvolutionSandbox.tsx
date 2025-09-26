@@ -92,6 +92,9 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
     riskMultiplier: 0.1
   });
 
+  // Active tab state
+  const [activeView, setActiveView] = useState('evo');
+
   // Trigger system state
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [triggerConfig, setTriggerConfig] = useState({
@@ -108,8 +111,8 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
       if (!response.ok) return [];
       return response.json();
     },
-    refetchInterval: 30000,
-    staleTime: 15000,
+    refetchInterval: 60000, // Reduce frequency to 1 minute
+    staleTime: 55000, // Keep data fresh for 55 seconds
   });
   const triggerRules = triggerRulesData || [];
 
@@ -166,8 +169,8 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
   const { data: liveExperiments, isLoading: experimentsLoading } = useQuery({
     queryKey: ['evoTester', 'experiments', 'active'],
     queryFn: () => evoTesterApi.getEvoHistory(),
-    refetchInterval: 20000,
-    staleTime: 10000,
+    refetchInterval: 45000, // Reduce frequency
+    staleTime: 40000, // Keep data fresh longer
   });
 
   // Debounced state updates to prevent excessive re-renders
@@ -608,10 +611,14 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
   // Use React Query for trigger events with proper caching
   const { data: triggerEvents = [], isLoading: triggersLoading } = useQuery({
     queryKey: ['evo', 'trigger-events'],
-    queryFn: getTriggerEvents,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    queryFn: async () => {
+      // For now, return static data until API endpoint is implemented
+      return getTriggerEvents();
+    },
+    refetchInterval: 60000, // Refetch every 60 seconds (less aggressive)
     refetchOnWindowFocus: false,
-    staleTime: 25000, // Consider data stale after 25 seconds
+    staleTime: 55000, // Consider data stale after 55 seconds
+    enabled: activeView === 'triggers', // Only fetch when triggers view is active
   });
 
   const renderTriggersView = () => {
@@ -966,7 +973,7 @@ const EvolutionSandbox: React.FC<EvolutionSandboxProps> = ({ className = '' }) =
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="evo">
+        <Tabs value={activeView} onValueChange={setActiveView}>
           <TabsList className="mb-6">
             <TabsTrigger value="evo">EVO Allocations</TabsTrigger>
             <TabsTrigger value="experiments">Active Experiments</TabsTrigger>

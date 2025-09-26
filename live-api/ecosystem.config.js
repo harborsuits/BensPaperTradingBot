@@ -42,7 +42,7 @@ module.exports = {
       
       // Performance
       TOURNAMENT_INTERVAL_MS: 300000, // 5 minutes
-      AUTOLOOP_INTERVAL_MS: 30000,    // 30 seconds
+      AUTOLOOP_INTERVAL_MS: 15000,    // 15 seconds - faster reaction for news/stops
       
       // Logging
       LOG_LEVEL: 'info',

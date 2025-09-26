@@ -2,59 +2,31 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import {
-  TrendingUp,
-  TrendingDown,
-  ChevronRight,
-  AlertTriangle,
-  ShieldAlert,
   Activity,
   Target,
-  DollarSign,
   BarChart3,
   Zap,
-  Clock,
-  Users,
-  Brain,
   PlayCircle,
   CheckCircle,
-  XCircle,
-  Eye,
-  RefreshCw
+  Brain
 } from 'lucide-react';
 
-import { contextApi, strategyApi, portfolioApi, decisionApi, loggingApi, ingestionApi } from '@/services/api';
+import { portfolioApi, ingestionApi } from '@/services/api';
 import { qk } from '@/services/qk';
 import { useWebSocketChannel, useWebSocketMessage } from '@/services/websocket';
-import { MarketContext, Strategy, LogEvent, TradeCandidate, DataStatusSummary, DataSourceStatusModel, IngestionMetricsModel, SafetyStatus } from '@/types/api.types';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import SafetyControls from '@/components/trading/SafetyControls';
+import { TradeCandidate, DataStatusSummary, IngestionMetricsModel, SafetyStatus } from '@/types/api.types';
 import { DATA_REFRESH_CONFIG } from '@/config/dataRefreshConfig';
 import { ErrorBoundary } from '@/components/util/ErrorBoundary';
-import { SimpleCard } from '@/components/ui/SimpleCard';
 import PortfolioCard from '@/components/dashboard/PortfolioCard';
-import BrainFlowNowCard from '@/components/dashboard/BrainFlowNowCard';
-import TickerHighlightsCard from '@/components/dashboard/TickerHighlightsCard';
 import { DataSyncDashboard } from '@/components/DataSyncDashboard';
 import { useSyncedHealth, useSyncedAutoloop, useSyncedStrategies, useSyncedPipelineHealth, useSyncedDecisionsSummary, useSyncedOrders, useSyncedBrainStatus, useSyncedEvoStatus } from '@/hooks/useSyncedData';
-import BrainScoringActivityCard from '@/components/dashboard/BrainScoringActivityCard';
-import BrainEvoFlow from '@/components/BrainEvoFlow';
-import NewsSentimentDashboard from '@/components/dashboard/NewsSentimentDashboard';
-import PaperExecutionMonitor from '@/components/dashboard/PaperExecutionMonitor';
-import AIOrchestratorStatus from '@/components/AIOrchestratorStatus';
-import { toPortfolio, toArray } from '@/services/normalize';
 import AutoRunnerStrip from '@/components/trading/AutoRunnerStrip';
 import ActivityTicker from '@/components/trading/ActivityTicker';
 import PriceTape from '@/components/cards/PriceTape';
 import PositionsTable from '@/components/PositionsTable';
 import TradesTable from '@/components/TradesTable';
-import ScannerCandidatesCard from '@/components/cards/ScannerCandidatesCard';
 import RealtimeBanner from '@/components/Banners/RealtimeBanner';
-import EvoTestCard from '@/components/ui/EvoTestCard';
-import OptionsSummaryCard from '@/components/options/OptionsSummaryCard';
 
-// Helpers to make rendering resilient to undefined data
-const asArray = <T,>(v: T[] | undefined | null): T[] => (Array.isArray(v) ? v : []);
-const numberOr = (v: unknown, d = 0): number => (typeof v === 'number' && !Number.isNaN(v) ? v : d);
 
 // Dashboard Card Components
 
@@ -94,8 +66,13 @@ const HealthCard: React.FC = () => {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Broker RTT:</span>
             {(() => {
-              const rttMs = (typeof healthData.broker?.rttMs === 'number' ? healthData.broker.rttMs : undefined) ?? (typeof healthData.broker_age_s === 'number' ? Math.round(healthData.broker_age_s * 1000) : undefined);
-              return <span>{typeof rttMs === 'number' ? `${rttMs}ms` : '—'}</span>;
+              const rttMs = (typeof healthData.broker?.rttMs === 'number' ? healthData.broker.rttMs : undefined) ?? 
+                           (typeof healthData.broker_age_s === 'number' ? Math.round(healthData.broker_age_s * 1000) : undefined);
+              // Cap display at 999ms for readability
+              if (typeof rttMs === 'number') {
+                return <span className={rttMs > 500 ? 'text-yellow-600' : ''}>{rttMs > 999 ? '>999ms' : `${rttMs}ms`}</span>;
+              }
+              return <span>—</span>;
             })()}
           </div>
           <div className="flex justify-between">
@@ -147,18 +124,18 @@ const AutopilotCard: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Running:</span>
-            <span className={autopilotData.is_running ? 'text-green-600' : 'text-red-600'}>
-              {autopilotData.is_running ? 'Yes' : 'No'}
+            <span className={(autopilotData.is_running || autopilotData.isRunning) ? 'text-green-600' : 'text-red-600'}>
+              {(autopilotData.is_running || autopilotData.isRunning) ? 'Yes' : 'No'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Interval:</span>
-            <span>{autopilotData.interval_ms ? `${autopilotData.interval_ms/1000}s` : '—'}</span>
+            <span>{(autopilotData.interval_ms || autopilotData.interval) ? `${(autopilotData.interval_ms || autopilotData.interval)/1000}s` : '—'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Last run:</span>
             <span className="text-xs">
-              {autopilotData.last_cycle ? new Date(autopilotData.last_cycle).toLocaleTimeString() : '—'}
+              {(autopilotData.last_cycle || autopilotData.lastRun) ? new Date(autopilotData.last_cycle || autopilotData.lastRun).toLocaleTimeString() : '—'}
             </span>
           </div>
         </div>
@@ -169,18 +146,37 @@ const AutopilotCard: React.FC = () => {
   );
 };
 
-const StrategySpotlightCard: React.FC = () => {
+const StrategySpotlightCard: React.FC<{
+  highlightedStrategy?: string | null;
+  strategyDecisions?: Record<string, number>;
+  realtimeActivity?: {symbol: string, strategy: string, action: string}[];
+}> = ({ highlightedStrategy, strategyDecisions = {}, realtimeActivity = [] }) => {
   const { data: strategiesData, isLoading, error } = useSyncedStrategies();
   
   // Handle both array and object with items property
   const strategies = Array.isArray(strategiesData) ? strategiesData : strategiesData?.items || [];
-  const topStrategy = strategies[0];
+  
+  // Find News Momentum v2 strategy or use the top strategy
+  const newsMomentumStrategy = strategies?.find((s: any) => s.id === 'news_momo_v2' || s.name?.includes('News Momentum'));
+  const topStrategy = newsMomentumStrategy || strategies?.[0];
+  
+  // Check if this strategy is currently active
+  const isHighlighted = topStrategy && highlightedStrategy === topStrategy.id;
+  const recentDecisions = strategyDecisions[topStrategy?.id] || 0;
+  const recentActivity = realtimeActivity.filter(a => a.strategy === topStrategy?.id);
 
   return (
-    <div className="border rounded-lg p-4 bg-card">
+    <div className={`border rounded-lg p-4 bg-card transition-all duration-300 ${
+      isHighlighted ? 'ring-2 ring-purple-500 shadow-lg transform scale-105' : ''
+    }`}>
       <div className="flex items-center gap-2 mb-3">
-        <BarChart3 className="w-4 h-4 text-purple-600" />
+        <BarChart3 className={`w-4 h-4 ${isHighlighted ? 'text-purple-500' : 'text-purple-600'}`} />
         <h3 className="font-semibold">Strategy Spotlight</h3>
+        {isHighlighted && (
+          <div className="ml-auto">
+            <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" />
+          </div>
+        )}
       </div>
       {isLoading ? (
         <div className="animate-pulse space-y-2">
@@ -191,7 +187,10 @@ const StrategySpotlightCard: React.FC = () => {
         <div className="text-red-500 text-sm">Error loading strategies</div>
       ) : topStrategy ? (
         <div className="space-y-1 text-sm">
-          <div className="font-medium">{topStrategy.name || topStrategy.id}</div>
+          <div className="font-medium flex items-center gap-2">
+            {topStrategy.name || topStrategy.id}
+            {topStrategy.id === 'news_momo_v2' && <Zap className="w-3 h-3 text-yellow-500" />}
+          </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
             <span className={topStrategy.active ? 'text-green-600' : 'text-red-600'}>
@@ -206,7 +205,9 @@ const StrategySpotlightCard: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Trades:</span>
-            <span>{topStrategy.performance?.trades_count || 0}</span>
+            <span className={recentDecisions > 0 ? 'text-purple-600 font-medium' : ''}>
+              {topStrategy.performance?.trades_count || 0}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Profit Factor:</span>
@@ -214,6 +215,23 @@ const StrategySpotlightCard: React.FC = () => {
               {(topStrategy.performance?.profit_factor || 0).toFixed(2)}
             </span>
           </div>
+          
+          {/* Show real-time activity if any */}
+          {recentActivity.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-muted">
+              <div className="text-xs text-muted-foreground mb-1">Live Activity</div>
+              <div className="space-y-1">
+                {recentActivity.slice(0, 2).map((activity, idx) => (
+                  <div key={idx} className="flex items-center justify-between text-xs bg-purple-50 dark:bg-purple-950/20 p-1 rounded">
+                    <span className="font-medium">{activity.symbol}</span>
+                    <span className={activity.action === 'BUY' ? 'text-green-600' : 'text-red-600'}>
+                      {activity.action}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-muted-foreground text-sm">No strategies found</div>
@@ -259,7 +277,7 @@ const PipelineHealthCard: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Window:</span>
-            <span className="text-xs">{pipelineData.window || '15m'}</span>
+            <span className="text-xs">15m</span>
           </div>
         </div>
       ) : (
@@ -288,28 +306,58 @@ const DecisionsSummaryCard: React.FC = () => {
         </div>
       ) : error ? (
         <div className="text-red-500 text-sm">Error loading decisions</div>
-      ) : decisionsData && typeof decisionsData.proposals_per_min === 'number' && decisionsData.by_stage ? (
+      ) : decisionsData ? (
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Proposals/min:</span>
-            <span className="font-medium">{decisionsData.proposals_per_min.toFixed(1)}</span>
+            <span className="font-medium">{
+              decisionsData.proposalsPerMinute?.toFixed(1) || 
+              decisionsData.proposals_per_min?.toFixed(1) || '0.0'
+            }</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Unique Symbols:</span>
-            <span>{decisionsData.unique_symbols || 0}</span>
+            <span>{decisionsData.uniqueSymbols || decisionsData.unique_symbols || 0}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Proposed:</span>
-            <span className="text-blue-600">{decisionsData.by_stage.proposed || 0}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Intent:</span>
-            <span className="text-yellow-600">{decisionsData.by_stage.intent || 0}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Executed:</span>
-            <span className="text-green-600">{decisionsData.by_stage.executed || 0}</span>
-          </div>
+          {decisionsData.byStrategy ? (
+            <>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">News Momentum:</span>
+                <span className="text-green-600">{decisionsData.byStrategy.news_momo_v2?.proposals || 0}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Mean Rev:</span>
+                <span className="text-blue-600">{decisionsData.byStrategy.mean_rev_1?.proposals || 0}</span>
+              </div>
+            </>
+          ) : decisionsData.by_stage ? (
+            <>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Proposed:</span>
+                <span className="text-blue-600">{decisionsData.by_stage.proposed || 0}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Intent:</span>
+                <span className="text-yellow-600">{decisionsData.by_stage.intent || 0}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Executed:</span>
+                <span className="text-green-600">{decisionsData.by_stage.executed || 0}</span>
+              </div>
+            </>
+          ) : null}
+          {decisionsData.topSymbols && decisionsData.topSymbols.length > 0 && (
+            <div className="mt-2 pt-2 border-t">
+              <div className="text-xs text-muted-foreground">Top Symbols:</div>
+              <div className="flex gap-2 mt-1">
+                {decisionsData.topSymbols.slice(0, 3).map((item: any) => (
+                  <span key={item.symbol} className="text-xs bg-muted px-1.5 py-0.5 rounded">
+                    {item.symbol}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-muted-foreground text-sm">No decisions data</div>
@@ -385,7 +433,7 @@ const OrdersSnapshotCard: React.FC = () => {
 const LiveRnDCard: React.FC = () => {
   const { data: brainData, isLoading: brainLoading } = useSyncedBrainStatus();
   const { data: evoData, isLoading: evoLoading } = useSyncedEvoStatus();
-
+  
   const isLoading = brainLoading || evoLoading;
 
   return (
@@ -412,12 +460,16 @@ const LiveRnDCard: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Symbols:</span>
-                <span className="text-xs">{brainData.current_symbols?.length || 0}</span>
+                <span className="text-xs">{brainData.symbolsTracked || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Python:</span>
-                <span className={brainData.python_brain_config?.configured ? 'text-green-600' : 'text-red-600'}>
-                  {brainData.python_brain_config?.configured ? 'Connected' : 'Disconnected'}
+                <span className="text-muted-foreground">Decisions:</span>
+                <span className="text-xs">{brainData.decisionsToday || 0} today</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Latency:</span>
+                <span className={brainData.health?.scoring?.latency_ms < 50 ? 'text-green-600' : 'text-yellow-600'}>
+                  {brainData.health?.scoring?.latency_ms || 0}ms
                 </span>
               </div>
             </div>
@@ -426,14 +478,18 @@ const LiveRnDCard: React.FC = () => {
             <div className="border-t pt-2">
               <div className="font-medium text-xs text-muted-foreground mb-1">EVO (R&D)</div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Gen:</span>
-                <span>{evoData.generation}</span>
+                <span className="text-muted-foreground">Generations:</span>
+                <span>{evoData.totalGenerations || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Best PF:</span>
-                <span className={evoData.best?.metrics.pf_after_costs >= 1 ? 'text-green-600' : 'text-red-600'}>
-                  {evoData.best?.metrics.pf_after_costs.toFixed(3)}
+                <span className="text-muted-foreground">Best Fitness:</span>
+                <span className={evoData.bestFitness >= 0.7 ? 'text-green-600' : 'text-yellow-600'}>
+                  {(evoData.bestFitness || 0).toFixed(2)}
                 </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Experiments:</span>
+                <span className="text-xs">{evoData.activeExperiments || 0} / {evoData.resourceUsage?.maxExperiments || 5}</span>
               </div>
             </div>
           )}
@@ -447,35 +503,26 @@ const LiveRnDCard: React.FC = () => {
 };
 
 const DashboardPage: React.FC = () => {
+  
   // State for data that might be updated via WebSocket
-  const [marketContext, setMarketContext] = useState<MarketContext | null>(null);
-  const [activeStrategies, setActiveStrategies] = useState<Strategy[]>([]);
-  const [recentDecisions, setRecentDecisions] = useState<TradeCandidate[]>([]);
-  const [recentAlerts, setRecentAlerts] = useState<LogEvent[]>([]);
-  const [dataStatus, setDataStatus] = useState<DataStatusSummary | null>(null);
-  const [safetyStatus, setSafetyStatus] = useState<SafetyStatus | null>(null);
+  const [, setDataStatus] = useState<DataStatusSummary | null>(null);
+  const [, setSafetyStatus] = useState<SafetyStatus | null>(null);
+  
+  // NEW: Track active strategy interactions
+  const [highlightedStrategy, setHighlightedStrategy] = useState<string | null>(null);
+  const [strategyDecisions, setStrategyDecisions] = useState<Record<string, number>>({});
+  const [realtimeActivity, setRealtimeActivity] = useState<{symbol: string, strategy: string, action: string}[]>([]);
   
   // Connect to WebSocket channels
-  const { isConnected } = useWebSocketChannel('context', true);
-  useWebSocketChannel('strategy', true);
+  useWebSocketChannel('context', true);
+  useWebSocketChannel('strategies', true);
   useWebSocketChannel('trading', true);
   useWebSocketChannel('portfolio', true);
-  useWebSocketChannel('logging', true);
-  useWebSocketChannel('safety', true);
-  const { isConnected: isDataConnected } = useWebSocketChannel('data', true);
+  useWebSocketChannel('logs', true);
+  useWebSocketChannel('alerts', true);
+  useWebSocketChannel('data', true);
   
-  // Initial data fetching with centralized refresh config
-  useQuery({
-    queryKey: qk.context,
-    queryFn: () => contextApi.getMarketContext(),
-    refetchInterval: DATA_REFRESH_CONFIG.context.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.context.staleTime,
-    onSuccess: (response) => {
-      if (response.success && response.data) {
-        setMarketContext(response.data);
-      }
-    },
-  });
+  // Context data is managed by DataSyncDashboard
   
   useQuery({
     queryKey: ['dataStatus'],
@@ -483,100 +530,69 @@ const DashboardPage: React.FC = () => {
     onSuccess: (response) => {
       if (response.success && response.data) setDataStatus(response.data);
     },
-    refetchInterval: DATA_REFRESH_CONFIG.metrics.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.metrics.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.metrics?.refetchInterval || 60000,
+    staleTime: DATA_REFRESH_CONFIG.metrics?.staleTime || 45000,
   });
 
-  useQuery({
-    queryKey: qk.strategies,
-    queryFn: () => strategyApi.getActiveStrategies(),
-    refetchInterval: DATA_REFRESH_CONFIG.strategies.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.strategies.staleTime,
-    onSuccess: (response) => {
-      if (response.success && response.data) {
-        setActiveStrategies(response.data);
-      }
-    },
-  });
+  // Strategies are fetched via useSyncedStrategies hook instead
+  
+  // Decisions are fetched via useSyncedDecisions hook instead
   
   useQuery({
-    queryKey: qk.decisions(50),
-    queryFn: () => decisionApi.getLatestDecisions(),
-    refetchInterval: DATA_REFRESH_CONFIG.decisions.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.decisions.staleTime,
-    onSuccess: (response) => {
-      if (response.success && response.data) {
-        setRecentDecisions(response.data);
-      }
-    },
-  });
-  
-  const { data: portfolioData } = useQuery({
     queryKey: qk.portfolio('paper'),
     queryFn: () => portfolioApi.getPortfolio('paper'),
-    refetchInterval: DATA_REFRESH_CONFIG.paperAccount.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.paperAccount.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.paperAccount?.refetchInterval || 15000,
+    staleTime: DATA_REFRESH_CONFIG.paperAccount?.staleTime || 10000,
   });
   
   // Live portfolio disabled for now; focusing on paper trading only
 
-  // Normalize portfolio responses to a stable shape
-  const paperPortfolio = toPortfolio(portfolioData?.data);
-  // const livePortfolio = toPortfolio(livePortfolioData?.data);
+  // Portfolio data is normalized in the synced hooks
   
-  useQuery({
-    queryKey: ['recentAlerts'],
-    queryFn: () => loggingApi.getAlerts(5),
-    refetchInterval: 30_000,
-    staleTime: 10_000,
-    onSuccess: (response) => {
-      if (response.success && response.data) {
-        setRecentAlerts(response.data);
-      }
-    },
-  });
+  // Alerts are handled by DataSyncDashboard component
   
   // WebSocket message handlers
-  useWebSocketMessage<MarketContext>(
-    'context_update',
-    (message) => {
-      setMarketContext(message.data);
-    },
-    []
-  );
-  
-  useWebSocketMessage<Strategy[]>(
-    'strategy_update',
-    (message) => {
-      setActiveStrategies(message.data);
-    },
-    []
-  );
-  
   useWebSocketMessage<TradeCandidate[]>(
     'decision_update',
     (message) => {
       const arr = Array.isArray(message?.data) ? (message.data as TradeCandidate[]) : [];
-      setRecentDecisions(arr);
-    },
-    []
-  );
-  
-  useWebSocketMessage<LogEvent>(
-    'log',
-    (message) => {
-      const lvl = (message as any)?.data?.level as string | undefined;
-      if (lvl === 'WARNING' || lvl === 'ERROR') {
-        const evt = (message as any)?.data as LogEvent | undefined;
-        if (evt) setRecentAlerts(prev => [evt, ...prev].slice(0, 5));
+      
+      // Track real-time activity for integration
+      if (arr.length > 0) {
+        arr.forEach(decision => {
+          if (decision.strategy_id) {
+            setStrategyDecisions(prev => ({
+              ...prev,
+              [decision.strategy_id]: (prev[decision.strategy_id] || 0) + 1
+            }));
+          }
+        });
+        
+        // Add latest to realtime activity
+        const latest = arr[0];
+        if (latest) {
+          setRealtimeActivity(prev => [{
+            symbol: latest.symbol,
+            strategy: latest.strategy_id || 'unknown',
+            action: latest.direction?.toUpperCase() || 'UNKNOWN'
+          }, ...prev].slice(0, 10));
+          
+          // Highlight active strategy briefly
+          if (latest.strategy_id) {
+            setHighlightedStrategy(latest.strategy_id);
+            setTimeout(() => setHighlightedStrategy(null), 3000);
+          }
+        }
       }
     },
     []
   );
+  
+  // Log and alert handling is managed by DataSyncDashboard
 
   useWebSocketMessage<DataStatusSummary>(
     'ingestion_sources_status',
-    (message) => { setDataStatus(prev => prev ? { ...prev, sources: message.data } : null); },
+    (message) => { setDataStatus(message.data); },
     []
   );
   useWebSocketMessage<IngestionMetricsModel>(
@@ -591,17 +607,6 @@ const DashboardPage: React.FC = () => {
     []
   );
 
-  // Format asset class badge
-  const getAssetClassBadge = (assetClass: string) => {
-    const classes: Record<string, string> = {
-      stocks: 'bg-blue-800/30 text-blue-300',
-      options: 'bg-purple-800/30 text-purple-300',
-      forex: 'bg-green-800/30 text-green-300',
-      crypto: 'bg-orange-800/30 text-orange-300',
-    };
-    
-    return classes[assetClass] || 'bg-gray-800/30 text-gray-300';
-  };
 
   return (
     <div className="w-full min-h-screen bg-background">
@@ -637,8 +642,12 @@ const DashboardPage: React.FC = () => {
             {/* 3. Portfolio Card */}
             <PortfolioCard />
 
-            {/* 4. Strategy Spotlight Card */}
-            <StrategySpotlightCard />
+            {/* 4. Strategy Spotlight Card - Enhanced with real-time */}
+            <StrategySpotlightCard 
+              highlightedStrategy={highlightedStrategy}
+              strategyDecisions={strategyDecisions}
+              realtimeActivity={realtimeActivity}
+            />
 
             {/* 5. Pipeline Health Card */}
             <PipelineHealthCard />
@@ -649,8 +658,8 @@ const DashboardPage: React.FC = () => {
             {/* 7. Orders Snapshot Card */}
             <OrdersSnapshotCard />
 
-            {/* 8. Options Trading Card */}
-            {/* <OptionsSummaryCard /> */}
+            {/* 8. Live & R&D Card */}
+            <LiveRnDCard />
           </div>
         </ErrorBoundary>
 

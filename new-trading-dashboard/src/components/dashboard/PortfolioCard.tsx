@@ -41,24 +41,19 @@ const PortfolioSchema = z.object({
   mode: z.string().default('paper'),
 }).passthrough(); // Allow additional fields
 
-// Safe portfolio fetch with validation
-async function getPortfolioData(): Promise<{ data: PortfolioData; meta: any }> {
-  const { data, meta } = await getJSON<PortfolioData>("/api/portfolio/summary");
-  return { data: PortfolioSchema.parse(data as any), meta };
-}
-
 export default function PortfolioCard() {
   const { data: portfolio, isLoading, error } = useSyncedPortfolio();
   
   // Metadata is part of the portfolio object from Tradier
   const meta = portfolio as any;
   const positions = Array.isArray(portfolio?.positions) ? portfolio.positions : [];
-  const equity = Number(portfolio?.equity ?? 0);
-  const cash = Number(portfolio?.cash ?? 0);
-  const dayPnl = Number(portfolio?.day_pnl ?? 0);
-  const openPnl = Number(portfolio?.open_pnl ?? 0);
-  const broker = portfolio?.broker ?? 'unknown';
-  const mode = portfolio?.mode ?? 'unknown';
+  // Handle various portfolio data structures from different endpoints
+  const equity = Number(portfolio?.equity ?? portfolio?.total_equity ?? 0);
+  const cash = Number(portfolio?.cash ?? portfolio?.cash_balance ?? 0);
+  const dayPnl = Number(portfolio?.day_pnl ?? portfolio?.daily_pl ?? 0);
+  const openPnl = Number(portfolio?.open_pnl ?? portfolio?.unrealized_pl ?? 0);
+  const broker = portfolio?.broker ?? 'tradier';
+  const mode = portfolio?.mode ?? 'paper';
   const asOf = portfolio?.asOf ? new Date(portfolio.asOf).toLocaleTimeString() : 'N/A';
   // Accept provenance fields if backend stamps them
   const source = (portfolio as any)?.source as string | undefined;

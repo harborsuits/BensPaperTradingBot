@@ -23,16 +23,18 @@ export default function TradesTable() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const { data, meta } = await getJSON<{ trades: Trade[] }>('/api/trades');
+      const { data, meta } = await getJSON<{ items?: Trade[], trades?: Trade[] }>('/api/trades');
       if (!alive) return;
-      setRows(data.trades || []);
+      // Handle both items and trades response formats
+      const trades = data.items || data.trades || [];
+      setRows(trades);
       setMeta(meta || {});
     })();
     return () => { alive = false; };
   }, []);
 
   useEffect(() => {
-    const sseService = sseManager.getConnection(`${window.location.origin}/api/paper/orders/stream`);
+    const sseService = sseManager.getConnection('/api/paper/orders/stream');
     
     const handleOrderUpdate = (message: any) => {
       try {

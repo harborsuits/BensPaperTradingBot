@@ -130,27 +130,27 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       clearTimeout(reconnectTimeoutRef.current);
     }
 
-    // More conservative backoff: 100ms base, max 5s, with jitter
-    const BASE_DELAY = 100; // 100ms base (not 1s)
-    const MAX_DELAY = 5000; // 5s max (not 30s)
+    // Conservative backoff: 2s base, max 30s, with jitter
+    const BASE_DELAY = 2000; // 2s base (not 100ms)
+    const MAX_DELAY = 30000; // 30s max
     const JITTER_FACTOR = 0.3; // ±30% jitter
 
     // Exponential backoff with cap
     const exponentialDelay = Math.min(
-      BASE_DELAY * Math.pow(1.5, Math.min(reconnectAttemptsRef.current, 10)), // Cap exponent
+      BASE_DELAY * Math.pow(2, Math.min(reconnectAttemptsRef.current, 10)), // Cap exponent
       MAX_DELAY
     );
 
     // Add jitter to prevent thundering herd
     const jitter = exponentialDelay * JITTER_FACTOR * (Math.random() * 2 - 1);
-    const reconnectDelay = Math.max(100, exponentialDelay + jitter); // Min 100ms
+    const reconnectDelay = Math.max(1000, exponentialDelay + jitter); // Min 1s
 
     reconnectAttemptsRef.current += 1;
 
-    // Only log first few attempts to reduce console spam
+    // Only log first few attempts and then every 10th to reduce console spam
     if (reconnectAttemptsRef.current <= 3) {
       console.log(`WebSocket reconnection scheduled in ${(reconnectDelay / 1000).toFixed(1)}s (attempt ${reconnectAttemptsRef.current})`);
-    } else if (reconnectAttemptsRef.current % 5 === 0) {
+    } else if (reconnectAttemptsRef.current % 10 === 0) {
       console.log(`WebSocket reconnection attempt ${reconnectAttemptsRef.current} in ${(reconnectDelay / 1000).toFixed(1)}s`);
     }
 
@@ -283,9 +283,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   // Heartbeat to keep connection alive and detect disconnections
-  const heartbeatMsActive = 15000; // 15 seconds when tab is active (not too frequent)
-  const heartbeatMsHidden = 60000; // 60 seconds when tab is hidden (conservative)
-  const PING_TIMEOUT = 10000; // 10 seconds to wait for pong
+  const heartbeatMsActive = 30000; // 30 seconds when tab is active
+  const heartbeatMsHidden = 120000; // 2 minutes when tab is hidden
+  const PING_TIMEOUT = 15000; // 15 seconds to wait for pong
 
   // Send ping message over WebSocket
   const sendPing = useCallback(() => {
@@ -297,7 +297,9 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
         // Set timeout for pong response
         pingTimeoutRef.current = setTimeout(() => {
-          console.warn('WebSocket ping timeout - connection may be dead');
+          console.warn('WebSocket ping timeout - will reconnect');
+          // Don't immediately close, let the heartbeat retry once more
+          reconnectAttemptsRef.current = Math.max(0, reconnectAttemptsRef.current - 1);
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
             // Use an application-defined close code in the allowed range (3000-4999)
             wsRef.current.close(4001, 'ping timeout');

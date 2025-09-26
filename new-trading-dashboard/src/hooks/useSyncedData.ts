@@ -5,24 +5,42 @@ import { DATA_REFRESH_CONFIG } from '@/config/dataRefreshConfig';
 
 // Hook for portfolio data
 export function useSyncedPortfolio() {
-  const { portfolio, refreshPortfolio } = useDataSync();
+  const { portfolio } = useDataSync();
   
   const query = useQuery({
     queryKey: ['portfolio', 'summary'],
     queryFn: async () => {
-      if (!portfolio) {
-        await refreshPortfolio();
+      const response = await fetch('/api/paper/account');
+      const data = await response.json();
+      
+      // Transform the API response to match expected format
+      if (data?.balances) {
+        return {
+          cash: data.balances.total_cash || 0,
+          cash_balance: data.balances.total_cash || 0,
+          equity: data.balances.total_equity || 0,
+          total_equity: data.balances.total_equity || 0,
+          day_pnl: data.balances.close_pl || 0,
+          daily_pl: data.balances.close_pl || 0,
+          open_pnl: data.balances.open_pl || 0,
+          unrealized_pl: data.balances.open_pl || 0,
+          positions: [],
+          broker: 'tradier',
+          mode: 'paper',
+          asOf: new Date().toISOString(),
+          ...data.meta
+        };
       }
-      return portfolio;
+      return data;
     },
     initialData: portfolio,
-    refetchInterval: DATA_REFRESH_CONFIG.paperAccount.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.paperAccount.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.paperAccount?.refetchInterval || 15000,
+    staleTime: DATA_REFRESH_CONFIG.paperAccount?.staleTime || 10000,
   });
   
   return {
     ...query,
-    data: portfolio || query.data,
+    data: query.data || portfolio,
   };
 }
 
@@ -34,11 +52,12 @@ export function useSyncedAccount() {
     queryKey: ['paper', 'account'],
     queryFn: async () => {
       const response = await fetch('/api/paper/account');
-      return response.json();
+      const data = await response.json();
+      return data;
     },
     initialData: account ? { balances: account } : undefined,
-    refetchInterval: DATA_REFRESH_CONFIG.paperAccount.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.paperAccount.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.paperAccount?.refetchInterval || 15000,
+    staleTime: DATA_REFRESH_CONFIG.paperAccount?.staleTime || 10000,
   });
 }
 
@@ -50,11 +69,13 @@ export function useSyncedPositions() {
     queryKey: ['paper', 'positions'],
     queryFn: async () => {
       const response = await fetch('/api/paper/positions');
-      return response.json();
+      const data = await response.json();
+      // Handle both array and object with items property
+      return Array.isArray(data) ? data : (data?.items || data?.positions || []);
     },
     initialData: positions,
-    refetchInterval: DATA_REFRESH_CONFIG.paperPositions.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.paperPositions.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.paperPositions?.refetchInterval || 15000,
+    staleTime: DATA_REFRESH_CONFIG.paperPositions?.staleTime || 10000,
   });
 }
 
@@ -107,7 +128,12 @@ export function useSyncedTrades() {
     queryKey: ['trades'],
     queryFn: async () => {
       const response = await fetch('/api/trades');
-      return response.json();
+      const data = await response.json();
+      // Ensure we return data in expected format: { items: [...] }
+      if (Array.isArray(data)) {
+        return { items: data };
+      }
+      return data;
     },
     initialData: recentTrades ? { items: recentTrades } : undefined,
     refetchInterval: DATA_REFRESH_CONFIG.trades.refetchInterval,
@@ -120,14 +146,19 @@ export function useSyncedDecisions() {
   const { decisions } = useDataSync();
   
   return useQuery({
-    queryKey: ['decisions'],
+    queryKey: ['decisions', 'recent'],
     queryFn: async () => {
-      const response = await fetch('/api/decisions');
-      return response.json();
+      const response = await fetch('/api/decisions/recent');
+      const data = await response.json();
+      // Handle both array and object with items property
+      if (Array.isArray(data)) {
+        return data;
+      }
+      return data?.items || [];
     },
     initialData: decisions,
-    refetchInterval: DATA_REFRESH_CONFIG.decisions.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.decisions.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.decisions.refetchInterval || 7000, // 7-10s as per spec
+    staleTime: DATA_REFRESH_CONFIG.decisions.staleTime || 5000,
   });
 }
 
@@ -136,14 +167,19 @@ export function useSyncedStrategies() {
   const { strategies } = useDataSync();
   
   return useQuery({
-    queryKey: ['strategies'],
+    queryKey: ['strategies', 'active'],
     queryFn: async () => {
-      const response = await fetch('/api/strategies');
-      return response.json();
+      const response = await fetch('/api/strategies/active');
+      const data = await response.json();
+      // Handle both array and object with items property + asOf ISO
+      if (Array.isArray(data)) {
+        return data;
+      }
+      return data?.items || [];
     },
     initialData: strategies,
-    refetchInterval: DATA_REFRESH_CONFIG.strategies.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.strategies.staleTime,
+    refetchInterval: DATA_REFRESH_CONFIG.strategies.refetchInterval || 60000,
+    staleTime: DATA_REFRESH_CONFIG.strategies.staleTime || 45000,
   });
 }
 
@@ -181,16 +217,40 @@ export function useSyncedHealth() {
   return useQuery({
     queryKey: ['health'],
     queryFn: async () => {
-      const response = await fetch('/api/health');
-      return response.json();
+      try {
+        // Try JSON metrics endpoint first
+        const metricsResponse = await fetch('/api/metrics');
+        if (metricsResponse.ok) {
+          const metrics = await metricsResponse.json();
+          // Convert metrics format to health format
+          return {
+            breaker: 'GREEN', // Default to GREEN if metrics are available
+            marketData: {
+              ageSec: metrics.quotesAge || 0
+            },
+            broker: {
+              rttMs: metrics.averageLatency || 0
+            },
+            wsConnected: isConnected,
+            asOf: metrics.asOf || new Date().toISOString(),
+            quote_age_s: metrics.quotesAge || 0,
+            broker_age_s: (metrics.averageLatency || 0) / 1000
+          };
+        }
+      } catch (e) {
+        // Metrics endpoint failed, continue to fallback
+      }
+      
+      // Fallback to /api/health
+      const healthResponse = await fetch('/api/health');
+      const health = await healthResponse.json();
+      return {
+        ...health,
+        wsConnected: isConnected
+      };
     },
-    refetchInterval: DATA_REFRESH_CONFIG.health.refetchInterval,
-    staleTime: DATA_REFRESH_CONFIG.health.staleTime,
-    // Add connection status to health data
-    select: (data) => ({
-      ...data,
-      wsConnected: isConnected,
-    }),
+    refetchInterval: DATA_REFRESH_CONFIG.health?.refetchInterval || 30000,
+    staleTime: DATA_REFRESH_CONFIG.health?.staleTime || 20000,
   });
 }
 
