@@ -1,0 +1,542 @@
+{
+  "evo_1758896021702_0_8xwos3x2y": {
+    "id": "evo_1758896021702_0_8xwos3x2y",
+    "name": "evo_1758896021702_0_8xwos3x2y",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.709Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021702_0_8xwos3x2y",
+        "label": "breakout_phenotype_0",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.710Z"
+  },
+  "evo_1758896021702_1_mkj5s9p6s": {
+    "id": "evo_1758896021702_1_mkj5s9p6s",
+    "name": "evo_1758896021702_1_mkj5s9p6s",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.712Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021702_1_mkj5s9p6s",
+        "label": "breakout_phenotype_1",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.712Z"
+  },
+  "evo_1758896021703_2_ae740i2u5": {
+    "id": "evo_1758896021703_2_ae740i2u5",
+    "name": "evo_1758896021703_2_ae740i2u5",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.714Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_2_ae740i2u5",
+        "label": "breakout_phenotype_2",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.714Z"
+  },
+  "evo_1758896021703_3_zj9fx7tb7": {
+    "id": "evo_1758896021703_3_zj9fx7tb7",
+    "name": "evo_1758896021703_3_zj9fx7tb7",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.716Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_3_zj9fx7tb7",
+        "label": "trend_phenotype_3",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.716Z"
+  },
+  "evo_1758896021703_4_bc8bblz6i": {
+    "id": "evo_1758896021703_4_bc8bblz6i",
+    "name": "evo_1758896021703_4_bc8bblz6i",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.717Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_4_bc8bblz6i",
+        "label": "trend_phenotype_4",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.717Z"
+  },
+  "evo_1758896021703_5_qwc9at264": {
+    "id": "evo_1758896021703_5_qwc9at264",
+    "name": "evo_1758896021703_5_qwc9at264",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.717Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_5_qwc9at264",
+        "label": "breakout_phenotype_5",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.717Z"
+  },
+  "evo_1758896021703_6_vmb8um2e6": {
+    "id": "evo_1758896021703_6_vmb8um2e6",
+    "name": "evo_1758896021703_6_vmb8um2e6",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.720Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_6_vmb8um2e6",
+        "label": "breakout_phenotype_6",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.720Z"
+  },
+  "evo_1758896021703_7_td6v4h9dp": {
+    "id": "evo_1758896021703_7_td6v4h9dp",
+    "name": "evo_1758896021703_7_td6v4h9dp",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.721Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_7_td6v4h9dp",
+        "label": "breakout_phenotype_7",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.721Z"
+  },
+  "evo_1758896021703_8_dkzpo73kl": {
+    "id": "evo_1758896021703_8_dkzpo73kl",
+    "name": "evo_1758896021703_8_dkzpo73kl",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.725Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_8_dkzpo73kl",
+        "label": "breakout_phenotype_8",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.725Z"
+  },
+  "evo_1758896021703_9_eovd45phe": {
+    "id": "evo_1758896021703_9_eovd45phe",
+    "name": "evo_1758896021703_9_eovd45phe",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-26T14:13:41.727Z",
+    "config": {
+      "phenotype": {
+        "id": "evo_1758896021703_9_eovd45phe",
+        "label": "trend_phenotype_9",
+        "params": {},
+        "constraints": {}
+      },
+      "family": "unknown",
+      "params": {},
+      "config": {
+        "symbol": "SPY",
+        "qty": 5,
+        "stopLoss": 0.02,
+        "takeProfit": 0.05,
+        "promotion_criteria": {
+          "minSharpe": 0.9,
+          "minPf": 1.15,
+          "maxDd": 0.08,
+          "maxBreaches": 0
+        },
+        "tournament_stage": "R1",
+        "allocated_capital": 100,
+        "source": "evotester",
+        "generation": 1
+      },
+      "position": null,
+      "entryPrice": null,
+      "indicators": {},
+      "priceHistory": []
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-26T14:13:41.727Z"
+  }
+}
