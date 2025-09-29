@@ -1,0 +1,53 @@
+{
+  "features": {
+    "multiTimeframe": {
+      "enabled": false,
+      "description": "Use multiple timeframes (5m, 1h, daily) for confirmation",
+      "risk": "low",
+      "implementation": "Add to strategy evaluate() methods"
+    },
+    "extendedHours": {
+      "enabled": false,
+      "description": "Trade 30 minutes before/after regular market",
+      "risk": "low",
+      "implementation": "Modify isRegularMarketOpen() time window"
+    },
+    "options": {
+      "enabled": false,
+      "description": "Trade options for leverage and hedging",
+      "risk": "medium",
+      "implementation": "Enable options strategies and add option chain data"
+    },
+    "pairs": {
+      "enabled": false,
+      "description": "Trade correlated pairs for market-neutral returns",
+      "risk": "medium",
+      "implementation": "Add PairsTrader class and correlation calculator"
+    },
+    "crypto": {
+      "enabled": false,
+      "description": "24/7 cryptocurrency trading",
+      "risk": "high",
+      "implementation": "Requires different broker integration"
+    },
+    "machineLearning": {
+      "enabled": false,
+      "description": "ML-based price predictions",
+      "risk": "high",
+      "implementation": "Requires model training and infrastructure"
+    }
+  },
+  "safeActivationOrder": [
+    "multiTimeframe",
+    "extendedHours",
+    "options",
+    "pairs",
+    "crypto",
+    "machineLearning"
+  ],
+  "notes": {
+    "beforeActivating": "Test current system for at least 1 week",
+    "activationStrategy": "Enable one feature at a time, test for 3-5 days",
+    "rollback": "Set enabled to false and restart server"
+  }
+}
