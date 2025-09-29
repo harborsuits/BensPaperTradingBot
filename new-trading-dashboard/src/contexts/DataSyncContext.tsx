@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createSSEConnection } from '@/services/improvedSSE';
 import { sseManager } from '@/services/sseManager';
@@ -91,7 +91,9 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       // Fetch portfolio summary
       const portfolioResp = await fetch('/api/portfolio/summary');
-      const portfolioData = await portfolioResp.json();
+      const portfolioResponse = await portfolioResp.json();
+      // Extract the data from the response wrapper
+      const portfolioData = portfolioResponse.data || portfolioResponse;
       setPortfolio(portfolioData);
       
       // Fetch account details
@@ -104,7 +106,7 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const positionsData = await positionsResp.json();
       setPositions(positionsData);
       
-      // Update React Query cache
+      // Update React Query cache with the unwrapped data
       queryClient.setQueryData(['portfolio', 'summary'], portfolioData);
       queryClient.setQueryData(['paper', 'account'], accountData);
       queryClient.setQueryData(['paper', 'positions'], positionsData);
@@ -159,29 +161,82 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [queryClient, refreshPortfolio]);
   
+  // Track last fetch time to prevent spam
+  const lastFetchRef = useRef<number>(0);
+  const pendingFetchRef = useRef<NodeJS.Timeout | null>(null);
+  
   // Subscribe to quote updates for specific symbols
   const subscribeToUpdates = useCallback((symbols: string[]) => {
     if (symbols.length === 0) return;
     
-    // Request quotes via REST first
-    fetch(`/api/quotes?symbols=${symbols.join(',')}`)
-      .then(r => r.json())
-      .then(quotesData => {
-        const newQuotes = new Map(quotes);
-        quotesData.forEach((q: any) => {
-          newQuotes.set(q.symbol, {
-            symbol: q.symbol,
-            last: q.last || q.price || 0,
-            bid: q.bid || 0,
-            ask: q.ask || 0,
-            volume: q.volume || 0,
-            change: q.change || 0,
-            change_percentage: q.change_percentage || 0,
-          });
-        });
-        setQuotes(newQuotes);
-      })
-      .catch(err => console.error('[DataSync] Quote fetch error:', err));
+    // Prevent fetching too frequently
+    const now = Date.now();
+    const timeSinceLastFetch = now - lastFetchRef.current;
+    const MIN_FETCH_INTERVAL = 5000; // 5 seconds minimum between fetches
+    
+    // Clear any pending fetch
+    if (pendingFetchRef.current) {
+      clearTimeout(pendingFetchRef.current);
+    }
+    
+    // Schedule fetch with proper throttling
+    const delay = Math.max(0, MIN_FETCH_INTERVAL - timeSinceLastFetch);
+    
+    pendingFetchRef.current = setTimeout(async () => {
+      lastFetchRef.current = Date.now();
+      
+      // Fetch quotes in smaller batches to avoid timeouts
+      const BATCH_SIZE = 20;
+      const newQuotes = new Map(quotes);
+      
+      for (let i = 0; i < symbols.length; i += BATCH_SIZE) {
+        const batch = symbols.slice(i, i + BATCH_SIZE);
+        try {
+          const response = await fetch(`/api/quotes?symbols=${batch.join(',')}`);
+          if (!response.ok) {
+            console.error(`[DataSync] Quote fetch failed for batch:`, response.status);
+            continue;
+          }
+          
+          const quotesData = await response.json();
+          
+          // Handle both array and object responses
+          if (Array.isArray(quotesData)) {
+            quotesData.forEach((q: any) => {
+              newQuotes.set(q.symbol, {
+                symbol: q.symbol,
+                last: q.last || q.price || 0,
+                bid: q.bid || 0,
+                ask: q.ask || 0,
+                volume: q.volume || 0,
+                change: q.change || 0,
+                change_percentage: q.change_percentage || 0,
+              });
+            });
+          } else if (quotesData && typeof quotesData === 'object') {
+            // If response is an object, try to extract quotes
+            const quotesArray = quotesData.quotes || quotesData.data || [];
+            if (Array.isArray(quotesArray)) {
+              quotesArray.forEach((q: any) => {
+                newQuotes.set(q.symbol, {
+                  symbol: q.symbol,
+                  last: q.last || q.price || 0,
+                  bid: q.bid || 0,
+                  ask: q.ask || 0,
+                  volume: q.volume || 0,
+                  change: q.change || 0,
+                  change_percentage: q.change_percentage || 0,
+                });
+              });
+            }
+          }
+        } catch (err) {
+          console.error('[DataSync] Quote batch error:', err);
+        }
+      }
+      
+      setQuotes(newQuotes);
+    }, delay);
   }, [quotes]);
   
   // Initialize WebSocket handlers
@@ -239,6 +294,15 @@ export const DataSyncProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     
     return () => clearInterval(interval);
   }, [refreshAll]);
+  
+  // Cleanup pending fetch on unmount
+  useEffect(() => {
+    return () => {
+      if (pendingFetchRef.current) {
+        clearTimeout(pendingFetchRef.current);
+      }
+    };
+  }, []);
   
   const value: DataSyncState = {
     portfolio,

@@ -6,20 +6,20 @@
 export const DATA_REFRESH_CONFIG = {
   // Critical real-time data
   quotes: {
-    refetchInterval: 3000,     // 3 seconds
-    staleTime: 2000,           // 2 seconds
+    refetchInterval: 10000,    // 10 seconds (reduced from 3)
+    staleTime: 8000,           // 8 seconds
   },
   trades: {
-    refetchInterval: 5000,     // 5 seconds
-    staleTime: 3000,           // 3 seconds
+    refetchInterval: 10000,    // 10 seconds (increased from 5)
+    staleTime: 8000,           // 8 seconds
   },
   decisions: {
-    refetchInterval: 5000,     // 5 seconds
-    staleTime: 3000,           // 3 seconds
+    refetchInterval: 10000,    // 10 seconds (increased from 5)
+    staleTime: 8000,           // 8 seconds
   },
   orders: {
-    refetchInterval: 3000,     // 3 seconds
-    staleTime: 2000,           // 2 seconds
+    refetchInterval: 5000,     // 5 seconds (increased from 3)
+    staleTime: 4000,           // 4 seconds
   },
   
   // Portfolio data
@@ -74,8 +74,8 @@ export const DATA_REFRESH_CONFIG = {
   
   // Default for other queries
   default: {
-    refetchInterval: 30000,    // 30 seconds
-    staleTime: 15000,          // 15 seconds
+    refetchInterval: 60000,    // 60 seconds (increased from 30)
+    staleTime: 30000,          // 30 seconds
   }
 };
 

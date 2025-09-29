@@ -51,7 +51,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.710Z"
+    "last_updated": "2025-09-26T14:13:41.710Z",
+    "enabled": true
   },
   "evo_1758896021702_1_mkj5s9p6s": {
     "id": "evo_1758896021702_1_mkj5s9p6s",
@@ -105,7 +106,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.712Z"
+    "last_updated": "2025-09-26T14:13:41.712Z",
+    "enabled": true
   },
   "evo_1758896021703_2_ae740i2u5": {
     "id": "evo_1758896021703_2_ae740i2u5",
@@ -159,7 +161,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.714Z"
+    "last_updated": "2025-09-26T14:13:41.714Z",
+    "enabled": true
   },
   "evo_1758896021703_3_zj9fx7tb7": {
     "id": "evo_1758896021703_3_zj9fx7tb7",
@@ -213,7 +216,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.716Z"
+    "last_updated": "2025-09-26T14:13:41.716Z",
+    "enabled": true
   },
   "evo_1758896021703_4_bc8bblz6i": {
     "id": "evo_1758896021703_4_bc8bblz6i",
@@ -267,7 +271,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.717Z"
+    "last_updated": "2025-09-26T14:13:41.717Z",
+    "enabled": true
   },
   "evo_1758896021703_5_qwc9at264": {
     "id": "evo_1758896021703_5_qwc9at264",
@@ -321,7 +326,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.717Z"
+    "last_updated": "2025-09-26T14:13:41.717Z",
+    "enabled": true
   },
   "evo_1758896021703_6_vmb8um2e6": {
     "id": "evo_1758896021703_6_vmb8um2e6",
@@ -375,7 +381,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.720Z"
+    "last_updated": "2025-09-26T14:13:41.720Z",
+    "enabled": true
   },
   "evo_1758896021703_7_td6v4h9dp": {
     "id": "evo_1758896021703_7_td6v4h9dp",
@@ -429,7 +436,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.721Z"
+    "last_updated": "2025-09-26T14:13:41.721Z",
+    "enabled": true
   },
   "evo_1758896021703_8_dkzpo73kl": {
     "id": "evo_1758896021703_8_dkzpo73kl",
@@ -483,7 +491,8 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.725Z"
+    "last_updated": "2025-09-26T14:13:41.725Z",
+    "enabled": true
   },
   "evo_1758896021703_9_eovd45phe": {
     "id": "evo_1758896021703_9_eovd45phe",
@@ -537,6 +546,397 @@
       "min_total_return": 0.05,
       "consecutive_wins": 5
     },
-    "last_updated": "2025-09-26T14:13:41.727Z"
+    "last_updated": "2025-09-26T14:13:41.727Z",
+    "enabled": true
+  },
+  "evo_sentiment_0": {
+    "id": "evo_sentiment_0",
+    "name": "Evolved Sentiment Strategy 0",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.801Z",
+    "config": {
+      "id": "evo_sentiment_0",
+      "name": "Evolved Sentiment Strategy 0",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.32289016166766904,
+        "buyThresholdOffset": -0.12522391307769465,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.801Z",
+    "enabled": true
+  },
+  "evo_sentiment_1": {
+    "id": "evo_sentiment_1",
+    "name": "Evolved Sentiment Strategy 1",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.803Z",
+    "config": {
+      "id": "evo_sentiment_1",
+      "name": "Evolved Sentiment Strategy 1",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.6023973971112402,
+        "buyThresholdOffset": -0.06954528331175897,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.803Z",
+    "enabled": true
+  },
+  "evo_sentiment_2": {
+    "id": "evo_sentiment_2",
+    "name": "Evolved Sentiment Strategy 2",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.803Z",
+    "config": {
+      "id": "evo_sentiment_2",
+      "name": "Evolved Sentiment Strategy 2",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.37464174558757585,
+        "buyThresholdOffset": -0.09037989948759542,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.803Z",
+    "enabled": true
+  },
+  "evo_sentiment_3": {
+    "id": "evo_sentiment_3",
+    "name": "Evolved Sentiment Strategy 3",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.804Z",
+    "config": {
+      "id": "evo_sentiment_3",
+      "name": "Evolved Sentiment Strategy 3",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.6544981320350822,
+        "buyThresholdOffset": -0.11464315805413819,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.804Z",
+    "enabled": true
+  },
+  "evo_sentiment_4": {
+    "id": "evo_sentiment_4",
+    "name": "Evolved Sentiment Strategy 4",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.805Z",
+    "config": {
+      "id": "evo_sentiment_4",
+      "name": "Evolved Sentiment Strategy 4",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.49883948431637604,
+        "buyThresholdOffset": -0.09132680538874945,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.805Z",
+    "enabled": true
+  },
+  "evo_sentiment_5": {
+    "id": "evo_sentiment_5",
+    "name": "Evolved Sentiment Strategy 5",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.805Z",
+    "config": {
+      "id": "evo_sentiment_5",
+      "name": "Evolved Sentiment Strategy 5",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.5155536471854913,
+        "buyThresholdOffset": -0.06316282458386971,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.805Z",
+    "enabled": true
+  },
+  "evo_sentiment_6": {
+    "id": "evo_sentiment_6",
+    "name": "Evolved Sentiment Strategy 6",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.806Z",
+    "config": {
+      "id": "evo_sentiment_6",
+      "name": "Evolved Sentiment Strategy 6",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.40924582140045596,
+        "buyThresholdOffset": -0.1442376683188039,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.806Z",
+    "enabled": true
+  },
+  "evo_sentiment_7": {
+    "id": "evo_sentiment_7",
+    "name": "Evolved Sentiment Strategy 7",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.806Z",
+    "config": {
+      "id": "evo_sentiment_7",
+      "name": "Evolved Sentiment Strategy 7",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.5477049906410085,
+        "buyThresholdOffset": -0.10401723263510781,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.806Z",
+    "enabled": true
+  },
+  "evo_sentiment_8": {
+    "id": "evo_sentiment_8",
+    "name": "Evolved Sentiment Strategy 8",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.807Z",
+    "config": {
+      "id": "evo_sentiment_8",
+      "name": "Evolved Sentiment Strategy 8",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.63386191155633,
+        "buyThresholdOffset": -0.08343647767243681,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.807Z",
+    "enabled": true
+  },
+  "evo_sentiment_9": {
+    "id": "evo_sentiment_9",
+    "name": "Evolved Sentiment Strategy 9",
+    "status": "paper",
+    "broker": "paper",
+    "created_at": "2025-09-27T20:53:09.807Z",
+    "config": {
+      "id": "evo_sentiment_9",
+      "name": "Evolved Sentiment Strategy 9",
+      "type": "sentiment_momentum",
+      "enabled": true,
+      "symbols": null,
+      "config": {
+        "useSentiment": true,
+        "sentimentWeight": 0.33093140497261603,
+        "buyThresholdOffset": -0.12795280822832006,
+        "minConfidence": 0.25,
+        "baseScore": 0.5
+      }
+    },
+    "performance": {
+      "total_trades": 0,
+      "win_rate": 0,
+      "sharpe_ratio": 0,
+      "max_drawdown": 0,
+      "total_return": 0,
+      "avg_trade_pnl": 0
+    },
+    "promotion_criteria": {
+      "min_trades": 50,
+      "min_win_rate": 0.55,
+      "min_sharpe_ratio": 1,
+      "max_drawdown": 0.08,
+      "min_total_return": 0.05,
+      "consecutive_wins": 5
+    },
+    "last_updated": "2025-09-27T20:53:09.807Z",
+    "enabled": true
   }
 }

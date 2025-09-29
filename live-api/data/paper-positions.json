@@ -1,0 +1,317 @@
+{
+  "SOFI": {
+    "qty": 256,
+    "avgPrice": 14.5,
+    "totalCost": 3712
+  },
+  "PLTR": {
+    "qty": 33,
+    "avgPrice": 17.76,
+    "totalCost": 586.08
+  },
+  "BB": {
+    "qty": 1514,
+    "avgPrice": 4.96,
+    "totalCost": 7509.44
+  },
+  "NOK": {
+    "qty": 1351,
+    "avgPrice": 4.66,
+    "totalCost": 6295.66
+  },
+  "F": {
+    "qty": 559,
+    "avgPrice": 12.01,
+    "totalCost": 6713.59
+  },
+  "SPY": {
+    "qty": 8,
+    "avgPrice": 450,
+    "totalCost": 3600
+  },
+  "QQQ": {
+    "qty": 9,
+    "avgPrice": 380,
+    "totalCost": 3420
+  },
+  "AVGO": {
+    "qty": 3,
+    "avgPrice": 140,
+    "totalCost": 420
+  },
+  "META": {
+    "qty": 1,
+    "avgPrice": 743.75,
+    "totalCost": 743.75
+  },
+  "MSFT": {
+    "qty": 1,
+    "avgPrice": 330,
+    "totalCost": 330
+  },
+  "NVDA": {
+    "qty": 1,
+    "avgPrice": 178.19,
+    "totalCost": 178.19
+  },
+  "DKNG": {
+    "qty": 1,
+    "avgPrice": 42.32,
+    "totalCost": 42.32
+  },
+  "RKT": {
+    "qty": 1,
+    "avgPrice": 8.5,
+    "totalCost": 8.5
+  },
+  "AAL": {
+    "qty": 1,
+    "avgPrice": 11.31,
+    "totalCost": 11.31
+  },
+  "LYFT": {
+    "qty": 1,
+    "avgPrice": 21.87,
+    "totalCost": 21.87
+  },
+  "AMD": {
+    "qty": 1,
+    "avgPrice": 159.46,
+    "totalCost": 159.46
+  },
+  "RBLX": {
+    "qty": 1,
+    "avgPrice": 45,
+    "totalCost": 45
+  },
+  "CLOV": {
+    "qty": 1,
+    "avgPrice": 3.2,
+    "totalCost": 3.2
+  },
+  "CTRM": {
+    "qty": 1,
+    "avgPrice": 2.1,
+    "totalCost": 2.1
+  },
+  "PENN": {
+    "qty": 1,
+    "avgPrice": 19.8,
+    "totalCost": 19.8
+  },
+  "COIN": {
+    "qty": 1,
+    "avgPrice": 312.59,
+    "totalCost": 312.59
+  },
+  "SPCE": {
+    "qty": 1,
+    "avgPrice": 5,
+    "totalCost": 5
+  },
+  "HOOD": {
+    "qty": 1,
+    "avgPrice": 121.78,
+    "totalCost": 121.78
+  },
+  "PATH": {
+    "qty": 1,
+    "avgPrice": 12.21,
+    "totalCost": 12.21
+  },
+  "SNAP": {
+    "qty": 1,
+    "avgPrice": 11,
+    "totalCost": 11
+  },
+  "TSLA": {
+    "qty": 1,
+    "avgPrice": 230,
+    "totalCost": 230
+  },
+  "GE": {
+    "qty": 1,
+    "avgPrice": 294.98,
+    "totalCost": 294.98
+  },
+  "AFRM": {
+    "qty": 1,
+    "avgPrice": 76.03,
+    "totalCost": 76.03
+  },
+  "PYPL": {
+    "qty": 1,
+    "avgPrice": 70,
+    "totalCost": 70
+  },
+  "UBER": {
+    "qty": 1,
+    "avgPrice": 65,
+    "totalCost": 65
+  },
+  "SHOP": {
+    "qty": 1,
+    "avgPrice": 65,
+    "totalCost": 65
+  },
+  "U": {
+    "qty": 1,
+    "avgPrice": 30,
+    "totalCost": 30
+  },
+  "CCL": {
+    "qty": 1,
+    "avgPrice": 30.62,
+    "totalCost": 30.62
+  },
+  "FCX": {
+    "qty": 1,
+    "avgPrice": 35.75,
+    "totalCost": 35.75
+  },
+  "INTC": {
+    "qty": 1,
+    "avgPrice": 35.5,
+    "totalCost": 35.5
+  },
+  "CSCO": {
+    "qty": 1,
+    "avgPrice": 67.22,
+    "totalCost": 67.22
+  },
+  "PFE": {
+    "qty": 1,
+    "avgPrice": 23.76,
+    "totalCost": 23.76
+  },
+  "MRNA": {
+    "qty": 1,
+    "avgPrice": 24.49,
+    "totalCost": 24.49
+  },
+  "T": {
+    "qty": 1,
+    "avgPrice": 18,
+    "totalCost": 18
+  },
+  "OXY": {
+    "qty": 1,
+    "avgPrice": 47.47,
+    "totalCost": 47.47
+  },
+  "BA": {
+    "qty": 1,
+    "avgPrice": 221.26,
+    "totalCost": 221.26
+  },
+  "SLB": {
+    "qty": 1,
+    "avgPrice": 40,
+    "totalCost": 40
+  },
+  "GM": {
+    "qty": 1,
+    "avgPrice": 61.24,
+    "totalCost": 61.24
+  },
+  "VZ": {
+    "qty": 1,
+    "avgPrice": 40,
+    "totalCost": 40
+  },
+  "VISL": {
+    "qty": 1,
+    "avgPrice": 2,
+    "totalCost": 2
+  },
+  "ANY": {
+    "qty": 1,
+    "avgPrice": 0.71,
+    "totalCost": 0.71
+  },
+  "GSAT": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "SNDL": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "WKHS": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "SENS": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "OCGN": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "BNGO": {
+    "qty": 1,
+    "avgPrice": 10,
+    "totalCost": 10
+  },
+  "IBM": {
+    "qty": 3,
+    "avgPrice": 10,
+    "totalCost": 30
+  },
+  "CVX": {
+    "qty": 6,
+    "avgPrice": 10,
+    "totalCost": 60
+  },
+  "JPM": {
+    "qty": 3,
+    "avgPrice": 10,
+    "totalCost": 30
+  },
+  "WFC": {
+    "qty": 11,
+    "avgPrice": 10,
+    "totalCost": 110
+  },
+  "C": {
+    "qty": 9,
+    "avgPrice": 10,
+    "totalCost": 90
+  },
+  "NCLH": {
+    "qty": 39,
+    "avgPrice": 10,
+    "totalCost": 390
+  },
+  "BAC": {
+    "qty": 19,
+    "avgPrice": 10,
+    "totalCost": 190
+  },
+  "HAL": {
+    "qty": 40,
+    "avgPrice": 10,
+    "totalCost": 400
+  },
+  "KGC": {
+    "qty": 42,
+    "avgPrice": 10,
+    "totalCost": 420
+  },
+  "NEM": {
+    "qty": 11,
+    "avgPrice": 10,
+    "totalCost": 110
+  },
+  "ORCL": {
+    "qty": 3,
+    "avgPrice": 10,
+    "totalCost": 30
+  }
+}
