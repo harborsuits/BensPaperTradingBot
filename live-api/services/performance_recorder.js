@@ -82,7 +82,7 @@ class PerformanceRecorder extends EventEmitter {
       try {
         await this.db.recordDecision({
           ...record,
-          action: record.side,
+          action: record.side || decision.action || decision.recommendation || 'hold',
           brain_score: record.context.brain_score || null,
           reason: decision.reason || null,
           analysis: decision.analysis || {},

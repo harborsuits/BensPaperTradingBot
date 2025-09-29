@@ -34,7 +34,7 @@ app.use((req, _res, next) => {
 });
 // Simple token-bucket rate limiting for expensive endpoints
 const limiterMap = {
-  '/api/quotes': new TokenBucketLimiter(20, 50), // Increased from 5,10 to handle concurrent frontend requests
+  '/api/quotes': new TokenBucketLimiter(5, 10),
   '/api/bars': new TokenBucketLimiter(2, 4),
   '/api/context/news': new TokenBucketLimiter(1, 2),
   '/api/fundamentals': new TokenBucketLimiter(0.5, 1),
@@ -383,7 +383,7 @@ paperBroker.on('positionUpdated', (data) => {
 // Initialize the unified Brain Integrator BEFORE AutoLoop
 const tradingThresholds = require('./config/tradingThresholds');
 const brainIntegrator = new BrainIntegrator({
-  minConfidence: 0.25, // TESTING MODE: Lower confidence for more trades
+  minConfidence: 0.6,
   checkInterval: 30000,
   thresholds: tradingThresholds.brainScore
 });
@@ -430,10 +430,9 @@ brainIntegrator.connectComponents({
   decisionCoordinator: null, // TODO: Initialize decision coordinator  
   circuitBreaker: circuitBreaker,
   capitalTracker: capitalTracker,
-  dataValidator: { validate: (data) => ({ isValid: true, errors: [] }) }, // Simple validator for now
+  dataValidator: null, // Initialized in autoLoop
   positionSizer: optionsPositionSizer, // Already initialized
   performanceRecorder: performanceRecorder,
-  enhancedRecorder: enhancedRecorder, // Add enhanced learning system
   marketIndicators: null, // Will be set later
   paperBroker: paperBroker
 });
@@ -469,7 +468,7 @@ try {
   if (autoLoop) {
     autoLoop.aiOrchestrator = aiOrchestrator;
     autoLoop.capitalLimits = {
-      maxTotalCapital: aiOrchestrator.policy?.ai_policy?.paper_cap_max || 150000, // Increased for testing with existing positions
+      maxTotalCapital: aiOrchestrator.policy?.ai_policy?.paper_cap_max || 20000,
       maxPerTrade: 1000,
       maxOpenTrades: 10,
       maxDailyTrades: 50,
@@ -1498,30 +1497,6 @@ app.get('/api/quotes', requireRealProviders, maybeDisconnectFeeds, async (req, r
     const { token, baseUrl } = getTradierConfig();
     res.locals.source = token ? 'broker' : 'mock';
     res.locals.provider = getProviderTag();
-
-    // If no token, provide mock quotes
-    if (!token) {
-      const now = Date.now();
-      const mockQuotes = symbols.map(symbol => {
-        // Generate stable mock prices based on symbol
-        const seed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const basePrice = 100 + (seed % 900);
-        const variation = (Math.sin(now / 60000) * 0.01); // Small variation based on time
-        const last = +(basePrice * (1 + variation)).toFixed(2);
-        
-        return {
-          symbol,
-          last,
-          price: last,
-          bid: +(last * 0.999).toFixed(2),
-          ask: +(last * 1.001).toFixed(2),
-          prevClose: +(last * 0.995).toFixed(2),
-          volume: 1000000 + (seed * 1000),
-          asof_ts: new Date().toISOString()
-        };
-      });
-      return res.json(mockQuotes);
-    }
 
     const fail = ensureRealOrFail(Boolean(token));
     if (fail) return res.status(fail.status).json(fail.body);
@@ -3152,26 +3127,7 @@ app.post('/api/universe', (req, res) => {
 
 async function getQuotesMap(symbols) {
   const { token, baseUrl } = getTradierConfig();
-  if (!symbols.length || DISCONNECT_FEEDS) return {};
-  
-  // If no token, provide mock quotes
-  if (!token) {
-    const map = {};
-    const now = Date.now();
-    symbols.forEach(symbol => {
-      const seed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const basePrice = 100 + (seed % 900);
-      const variation = (Math.sin(now / 60000) * 0.01);
-      const price = +(basePrice * (1 + variation)).toFixed(2);
-      map[symbol] = { 
-        price, 
-        asof_ts: new Date().toISOString(), 
-        provider: 'mock' 
-      };
-    });
-    return map;
-  }
-  
+  if (!symbols.length || DISCONNECT_FEEDS || !token) return {};
   try {
     const url = `${baseUrl}/markets/quotes?symbols=${encodeURIComponent(symbols.join(','))}`;
     const { data } = await axios.get(url, {
@@ -3711,17 +3667,7 @@ app.get('/api/paper/positions', async (req, res) => {
     // Use local PaperBroker if no Tradier token
     if (!token) {
       const positions = paperBroker.getPositions();
-      // Transform to match expected format
-      const transformedPositions = positions.map(pos => ({
-        symbol: pos.symbol,
-        quantity: pos.qty || 0,
-        cost_basis: (pos.avg_price || 0) * (pos.qty || 0),
-        avg_price: pos.avg_price || 0,
-        current_price: pos.avg_price || 0, // Will be updated by frontend with quotes
-        market_value: (pos.avg_price || 0) * (pos.qty || 0),
-        pnl: 0
-      }));
-      return res.json(transformedPositions);
+      return res.json(positions);
     }
 
     // Get account number from profile
@@ -3777,8 +3723,7 @@ app.get('/api/paper/positions', async (req, res) => {
       
       return {
         symbol: pos.symbol,
-        quantity: qty,
-        cost_basis: pos.cost_basis || (qty * avgPrice),
+        qty: qty,
         avg_price: avgPrice,
         current_price: currentPrice,
         market_value: marketValue,
@@ -3835,12 +3780,9 @@ app.get('/api/trades', (req, res) => {
     strategy: o.strategy || 'manual',
     symbol: o.symbol,
     side: o.side,
-    action: o.side, // Add action field for UI compatibility
     qty: Number(o.qty || o.quantity || 0),
     price: Number(o.price || 0),
-    status: o.status || 'filled', // Add status field
     ts_exec: o.ts_exec || o.created_at || new Date().toISOString(),
-    timestamp: o.created_at || o.ts_exec || new Date().toISOString(), // Add timestamp field
     broker_order_id: o.broker_order_id || null,
     venue: o.venue || 'sim',
     pnl_at_exit: null,
@@ -3877,17 +3819,17 @@ app.get('/api/strategies/active', (req, res) => {
   const activeStrategies = [];
   
   // Map each active strategy to the expected format
-  (allStrategies || []).forEach(strategy => {
-    if (strategy.status === 'running' || strategy.enabled) {
+  allStrategies.forEach(strategy => {
+    if (strategy.status === 'running' || strategy.enabled || strategyManager.activeStrategies.has(strategy.name)) {
       activeStrategies.push({
         id: strategy.name,
         name: strategy.name,
         budget: 0.25, // Equal allocation for now
         reason: 'active_trading',
-        sharpe_after_costs: strategy.instance?.performance?.sharpe || 0.5,
-        trades: strategy.instance?.performance?.totalTrades || 0,
-        symbols: strategy.instance?.symbol ? [strategy.instance.symbol] : ['SPY'],
-        type: strategy.instance?.constructor?.name || 'unknown'
+        sharpe_after_costs: strategy.performance?.sharpe || 0.5,
+        trades: strategy.performance?.totalTrades || 0,
+        symbols: strategy.strategy?.symbol ? [strategy.strategy.symbol] : ['SPY'],
+        type: strategy.type || strategy.strategy?.constructor?.name || 'unknown'
       });
     }
   });
@@ -5306,26 +5248,3 @@ app.use((err, _req, res, _next) => {
   try { console.error('[GlobalError]', err?.stack || err?.message || err); } catch {}
   res.status(500).json({ error: 'internal_error' });
 });
-
-// Simple quotes cache for PaperBroker
-let quotesCache = {};
-
-function getQuotesCache() {
-  return quotesCache;
-}
-
-// Update quotes cache when fetching quotes
-const originalGetQuotesMap = getQuotesMap;
-async function getQuotesMapWithCache(symbols) {
-  const quotes = await originalGetQuotesMap(symbols);
-  // Update cache
-  quotesCache = quotes;
-  return quotes;
-}
-// Replace getQuotesMap with cached version
-getQuotesMap = getQuotesMapWithCache;
-
-// Export for PaperBroker to access quotes
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports.getQuotesCache = getQuotesCache;
-}

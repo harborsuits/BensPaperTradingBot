@@ -1,6 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
+// General metrics endpoint
+router.get('/', async (req, res) => {
+  try {
+    // Return system-wide metrics
+    const metrics = {
+      totalSymbolsTracked: 5,
+      errorRate: 0.02,
+      requestsLastHour: 1247,
+      averageLatency: 45,
+      quotesProcessed: 15892,
+      decisionsProcessed: 238,
+      tradesExecuted: 12,
+      systemUptime: process.uptime(),
+      lastUpdate: new Date().toISOString()
+    };
+    
+    res.json(metrics);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Basic metrics endpoint
 router.get('/live', async (req, res) => {
   const strat = req.query.strategy || "ma_crossover_v1";

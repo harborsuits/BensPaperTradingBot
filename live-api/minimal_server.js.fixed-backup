@@ -383,7 +383,7 @@ paperBroker.on('positionUpdated', (data) => {
 // Initialize the unified Brain Integrator BEFORE AutoLoop
 const tradingThresholds = require('./config/tradingThresholds');
 const brainIntegrator = new BrainIntegrator({
-  minConfidence: 0.6,
+  minConfidence: 0.25, // TESTING MODE: Lower confidence for more trades
   checkInterval: 30000,
   thresholds: tradingThresholds.brainScore
 });
@@ -433,6 +433,7 @@ brainIntegrator.connectComponents({
   dataValidator: { validate: (data) => ({ isValid: true, errors: [] }) }, // Simple validator for now
   positionSizer: optionsPositionSizer, // Already initialized
   performanceRecorder: performanceRecorder,
+  enhancedRecorder: enhancedRecorder, // Add enhanced learning system
   marketIndicators: null, // Will be set later
   paperBroker: paperBroker
 });
@@ -5305,3 +5306,26 @@ app.use((err, _req, res, _next) => {
   try { console.error('[GlobalError]', err?.stack || err?.message || err); } catch {}
   res.status(500).json({ error: 'internal_error' });
 });
+
+// Simple quotes cache for PaperBroker
+let quotesCache = {};
+
+function getQuotesCache() {
+  return quotesCache;
+}
+
+// Update quotes cache when fetching quotes
+const originalGetQuotesMap = getQuotesMap;
+async function getQuotesMapWithCache(symbols) {
+  const quotes = await originalGetQuotesMap(symbols);
+  // Update cache
+  quotesCache = quotes;
+  return quotes;
+}
+// Replace getQuotesMap with cached version
+getQuotesMap = getQuotesMapWithCache;
+
+// Export for PaperBroker to access quotes
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports.getQuotesCache = getQuotesCache;
+}

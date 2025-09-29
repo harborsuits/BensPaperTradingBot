@@ -1,3 +1,0 @@
-"""
-BensBot Trading Dashboard Package
-"""

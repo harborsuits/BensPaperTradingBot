@@ -1,8 +1,8 @@
 {
   "SOFI": {
-    "qty": 256,
-    "avgPrice": 14.5,
-    "totalCost": 3712
+    "qty": 292,
+    "avgPrice": 25.041095890410958,
+    "totalCost": 7312
   },
   "PLTR": {
     "qty": 33,
@@ -20,9 +20,9 @@
     "totalCost": 6295.66
   },
   "F": {
-    "qty": 559,
-    "avgPrice": 12.01,
-    "totalCost": 6713.59
+    "qty": 642,
+    "avgPrice": 23.385654205607477,
+    "totalCost": 15013.59
   },
   "SPY": {
     "qty": 8,
@@ -65,14 +65,14 @@
     "totalCost": 8.5
   },
   "AAL": {
-    "qty": 1,
-    "avgPrice": 11.31,
-    "totalCost": 11.31
+    "qty": 88,
+    "avgPrice": 98.99215909090908,
+    "totalCost": 8711.31
   },
   "LYFT": {
-    "qty": 1,
-    "avgPrice": 21.87,
-    "totalCost": 21.87
+    "qty": 45,
+    "avgPrice": 98.26377777777778,
+    "totalCost": 4421.87
   },
   "AMD": {
     "qty": 1,
@@ -95,9 +95,9 @@
     "totalCost": 2.1
   },
   "PENN": {
-    "qty": 1,
-    "avgPrice": 19.8,
-    "totalCost": 19.8
+    "qty": 51,
+    "avgPrice": 98.42745098039217,
+    "totalCost": 5019.8
   },
   "COIN": {
     "qty": 1,
@@ -115,9 +115,9 @@
     "totalCost": 121.78
   },
   "PATH": {
-    "qty": 1,
-    "avgPrice": 12.21,
-    "totalCost": 12.21
+    "qty": 80,
+    "avgPrice": 98.902625,
+    "totalCost": 7912.21
   },
   "SNAP": {
     "qty": 1,
@@ -130,14 +130,14 @@
     "totalCost": 230
   },
   "GE": {
-    "qty": 1,
-    "avgPrice": 294.98,
-    "totalCost": 294.98
+    "qty": 4,
+    "avgPrice": 148.745,
+    "totalCost": 594.98
   },
   "AFRM": {
-    "qty": 1,
-    "avgPrice": 76.03,
-    "totalCost": 76.03
+    "qty": 14,
+    "avgPrice": 98.28785714285713,
+    "totalCost": 1376.03
   },
   "PYPL": {
     "qty": 1,
@@ -160,9 +160,9 @@
     "totalCost": 30
   },
   "CCL": {
-    "qty": 1,
-    "avgPrice": 30.62,
-    "totalCost": 30.62
+    "qty": 35,
+    "avgPrice": 98.01771428571428,
+    "totalCost": 3430.62
   },
   "FCX": {
     "qty": 1,
@@ -230,9 +230,9 @@
     "totalCost": 0.71
   },
   "GSAT": {
-    "qty": 1,
-    "avgPrice": 10,
-    "totalCost": 10
+    "qty": 57,
+    "avgPrice": 98.42105263157895,
+    "totalCost": 5610
   },
   "SNDL": {
     "qty": 1,
@@ -285,9 +285,9 @@
     "totalCost": 90
   },
   "NCLH": {
-    "qty": 39,
-    "avgPrice": 10,
-    "totalCost": 390
+    "qty": 79,
+    "avgPrice": 55.56962025316456,
+    "totalCost": 4390
   },
   "BAC": {
     "qty": 19,
@@ -313,5 +313,15 @@
     "qty": 3,
     "avgPrice": 10,
     "totalCost": 30
+  },
+  "ROOT": {
+    "qty": 10,
+    "avgPrice": 100,
+    "totalCost": 1000
+  },
+  "PSFE": {
+    "qty": 76,
+    "avgPrice": 100,
+    "totalCost": 7600
   }
 }

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, DollarSign, Target, AlertCircle, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import ProvenanceChip from "@/components/ProvenanceChip";
 import ErrorState from "@/components/ErrorState";
-import { useSyncedPortfolio } from "@/hooks/useSyncedData";
+import { useSyncedPortfolio, useSyncedQuotes } from "@/hooks/useSyncedData";
 
 interface PortfolioData {
   cash: number;
@@ -49,10 +49,16 @@ async function getPortfolioData(): Promise<{ data: PortfolioData; meta: any }> {
 
 export default function PortfolioCard() {
   const { data: portfolio, isLoading, error } = useSyncedPortfolio();
+  const [positionsWithPnL, setPositionsWithPnL] = useState<any[]>([]);
   
   // Metadata is part of the portfolio object from Tradier
   const meta = portfolio as any;
   const positions = Array.isArray(portfolio?.positions) ? portfolio.positions : [];
+  
+  // Extract position symbols to fetch quotes
+  const positionSymbols = positions.map((pos: any) => pos.symbol).filter(Boolean);
+  const { data: quotesData } = useSyncedQuotes(positionSymbols);
+  
   const equity = Number(portfolio?.equity ?? 0);
   const cash = Number(portfolio?.cash ?? 0);
   const dayPnl = Number(portfolio?.day_pnl ?? 0);
@@ -67,6 +73,37 @@ export default function PortfolioCard() {
   const latency_ms = (portfolio as any)?.latency_ms as number | undefined;
   const redFlag = Boolean((portfolio as any)?.reality_red_flag);
   const metaAny = portfolio as any;
+
+  // Calculate P&L for positions whenever positions or quotes change
+  useEffect(() => {
+    if (positions.length > 0 && quotesData && Array.isArray(quotesData)) {
+      const positionsWithCalcs = positions.map((pos: any) => {
+        // Find quote for this position
+        const quote = quotesData.find((q: any) => q.symbol === pos.symbol);
+        const currentPrice = quote?.last || quote?.price || 0;
+        const costBasis = Number(pos.cost_basis || 0);
+        const quantity = Number(pos.quantity || 0);
+        const totalCost = costBasis * quantity;
+        const currentValue = currentPrice * quantity;
+        const pnl = currentValue - totalCost;
+        const pnlPercent = totalCost > 0 ? (pnl / totalCost) * 100 : 0;
+        
+        return {
+          ...pos,
+          last: currentPrice,
+          currentValue,
+          pnl,
+          pnlPercent,
+          qty: quantity,
+          avg_cost: costBasis
+        };
+      });
+      
+      // Sort by P&L descending (winners first)
+      const sorted = positionsWithCalcs.sort((a, b) => b.pnl - a.pnl);
+      setPositionsWithPnL(sorted);
+    }
+  }, [positions, quotesData]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -226,18 +263,17 @@ export default function PortfolioCard() {
         )}
 
         {/* Positions */}
-        {positions.length > 0 && (
+        {positionsWithPnL.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">Top Performers</span>
               <span className="text-xs text-muted-foreground">
-                {positions.length} total
+                {positionsWithPnL.length} positions
               </span>
             </div>
             <div className="space-y-2">
-              {positions
-                .sort((a, b) => (b.pnl || 0) - (a.pnl || 0)) // Sort by P&L descending (best first)
-                .slice(0, 3)
+              {positionsWithPnL
+                .slice(0, 5) // Show top 5 positions
                 .map((position) => (
                 <div key={position.symbol} className="flex items-center justify-between bg-muted/30 rounded-lg p-2">
                   <div className="flex items-center gap-2">
@@ -252,6 +288,9 @@ export default function PortfolioCard() {
                       position.pnl >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
                       {formatCurrency(position.pnl)}
+                      <span className="text-xs ml-1">
+                        ({position.pnl >= 0 ? '+' : ''}{position.pnlPercent.toFixed(1)}%)
+                      </span>
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {formatCurrency(position.last)}
@@ -260,6 +299,17 @@ export default function PortfolioCard() {
                 </div>
               ))}
             </div>
+            {positionsWithPnL.length > 5 && (
+              <div className="text-xs text-muted-foreground text-center mt-2">
+                +{positionsWithPnL.length - 5} more positions
+              </div>
+            )}
+          </div>
+        )}
+
+        {positionsWithPnL.length === 0 && positions.length > 0 && (
+          <div className="text-center py-4 text-muted-foreground">
+            <div className="text-sm">Loading quotes for {positions.length} positions...</div>
           </div>
         )}
 

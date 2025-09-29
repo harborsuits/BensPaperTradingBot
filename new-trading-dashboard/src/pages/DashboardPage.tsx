@@ -141,24 +141,33 @@ const AutopilotCard: React.FC = () => {
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
-            <span className={`font-medium ${autopilotData.status === 'IDLE' ? 'text-green-600' : 'text-yellow-600'}`}>
-              {autopilotData.status}
+            <span className={`font-medium ${
+              autopilotData.status === 'IDLE' || autopilotData.status === 'IDLE_NO_SIGNALS' 
+                ? 'text-yellow-600' 
+                : 'text-green-600'
+            }`}>
+              {autopilotData.status || 'UNKNOWN'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Running:</span>
-            <span className={autopilotData.is_running ? 'text-green-600' : 'text-red-600'}>
-              {autopilotData.is_running ? 'Yes' : 'No'}
+            <span className={(autopilotData.is_running || autopilotData.isRunning || autopilotData.enabled) ? 'text-green-600' : 'text-red-600'}>
+              {(autopilotData.is_running || autopilotData.isRunning || autopilotData.enabled) ? 'Yes' : 'No'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Interval:</span>
-            <span>{autopilotData.interval_ms ? `${autopilotData.interval_ms/1000}s` : '—'}</span>
+            <span>
+              {autopilotData.interval_ms ? `${autopilotData.interval_ms/1000}s` : 
+               autopilotData.interval ? `${autopilotData.interval/1000}s` : '—'}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Last run:</span>
             <span className="text-xs">
-              {autopilotData.last_cycle ? new Date(autopilotData.last_cycle).toLocaleTimeString() : '—'}
+              {(autopilotData.last_cycle || autopilotData.lastRun) 
+                ? new Date(autopilotData.last_cycle || autopilotData.lastRun).toLocaleTimeString() 
+                : '—'}
             </span>
           </div>
         </div>
@@ -174,7 +183,15 @@ const StrategySpotlightCard: React.FC = () => {
   
   // Handle both array and object with items property
   const strategies = Array.isArray(strategiesData) ? strategiesData : strategiesData?.items || [];
-  const topStrategy = strategies[0];
+  
+  // Find the best performing active strategy by profit factor
+  const topStrategy = strategies
+    .filter((s: any) => s.active)
+    .sort((a: any, b: any) => {
+      const aProfitFactor = a.performance?.profit_factor || 0;
+      const bProfitFactor = b.performance?.profit_factor || 0;
+      return bProfitFactor - aProfitFactor;
+    })[0] || strategies[0]; // Fallback to first strategy if none are active
 
   return (
     <div className="border rounded-lg p-4 bg-card">

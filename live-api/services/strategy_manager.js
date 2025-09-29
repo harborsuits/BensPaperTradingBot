@@ -263,7 +263,14 @@ class StrategyManager {
      * Get all strategies
      */
     getAllStrategies() {
-        return Object.values(this.strategies);
+        return this.strategies; // Return object, not array
+    }
+    
+    /**
+     * Get active strategies
+     */
+    getActiveStrategies() {
+        return Object.values(this.strategies).filter(s => s.enabled !== false);
     }
 
     /**

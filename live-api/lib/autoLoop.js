@@ -702,10 +702,9 @@ class AutoLoop extends EventEmitter {
   }
 
   /**
-   * Generate signals from allocated strategies
+   * Generate signals from allocated strategies - PARALLEL VERSION
    */
   async _generateStrategySignals(allocations) {
-    const signals = [];
     const signalsBySymbol = new Map(); // Track best signal per symbol
     
     // Get current positions to avoid buying what we already own
@@ -713,90 +712,92 @@ class AutoLoop extends EventEmitter {
     const positions = positionsResp.ok ? await positionsResp.json() : [];
     const ownedSymbols = new Set(positions.filter(p => p.qty > 0).map(p => p.symbol));
     
-    // First, get ALL high-value candidates (diamonds, news movers, etc.)
-    const highValueCandidates = await this._getHighValueCandidates();
-    console.log(`[AutoLoop] Found ${highValueCandidates.length} high-value candidates to test against ALL strategies`);
+    // Get all candidates in parallel
+    console.log('[AutoLoop] Fetching all candidates in parallel...');
+    const [highValueCandidates, regularCandidates] = await Promise.all([
+      this._getHighValueCandidates(),
+      this._getRegularCandidates(allocations)
+    ]);
     
-    // Test high-value candidates against ALL allocated strategies
-    for (const candidate of highValueCandidates) {
-      // Skip if we already own this symbol
+    console.log(`[AutoLoop] Found ${highValueCandidates.length} high-value and ${regularCandidates.length} regular candidates`);
+    
+    // Combine all candidates
+    const allCandidates = [...highValueCandidates, ...regularCandidates];
+    
+    // Filter out owned symbols and pending orders
+    const eligibleCandidates = allCandidates.filter(candidate => {
       if (ownedSymbols.has(candidate.symbol)) {
         console.log(`[AutoLoop] Skipping ${candidate.symbol} - already have position`);
-        continue;
+        return false;
       }
-      
-      // Skip if we have a pending order for this symbol
       if (this.pendingOrderSymbols && this.pendingOrderSymbols.has(candidate.symbol)) {
         console.log(`[AutoLoop] Skipping ${candidate.symbol} - already have pending order`);
-        continue;
+        return false;
+      }
+      return true;
+    });
+    
+    console.log(`[AutoLoop] Testing ${eligibleCandidates.length} eligible candidates against ${Object.keys(allocations).length} strategies in parallel...`);
+    
+    // Get active strategy IDs with positive allocations
+    const activeStrategies = Object.entries(allocations)
+      .filter(([_, allocation]) => allocation.weight > 0)
+      .map(([strategyId, allocation]) => ({ strategyId, allocation }));
+    
+    // Create all test combinations (candidate × strategy)
+    const testPromises = [];
+    for (const candidate of eligibleCandidates) {
+      for (const { strategyId, allocation } of activeStrategies) {
+        testPromises.push(
+          this._testCandidateWithStrategy(candidate, strategyId, allocation)
+            .catch(e => {
+              console.error(`[AutoLoop] Error testing ${candidate.symbol} with ${strategyId}:`, e.message);
+              return null; // Return null on error to continue processing other candidates
+            })
+        );
+      }
+    }
+    
+    // Run all tests in parallel with concurrency limit to avoid overwhelming the system
+    const BATCH_SIZE = 20; // Process 20 tests at a time
+    const allSignals = [];
+    
+    for (let i = 0; i < testPromises.length; i += BATCH_SIZE) {
+      const batch = testPromises.slice(i, i + BATCH_SIZE);
+      const batchResults = await Promise.all(batch);
+      
+      // Filter out null results and add valid signals
+      const validSignals = batchResults.filter(signal => signal !== null);
+      allSignals.push(...validSignals);
+      
+      // Log progress
+      if (i > 0 && i % 100 === 0) {
+        console.log(`[AutoLoop] Progress: tested ${i}/${testPromises.length} combinations, found ${allSignals.length} signals so far`);
       }
       
-      for (const [strategyId, allocation] of Object.entries(allocations)) {
-        if (allocation.weight <= 0) continue;
-        
-        try {
-          const signal = await this._testCandidateWithStrategy(candidate, strategyId, allocation);
-          if (signal) {
-            // Keep only the best signal per symbol
-            const existing = signalsBySymbol.get(signal.symbol);
-            if (!existing || signal.confidence > existing.confidence) {
-              signalsBySymbol.set(signal.symbol, signal);
-            }
-          }
-        } catch (e) {
-          console.error(`[AutoLoop] Error testing ${candidate.symbol} with ${strategyId}:`, e.message);
+      // Early exit if we have enough high-confidence signals
+      if (allSignals.length >= 10) {
+        console.log(`[AutoLoop] Found sufficient signals (${allSignals.length}), stopping early`);
+        break;
+      }
+    }
+    
+    // Keep only the best signal per symbol
+    for (const signal of allSignals) {
+      if (signal) {
+        const existing = signalsBySymbol.get(signal.symbol);
+        if (!existing || signal.confidence > existing.confidence) {
+          signalsBySymbol.set(signal.symbol, signal);
         }
       }
     }
     
-    // Convert map to array
-    signals.push(...signalsBySymbol.values());
+    // Convert to array and sort by confidence
+    const uniqueSignals = Array.from(signalsBySymbol.values())
+      .sort((a, b) => b.confidence - a.confidence);
     
-    // If we found enough signals from high-value candidates, return early
-    if (signals.length >= 3) {
-      console.log(`[AutoLoop] Found ${signals.length} unique signals from high-value candidates, proceeding to execution`);
-      return signals;
-    }
-
-    // Get regular candidates and test them against ALL strategies too
-    const regularCandidates = await this._getRegularCandidates(allocations);
-    console.log(`[AutoLoop] Found ${regularCandidates.length} regular candidates to test against ALL strategies`);
+    console.log(`[AutoLoop] Parallel evaluation complete: ${uniqueSignals.length} unique signals from ${testPromises.length} tests`);
     
-    // Test regular candidates against ALL strategies (just like high-value ones)
-    for (const candidate of regularCandidates) {
-      // Skip if we already own this symbol
-      if (ownedSymbols.has(candidate.symbol)) {
-        console.log(`[AutoLoop] Skipping ${candidate.symbol} - already have position`);
-        continue;
-      }
-      
-      // Skip if we have a pending order for this symbol
-      if (this.pendingOrderSymbols && this.pendingOrderSymbols.has(candidate.symbol)) {
-        console.log(`[AutoLoop] Skipping ${candidate.symbol} - already have pending order`);
-        continue;
-      }
-      
-      for (const [strategyId, allocation] of Object.entries(allocations)) {
-        if (allocation.weight <= 0) continue;
-        
-        try {
-          const signal = await this._testCandidateWithStrategy(candidate, strategyId, allocation);
-          if (signal) {
-            // Keep only the best signal per symbol
-            const existing = signalsBySymbol.get(signal.symbol);
-            if (!existing || signal.confidence > existing.confidence) {
-              signalsBySymbol.set(signal.symbol, signal);
-            }
-          }
-        } catch (e) {
-          console.error(`[AutoLoop] Error testing ${candidate.symbol} with ${strategyId}:`, e.message);
-        }
-      }
-    }
-    
-    // Convert remaining signals from map to array
-    const uniqueSignals = Array.from(signalsBySymbol.values());
-    console.log(`[AutoLoop] Total unique signals generated: ${uniqueSignals.length} from ${highValueCandidates.length + regularCandidates.length} candidates`);
     return uniqueSignals;
   }
   
@@ -1266,7 +1267,7 @@ class AutoLoop extends EventEmitter {
   }
 
   /**
-   * Monitor positions for quick exits, especially diamonds
+   * Monitor positions for quick exits, especially diamonds - PARALLEL VERSION
    */
   async _monitorPositionsForExits() {
     try {
@@ -1289,9 +1290,10 @@ class AutoLoop extends EventEmitter {
       
       const quotes = await quotesResp.json();
       
-      for (const position of positions) {
+      // Process all positions in parallel
+      const exitPromises = positions.map(async (position) => {
         const quote = quotes[position.symbol];
-        if (!quote) continue;
+        if (!quote) return null;
         
         const currentPrice = quote.last;
         const entryPrice = position.avg_price || position.price;
@@ -1449,6 +1451,15 @@ class AutoLoop extends EventEmitter {
             console.log(`[AutoLoop] Holding: ${position.symbol} @ ${pnlPct.toFixed(2)}% (peak: ${(position.peak_pnl || pnlPct).toFixed(2)}%)`);
           }
         }
+      });
+      
+      // Execute all exit trades in parallel
+      const exitSignals = await Promise.all(exitPromises);
+      const validExitSignals = exitSignals.filter(signal => signal !== null);
+      
+      if (validExitSignals.length > 0) {
+        console.log(`[AutoLoop] Executing ${validExitSignals.length} exit trades in parallel`);
+        await Promise.all(validExitSignals.map(signal => this._executeTrade(signal)));
       }
     } catch (error) {
       console.error('[AutoLoop] Error monitoring positions:', error.message);

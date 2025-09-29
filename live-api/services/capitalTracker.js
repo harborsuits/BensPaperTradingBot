@@ -70,13 +70,24 @@ class CapitalTracker extends EventEmitter {
       const account = await this.getAccountData();
       if (!account) return;
       
-      // Update total capital
+      // Update total capital and cash
       this.state.totalCapital = account.totalEquity || this.state.totalCapital;
       
-      // Calculate committed capital
-      let committedCapital = 0;
+      // Use actual cash from account if available
+      if (account.totalCash !== undefined) {
+        this.state.cashAvailable = account.totalCash;
+      } else {
+        // Calculate cash from equity minus positions
+        let positionsValue = 0;
+        if (account.positions) {
+          for (const position of account.positions) {
+            positionsValue += Math.abs(position.quantity * position.currentPrice);
+          }
+        }
+        this.state.cashAvailable = this.state.totalCapital - positionsValue;
+      }
       
-      // Add open positions value
+      // Update open positions tracking
       this.state.openPositions.clear();
       if (account.positions) {
         for (const position of account.positions) {
@@ -86,20 +97,20 @@ class CapitalTracker extends EventEmitter {
             price: position.currentPrice,
             value: value
           });
-          committedCapital += value;
         }
       }
       
-      // Add pending orders estimated value
+      // Subtract pending orders from available cash
       let pendingValue = 0;
       for (const [orderId, order] of this.state.pendingOrders) {
         pendingValue += order.estimatedValue;
       }
-      committedCapital += pendingValue;
       
-      // Calculate available cash
-      this.state.cashAvailable = this.state.totalCapital - committedCapital;
+      // Reserve capital calculation
       this.state.reservedCapital = this.state.totalCapital * this.limits.reserveBuffer;
+      
+      // Calculate total committed capital (positions + pending orders)
+      const committedCapital = this.getCommittedCapital();
       
       // Calculate utilization
       this.state.utilizationPct = committedCapital / this.state.totalCapital;
@@ -227,33 +238,52 @@ class CapitalTracker extends EventEmitter {
   }
   
   /**
-   * Get account data (stub - would connect to real broker)
+   * Get account data from paper trading account
    */
   async getAccountData() {
-    // This would normally fetch from broker API
-    // For now, return mock data that can be updated
     try {
-      if (this.performanceRecorder) {
-        // Get trades to calculate P&L
-        const trades = await this.performanceRecorder.getRecentTrades(100);
+      // Fetch from paper account endpoint
+      const axios = require('axios');
+      const accountResp = await axios.get('http://localhost:4000/api/paper/account', {
+        timeout: 5000  // 5 second timeout
+      });
+      
+      const accountData = accountResp.data;
+      if (accountData && accountData.balances) {
+        const balances = accountData.balances;
         
-        // Calculate total equity from trades
-        let totalPnL = 0;
-        if (trades && trades.length > 0) {
-          totalPnL = trades.reduce((sum, trade) => sum + (trade.pnl || 0), 0);
+        // Fetch positions separately
+        let positions = [];
+        try {
+          const positionsResp = await axios.get('http://localhost:4000/api/paper/positions', {
+            timeout: 5000
+          });
+          if (positionsResp.data && Array.isArray(positionsResp.data)) {
+            positions = positionsResp.data.map(pos => ({
+              symbol: pos.symbol,
+              quantity: pos.qty || pos.quantity,
+              currentPrice: pos.current_price || pos.price || 100,
+              avgPrice: pos.avg_price || pos.price || 100
+            }));
+          }
+        } catch (posErr) {
+          console.log('[CapitalTracker] Could not fetch positions:', posErr.message);
         }
         
         return {
-          totalEquity: 100000 + totalPnL, // Starting capital + P&L
-          positions: [] // Will be populated from broker
+          totalEquity: balances.total_equity || 100000,
+          totalCash: balances.total_cash || 100000,
+          positions: positions
         };
       }
     } catch (error) {
       console.error('[CapitalTracker] Failed to get account data:', error.message);
     }
     
+    // Fallback to default values if API fails
     return {
-      totalEquity: this.state.totalCapital,
+      totalEquity: 100000,
+      totalCash: 100000,
       positions: []
     };
   }

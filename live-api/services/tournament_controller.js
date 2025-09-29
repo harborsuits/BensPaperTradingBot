@@ -96,7 +96,9 @@ class TournamentController {
             console.log('[TOURNAMENT] Running tournament cycle...');
 
             const allStrategies = this.strategyManager.getAllStrategies();
-            const decisions = this.evaluateStrategies(allStrategies);
+            // Convert object to array if needed
+            const strategiesArray = Array.isArray(allStrategies) ? allStrategies : Object.values(allStrategies);
+            const decisions = this.evaluateStrategies(strategiesArray);
 
             if (decisions.length > 0) {
                 await this.applyDecisions(decisions);
