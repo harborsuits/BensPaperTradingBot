@@ -10,9 +10,9 @@ module.exports = {
   brainScore: {
     // Original thresholds: 0.94 buy, 0.88 sell (extremely restrictive)
     // Adjusted for more reasonable trading activity with news awareness
-  buyThreshold: 0.45,    // More aggressive: lowered from 0.52 to 0.45
-  sellThreshold: 0.35,   // More aggressive: lowered from 0.40 to 0.35
-  minConfidence: 0.30,   // More aggressive: lowered from 0.35 to 0.30
+  buyThreshold: 0.35,    // TESTING MODE: Very aggressive for more trades
+  sellThreshold: 0.30,   // TESTING MODE: Lower sell threshold 
+  minConfidence: 0.25,   // TESTING MODE: Accept lower confidence signals
     
     // News-aware thresholds
     newsBoostThreshold: 0.02,  // If news nudge > 2%, use special thresholds
@@ -152,9 +152,9 @@ module.exports = {
       console.log(`[Thresholds] First trade of the day - lowering buy threshold to ${buyThreshold} to kickstart learning`);
     }
     
-    // Ensure thresholds stay within bounds
-    buyThreshold = Math.max(0.45, Math.min(0.95, buyThreshold)); // Allow down to 45% for kickstart
-    sellThreshold = Math.max(0.3, Math.min(0.8, sellThreshold));
+    // Ensure thresholds stay within bounds (TESTING MODE: allow lower)
+    buyThreshold = Math.max(0.25, Math.min(0.95, buyThreshold)); // Allow down to 25% for testing
+    sellThreshold = Math.max(0.20, Math.min(0.8, sellThreshold)); // Allow down to 20% for testing
     
     return {
       buyThreshold,

@@ -114,11 +114,14 @@ class EnhancedPerformanceRecorder extends EventEmitter {
       this.learningConfig.recalibration.actions.resetConfidence : 1.0;
     
     // Combine all adjustments
-    const adjustedConfidence = baseConfidence * 
+    let adjustedConfidence = baseConfidence * 
       regimeAdjustment * 
       symbolAdjustment * 
       strategyAdjustment * 
       recalibrationFactor;
+    
+    // Apply performance-based boost (hot hand, win rate)
+    adjustedConfidence = this.applyPerformanceBoost(adjustedConfidence, strategy);
     
     // Log learning application
     if (Math.abs(adjustedConfidence - baseConfidence) > 0.1) {
@@ -447,6 +450,82 @@ class EnhancedPerformanceRecorder extends EventEmitter {
   getRecentTrades(count) {
     // This would fetch from the actual performance recorder
     return [];
+  }
+
+  // Get recent performance for confidence boosting
+  getRecentPerformance(strategy, windowDays = 7) {
+    const stratData = this.observations.strategies.get(strategy);
+    if (!stratData || stratData.samples < 5) {
+      return { winRate: 0.5, streak: 0, recentTrades: 0 };
+    }
+
+    // Calculate recent win rate with decay
+    const now = new Date();
+    const windowMs = windowDays * 24 * 60 * 60 * 1000;
+    let recentWins = 0;
+    let recentTrades = 0;
+    let currentStreak = 0;
+    let lastWasWin = null;
+
+    // Get trades from recorder (simplified - in production would query actual trades)
+    const recentTradeHistory = this.recorder.trades || [];
+    
+    recentTradeHistory
+      .filter(t => t.strategy === strategy && (now - new Date(t.timestamp)) < windowMs)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .forEach(trade => {
+        recentTrades++;
+        if (trade.pnl > 0) {
+          recentWins++;
+          if (lastWasWin !== false) {
+            currentStreak = currentStreak > 0 ? currentStreak + 1 : 1;
+          } else {
+            currentStreak = 1;
+          }
+          lastWasWin = true;
+        } else {
+          if (lastWasWin !== true) {
+            currentStreak = currentStreak < 0 ? currentStreak - 1 : -1;
+          } else {
+            currentStreak = -1;
+          }
+          lastWasWin = false;
+        }
+      });
+
+    const winRate = recentTrades > 0 ? recentWins / recentTrades : stratData.successes / stratData.samples;
+
+    return {
+      winRate,
+      streak: currentStreak,
+      recentTrades,
+      isHot: currentStreak >= 3,
+      isCold: currentStreak <= -3
+    };
+  }
+
+  // Apply performance-based confidence boost
+  applyPerformanceBoost(baseConfidence, strategy) {
+    const perf = this.getRecentPerformance(strategy);
+    let boost = 1.0;
+
+    // Hot hand boost
+    if (perf.isHot) {
+      boost *= 1.2; // 20% boost for hot streak
+      console.log(`[Learning] Hot hand detected for ${strategy}: streak ${perf.streak}`);
+    } else if (perf.isCold) {
+      boost *= 0.8; // 20% reduction for cold streak
+      console.log(`[Learning] Cold streak detected for ${strategy}: streak ${perf.streak}`);
+    }
+
+    // Win rate boost
+    if (perf.winRate > 0.6 && perf.recentTrades >= 10) {
+      boost *= 1.1; // 10% boost for high win rate
+    } else if (perf.winRate < 0.3 && perf.recentTrades >= 10) {
+      boost *= 0.9; // 10% reduction for low win rate
+    }
+
+    return Math.max(0, Math.min(1, baseConfidence * boost));
   }
 
   // Generate learning report

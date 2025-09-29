@@ -383,7 +383,7 @@ paperBroker.on('positionUpdated', (data) => {
 // Initialize the unified Brain Integrator BEFORE AutoLoop
 const tradingThresholds = require('./config/tradingThresholds');
 const brainIntegrator = new BrainIntegrator({
-  minConfidence: 0.25, // TESTING MODE: Lower confidence for more trades
+  minConfidence: 0.6,
   checkInterval: 30000,
   thresholds: tradingThresholds.brainScore
 });
@@ -433,7 +433,6 @@ brainIntegrator.connectComponents({
   dataValidator: { validate: (data) => ({ isValid: true, errors: [] }) }, // Simple validator for now
   positionSizer: optionsPositionSizer, // Already initialized
   performanceRecorder: performanceRecorder,
-  enhancedRecorder: enhancedRecorder, // Add enhanced learning system
   marketIndicators: null, // Will be set later
   paperBroker: paperBroker
 });
